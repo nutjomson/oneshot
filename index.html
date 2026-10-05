@@ -1,4 +1,4 @@
-<!doctype html>
+o<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
@@ -502,10 +502,10 @@ const HEROES = [
 
 /* ===== 3. PLAYER_BASE — ค่าเริ่มต้นร่วมของทุกตัวละคร ===== */
 const PLAYER_BASE = {
-  bulletSpeed: 800,   // ความเร็วกระสุน
+  bulletSpeed: 500,   // ความเร็วกระสุน
   projectiles: 1,     // จำนวนกระสุนต่อนัด
   pierce: 1,          // เจาะทะลุกี่ตัว
-  pickup: 450,        // รัศมีดูดไอเทม (px)
+  pickup: 100,        // รัศมีดูดไอเทม (px)
   regen: 1.0,         // ฟื้น HP ต่อวินาที
   goldMulti: 1,       // ตัวคูณทองที่เก็บได้
   dodge: 0, lifesteal: 0, revives: 0,
@@ -515,28 +515,28 @@ const PLAYER_BASE = {
 
 /* ===== 4. CAPS — เพดานสถานะ (กันอัปเกรดซ้อนจนเกมพัง) ===== */
 const CAPS = {
-  dodge: 0.45, crit: 0.75, armorMin: -0.5, armorMax: 0.6,
-  executionThreshold: 0.35, lifesteal: 0.25, timeSlow: 0.5,
-  fireRateMin: 0.08,          // ยิงเร็วสุด (วินาที/นัด)
-  pierce: 12, projectiles: 8, ricochet: 6, orbitBlades: 8, revives: 3,
-  regen: 12, goldMulti: 4, knockback: 300, explosiveRadius: 160,
-  bulletSpeed: 2000, pickup: 1500,
-  speedMultOfHero: 1.8,       // ความเร็วสูงสุด = ความเร็วฮีโร่ x ค่านี้
-  damageMultOfHero: 12        // ดาเมจสูงสุด = ดาเมจฮีโร่ x ค่านี้
+  dodge: 0.95, crit: 0.99, armorMin: -0.8, armorMax: 0.99,
+  executionThreshold: 0.35, lifesteal: 0.90, timeSlow: 0.5,
+  fireRateMin: 0.0001,          // ยิงเร็วสุด (วินาที/นัด)
+  pierce: 20, projectiles: 50, ricochet: 50, orbitBlades: 8, revives: 3,
+  regen: 50, goldMulti: 20, knockback: 700, explosiveRadius: 600,
+  bulletSpeed: 6000, pickup: 2000,
+  speedMultOfHero: 10,       // ความเร็วสูงสุด = ความเร็วฮีโร่ x ค่านี้
+  damageMultOfHero: 50        // ดาเมจสูงสุด = ดาเมจฮีโร่ x ค่านี้
 };
 
 /* ===== 5. COMBAT — กติกาการต่อสู้ ===== */
 const COMBAT = {
   playerRadius: 16,
-  hitInvuln: 0.30,          // อมตะหลังโดนตี (วิ)
-  dodgeInvuln: 0.30,        // อมตะหลังหลบสำเร็จ (วิ)
+  hitInvuln: 0.02,          // อมตะหลังโดนตี (วิ)
+  dodgeInvuln: 0.02,        // อมตะหลังหลบสำเร็จ (วิ)
   armorMinTaken: 0.05,      // รับดาเมจต่ำสุดหลังหักเกราะ (5%)
   minDamage: 1,             // ดาเมจต่ำสุดต่อครั้ง
   hurtShake: 6,             // แรงสั่นจอตอนโดนตี
   reviveHpPct: 0.60,        // ชุบชีวิตแล้วฟื้นกี่ % ของ Max HP
-  reviveInvuln: 2.5,        // อมตะหลังชุบ (วิ)
-  contactDamageMult: 0.70,  // ดาเมจเมื่อศัตรูชน (x ดาเมจศัตรู)
-  contactCooldown: 0.8,     // ศัตรูชนซ้ำได้ทุกกี่วิ
+  reviveInvuln: 0.5,        // อมตะหลังชุบ (วิ)
+  contactDamageMult: 0.80,  // ดาเมจเมื่อศัตรูชน (x ดาเมจศัตรู)
+  contactCooldown: 0.1,     // ศัตรูชนซ้ำได้ทุกกี่วิ
   critMult: 2.2,            // ตัวคูณคริติคอลปกติ
   bulletRadius: 5, bulletLife: 1.3, spreadAngle: 0.14, muzzleOffset: 18,
   knockbackScale: 0.10,     // แรงผลักจากกระสุน = knockback x ค่านี้
@@ -603,15 +603,15 @@ const WAVES = {
   duration: 17,                // เวฟละกี่วินาที
   spawnInterval: 0.45,         // เกิดศัตรูทุกกี่วิ (เวฟแรก)
   spawnIntervalPerWave: 0.012, // ลดช่วงเกิดต่อเวฟ
-  minSpawnInterval: 0.05,      // ช่วงเกิดสั้นสุด
+  minSpawnInterval: 0.0001,      // ช่วงเกิดสั้นสุด
   batchBase: 3,                // ศัตรูต่อรอบ
   batchWave2: 1,               // +ต่อรอบ ตั้งแต่เวฟ 2
   batchWave6: 1,               // +(สุ่ม 50%) ตั้งแต่เวฟ 6
   batchWave12: 1,              // +(สุ่ม 50%) ตั้งแต่เวฟ 12
   maxEnemies: 500,             // ศัตรูบนจอสูงสุด
-  enemyHpPerWave: 0.12,        // HP ศัตรู +30%/เวฟ
-  enemyDamagePerWave: 0.1,
-  enemySpeedPerWave: 0.015,
+  enemyHpPerWave: 0.07,        // HP ศัตรู +30%/เวฟ
+  enemyDamagePerWave: 0.08,
+  enemySpeedPerWave: 0.005,
   xpPerWave: 0.01,
   goldPerWave: 0.08,
   bossEvery: 2,                // บอสทุก N เวฟ
@@ -634,17 +634,17 @@ const PICKUPS = {
 /* ===== 11. LEVEL ===== */
 const LEVEL = {
   xpNeedStart: 100,     // XP เลเวลแรก
-  xpNeedGrowth: 1.75,  // ตัวคูณต่อเลเวล
-  xpNeedFlat: 30,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
+  xpNeedGrowth: 1.55,  // ตัวคูณต่อเลเวล
+  xpNeedFlat: 25,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
   choices: 3           // จำนวนการ์ดให้เลือกตอนเลเวลอัป
 };
 
 /* ===== 12. SHOP ===== */
 const SHOP = {
   everyWaves: 3,       // เปิดร้านทุก N เวฟ
-  itemsShown: 6,       // จำนวนสินค้าต่อรอบ
+  itemsShown: 2,       // จำนวนสินค้าต่อรอบ
   pricePerWave: 0.10,  // ราคา +6%/เวฟ
-  rerollBase: 10, rerollStep: 12,  // ค่ารีโรลขั้นต่ำ / เพิ่มต่อครั้ง
+  rerollBase: 2, rerollStep: 1,  // ค่ารีโรลขั้นต่ำ / เพิ่มต่อครั้ง
   rerollGoldPct: 0.05              // หรือ 5% ของทองที่มี (เลือกอันที่มากกว่า)
 };
 
