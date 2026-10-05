@@ -457,9 +457,9 @@ html,body{
   }
   function openDeveloper(){
     loadDevUI();
-    document.getElementById('devOverlay').classList.remove('hidden');
+    document.getElementById('devOverlay')?.classList.remove('hidden');
   }
-  function closeDeveloper(){document.getElementById('devOverlay').classList.add('hidden');}
+  function closeDeveloper(){document.getElementById('devOverlay')?.classList.add('hidden');}
 
   const keys = {up:false,down:false,left:false,right:false};
   const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
@@ -855,7 +855,7 @@ html,body{
     loadDevUI();
     setStatus('↩ รีเซ็ตค่า Developer แล้ว');
   });
-  document.getElementById('devEnemyType').onchange = refreshDevEnemyUI;
+  document.getElementById('devEnemyType')?.addEventListener('change', refreshDevEnemyUI);
   document.querySelectorAll('.dev-tab').forEach(btn=>{
     btn.onclick=()=>{
       document.querySelectorAll('.dev-tab').forEach(b=>b.classList.remove('active'));
