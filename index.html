@@ -574,12 +574,12 @@ const SKILLS = {
    spawnWeight = โอกาสเกิดสัมพัทธ์ (0 = ไม่เกิด) | minWave = เวฟแรกที่เริ่มเกิด
    boss เกิดตามกติกา WAVES.bossEvery ไม่ใช้ spawnWeight                      */
 const ENEMIES = {
-  stalker: { hp: 35,   speed: 65,  damage: 10, r: 16, color: '#ff0055', xpBase: 6,   goldMin: 2,  goldMax: 4,  spawnWeight: 28, minWave: 1 },
-  runner:  { hp: 25,   speed: 130, damage: 6,  r: 13, color: '#ff9900', xpBase: 5,   goldMin: 2,  goldMax: 4,  spawnWeight: 20, minWave: 1 },
-  brute:   { hp: 180,  speed: 40,  damage: 22, r: 24, color: '#aa00ff', xpBase: 20,  goldMin: 2,  goldMax: 4,  spawnWeight: 17, minWave: 1 },
-  shooter: { hp: 55,   speed: 50,  damage: 8,  r: 16, color: '#00e5ff', xpBase: 11,  goldMin: 2,  goldMax: 4,  spawnWeight: 20, minWave: 1, shootTimer: 2.5 },
-  ghost:   { hp: 40,   speed: 80,  damage: 12, r: 14, color: '#00ffaa', xpBase: 8,   goldMin: 2,  goldMax: 4,  spawnWeight: 15, minWave: 1 },
-  boss:    { hp: 1000, speed: 35,  damage: 35, r: 38, color: '#ff0000', xpBase: 100, goldMin: 20, goldMax: 40, spawnWeight: 0,  minWave: 1, shootTimer: 1.2 }
+  stalker: { hp: 35,   speed: 65,  damage: 10, r: 16, color: '#ff0055', xpBase: 6,   goldMin: 1,  goldMax: 2,  spawnWeight: 28, minWave: 1 },
+  runner:  { hp: 25,   speed: 130, damage: 6,  r: 13, color: '#ff9900', xpBase: 5,   goldMin: 1,  goldMax: 2,  spawnWeight: 20, minWave: 1 },
+  brute:   { hp: 180,  speed: 40,  damage: 22, r: 24, color: '#aa00ff', xpBase: 20,  goldMin: 1,  goldMax: 2,  spawnWeight: 17, minWave: 1 },
+  shooter: { hp: 55,   speed: 50,  damage: 8,  r: 16, color: '#00e5ff', xpBase: 11,  goldMin: 1,  goldMax: 2,  spawnWeight: 20, minWave: 1, shootTimer: 2.5 },
+  ghost:   { hp: 40,   speed: 80,  damage: 12, r: 14, color: '#00ffaa', xpBase: 8,   goldMin: 1,  goldMax: 2,  spawnWeight: 15, minWave: 1 },
+  boss:    { hp: 1000, speed: 35,  damage: 35, r: 38, color: '#ff0000', xpBase: 100, goldMin: 10, goldMax: 20, spawnWeight: 0,  minWave: 1, shootTimer: 1.2 }
 };
 
 const ENEMY_AI = {
@@ -609,11 +609,11 @@ const WAVES = {
   batchWave6: 1,               // +(สุ่ม 50%) ตั้งแต่เวฟ 6
   batchWave12: 1,              // +(สุ่ม 50%) ตั้งแต่เวฟ 12
   maxEnemies: 500,             // ศัตรูบนจอสูงสุด
-  enemyHpPerWave: 0.90,        // HP ศัตรู +30%/เวฟ
+  enemyHpPerWave: 0.20,        // HP ศัตรู +30%/เวฟ
   enemyDamagePerWave: 0.1,
-  enemySpeedPerWave: 0.02,
+  enemySpeedPerWave: 0.015,
   xpPerWave: 0.01,
-  goldPerWave: 0.15,
+  goldPerWave: 0.08,
   bossEvery: 3,                // บอสทุก N เวฟ
   bossHpMultiplier: 3.5
 };
@@ -621,7 +621,7 @@ const WAVES = {
 /* ===== 10. DROPS / PICKUPS ===== */
 const DROPS = {
   xpMultiplier: 1.15, goldMultiplier: 1.15,
-  xpChance: 1, goldChance: 1,
+  xpChance: 1, goldChance: 0.6,
   goldMin: 2, goldMax: 4,        // ใช้เมื่อศัตรูไม่ได้กำหนด goldMin/Max เอง
   heroGoldMultiplier: 1,
   xpMergeThreshold: 200          // ออร์บ XP เกินนี้จะรวมเป็นลูกเดียว (กันแลค)
@@ -643,7 +643,7 @@ const LEVEL = {
 const SHOP = {
   everyWaves: 3,       // เปิดร้านทุก N เวฟ
   itemsShown: 6,       // จำนวนสินค้าต่อรอบ
-  pricePerWave: 0.06,  // ราคา +6%/เวฟ
+  pricePerWave: 0.12,  // ราคา +6%/เวฟ
   rerollBase: 10, rerollStep: 12,  // ค่ารีโรลขั้นต่ำ / เพิ่มต่อครั้ง
   rerollGoldPct: 0.05              // หรือ 5% ของทองที่มี (เลือกอันที่มากกว่า)
 };
