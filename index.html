@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#030712">
+<meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -389,7 +389,7 @@ html,body{
   let running=false, paused=false, over=false;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0;
-  let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
+  let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
   try{bests=JSON.parse(localStorage.getItem('sa_best'))||bests}catch(e){}
 
   const enemyTypes = {
@@ -409,7 +409,7 @@ html,body{
     {icon:'🏃', name:'เพิ่มความเร็วเคลื่อนที่', desc:'+18% ความเร็วฮีโร่', apply:()=>player.speed*=1.18},
     {icon:'❤️', name:'ขยายพลังชีวิตสูงสุด', desc:'+40 Max HP & ฟื้นฟู 40 HP', apply:()=>{player.maxHp+=40;player.hp=Math.min(player.maxHp,player.hp+40)}},
     {icon:'🔫', name:'เพิ่มกระสุนยิงกระจาย', desc:'+1 ลำแสงกระสุนเพิ่มเติม', apply:()=>player.projectiles++},
-    {icon:'💨', name:'เพิ่มความเร็วกระสุน', desc:'+30% ความเร็วกระสุน', apply:()=>player.bulletSpeed*=1.30},
+    {icon:'💨', name:'กระสุนความเร็วสูง', desc:'+30% ความเร็วกระสุน และ +10% ความเสียหาย', apply:()=>{player.bulletSpeed*=1.30; player.damage*=1.10;}},
     {icon:'🧲', name:'ขยายรัศมีแม่เหล็ก', desc:'+100 ระยะดูดเก็บไอเทม', apply:()=>player.pickup+=100},
     {icon:'🛡️', name:'เสริมเกราะป้องกัน', desc:'ลดความเสียหายลง 12%', apply:()=>player.armor+=.12},
     {icon:'💥', name:'เพิ่มโอกาสคริติคอล', desc:'+12% โอกาสโจมตีคริติคอล', apply:()=>player.crit+=.12},
@@ -515,6 +515,8 @@ html,body{
   let activeShopItems = [];
   const shopFix={s_wpn1:{bt:'laser',desc:'เลเซอร์: กระสุนเร็ว +40% และเจาะทะลุ +1'},s_wpn2:{bt:'fireball',desc:'ลูกไฟ: กระสุนใหญ่ ระเบิดเล็กทุกครั้งที่โดน'},s_wpn3:{bt:'plasma',desc:'พลาสม่า: คริ +8% และคริแรงขึ้น (x2.8)'},s_wpn4:{bt:'arcane',desc:'อาร์เคน: กระสุนเด้งสะท้อนผนัง +1 ครั้ง'},s_pot4:{name:'ยาเพิ่มพลังชีวิตถาวร'},s_rel5:{desc:'ศัตรูเคลื่อนที่ช้าลง 15% และยิงเร็วขึ้น +15%',apply:()=>{player.fireRate*=0.85;player.timeSlow=(player.timeSlow||0)+.15;return true;}}};
   luxuryShopPool.forEach(i=>Object.assign(i,shopFix[i.id]||{}));
+  const costFix={s_acc3:400,s_rel8:700,s_rel6:450,s_wpn8:200,s_rel14:650,s_rel7:600,s_wpn5:450,s_rel11:380};
+  luxuryShopPool.forEach(i=>{if(costFix[i.id])i.cost=costFix[i.id]});
 
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
   function rand(a,b){return a+Math.random()*(b-a);}
@@ -532,7 +534,8 @@ html,body{
   function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
   function resetInput(){joy.active=false;joy.pointerId=null;joy.x=0;joy.y=0;joyBase.style.display='none';keys.up=keys.down=keys.left=keys.right=false}
   function syncPause(){paused=levelOpen||shopOpen||pauseOpen;touchZone.classList.toggle('hidden',paused||!running);if(paused)resetInput()}
-  function clampStats(){player.dodge=clamp(player.dodge,0,.6);player.crit=clamp(player.crit,0,.75);player.armor=clamp(player.armor,-.5,.75);player.executionThreshold=Math.min(.35,player.executionThreshold);player.fireRate=Math.max(.05,player.fireRate);player.lifesteal=Math.min(.4,player.lifesteal);player.pierce=Math.min(12,player.pierce);player.projectiles=Math.min(12,player.projectiles);player.ricochet=Math.min(6,player.ricochet);player.orbitBlades=Math.min(8,player.orbitBlades);player.timeSlow=Math.min(.5,player.timeSlow||0)}
+  function clampStats(){player.dodge=clamp(player.dodge,0,.45);player.crit=clamp(player.crit,0,.75);player.armor=clamp(player.armor,-.5,.6);player.executionThreshold=Math.min(.35,player.executionThreshold);player.fireRate=Math.max(.08,player.fireRate);player.lifesteal=Math.min(.25,player.lifesteal);player.pierce=Math.min(12,player.pierce);player.projectiles=Math.min(8,player.projectiles);player.ricochet=Math.min(6,player.ricochet);player.orbitBlades=Math.min(8,player.orbitBlades);player.timeSlow=Math.min(.5,player.timeSlow||0);
+    const hb=selectedHero; player.speed=Math.min(player.speed,hb.speed*1.8); player.regen=Math.min(player.regen,12); player.goldMulti=Math.min(player.goldMulti,4); player.knockback=Math.min(player.knockback,300); player.explosiveRadius=Math.min(player.explosiveRadius,160); player.damage=Math.min(player.damage,hb.damage*12); player.revives=Math.min(player.revives,3); player.bulletSpeed=Math.min(player.bulletSpeed,2000); player.pickup=Math.min(player.pickup,800);}
 
   // Audio System using Web Audio API Synth (Synthesized Sound FX)
   let audioCtx = null;
@@ -815,7 +818,7 @@ html,body{
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
     if(crit&&settings.shake) screenShake=4;
     if(player.knockback>0){
-      const a=Math.atan2(e.y-player.y,e.x-player.x), k=player.knockback*(blade?.03:.1);
+      const a=Math.atan2(e.y-player.y,e.x-player.x), k=player.knockback*(blade?.03:.1)*(e.type==='boss'?.2:1);
       e.x=clamp(e.x+Math.cos(a)*k,40,world.w-40); e.y=clamp(e.y+Math.sin(a)*k,40,world.h-40);
     }
     if(player.poisonDmg>0) e.poisonTimer=3.0;
@@ -867,11 +870,11 @@ html,body{
   }
 
   function getRerollCost() {
-    return Math.max(10, Math.floor(player.gold * 0.05));
+    return Math.max(10, Math.floor(player.gold * 0.05)) + rerollN*12;
   }
 
   function generateShopList() {
-    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&i.bt===player.bulletType))).slice(0, 6).map(i=>({...i}));
+    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&i.bt===player.bulletType))).slice(0, 6).map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*.06))}));
     renderShopItems();
   }
 
@@ -913,7 +916,7 @@ html,body{
   }
 
   function openShop(){
-    shopOpen=true; syncPause();
+    shopOpen=true; rerollN=0; syncPause();
     document.getElementById('shopWaveNum').textContent = wave;
     generateShopList();
     document.getElementById('shopOverlay').classList.remove('hidden');
@@ -922,7 +925,7 @@ html,body{
   document.getElementById('rerollBtn').onclick = () => {
     const cost = getRerollCost();
     if(player.gold >= cost) {
-      player.gold -= cost;
+      player.gold -= cost; rerollN++;
       playSound('coin');
       generateShopList();
       refreshHUD();
@@ -1169,11 +1172,32 @@ html,body{
   function sy(y,cam){return Math.floor(y-cam.y);}
 
   let tilePat=null;
+  function makeGrass(){
+    const T=256,c=document.createElement('canvas'); c.width=c.height=T; const g=c.getContext('2d');
+    let sd=11; const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
+    const W9=f=>{for(const dx of[-T,0,T])for(const dy of[-T,0,T])f(dx,dy)};
+    g.fillStyle='#2b5d27'; g.fillRect(0,0,T,T);
+    const pc=['#245320','#33702d','#3a7d33','#2a5a25'];
+    for(let i=0;i<46;i++){const x=rn()*T,y=rn()*T,r=16+rn()*36; g.fillStyle=pc[i%4]; g.globalAlpha=.3; W9((dx,dy)=>{g.beginPath();g.arc(x+dx,y+dy,r,0,7);g.fill();});}
+    for(let i=0;i<4;i++){const x=rn()*T,y=rn()*T,rx=12+rn()*10; g.fillStyle='rgba(92,64,38,.35)'; W9((dx,dy)=>{g.beginPath();g.ellipse(x+dx,y+dy,rx,6,.3,0,7);g.fill();});}
+    g.globalAlpha=1;
+    const bc=['#4c9a3e','#5fb04a','#3a8a34','#2f7a2c','#79c35a','#1f4f1d'];
+    for(let i=0;i<1500;i++){const x=rn()*T,y=rn()*T,l=3+rn()*5,a=-1.57+(rn()-.5)*.9; g.strokeStyle=bc[Math.floor(rn()*6)]; g.lineWidth=rn()>.7?2:1;
+      W9((dx,dy)=>{g.beginPath();g.moveTo(x+dx,y+dy);g.lineTo(x+dx+Math.cos(a)*l,y+dy+Math.sin(a)*l);g.stroke();});}
+    const fc=['#fef9c3','#f9a8d4','#c4b5fd','#fde047','#ffffff'];
+    for(let i=0;i<22;i++){const x=Math.floor(rn()*T),y=Math.floor(rn()*T),col=fc[i%5];
+      W9((dx,dy)=>{g.fillStyle=col;g.fillRect(x+dx-1,y+dy,3,1);g.fillRect(x+dx,y+dy-1,1,3);g.fillStyle='#f59e0b';g.fillRect(x+dx,y+dy,1,1);});}
+    for(let i=0;i<8;i++){const x=rn()*T,y=rn()*T,z=2+rn()*2;
+      W9((dx,dy)=>{g.fillStyle='#8b9099';g.fillRect(x+dx,y+dy,z+1,z);g.fillStyle='#c4c8cf';g.fillRect(x+dx,y+dy,z,1);});}
+    return ctx.createPattern(c,'repeat');
+  }
   function drawGround(cam){
-    if(!tilePat){const c=document.createElement('canvas');c.width=c.height=80;const g=c.getContext('2d');g.fillStyle='rgba(30,41,59,.35)';g.fillRect(0,0,40,40);g.fillRect(40,40,40,40);g.strokeStyle='rgba(56,189,248,.05)';for(let i=0;i<2;i++)for(let j=0;j<2;j++)g.strokeRect(i*40+.5,j*40+.5,39,39);tilePat=ctx.createPattern(c,'repeat');}
-    ctx.fillStyle='#050a14';ctx.fillRect(0,0,W,H);
-    ctx.save();ctx.translate(-(Math.floor(cam.x)%80),-(Math.floor(cam.y)%80));ctx.fillStyle=tilePat;ctx.fillRect(0,0,W+80,H+80);ctx.restore();
-    ctx.strokeStyle='#f43f5e';ctx.lineWidth=6;ctx.strokeRect(-cam.x,-cam.y,world.w,world.h);
+    if(!tilePat) tilePat=makeGrass();
+    ctx.save(); ctx.translate(-(Math.floor(cam.x)%256),-(Math.floor(cam.y)%256)); ctx.fillStyle=tilePat; ctx.fillRect(0,0,W+256,H+256); ctx.restore();
+    const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);
+    v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,12,0,.45)'); ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#3b2412'; ctx.lineWidth=10; ctx.strokeRect(-cam.x,-cam.y,world.w,world.h);
+    ctx.strokeStyle='#a16207'; ctx.lineWidth=4; ctx.strokeRect(-cam.x,-cam.y,world.w,world.h);
   }
 
   const SP={}, G=t=>t.trim().split(/\s+/);
