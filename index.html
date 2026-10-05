@@ -600,7 +600,7 @@ const ENEMY_AI = {
 /* ===== 9. WAVES ===== */
 const WAVES = {
   start: 1,                    // เวฟเริ่มต้น
-  duration: 15,                // เวฟละกี่วินาที
+  duration: 17,                // เวฟละกี่วินาที
   spawnInterval: 0.45,         // เกิดศัตรูทุกกี่วิ (เวฟแรก)
   spawnIntervalPerWave: 0.012, // ลดช่วงเกิดต่อเวฟ
   minSpawnInterval: 0.05,      // ช่วงเกิดสั้นสุด
@@ -609,19 +609,19 @@ const WAVES = {
   batchWave6: 1,               // +(สุ่ม 50%) ตั้งแต่เวฟ 6
   batchWave12: 1,              // +(สุ่ม 50%) ตั้งแต่เวฟ 12
   maxEnemies: 500,             // ศัตรูบนจอสูงสุด
-  enemyHpPerWave: 0.20,        // HP ศัตรู +30%/เวฟ
+  enemyHpPerWave: 0.12,        // HP ศัตรู +30%/เวฟ
   enemyDamagePerWave: 0.1,
   enemySpeedPerWave: 0.015,
   xpPerWave: 0.01,
   goldPerWave: 0.08,
-  bossEvery: 3,                // บอสทุก N เวฟ
+  bossEvery: 2,                // บอสทุก N เวฟ
   bossHpMultiplier: 3.5
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
 const DROPS = {
   xpMultiplier: 1.15, goldMultiplier: 1.15,
-  xpChance: 1, goldChance: 0.6,
+  xpChance: 1, goldChance: 0.8,
   goldMin: 2, goldMax: 4,        // ใช้เมื่อศัตรูไม่ได้กำหนด goldMin/Max เอง
   heroGoldMultiplier: 1,
   xpMergeThreshold: 200          // ออร์บ XP เกินนี้จะรวมเป็นลูกเดียว (กันแลค)
@@ -643,7 +643,7 @@ const LEVEL = {
 const SHOP = {
   everyWaves: 3,       // เปิดร้านทุก N เวฟ
   itemsShown: 6,       // จำนวนสินค้าต่อรอบ
-  pricePerWave: 0.12,  // ราคา +6%/เวฟ
+  pricePerWave: 0.10,  // ราคา +6%/เวฟ
   rerollBase: 10, rerollStep: 12,  // ค่ารีโรลขั้นต่ำ / เพิ่มต่อครั้ง
   rerollGoldPct: 0.05              // หรือ 5% ของทองที่มี (เลือกอันที่มากกว่า)
 };
