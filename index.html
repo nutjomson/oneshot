@@ -1177,111 +1177,81 @@ html,body{
     ctx.strokeRect(-cam.x, -cam.y, world.w, world.h);
   }
 
+  const SP={}, G=t=>t.trim().split(/\s+/);
+  const PAL={k:'#0b1020',w:'#f8fafc',y:'#facc15',g:'#94a3b8',G:'#475569',r:'#ef4444',c:'#67e8f9',s:'#f5c9a0',x:'#1e1b4b'};
+  const hx=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+  const tone=(h,f)=>`rgb(${hx(h).map(v=>Math.round(v*f))})`;
+  const lite=(h,f)=>`rgb(${hx(h).map(v=>Math.round(v+(255-v)*f))})`;
+  function sprite(key,grid,ex,flash){
+    const k=key+(flash?'!':''); if(SP[k]) return SP[k];
+    const cv=document.createElement('canvas'); cv.width=cv.height=16; const c=cv.getContext('2d');
+    grid.forEach((row,y)=>{for(let x=0;x<16;x++){const col=ex[row[x]]||PAL[row[x]]; if(col){c.fillStyle=flash?'#fff':col;c.fillRect(x,y,1,1);}}});
+    return SP[k]=cv;
+  }
+  const HG={
+    prism:G(`.......bb....... ......bbbb...... .....kkkkkk..... ....kaaaaaak.... ....kakccakk.... ....kaaaaaak.... ...kkkaaaakkk... ..kggkaaaakggk.. .kyykaaAAaakgwk. .kyykaaaaaakgwk. .kykkaaAAaakkwk. ..kk.kaaaak.wk.. .....kaaaak.w... .....kAkkAk.w... ....kkAk.kAkk... ....kkkk.kkkk...`),
+    neon:G(`.....kkkk....... ....kaaaak...... ...kaaaaaak..... ...kassssak..... ...kscsscsk..... ....kssssk.b.... ...kkaaaakkb.... ..kgkaaaaaak.gk. ..kgkaabbaak.gk. ...kkaabbaak.gk. ....kaaaaaak.gk. ....kaakkaak.gk. ....kbk..kbk.g.. ....kbk..kbk.... ...kbbk..kbbk... ...kkkk..kkkk...`),
+    psycho:G(`.......kk....... ......kaak...... .....kaaaak..... ....kaaabaak.... ..kkkbbbbbkkk... ....kssssssk.... ....kscsscsk.... .....kssssk..cc. ....kaaaaaak.cc. ...kaabaabaak.k. ..kaaabaabaak.k. ..kaaabaabaak.k. ...kaaaaaaak..k. ...kaabbbaak..k. ...kAAAAAAAk..k. ...kkkkkkkkk..k.`),
+    cyber:G(`....kkkkkk...... ...kaaaaaak..... ...kaaaaaakbb... ...kssssssk.bb.. ...kcckkcck.b... ...kkaaaakk..... ..kbbbbbbbbk.... .kaakaaaakaak... .kaakaabbaakg... ..kkaabbaak.gw.. ....kaaaak..gw.. ....kaaaak..g... ....kaakaak.g... ....kaakaak.g... ...kAAk.kAAk.y.. ...kkkk.kkkk....`)
+  };
+  const EG={
+    stalker:G(`................ .....kkkkkk..... ....kaaaaaak.... ...kaaaaaaaak... ...kawwakwwak... ...kawkakwkak... ...kaaaaaaaak... ....kkwwwwkk.... ...kAaaaaaaAk... ..kaAaaAAaaAak.. .kwkaaaaaaaakwk. .kwk.kaaaak.kwk. ..k..kAaaAk..k.. .....kaakaak.... ....kAAk.kAAk... ....kkk..kkk....`),
+    runner:G(`......kk........ .....kaak....... ....kaaaakk..... ...kaaaaaaak.... .kkaawwwaaak.... kllkawkwaaak.... .kkaawwwaaak.... ...kaaaaaaaakk.. ..kAaaaaaaaaak.. .kllkAaaaaaAk... ..kk.kaaaaak.... .....kaaakaak... ....kAAk.kaak... ...kAk...kAAk... ..kk.....kkk.... ................`),
+    brute:G(`.kk..........kk. .kyk........kyk. ..kykkkkkkkkyk.. ..kaaaaaaaaaak.. .kaaawwaawwaaak. .kaaarwaarwaaak. .kaaaaaaaaaaaak. ..kaawwwwwwaak.. .kkkaaaaaaaakkk. kgggkaaAAaakgggk kgkgkaaaaaakgkgk kgggkaaAAaakgggk .kkkkaaaaaakkkk. ..kAAkaaaakAAk.. ..kAAAk..kAAAk.. ..kkkkk..kkkkk..`),
+    shooter:G(`.......y........ .......k........ .....kkkkkk..... ....kaaaaaak.... ...kaakkkkaak... ...kakwwwwkak... ...kakwrrwkak... ...kakwwwwkak... ...kaakkkkaak... ....kAaaaaAk.... .gkk.kAAAAk.kkg. gggk..kkkk..kggg .kk..kyAAyk..kk. ......kkkk...... .......cc....... ........c.......`),
+    ghost:G(`.....kkkkk...... ....kaaaaak..... ...kaaaaaaak.... ..kalaaaaaaak... ..kaakxxaxxak... ..kaakxxaxxak... ..kaaaaxxaaak... ..kaaakkkaaak... ..kaaaaaaaaak... .kwkaaaaaaakwk.. ..k.kaaaaak.k... .....kaaaaak.... ....kaAaaAak.... ...kaa.kaa.ak... ..ka...ka...ak.. ..k.....k....k..`),
+    boss:G(`.k....kkkk....k. .kk..kyyyyk..kk. ..kk.kyryyk.kk.. ..kkkkkkkkkkkk.. ..kaaaaaaaaaak.. .kaawwaaaawwaak. .kaarwaaaarwaak. .kaaaaaaaaaaaak. ..kaakkwwkkaak.. ..kaawwwwwwaak.. .kkkaaaaaaaakkk. kyykaaAAAAaakyyk kyykaaAyyAaakyyk .kkkaaAAAAaakkk. ..kAAkaaaakAAk.. ..kkkk....kkkk..`)
+  };
+
   function drawPlayer(cam){
-    const px=sx(player.x,cam), py=sy(player.y,cam);
-    const flip = player.facing === 'left';
-    const bob = (player.animFrame % 2 === 1) ? -2 : 0;
-
-    // Draw Orbiting Blades
-    if(player.orbitBlades > 0){
-      const orbitSpeed = elapsed * 3;
-      const radius = 65;
-      for(let i=0; i<player.orbitBlades; i++){
-        const angle = orbitSpeed + (i * (Math.PI*2 / player.orbitBlades));
-        const bx = px + Math.cos(angle)*radius;
-        const by = py + Math.sin(angle)*radius;
-
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(bx-6, by-6, 12, 12);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(bx-2, by-2, 4, 4);
+    const px=sx(player.x,cam), py=sy(player.y,cam), h=selectedHero, t=performance.now()/1000;
+    const mv=player.animFrame>0, w=Math.sin(t*14);
+    const bob=mv?w*2:Math.sin(t*3);
+    if(player.orbitBlades>0){
+      for(let i=0;i<player.orbitBlades;i++){
+        const an=elapsed*3+i*(Math.PI*2/player.orbitBlades), bx=px+Math.cos(an)*65, by=py+Math.sin(an)*65;
+        ctx.save(); ctx.translate(bx,by); ctx.rotate(elapsed*12);
+        ctx.fillStyle='rgba(56,189,248,.3)'; ctx.fillRect(-10,-10,20,20);
+        ctx.fillStyle='#e0f2fe'; ctx.beginPath(); ctx.moveTo(0,-12); ctx.lineTo(5,0); ctx.lineTo(0,12); ctx.lineTo(-5,0); ctx.fill();
+        ctx.fillStyle='#38bdf8'; ctx.fillRect(-2,-5,4,10); ctx.restore();
       }
     }
-
-    ctx.save(); ctx.translate(px, py);
-    if(player.hit>0 && Math.floor(player.hit*25)%2===0) ctx.globalAlpha=0.4;
-
-    ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(-12, 12, 24, 6);
-    
-    if(flip) ctx.scale(-1, 1);
-
-    ctx.fillStyle = selectedHero.secondaryColor; 
-    ctx.fillRect(-10, -10+bob, 5, 15);
-
-    ctx.fillStyle = selectedHero.color;
-    ctx.fillRect(-7, -8+bob, 14, 14); 
-
-    ctx.fillStyle = '#ffffff'; 
-    ctx.fillRect(-3, -6+bob, 6, 6); 
-    ctx.fillStyle = selectedHero.secondaryColor;
-    ctx.fillRect(-1, -4+bob, 2, 2);
-
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(-7, 4+bob, 14, 3);
-
-    ctx.fillStyle = '#1e1b4b';
-    if(player.animFrame === 1){
-      ctx.fillRect(-7, 7+bob, 5, 8); ctx.fillRect(2, 5+bob, 5, 6);
-    } else if(player.animFrame === 3){
-      ctx.fillRect(-7, 5+bob, 5, 6); ctx.fillRect(2, 7+bob, 5, 8);
-    } else {
-      ctx.fillRect(-6, 7+bob, 5, 7); ctx.fillRect(1, 7+bob, 5, 7);
-    }
-
-    ctx.fillStyle = selectedHero.secondaryColor; ctx.fillRect(-6, -18+bob, 12, 10); 
-    ctx.fillStyle = '#090d16'; ctx.fillRect(-6, -14+bob, 12, 4); 
-    
-    ctx.fillStyle = selectedHero.color; 
-    ctx.fillRect(0, -13+bob, 5, 2);
-
-    ctx.fillStyle = '#f8fafc'; ctx.fillRect(5, -4+bob, 5, 9);
-    ctx.fillStyle = selectedHero.color; ctx.fillRect(6, -2+bob, 4, 5);
-
+    ctx.fillStyle='rgba(0,0,0,.45)'; ctx.beginPath(); ctx.ellipse(px,py+20,15,5,0,0,7); ctx.fill();
+    ctx.fillStyle=h.color+'22'; ctx.beginPath(); ctx.arc(px,py+2,24+Math.sin(t*4)*2,0,7); ctx.fill();
+    if(h.id==='prism'){ctx.strokeStyle=h.color+'88';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py+2,27+Math.sin(t*5)*2,0,7);ctx.stroke();}
+    if(h.id==='psycho'){for(let i=0;i<3;i++){const an=t*2.5+i*2.09;ctx.fillStyle=i%2?h.color:'#e9d5ff';ctx.fillRect(px+Math.cos(an)*30-2,py+Math.sin(an)*14-2,4,4);}}
+    const ex={a:h.color,A:tone(h.color,.55),b:h.secondaryColor,B:tone(h.secondaryColor,.55)};
+    const cv=sprite('h_'+h.id,HG[h.id],ex,false), fl=sprite('h_'+h.id,HG[h.id],ex,true);
+    const flash=player.hit>0&&Math.floor(player.hit*25)%2===0;
+    const sd=player.facing==='left'?-1:1;
+    if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
+    ctx.save(); ctx.translate(px,py+bob); ctx.scale(sd,1); if(mv)ctx.rotate(w*.05); ctx.scale(1+(mv?w*.04:0),1-(mv?w*.04:0));
+    if(flash)ctx.globalAlpha=.55;
+    ctx.drawImage(cv,-24,-30,48,48);
+    if(flash){ctx.globalAlpha=.7;ctx.drawImage(fl,-24,-30,48,48);}
     ctx.restore();
   }
 
-  function drawEnemy(e, cam){
-    const px=sx(e.x,cam), py=sy(e.y,cam);
-    const flip = player.x < e.x;
-    const r = e.r;
-
-    ctx.save(); ctx.translate(px, py);
-    if(e.hit>0 && Math.floor(e.hit*30)%2===0) ctx.globalAlpha=0.4;
-
-    ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(-r*.8, r-3, r*1.6, 6);
-    if(flip) ctx.scale(-1, 1);
-
-    if(e.type === 'boss'){
-      ctx.fillStyle = '#4c1d95'; ctx.fillRect(-32, -34, 64, 52); 
-      ctx.fillStyle = e.color; ctx.fillRect(-24, -28, 48, 48); 
-      ctx.fillStyle = '#facc15'; ctx.fillRect(-18, -20, 36, 36); 
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(6, -18, 10, 6); ctx.fillRect(-16, -18, 10, 6); 
-    } else if(e.type === 'brute'){
-      ctx.fillStyle = e.color; ctx.fillRect(-r, -r, r*2, r*2); 
-      ctx.fillStyle = '#0f172a'; ctx.fillRect(-r, -r-4, r*2, 8); 
-      ctx.fillStyle = '#facc15'; ctx.fillRect(2, -8, 6, 6); 
-    } else if(e.type === 'ghost'){
-      ctx.globalAlpha = 0.75;
-      ctx.fillStyle = e.color; ctx.fillRect(-r, -r, r*2, r*2);
-      ctx.fillStyle = '#000000'; ctx.fillRect(-4, -6, 4, 4); ctx.fillRect(4, -6, 4, 4);
-      ctx.globalAlpha = 1.0;
-    } else if(e.type === 'shooter'){
-      ctx.fillStyle = e.color; ctx.fillRect(-r, -r, r*2, r*2);
-      ctx.fillStyle = '#ff0055'; ctx.fillRect(-r, 2, r*2, 4); 
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, -6, 8, 8); 
-    } else if(e.type === 'runner'){
-      ctx.fillStyle = e.color; ctx.fillRect(-r, -r, r*2, r*2);
-      ctx.fillStyle = '#facc15'; ctx.fillRect(-r+2, -r+2, r*2-4, r*2-4); 
-    } else {
-      ctx.fillStyle = e.color; ctx.fillRect(-r, -r, r*2, r*2);
-      ctx.fillStyle = '#f8fafc'; ctx.fillRect(2, -4, 4, 4); 
-    }
-
+  function drawEnemy(e,cam){
+    const px=sx(e.x,cam), py=sy(e.y,cam), r=e.r, ty=e.type, t=performance.now()/1000+e.x*.01;
+    const sc=Math.max(2,Math.round(r*2.9/16)), S=sc*16, flip=player.x<e.x, fly=ty==='ghost'||ty==='shooter';
+    const ex={a:e.color,A:tone(e.color,.55),l:lite(e.color,.5)};
+    const cv=sprite('e_'+ty,EG[ty],ex,false), fl=sprite('e_'+ty,EG[ty],ex,true);
+    let bob=Math.sin(t*(ty==='runner'?16:5))*(fly?4:2), rot=0, kx=1, ky=1;
+    if(ty==='stalker') rot=Math.sin(t*6)*.12;
+    if(ty==='runner'){kx=1.12;ky=.9;rot=.1;}
+    if(ty==='brute'){const q=Math.sin(t*3);ky=1-q*.05;kx=1+q*.05;}
+    ctx.fillStyle='rgba(0,0,0,'+(fly?.25:.45)+')'; ctx.beginPath(); ctx.ellipse(px,py+S*(fly?.42:.34),r*(fly?.6:.9),r*.3,0,0,7); ctx.fill();
+    if(ty==='boss'){ctx.strokeStyle='rgba(255,40,40,'+(.35+Math.sin(t*4)*.15)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r+16+Math.sin(t*4)*4,0,7);ctx.stroke();}
+    ctx.save(); ctx.translate(px,py+bob); if(flip)ctx.scale(-1,1); ctx.rotate(rot); ctx.scale(kx,ky);
+    if(ty==='ghost') ctx.globalAlpha=.7+Math.sin(t*4)*.15;
+    ctx.drawImage(cv,-S/2,-S/2,S,S);
+    if(e.hit>0&&Math.floor(e.hit*30)%2===0){ctx.globalAlpha=.8;ctx.drawImage(fl,-S/2,-S/2,S,S);}
     ctx.restore();
-
-    const bw=r*2.2, bh=4, hp=clamp(e.hp/e.maxHp,0,1);
-    ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-12, bw+2, bh+2);
-    ctx.fillStyle='#9f1239'; ctx.fillRect(px-bw/2, py-r-11, bw, bh);
-    ctx.fillStyle='#22c55e'; ctx.fillRect(px-bw/2, py-r-11, bw*hp, bh);
+    const bw=Math.max(r*2.2,30), bh=ty==='boss'?6:4, hp=clamp(e.hp/e.maxHp,0,1), by=py-S/2-8;
+    ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, by-1, bw+2, bh+2);
+    ctx.fillStyle='#9f1239'; ctx.fillRect(px-bw/2, by, bw, bh);
+    ctx.fillStyle=ty==='boss'?'#f97316':'#22c55e'; ctx.fillRect(px-bw/2, by, bw*hp, bh);
   }
 
   function drawBullets(cam){
