@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#050a0e">
-<title>16-Bit Survivor Arena - Deluxe Shop Edition</title>
+<title>16-Bit Survivor Arena - High Pixel & Luxury Shop Edition</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -42,9 +42,16 @@ html,body{
 .fill{height:100%;width:100%;transition:width 0.1s}
 .hp{background:#e74c3c;box-shadow:inset 0 -2px 0 #962d22}
 .xp{background:#3498db;box-shadow:inset 0 -2px 0 #1f618d}
-.wave{font-size:9px;text-align:right;line-height:1.5;color:#f1c40f;min-width:100px}
+.wave{font-size:9px;text-align:right;line-height:1.5;color:#f1c40f;min-width:110px}
 .small{font-size:7px;color:#a0b2c6;margin-top:4px}
-.gold-text{color:#f39c12!important}
+.gold-text{color:#f1c40f!important;text-shadow:1px 1px #000}
+
+.hud-btn{
+  pointer-events:auto;background:#2c3e50;border:2px solid #fff;color:#fff;
+  font-family:inherit;font-size:7px;padding:4px 8px;cursor:pointer;margin-top:4px;
+  box-shadow:inset -2px -2px 0 #1a252f;
+}
+.hud-btn:active{transform:translate(1px,1px);box-shadow:none}
 
 #touchZone{
   position:absolute;z-index:12;inset:0;
@@ -69,29 +76,34 @@ html,body{
   border:2px solid #2a4158;font-size:8px;color:#2ecc71;
   pointer-events:none;text-align:center;white-space:nowrap;
 }
-.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,14,0.88)}
+.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,14,0.92)}
 .hidden{display:none!important}
 .modal{
-  width:min(640px,100%);max-height:88vh;overflow:auto;
+  width:min(680px,100%);max-height:90vh;overflow:auto;
   background:#0d1821;border:4px solid #34495e;padding:18px;
   box-shadow:inset -4px -4px 0 #050a0e, inset 4px 4px 0 #5d6d7e;text-align:center;
 }
-.title{font-size:16px;color:#f1c40f;margin-bottom:8px;text-shadow:2px 2px #000}
+.title{font-size:15px;color:#f1c40f;margin-bottom:8px;text-shadow:2px 2px #000;line-height:1.4}
 .sub{font-size:8px;color:#a0b2c6;line-height:1.6;margin-bottom:16px}
-#upgrades, #shopItems, #heroSelect{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#upgrades, #shopItems, #heroSelect{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .upgrade, .shop-item, .hero-card{
   border:3px solid #2a4158;background:#152331;padding:10px;text-align:left;color:#fff;cursor:pointer;font-family:inherit;
+  position:relative;
 }
 .hero-card{text-align:center;border-color:#34495e}
-.hero-card.selected{border-color:#f1c40f;background:#1c3144}
+.hero-card.selected{border-color:#f1c40f;background:#1c3144;box-shadow:0 0 10px rgba(241,196,15,0.3)}
 .upgrade:active, .shop-item:active{background:#1f3347;border-color:#f1c40f}
-.icon{font-size:22px;margin-bottom:6px;text-align:center}
+.shop-item.disabled{opacity:0.4;cursor:not-allowed;border-color:#555}
+.icon{font-size:20px;margin-bottom:6px;text-align:center}
 .uName{font-size:8px;color:#f1c40f;margin-bottom:4px;line-height:1.4}
 .uDesc{font-size:7px;line-height:1.5;color:#bdc3c7}
-.cost{font-size:8px;color:#f39c12;margin-top:6px;font-weight:bold}
+.cost{font-size:8px;color:#f1c40f;margin-top:6px;font-weight:bold;text-shadow:1px 1px #000}
 .gameover h1{font-size:20px;color:#e74c3c;margin:0 0 12px;text-shadow:2px 2px #000}
 .stats{line-height:1.8;color:#bdc3c7;font-size:8px;text-align:left;background:#080d12;padding:10px;border:2px solid #2a4158;margin-bottom:12px}
-.btn{border:3px solid #fff;background:#2ecc71;color:#000;font-family:inherit;font-size:9px;padding:10px 16px;cursor:pointer;box-shadow:inset -3px -3px 0 #27ae60;margin-top:8px}
+
+.btn-group{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.btn{border:3px solid #fff;background:#2ecc71;color:#000;font-family:inherit;font-size:9px;padding:10px 14px;cursor:pointer;box-shadow:inset -3px -3px 0 #27ae60;flex:1}
+.btn-sec{background:#e74c3c;box-shadow:inset -3px -3px 0 #c0392b;color:#fff}
 .btn:active{transform:translate(2px, 2px);box-shadow:none}
 
 @media(max-width:600px){
@@ -99,6 +111,7 @@ html,body{
   .upgrade, .shop-item{display:grid;grid-template-columns:36px 1fr;gap:8px;align-items:center}
   .icon{margin:0}
   .label,.num,.wave{font-size:7px}
+  .btn-group{flex-direction:column}
 }
 </style>
 </head>
@@ -124,6 +137,7 @@ html,body{
       WAVE <span id="waveText">1</span>
       <div class="small gold-text" id="goldText">GOLD: 0</div>
       <div class="small" id="killsText">KILLS: 0</div>
+      <button class="hud-btn" id="titleHudBtn">TITLE MENU</button>
     </div>
   </div>
 </div>
@@ -133,28 +147,41 @@ html,body{
 <!-- Start Overlay & Hero Selection -->
 <div id="startOverlay" class="overlay">
   <div class="modal">
-    <div class="title" style="color:#2ecc71">16-BIT SURVIVOR: DELUXE</div>
-    <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มการเดินทาง</div>
+    <div class="title" style="color:#2ecc71">16-BIT SURVIVOR: HD TEXTURE</div>
+    <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้</div>
     <div id="heroSelect"></div>
-    <button class="btn" id="startBtn" style="margin-top:16px;width:100%">START GAME</button>
+    <div class="btn-group">
+      <button class="btn" id="startBtn">START GAME</button>
+    </div>
   </div>
 </div>
 
 <!-- Level Up Overlay -->
-<div id="levelOverlay" class="overlay hidden"><div class="modal"><div class="title">LEVEL UP!</div><div class="sub">เลือกอัปเกรดความสามารถ</div><div id="upgrades"></div></div></div>
+<div id="levelOverlay" class="overlay hidden"><div class="modal"><div class="title">LEVEL UP!</div><div class="sub">เลือกการอัปเกรดความสามารถ</div><div id="upgrades"></div></div></div>
 
-<!-- Wave Shop Overlay -->
+<!-- Wave Shop Overlay (Every 3 Waves) -->
 <div id="shopOverlay" class="overlay hidden">
   <div class="modal">
-    <div class="title" style="color:#f1c40f">WAVE CLEARED! - WAVE SHOP</div>
-    <div class="sub">ใช้ GOLD ซื้อการอัปเกรดพิเศษก่อนเริ่ม Wave ถัดไป</div>
+    <div class="title" style="color:#f1c40f">🏪 LUXURY SHOP (WAVE <span id="shopWaveNum">3</span>)</div>
+    <div class="sub">สะสม GOLD เพื่อซื้ออาวุธระดับตำนานและการอัปเกรดพิเศษ</div>
     <div id="shopItems"></div>
-    <button class="btn" id="closeShopBtn" style="margin-top:16px;width:100%">NEXT WAVE</button>
+    <div class="btn-group">
+      <button class="btn" id="closeShopBtn">NEXT WAVE</button>
+    </div>
   </div>
 </div>
 
 <!-- Game Over Overlay -->
-<div id="gameOver" class="overlay hidden"><div class="modal gameover"><h1>GAME OVER</h1><div class="stats" id="finalStats"></div><button class="btn" id="restart">TRY AGAIN</button></div></div>
+<div id="gameOver" class="overlay hidden">
+  <div class="modal gameover">
+    <h1>GAME OVER</h1>
+    <div class="stats" id="finalStats"></div>
+    <div class="btn-group">
+      <button class="btn" id="restart">TRY AGAIN</button>
+      <button class="btn btn-sec" id="quitTitle">TITLE MENU</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -178,47 +205,60 @@ html,body{
   const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
   const world = {w:3000, h:3000};
   
-  // Characters Definitions
+  // Hero Definitions
   const heroes = [
-    {id:'knight', name:'KNIGHT', icon:'🛡️', hp:150, speed:210, damage:20, fireRate:.4, armor:.2, crit:.05, color:'#3498db', bulletType:'arcane'},
-    {id:'ranger', name:'RANGER', icon:'🏹', hp:90, speed:260, damage:18, fireRate:.2, armor:0, crit:.15, color:'#2ecc71', bulletType:'laser'},
-    {id:'mage', name:'MAGE', icon:'🔮', hp:80, speed:220, damage:40, fireRate:.5, armor:0, crit:.25, color:'#9b59b6', bulletType:'fireball'},
-    {id:'ninja', name:'NINJA', icon:'🥷', hp:100, speed:290, damage:22, fireRate:.3, armor:.05, crit:.2, color:'#e74c3c', bulletType:'plasma'}
+    {id:'knight', name:'PALADIN KNIGHT', icon:'🛡️', hp:160, speed:210, damage:24, fireRate:.4, armor:.2, crit:.05, color:'#3498db', bulletType:'arcane', desc:'อึด ถึก ทน ถือโล่ศักดิ์สิทธิ์'},
+    {id:'ranger', name:'ELVEN RANGER', icon:'🏹', hp:95, speed:270, damage:18, fireRate:.18, armor:0, crit:.15, color:'#2ecc71', bulletType:'laser', desc:'เคลื่อนที่ไว ยิงรวดเร็วแม่นยำ'},
+    {id:'mage', name:'ARCH MAGE', icon:'🔮', hp:85, speed:220, damage:45, fireRate:.48, armor:0, crit:.25, color:'#9b59b6', bulletType:'fireball', desc:'พลังเวทระเบิดรุนแรง คริติคอลสูง'},
+    {id:'shadow', name:'SHADOW NINJA', icon:'🥷', hp:105, speed:295, damage:26, fireRate:.28, armor:.05, crit:.2, color:'#e74c3c', bulletType:'plasma', desc:'ความเร็วสูงสุด โจมตีเฉียบขาด'}
   ];
   let selectedHero = heroes[0];
 
   const player = {
     x:1500, y:1500, r:16, hp:100, maxHp:100, speed:240, damage:25, fireRate:.35, fireTimer:0,
-    bulletSpeed:750, projectiles:1, pickup:120, armor:0, crit:.08, regen:0, angle:0, hit:0,
-    animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'laser'
+    bulletSpeed:750, projectiles:1, pickup:130, armor:0, crit:.08, regen:0, angle:0, hit:0,
+    animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'laser', goldMulti:1, revives:0
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[];
   let running=false, paused=false, over=false;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
-  let level=1, xp=0, xpNeed=10;
+  let level=1, xp=0, xpNeed=10, lastShopWave=0;
 
-  // Expanded Enemy Types
+  // Enemy Metadata
   const enemyTypes = {
-    stalker: {hp:45, speed:65, damage:12, r:16, color:'#e74c3c', xp:3, gold:1, type:'stalker'},
-    runner:  {hp:30, speed:125, damage:8, r:12, color:'#e67e22', xp:4, gold:2, type:'runner'},
-    brute:   {hp:180, speed:40, damage:25, r:24, color:'#8e44ad', xp:10, gold:5, type:'brute'},
-    shooter: {hp:60, speed:50, damage:10, r:16, color:'#16a085', xp:6, gold:3, type:'shooter', shootTimer:2},
-    ghost:   {hp:40, speed:85, damage:15, r:14, color:'#ecf0f1', xp:5, gold:2, type:'ghost'},
-    boss:    {hp:800, speed:35, damage:35, r:36, color:'#c0392b', xp:50, gold:30, type:'boss', shootTimer:1.5}
+    stalker: {hp:45, speed:65, damage:12, r:16, color:'#e74c3c', xp:3, gold:2, type:'stalker'},
+    runner:  {hp:32, speed:135, damage:8, r:13, color:'#e67e22', xp:4, gold:3, type:'runner'},
+    brute:   {hp:200, speed:42, damage:26, r:24, color:'#8e44ad', xp:12, gold:8, type:'brute'},
+    shooter: {hp:65, speed:52, damage:10, r:16, color:'#16a085', xp:7, gold:5, type:'shooter', shootTimer:2},
+    ghost:   {hp:45, speed:88, damage:15, r:14, color:'#ecf0f1', xp:6, gold:4, type:'ghost'},
+    boss:    {hp:1000, speed:35, damage:40, r:38, color:'#c0392b', xp:60, gold:50, type:'boss', shootTimer:1.2}
   };
 
-  const upgrades = [
-    {icon:'⚔️',name:'ATTACK UP',desc:'+25% พลังโจมตี',apply:()=>player.damage*=1.25},
-    {icon:'⚡',name:'RAPID FIRE',desc:'ยิงเร็วขึ้น 20%',apply:()=>player.fireRate*=.8},
-    {icon:'🏃',name:'SPEED UP',desc:'+15% ความเร็วเคลื่อนที่',apply:()=>player.speed*=1.15},
-    {icon:'❤️',name:'MAX HP',desc:'+30 Max HP & ฟื้นฟู 30 HP',apply:()=>{player.maxHp+=30;player.hp=Math.min(player.maxHp,player.hp+30)}},
-    {icon:'🔫',name:'MULTI-SHOT',desc:'+1 กระสุนต่อการยิง',apply:()=>player.projectiles++},
+  // Level Up Upgrades (Standard Buffs)
+  const levelUpgrades = [
+    {icon:'⚔️',name:'ATTACK POWER',desc:'+20% พลังโจมตี',apply:()=>player.damage*=1.2},
+    {icon:'⚡',name:'ATTACK SPEED',desc:'ความเร็วในการยิง +18%',apply:()=>player.fireRate*=.82},
+    {icon:'🏃',name:'MOVE SPEED',desc:'+15% ความเร็วเคลื่อนที่',apply:()=>player.speed*=1.15},
+    {icon:'❤️',name:'MAX HP BOOST',desc:'+25 Max HP & ฟื้นฟู 25 HP',apply:()=>{player.maxHp+=25;player.hp=Math.min(player.maxHp,player.hp+25)}},
+    {icon:'🔫',name:'MULTI-SHOT',desc:'+1 ลำแสง/กระสุนเพิ่ม',apply:()=>player.projectiles++},
     {icon:'💨',name:'BULLET SPEED',desc:'+25% ความเร็วกระสุน',apply:()=>player.bulletSpeed*=1.25},
-    {icon:'🧲',name:'MAGNET',desc:'+60 ระยะดูดของ',apply:()=>player.pickup+=60},
-    {icon:'🛡️',name:'ARMOR',desc:'ต้านทานความเสียหาย 15%',apply:()=>player.armor+=.15},
-    {icon:'💥',name:'CRITICAL',desc:'+10% โอกาสติดคริติคอล',apply:()=>player.crit+=.10},
-    {icon:'💚',name:'REGEN',desc:'ฟื้นฟู +1.5 HP/วินาที',apply:()=>player.regen+=1.5}
+    {icon:'🧲',name:'MAGNET RANGE',desc:'+70 ระยะดูดไอเทม',apply:()=>player.pickup+=70},
+    {icon:'🛡️',name:'ARMOR PLATE',desc:'ลดความเสียหายลง 12%',apply:()=>player.armor+=.12},
+    {icon:'💥',name:'CRITICAL CHANCE',desc:'+10% โอกาสติดคริติคอล',apply:()=>player.crit+=.10},
+    {icon:'💚',name:'REGENERATION',desc:'ฟื้นฟู +1.5 HP ต่อวินาที',apply:()=>player.regen+=1.5}
+  ];
+
+  // Exclusive Luxury Shop Items (Expensive, Unique & Specialized)
+  const luxuryShopPool = [
+    {id:'potion', icon:'🧪', name:'HEALTH POTION', desc:'ฟื้นฟูพลังชีวิต 60 HP ทันที', cost:30, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+60); return true;}},
+    {id:'midas', icon:'👑', name:'CROWN OF MIDAS', desc:'ได้รับ GOLD จากการเก็บเหรียญเพิ่มขึ้น 2 เท่า', cost:150, apply:()=>{player.goldMulti*=2; return true;}},
+    {id:'weapon_laser', icon:'⚡', name:'LASER ARRAY RIFLE', desc:'เปลี่ยนเป็นกระสุนเลเซอร์ ความเร็วสูง ทะลวงศัตรู', cost:300, apply:()=>{player.bulletType='laser'; return true;}},
+    {id:'weapon_fire', icon:'🔥', name:'INFERNO CANNON', desc:'เปลี่ยนเป็นลูกไฟระเบิด วินาศกรรมกลุ่มศัตรู', cost:350, apply:()=>{player.bulletType='fireball'; return true;}},
+    {id:'weapon_plasma', icon:'💥', name:'PLASMA BEAM', desc:'เปลี่ยนเป็นพลาสม่าพลังงานสูง คริติคอลแรงขึ้น', cost:450, apply:()=>{player.bulletType='plasma'; return true;}},
+    {id:'aegis', icon:'🛡️', name:'AEGIS DIVINE ARMOR', desc:'+80 Max HP & ลดความเสียหายลง 25%', cost:600, apply:()=>{player.maxHp+=80; player.hp+=80; player.armor+=0.25; return true;}},
+    {id:'revive', icon:'💎', name:'RUNE OF IMMORTALITY', desc:'ชุบชีวิตฟรี 1 ครั้งเมื่อ HP เหลือ 0 (ซื้อสะสมได้)', cost:1200, apply:()=>{player.revives++; return true;}},
+    {id:'excalibur', icon:'🏆', name:'EXCALIBUR RELIC', desc:'พลังโจมตี +150% และ Critical Chance +30%', cost:2500, apply:()=>{player.damage*=2.5; player.crit+=0.3; return true;}}
   ];
 
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
@@ -239,7 +279,7 @@ html,body{
     if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
   });
 
-  // Dynamic Touch Joystick
+  // Touch Controls
   const touchZone = document.getElementById('touchZone');
   const joyBase = document.getElementById('joyBase');
   const joyStick = document.getElementById('joyStick');
@@ -285,12 +325,12 @@ html,body{
   touchZone.addEventListener('pointerup', resetJoy);
   touchZone.addEventListener('pointercancel', resetJoy);
 
-  // Render Hero Select
+  // Render Hero Selection Options
   const heroSelectWrap = document.getElementById('heroSelect');
   heroes.forEach(h => {
     const card = document.createElement('div');
     card.className = `hero-card ${h.id === selectedHero.id ? 'selected' : ''}`;
-    card.innerHTML = `<div class="icon">${h.icon}</div><div class="uName">${h.name}</div><div class="uDesc">HP: ${h.hp}<br>SPD: ${h.speed}<br>DMG: ${h.damage}</div>`;
+    card.innerHTML = `<div class="icon">${h.icon}</div><div class="uName">${h.name}</div><div class="uDesc">${h.desc}<br><br>HP: ${h.hp} | SPD: ${h.speed}<br>DMG: ${h.damage}</div>`;
     card.onclick = () => {
       document.querySelectorAll('.hero-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -299,7 +339,7 @@ html,body{
     heroSelectWrap.appendChild(card);
   });
 
-  // Enemy Spawning Logic
+  // Enemy Spawn Logic
   function spawnEnemy(forceType){
     let type = forceType;
     if(!type){
@@ -308,23 +348,23 @@ html,body{
       else if(r < .2) type = 'runner';
       else if(r < .4) type = 'shooter';
       else if(r < .55) type = 'ghost';
-      else if(r < .7) type = 'brute';
+      else if(r < .72) type = 'brute';
       else type = 'stalker';
     }
 
     const t = enemyTypes[type];
-    const a = Math.random()*Math.PI*2; const d = Math.max(W,H)*.5+rand(100,250);
+    const a = Math.random()*Math.PI*2; const d = Math.max(W,H)*.5+rand(120,280);
     const x = clamp(player.x+Math.cos(a)*d,50,world.w-50), y = clamp(player.y+Math.sin(a)*d,50,world.h-50);
     
     enemies.push({
-      x, y, r:t.r, hp:t.hp*(1+(wave-1)*.15), maxHp:t.hp*(1+(wave-1)*.15),
-      speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05),
+      x, y, r:t.r, hp:t.hp*(1+(wave-1)*.18), maxHp:t.hp*(1+(wave-1)*.18),
+      speed:t.speed*(1+(wave-1)*.025), damage:t.damage*(1+(wave-1)*.06),
       xp:t.xp, gold:t.gold, type:t.type, color:t.color, hit:0, animFrame:0, animTimer:0,
       shootTimer: t.shootTimer || 0
     });
   }
 
-  // Stylish Bullet Systems
+  // Shooting Mechanisms
   function shoot(){
     let target=null, bd=Infinity;
     for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<bd){bd=d;target=e;}}
@@ -337,8 +377,8 @@ html,body{
       bullets.push({
         x:player.x+Math.cos(a)*18, y:player.y+Math.sin(a)*18,
         vx:Math.cos(a)*player.bulletSpeed, vy:Math.sin(a)*player.bulletSpeed,
-        r:player.bulletType==='fireball'?7:4, life:1.2,
-        damage:player.damage*(crit?2:1), crit, type:player.bulletType,
+        r:player.bulletType==='fireball'?8:4, life:1.2,
+        damage:player.damage*(crit?2.2:1), crit, type:player.bulletType,
         trail:[]
       });
     }
@@ -347,28 +387,28 @@ html,body{
   function enemyShoot(e){
     const a = Math.atan2(player.y - e.y, player.x - e.x);
     enemyBullets.push({
-      x: e.x, y: e.y, vx: Math.cos(a)*350, vy: Math.sin(a)*350,
+      x: e.x, y: e.y, vx: Math.cos(a)*360, vy: Math.sin(a)*360,
       r: 5, life: 3, damage: e.damage
     });
   }
 
   function addDrops(x,y,xpAmt,goldAmt){
-    xpOrbs.push({x,y,r:5,value:xpAmt,life:15,animTimer:Math.random()*10});
+    xpOrbs.push({x,y,r:5,value:xpAmt,life:18,animTimer:Math.random()*10});
     if(goldAmt > 0){
-      goldCoins.push({x:x+rand(-10,10),y:y+rand(-10,10),r:4,value:goldAmt,life:15,animTimer:Math.random()*10});
+      goldCoins.push({x:x+rand(-12,12),y:y+rand(-12,12),r:4,value:Math.ceil(goldAmt*player.goldMulti),life:18,animTimer:Math.random()*10});
     }
   }
 
-  function makeSparks(x,y,color,count=5){
+  function makeSparks(x,y,color,count=6){
     for(let i=0;i<count;i++){
-      const a=Math.random()*Math.PI*2, s=rand(40,160);
-      sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.15,.35),color,size:rand(2,5)});
+      const a=Math.random()*Math.PI*2, s=rand(50,180);
+      sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.18,.38),color,size:rand(2,5)});
     }
   }
 
   function hitEnemy(e,damage,crit){
-    e.hp-=damage; e.hit=.1;
-    makeSparks(e.x,e.y,crit?'#f1c40f':'#e74c3c',crit?10:5);
+    e.hp-=damage; e.hit=.12;
+    makeSparks(e.x,e.y,crit?'#f1c40f':'#e74c3c',crit?12:6);
     if(e.hp<=0){
       const i=enemies.indexOf(e); if(i>=0)enemies.splice(i,1);
       kills++; addDrops(e.x,e.y,e.xp,e.gold);
@@ -377,13 +417,13 @@ html,body{
 
   function gainXP(v){
     xp+=v;
-    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.3+5);openLevelUp();}
+    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.32+6);openLevelUp();}
   }
 
   function openLevelUp(){
     paused=true; joy.active=false; joyBase.style.display='none';
     const wrap=document.getElementById('upgrades');wrap.innerHTML='';
-    [...upgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
+    [...levelUpgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
       const b=document.createElement('button');b.className='upgrade';
       b.innerHTML=`<div class="icon">${u.icon}</div><div><div class="uName">${u.name}</div><div class="uDesc">${u.desc}</div></div>`;
       b.onclick=()=>{u.apply();document.getElementById('levelOverlay').classList.add('hidden');paused=false;setStatus('READY');};
@@ -392,28 +432,28 @@ html,body{
     document.getElementById('levelOverlay').classList.remove('hidden');refreshHUD();
   }
 
-  // Wave Shop System
+  // Wave Shop (Triggers every 3 Waves)
   function openShop(){
     paused=true; joy.active=false; joyBase.style.display='none';
+    document.getElementById('shopWaveNum').textContent = wave;
     const shopWrap = document.getElementById('shopItems'); shopWrap.innerHTML='';
-    const shopList = [
-      {icon:'🧪', name:'HEAL 50 HP', desc:'ฟื้นฟูพลังชีวิต 50 HP', cost:15, apply:()=>{if(player.gold>=15){player.gold-=15;player.hp=Math.min(player.maxHp,player.hp+50);return true;}}},
-      {icon:'🔥', name:'FIREBALL BULLETS', desc:'เปลี่ยนกระสุนเป็นลูกไฟระเบิด', cost:40, apply:()=>{if(player.gold>=40){player.gold-=40;player.bulletType='fireball';return true;}}},
-      {icon:'⚡', name:'LASER BEAM', desc:'กระสุนเลเซอร์ยิงเร็วทะลุทะลวง', cost:40, apply:()=>{if(player.gold>=40){player.gold-=40;player.bulletType='laser';return true;}}},
-      {icon:'🌀', name:'ARCANE ORBS', desc:'เวทมนตร์เวหาความเสียหายสูง', cost:40, apply:()=>{if(player.gold>=40){player.gold-=40;player.bulletType='arcane';return true;}}},
-      {icon:'🗡️', name:'DAMAGE +15%', desc:'เพิ่มพลังโจมตีอย่างมาก', cost:25, apply:()=>{if(player.gold>=25){player.gold-=25;player.damage*=1.15;return true;}}},
-      {icon:'🛡️', name:'ARMOR +10%', desc:'เพิ่มเกราะป้องกัน', cost:20, apply:()=>{if(player.gold>=20){player.gold-=20;player.armor+=.1;return true;}}}
-    ];
+    
+    // Pick 4 random distinct items from pool
+    const currentShopItems = [...luxuryShopPool].sort(()=>Math.random()-.5).slice(0,4);
 
-    shopList.forEach(item => {
+    currentShopItems.forEach(item => {
       const b = document.createElement('button'); b.className = 'shop-item';
       b.innerHTML = `<div class="icon">${item.icon}</div><div><div class="uName">${item.name}</div><div class="uDesc">${item.desc}</div><div class="cost">💰 ${item.cost} GOLD</div></div>`;
       b.onclick = () => {
-        if(item.apply()){
+        if(player.gold >= item.cost){
+          player.gold -= item.cost;
+          item.apply();
           refreshHUD();
-          b.style.opacity = '0.5'; b.disabled = true;
+          b.classList.add('disabled'); b.disabled = true;
+          b.querySelector('.cost').textContent = 'PURCHASED!';
+          b.querySelector('.cost').style.color = '#2ecc71';
         } else {
-          alert('Gold ไม่พอ!');
+          alert('GOLD ไม่เพียงพอสำหรับการซื้อไอเทมนี้!');
         }
       };
       shopWrap.appendChild(b);
@@ -431,17 +471,27 @@ html,body{
     if(player.hit>0||over)return;
     const dmg=Math.max(1,v*(1-player.armor));
     player.hp-=dmg; player.hit=.35;
-    makeSparks(player.x,player.y,'#e74c3c',10);
-    if(player.hp<=0)endGame();
+    makeSparks(player.x,player.y,'#e74c3c',12);
+    if(player.hp<=0){
+      if(player.revives > 0){
+        player.revives--;
+        player.hp = player.maxHp * 0.5;
+        player.hit = 2.0; // Invincible brief period
+        makeSparks(player.x,player.y,'#f1c40f',30);
+        alert('💎 RUNE OF IMMORTALITY ทำงาน! คุณได้รับการชุบชีวิต!');
+      } else {
+        endGame();
+      }
+    }
   }
 
   function update(dt){
     elapsed+=dt;
-    const oldWave = wave;
     wave=1+Math.floor(elapsed/20);
 
-    // Every 5 Waves Trigger Shop
-    if(wave > oldWave && wave % 5 === 0){
+    // Trigger Shop Menu Every 3 Waves
+    if(wave % 3 === 0 && lastShopWave !== wave){
+      lastShopWave = wave;
       openShop();
     }
 
@@ -466,9 +516,9 @@ html,body{
 
     if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
 
-    const spawnRate=Math.max(.12,.6-wave*.015);
+    const spawnRate=Math.max(.1,.55-wave*.015);
     if(spawnTimer<=0){
-      const batch=wave>=6 && Math.random()<.3?2:1;
+      const batch=wave>=5 && Math.random()<.35?2:1;
       for(let i=0;i<batch;i++)spawnEnemy();
       spawnTimer=spawnRate;
     }
@@ -481,12 +531,12 @@ html,body{
       e.animTimer+=dt*6;
       if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
 
-      // Enemy Ranged Shooting
-      if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < 450){
+      // Ranged Enemy Shooting
+      if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < 480){
         e.shootTimer -= dt;
         if(e.shootTimer <= 0){
           enemyShoot(e);
-          e.shootTimer = e.type === 'boss' ? 1.2 : 2.2;
+          e.shootTimer = e.type === 'boss' ? 1.0 : 2.0;
         }
       }
       
@@ -494,7 +544,7 @@ html,body{
       if(d<e.r+player.r)hurt(e.damage*dt*1.5);
     }
 
-    // Player Bullets with Trail Effects
+    // Player Bullets
     for(let i=bullets.length-1;i>=0;i--){
       const b=bullets[i];
       b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
@@ -521,27 +571,27 @@ html,body{
       if(eb.life<=0||eb.x<0||eb.y<0||eb.x>world.w||eb.y>world.h) enemyBullets.splice(i,1);
     }
 
-    // XP Drops
+    // XP Orbs
     for(let i=xpOrbs.length-1;i>=0;i--){
       const o=xpOrbs[i];o.life-=dt;o.animTimer+=dt*4;
       const d=dist(o.x,o.y,player.x,player.y);
       if(d<player.pickup){
         const a=Math.atan2(player.y-o.y,player.x-o.x);
-        o.x+=Math.cos(a)*(280+player.pickup*2)*dt;
-        o.y+=Math.sin(a)*(280+player.pickup*2)*dt;
+        o.x+=Math.cos(a)*(300+player.pickup*2)*dt;
+        o.y+=Math.sin(a)*(300+player.pickup*2)*dt;
       }
       if(d<player.r+o.r){gainXP(o.value);xpOrbs.splice(i,1);continue}
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // Gold Drops
+    // Gold Coins
     for(let i=goldCoins.length-1;i>=0;i--){
       const g=goldCoins[i];g.life-=dt;g.animTimer+=dt*4;
       const d=dist(g.x,g.y,player.x,player.y);
       if(d<player.pickup){
         const a=Math.atan2(player.y-g.y,player.x-g.x);
-        g.x+=Math.cos(a)*(300+player.pickup*2)*dt;
-        g.y+=Math.sin(a)*(300+player.pickup*2)*dt;
+        g.x+=Math.cos(a)*(320+player.pickup*2)*dt;
+        g.y+=Math.sin(a)*(320+player.pickup*2)*dt;
       }
       if(d<player.r+g.r){player.gold += g.value; goldCoins.splice(i,1); continue;}
       if(g.life<=0)goldCoins.splice(i,1);
@@ -554,7 +604,7 @@ html,body{
     refreshHUD();
   }
 
-  // Render & Camera
+  // Camera & Render Utilities
   function camera(){
     return {
       x:clamp(player.x-W/2, 0, Math.max(0,world.w-W)),
@@ -579,28 +629,51 @@ html,body{
     }
   }
 
+  // High-Detail Pixel Art Character Drawing
   function drawPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam);
     const flip = player.facing === 'left';
-    const bob = (player.animFrame % 2 === 1) ? -1 : 0;
+    const bob = (player.animFrame % 2 === 1) ? -2 : 0;
 
     ctx.save(); ctx.translate(px, py);
     if(player.hit>0 && Math.floor(player.hit*25)%2===0) ctx.globalAlpha=0.4;
 
-    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(-10, 12, 20, 6);
+    // Drop Shadow
+    ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(-12, 12, 24, 6);
     if(flip) ctx.scale(-1, 1);
 
-    // Hero Color Customization
+    // Cape / Back detail
+    ctx.fillStyle = '#1a252f'; ctx.fillRect(-9, -10+bob, 4, 14);
+
+    // Body Armor / Clothes (High Texture Details)
     ctx.fillStyle = selectedHero.color;
-    ctx.fillRect(-6, -6+bob, 12, 12);
-    ctx.fillStyle='#1a252f';
-    ctx.fillRect(-6, 6+bob, 4, 8); ctx.fillRect(2, 6+bob, 4, 8);
-    ctx.fillStyle='#f1c40f';
-    ctx.fillRect(-4, -14+bob, 8, 8); // Head
+    ctx.fillRect(-7, -8+bob, 14, 14); // Chestplate
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(-3, -6+bob, 6, 8); // Core Emblem
+    ctx.fillStyle = '#2c3e50'; ctx.fillRect(-7, 4+bob, 14, 3); // Belt
+
+    // Legs & Animation
+    ctx.fillStyle = '#111827';
+    if(player.animFrame === 1){
+      ctx.fillRect(-7, 7+bob, 5, 8); ctx.fillRect(2, 5+bob, 5, 6);
+    } else if(player.animFrame === 3){
+      ctx.fillRect(-7, 5+bob, 5, 6); ctx.fillRect(2, 7+bob, 5, 8);
+    } else {
+      ctx.fillRect(-6, 7+bob, 5, 7); ctx.fillRect(1, 7+bob, 5, 7);
+    }
+
+    // Head / Helmet & Eyes
+    ctx.fillStyle = '#f1c40f'; ctx.fillRect(-6, -18+bob, 12, 10); // Helmet/Hair
+    ctx.fillStyle = '#2c3e50'; ctx.fillRect(-6, -14+bob, 12, 3); // Visor
+    ctx.fillStyle = '#00f0ff'; ctx.fillRect(1, -14+bob, 3, 2); // Glowing Eye Eye-slot
+
+    // Shield or Weapon Hand Detail
+    ctx.fillStyle = '#bdc3c7'; ctx.fillRect(5, -4+bob, 5, 9);
+    ctx.fillStyle = '#f39c12'; ctx.fillRect(6, -2+bob, 3, 5);
 
     ctx.restore();
   }
 
+  // High-Detail Pixel Art Enemy Rendering
   function drawEnemy(e, cam){
     const px=sx(e.x,cam), py=sy(e.y,cam);
     const flip = player.x < e.x;
@@ -609,27 +682,51 @@ html,body{
     ctx.save(); ctx.translate(px, py);
     if(e.hit>0 && Math.floor(e.hit*30)%2===0) ctx.globalAlpha=0.4;
 
-    ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fillRect(-r*.8, r-4, r*1.6, 6);
+    // Drop Shadow
+    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(-r*.8, r-4, r*1.6, 6);
     if(flip) ctx.scale(-1, 1);
 
-    ctx.fillStyle = e.color;
     if(e.type === 'boss'){
-      ctx.fillRect(-24, -28, 48, 48);
+      // BOSS: Dark Demon Dragon (HD Texture)
+      ctx.fillStyle = '#7f8c8d'; ctx.fillRect(-32, -34, 64, 52); // Wings
+      ctx.fillStyle = '#c0392b'; ctx.fillRect(-24, -28, 48, 48); // Body
+      ctx.fillStyle = '#922b21'; ctx.fillRect(-18, -20, 36, 36); // Inner Armor
+      ctx.fillStyle = '#f1c40f'; ctx.fillRect(-20, -36, 40, 10); // Crown Spikes
+      ctx.fillStyle = '#ff0000'; ctx.fillRect(6, -18, 10, 6); ctx.fillRect(-16, -18, 10, 6); // Red Eyes
+    } else if(e.type === 'brute'){
+      // BRUTE: Armored Orc
+      ctx.fillStyle = '#8e44ad'; ctx.fillRect(-r, -r, r*2, r*2); // Body
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(-r, -r-4, r*2, 8); // Shoulder Spikes
+      ctx.fillStyle = '#f1c40f'; ctx.fillRect(2, -8, 6, 6); // Eye
     } else if(e.type === 'ghost'){
-      ctx.globalAlpha = 0.6;
-      ctx.fillRect(-12, -14, 24, 24);
+      // GHOST: Phantom Wraiths
+      ctx.globalAlpha = 0.65;
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(-r, -r, r*2, r*2);
+      ctx.fillStyle = '#3498db'; ctx.fillRect(-4, -6, 4, 4); ctx.fillRect(4, -6, 4, 4);
       ctx.globalAlpha = 1.0;
+    } else if(e.type === 'shooter'){
+      // SHOOTER: Plasma Cyclops
+      ctx.fillStyle = '#16a085'; ctx.fillRect(-r, -r, r*2, r*2);
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(-r, 2, r*2, 4); // Weapon Mount
+      ctx.fillStyle = '#00f0ff'; ctx.fillRect(0, -6, 8, 8); // Single Eye
+    } else if(e.type === 'runner'){
+      // RUNNER: Fast Beetle
+      ctx.fillStyle = '#e67e22'; ctx.fillRect(-r, -r, r*2, r*2);
+      ctx.fillStyle = '#d35400'; ctx.fillRect(-r+2, -r+2, r*2-4, r*2-4); // Shell Texture
     } else {
-      ctx.fillRect(-r, -r, r*2, r*2);
+      // STALKER: Horned Demon
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(-r, -r, r*2, r*2);
+      ctx.fillStyle = '#922b21'; ctx.fillRect(-r, -r-6, 5, 8); ctx.fillRect(r-5, -r-6, 5, 8); // Horns
+      ctx.fillStyle = '#fff'; ctx.fillRect(2, -4, 4, 4); // Eye
     }
 
     ctx.restore();
 
     // HP Bar
-    const bw=r*2, bh=3, hp=clamp(e.hp/e.maxHp,0,1);
-    ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-11, bw+2, bh+2);
-    ctx.fillStyle='#c0392b'; ctx.fillRect(px-bw/2, py-r-10, bw, bh);
-    ctx.fillStyle='#2ecc71'; ctx.fillRect(px-bw/2, py-r-10, bw*hp, bh);
+    const bw=r*2.2, bh=4, hp=clamp(e.hp/e.maxHp,0,1);
+    ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-12, bw+2, bh+2);
+    ctx.fillStyle='#c0392b'; ctx.fillRect(px-bw/2, py-r-11, bw, bh);
+    ctx.fillStyle='#2ecc71'; ctx.fillRect(px-bw/2, py-r-11, bw*hp, bh);
   }
 
   // Enhanced Bullet Visual FX
@@ -637,32 +734,35 @@ html,body{
     for(const b of bullets){
       const px=sx(b.x,cam), py=sy(b.y,cam);
 
-      // Trail
+      // Trail FX
       for(let i=0; i<b.trail.length; i++){
         const tp = b.trail[i];
         const tpx = sx(tp.x, cam), tpy = sy(tp.y, cam);
-        ctx.fillStyle = b.type==='fireball'?'rgba(230,126,34,0.4)':b.type==='laser'?'rgba(46,204,113,0.4)':'rgba(155,89,182,0.4)';
+        ctx.fillStyle = b.type==='fireball'?'rgba(230,126,34,0.4)':b.type==='laser'?'rgba(46,204,113,0.4)':b.type==='plasma'?'rgba(231,76,60,0.4)':'rgba(155,89,182,0.4)';
         ctx.fillRect(tpx-2, tpy-2, 4, 4);
       }
 
-      // Bullet Center
+      // Bullet Texture
       if(b.type === 'fireball'){
         ctx.fillStyle = b.crit ? '#f1c40f' : '#e67e22';
-        ctx.fillRect(px-5, py-5, 10, 10);
+        ctx.fillRect(px-6, py-6, 12, 12);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(px-2, py-2, 4, 4);
       } else if(b.type === 'laser'){
-        ctx.fillStyle = '#2ecc71';
-        ctx.fillRect(px-6, py-2, 12, 4);
+        ctx.fillStyle = '#2ecc71'; ctx.fillRect(px-8, py-2, 16, 4);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(px-4, py-3, 8, 2);
+      } else if(b.type === 'plasma'){
+        ctx.fillStyle = '#e74c3c'; ctx.fillRect(px-5, py-5, 10, 10);
+        ctx.fillStyle = '#f1c40f'; ctx.fillRect(px-2, py-2, 4, 4);
       } else {
-        ctx.fillStyle = '#9b59b6';
-        ctx.fillRect(px-4, py-4, 8, 8);
+        ctx.fillStyle = '#9b59b6'; ctx.fillRect(px-4, py-4, 8, 8);
       }
     }
 
     // Enemy Bullets
     for(const eb of enemyBullets){
       const px=sx(eb.x,cam), py=sy(eb.y,cam);
-      ctx.fillStyle = '#e74c3c';
-      ctx.fillRect(px-4, py-4, 8, 8);
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(px-5, py-5, 10, 10);
+      ctx.fillStyle = '#ffcdd2'; ctx.fillRect(px-2, py-2, 4, 4);
     }
   }
 
@@ -670,10 +770,12 @@ html,body{
     for(const o of xpOrbs){
       const px=sx(o.x,cam), py=sy(o.y,cam);
       ctx.fillStyle='#3498db'; ctx.fillRect(px-3, py-3+Math.sin(o.animTimer)*2, 6, 6);
+      ctx.fillStyle='#ffffff'; ctx.fillRect(px-1, py-2+Math.sin(o.animTimer)*2, 2, 2);
     }
     for(const g of goldCoins){
       const px=sx(g.x,cam), py=sy(g.y,cam);
-      ctx.fillStyle='#f1c40f'; ctx.fillRect(px-3, py-3+Math.sin(g.animTimer)*2, 6, 6);
+      ctx.fillStyle='#f1c40f'; ctx.fillRect(px-4, py-4+Math.sin(g.animTimer)*2, 8, 8);
+      ctx.fillStyle='#f39c12'; ctx.fillRect(px-2, py-2+Math.sin(g.animTimer)*2, 4, 4);
     }
   }
 
@@ -713,40 +815,55 @@ html,body{
   
   function setStatus(t){document.getElementById('status').textContent=t;}
 
+  function showTitleMenu(){
+    running = false; paused = true; over = false;
+    document.getElementById('startOverlay').classList.remove('hidden');
+    document.getElementById('gameOver').classList.add('hidden');
+    document.getElementById('levelOverlay').classList.add('hidden');
+    document.getElementById('shopOverlay').classList.add('hidden');
+  }
+
   function endGame(){
     if(over)return;over=true;running=false;paused=true;
     joy.active=false; joyBase.style.display='none';
-    document.getElementById('finalStats').innerHTML=`SURVIVED: ${formatTime(elapsed)}<br>WAVE REACHED: ${wave}<br>KILLS: ${kills}<br>GOLD EARNED: ${player.gold}<br>LEVEL: ${level}`;
+    document.getElementById('finalStats').innerHTML=`SURVIVED TIME: ${formatTime(elapsed)}<br>WAVE REACHED: ${wave}<br>KILLS: ${kills}<br>GOLD EARNED: ${player.gold}<br>FINAL LEVEL: ${level}`;
     document.getElementById('gameOver').classList.remove('hidden');
   }
+  
   function formatTime(v){const s=Math.floor(v),m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');}
 
   function resetGame(){
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
-    elapsed=0; wave=1; kills=0; spawnTimer=0; level=1; xp=0; xpNeed=10; over=false; paused=false; running=true;
+    elapsed=0; wave=1; kills=0; spawnTimer=0; level=1; xp=0; xpNeed=10; lastShopWave=0; over=false; paused=false; running=true;
     joy.active=false; joyBase.style.display='none';
 
-    // Apply Hero Base Stats
+    // Reset Hero Player Stats
     Object.assign(player,{
       x:world.w/2, y:world.h/2,
       hp:selectedHero.hp, maxHp:selectedHero.hp,
       speed:selectedHero.speed, damage:selectedHero.damage,
       fireRate:selectedHero.fireRate, armor:selectedHero.armor,
       crit:selectedHero.crit, bulletType:selectedHero.bulletType,
-      fireTimer:0, bulletSpeed:750, projectiles:1, pickup:120, regen:0, angle:0, hit:0, gold:0
+      fireTimer:0, bulletSpeed:750, projectiles:1, pickup:130, regen:0, angle:0, hit:0, gold:0, goldMulti:1, revives:0
     });
 
     for(let i=0;i<6;i++)spawnEnemy();
+    document.getElementById('startOverlay').classList.add('hidden');
     document.getElementById('gameOver').classList.add('hidden');
     document.getElementById('levelOverlay').classList.add('hidden');
     document.getElementById('shopOverlay').classList.add('hidden');
     refreshHUD(); setStatus('TOUCH TO MOVE');
   }
 
-  document.getElementById('startBtn').onclick=()=>{
-    document.getElementById('startOverlay').classList.add('hidden'); resetGame();
+  // Button Listeners
+  document.getElementById('startBtn').onclick = () => resetGame();
+  document.getElementById('restart').onclick = () => resetGame();
+  document.getElementById('quitTitle').onclick = () => showTitleMenu();
+  document.getElementById('titleHudBtn').onclick = () => {
+    if(confirm('คุณต้องการออกจากเกมเพื่อกลับไปยังหน้า Title หรือไม่?')){
+      showTitleMenu();
+    }
   };
-  document.getElementById('restart').onclick=()=>resetGame();
 
   function loop(now){
     const dt=Math.min(MAX_DELTA,(now-last)/1000);last=now;
