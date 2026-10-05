@@ -600,27 +600,27 @@ const ENEMY_AI = {
 /* ===== 9. WAVES ===== */
 const WAVES = {
   start: 1,                    // เวฟเริ่มต้น
-  duration: 20,                // เวฟละกี่วินาที
+  duration: 15,                // เวฟละกี่วินาที
   spawnInterval: 0.45,         // เกิดศัตรูทุกกี่วิ (เวฟแรก)
   spawnIntervalPerWave: 0.012, // ลดช่วงเกิดต่อเวฟ
-  minSpawnInterval: 0.08,      // ช่วงเกิดสั้นสุด
+  minSpawnInterval: 0.05,      // ช่วงเกิดสั้นสุด
   batchBase: 3,                // ศัตรูต่อรอบ
   batchWave2: 1,               // +ต่อรอบ ตั้งแต่เวฟ 2
   batchWave6: 1,               // +(สุ่ม 50%) ตั้งแต่เวฟ 6
   batchWave12: 1,              // +(สุ่ม 50%) ตั้งแต่เวฟ 12
   maxEnemies: 500,             // ศัตรูบนจอสูงสุด
-  enemyHpPerWave: 0.30,        // HP ศัตรู +30%/เวฟ
-  enemyDamagePerWave: 0.05,
+  enemyHpPerWave: 0.90,        // HP ศัตรู +30%/เวฟ
+  enemyDamagePerWave: 0.1,
   enemySpeedPerWave: 0.02,
-  xpPerWave: 0.03,
-  goldPerWave: 0.20,
-  bossEvery: 5,                // บอสทุก N เวฟ
-  bossHpMultiplier: 3
+  xpPerWave: 0.01,
+  goldPerWave: 0.15,
+  bossEvery: 3,                // บอสทุก N เวฟ
+  bossHpMultiplier: 3.5
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
 const DROPS = {
-  xpMultiplier: 1.4, goldMultiplier: 1.2,
+  xpMultiplier: 1.15, goldMultiplier: 1.15,
   xpChance: 1, goldChance: 1,
   goldMin: 2, goldMax: 4,        // ใช้เมื่อศัตรูไม่ได้กำหนด goldMin/Max เอง
   heroGoldMultiplier: 1,
@@ -633,9 +633,9 @@ const PICKUPS = {
 
 /* ===== 11. LEVEL ===== */
 const LEVEL = {
-  xpNeedStart: 60,     // XP เลเวลแรก
-  xpNeedGrowth: 1.55,  // ตัวคูณต่อเลเวล
-  xpNeedFlat: 10,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
+  xpNeedStart: 100,     // XP เลเวลแรก
+  xpNeedGrowth: 1.75,  // ตัวคูณต่อเลเวล
+  xpNeedFlat: 30,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
   choices: 3           // จำนวนการ์ดให้เลือกตอนเลเวลอัป
 };
 
