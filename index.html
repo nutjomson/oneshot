@@ -752,9 +752,9 @@ html,body{
     const diffMult = settings.difficulty === 'easy' ? 0.7 : settings.difficulty === 'hard' ? 1.4 : 1.0;
 
     enemies.push({
-      x, y, r:t.r, hp:t.hp*4.0*(1+(wave-1)*.30)*diffMult, maxHp:t.hp*4.0*(1+(wave-1)*.30)*diffMult,
+      x, y, r:t.r, hp:t.hp*3.0*(1+(wave-1)*.30)*diffMult, maxHp:t.hp*3.0*(1+(wave-1)*.30)*diffMult,
       speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05)*diffMult,
-      xp:({brute:28,shooter:16,ghost:14,boss:150,runner:9,stalker:10})[type]*(1+wave*.03)*1.6, gold:Math.floor(rand(2,5)*(1+wave*0.2)*1.6), type:t.type, color:t.color, hit:0, 
+      xp:({brute:20,shooter:11,ghost:8,boss:100,runner:5,stalker:6})[type]*(1+wave*.03)*1.4, gold:Math.floor(rand(2,4)*(1+wave*0.2)*1.2), type:t.type, color:t.color, hit:0, 
       animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0, bladeCd:0, contactCd:0, dead:false
     });
   }
@@ -847,7 +847,7 @@ html,body{
 
   function gainXP(v){
     xp+=v;
-    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.28+6);pendingLevels++;}
+    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.35+6);pendingLevels++;}
     if(pendingLevels>0&&!levelOpen) openLevelUp();
   }
 
