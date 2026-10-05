@@ -272,6 +272,10 @@ html,body{
         <span>เขย่าหน้าจอเมื่อโจมตี (Screen Shake)</span>
         <input type="checkbox" id="shakeCheck" checked>
       </div>
+      <div class="setting-row">
+        <span>โหมดนักพัฒนา (Developer Mode)</span>
+        <button class="btn btn-gold" id="openDevBtn" style="padding:8px 12px">🛠️ เปิด</button>
+      </div>
     </div>
     <div class="btn-group">
       <button class="btn" id="closeSettingsBtn">ย้อนกลับ</button>
@@ -843,14 +847,14 @@ html,body{
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
   };
-  document.getElementById('openDevBtn').onclick = openDeveloper;
-  document.getElementById('devCloseBtn').onclick = closeDeveloper;
-  document.getElementById('devApplyBtn').onclick = () => { applyDeveloperValues(); closeDeveloper(); };
-  document.getElementById('devResetBtn').onclick = () => {
+  document.getElementById('openDevBtn')?.addEventListener('click', openDeveloper);
+  document.getElementById('devCloseBtn')?.addEventListener('click', closeDeveloper);
+  document.getElementById('devApplyBtn')?.addEventListener('click', () => { applyDeveloperValues(); closeDeveloper(); });
+  document.getElementById('devResetBtn')?.addEventListener('click', () => {
     Object.assign(dev, cloneDevDefaults());
     loadDevUI();
     setStatus('↩ รีเซ็ตค่า Developer แล้ว');
-  };
+  });
   document.getElementById('devEnemyType').onchange = refreshDevEnemyUI;
   document.querySelectorAll('.dev-tab').forEach(btn=>{
     btn.onclick=()=>{
@@ -1576,7 +1580,7 @@ html,body{
   function startGame(){
     initAudio();
     running=true; paused=false; over=false;
-    elapsed=0; wave=1; kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0;
+    elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
     player.x=world.w/2; player.y=world.h/2; player.gold=0; screenShake=0; spawnTimer=0; bossWave=0; levelOpen=shopOpen=pauseOpen=false; pendingLevels=0; floaters=[]; skillCd=0; shownWave=1; resetInput();
     player.dodge=0.0; player.lifesteal=0.0; player.pierce=1;
@@ -1584,6 +1588,7 @@ html,body{
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
+    applyDeveloperValues();
 
     ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     syncPause();
