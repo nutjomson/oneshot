@@ -373,7 +373,7 @@ html,body{
 
   const player = {
     x:1600, y:1600, r:16, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
-    bulletSpeed:800, projectiles:1, pickup:180, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1,
+    bulletSpeed:800, projectiles:1, pickup:450, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1,
     angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0,
     // Unique Mechanics
     ricochet: 0,
@@ -535,7 +535,7 @@ html,body{
   function resetInput(){joy.active=false;joy.pointerId=null;joy.x=0;joy.y=0;joyBase.style.display='none';keys.up=keys.down=keys.left=keys.right=false}
   function syncPause(){paused=levelOpen||shopOpen||pauseOpen;touchZone.classList.toggle('hidden',paused||!running);if(paused)resetInput()}
   function clampStats(){player.dodge=clamp(player.dodge,0,.45);player.crit=clamp(player.crit,0,.75);player.armor=clamp(player.armor,-.5,.6);player.executionThreshold=Math.min(.35,player.executionThreshold);player.fireRate=Math.max(.08,player.fireRate);player.lifesteal=Math.min(.25,player.lifesteal);player.pierce=Math.min(12,player.pierce);player.projectiles=Math.min(8,player.projectiles);player.ricochet=Math.min(6,player.ricochet);player.orbitBlades=Math.min(8,player.orbitBlades);player.timeSlow=Math.min(.5,player.timeSlow||0);
-    const hb=selectedHero; player.speed=Math.min(player.speed,hb.speed*1.8); player.regen=Math.min(player.regen,12); player.goldMulti=Math.min(player.goldMulti,4); player.knockback=Math.min(player.knockback,300); player.explosiveRadius=Math.min(player.explosiveRadius,160); player.damage=Math.min(player.damage,hb.damage*12); player.revives=Math.min(player.revives,3); player.bulletSpeed=Math.min(player.bulletSpeed,2000); player.pickup=Math.min(player.pickup,800);}
+    const hb=selectedHero; player.speed=Math.min(player.speed,hb.speed*1.8); player.regen=Math.min(player.regen,12); player.goldMulti=Math.min(player.goldMulti,4); player.knockback=Math.min(player.knockback,300); player.explosiveRadius=Math.min(player.explosiveRadius,160); player.damage=Math.min(player.damage,hb.damage*12); player.revives=Math.min(player.revives,3); player.bulletSpeed=Math.min(player.bulletSpeed,2000); player.pickup=Math.min(player.pickup,1500);}
 
   // Audio System using Web Audio API Synth (Synthesized Sound FX)
   let audioCtx = null;
@@ -690,7 +690,7 @@ html,body{
     player.armor = h.armor;
     player.crit = h.crit;
     player.bulletType = h.bulletType;
-    Object.assign(player,{projectiles:1,bulletSpeed:800,pickup:180,regen:1.0,goldMulti:1,pierce:1,dodge:0,lifesteal:0,revives:0,ricochet:0,poisonDmg:0,lightningChain:0,explosiveRadius:0,knockback:0,executionThreshold:0,orbitBlades:0,timeSlow:0,fireTimer:0,hit:0});
+    Object.assign(player,{projectiles:1,bulletSpeed:800,pickup:450,regen:1.0,goldMulti:1,pierce:1,dodge:0,lifesteal:0,revives:0,ricochet:0,poisonDmg:0,lightningChain:0,explosiveRadius:0,knockback:0,executionThreshold:0,orbitBlades:0,timeSlow:0,fireTimer:0,hit:0});
     document.getElementById('startHeroStats').innerHTML = renderCharacterStatsHtml(player);
   }
 
@@ -739,7 +739,7 @@ html,body{
       else type = 'stalker';
     }
 
-    if(type!=='boss'&&enemies.length>=280)return;
+    if(type!=='boss'&&enemies.length>=500)return;
     const t = enemyTypes[type];
     let x,y;
     for(let k=0;k<12;k++){
@@ -752,9 +752,9 @@ html,body{
     const diffMult = settings.difficulty === 'easy' ? 0.7 : settings.difficulty === 'hard' ? 1.4 : 1.0;
 
     enemies.push({
-      x, y, r:t.r, hp:t.hp*2.2*(1+(wave-1)*.25)*diffMult, maxHp:t.hp*2.2*(1+(wave-1)*.25)*diffMult,
+      x, y, r:t.r, hp:t.hp*4.0*(1+(wave-1)*.30)*diffMult, maxHp:t.hp*4.0*(1+(wave-1)*.30)*diffMult,
       speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05)*diffMult,
-      xp:({brute:28,shooter:16,ghost:14,boss:150,runner:9,stalker:10})[type]*(1+wave*.03), gold:Math.floor(rand(2,5)*(1+wave*0.2)), type:t.type, color:t.color, hit:0, 
+      xp:({brute:28,shooter:16,ghost:14,boss:150,runner:9,stalker:10})[type]*(1+wave*.03)*1.6, gold:Math.floor(rand(2,5)*(1+wave*0.2)*1.6), type:t.type, color:t.color, hit:0, 
       animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0, bladeCd:0, contactCd:0, dead:false
     });
   }
@@ -1043,7 +1043,7 @@ html,body{
 
     const spawnRate=Math.max(.08,.45-wave*.012);
     if(spawnTimer<=0){
-      const batch=1+(wave>=2?1:0)+(wave>=6&&Math.random()<.5?1:0)+(wave>=12&&Math.random()<.5?1:0);
+      const batch=3*(1+(wave>=2?1:0)+(wave>=6&&Math.random()<.5?1:0)+(wave>=12&&Math.random()<.5?1:0));
       for(let i=0;i<batch;i++)spawnEnemy();
       spawnTimer=spawnRate;
     }
@@ -1337,7 +1337,7 @@ html,body{
     ctx.clearRect(0,0,W,H);
     drawGround(cam);
     drawDrops(cam);
-    for(const e of enemies) drawEnemy(e, cam);
+    for(const e of enemies) if(e.x>cam.x-90&&e.x<cam.x+W+90&&e.y>cam.y-90&&e.y<cam.y+H+90) drawEnemy(e, cam);
     drawPlayer(cam);
     drawBullets(cam);
     ctx.font='bold 13px Prompt,sans-serif';ctx.textAlign='center';
