@@ -283,6 +283,85 @@ html,body{
   </div>
 </div>
 
+<!-- Developer Balance Console -->
+<div id="devOverlay" class="overlay hidden">
+  <div class="modal dev-modal" style="max-width:900px;max-height:90vh;overflow:auto">
+    <div class="title">🛠️ DEVELOPER MODE — GAME BALANCE CONSOLE</div>
+    <div class="sub">ปรับค่าระบบเกมได้เกือบทั้งหมด แล้วกด “ใช้ค่า” เพื่อบันทึก</div>
+    <div class="dev-tabs">
+      <button class="dev-tab active" data-devtab="player">🧙 ผู้เล่น</button>
+      <button class="dev-tab" data-devtab="enemy">👾 ศัตรู</button>
+      <button class="dev-tab" data-devtab="wave">🌊 เวฟ</button>
+      <button class="dev-tab" data-devtab="drop">💰 XP / ดรอป</button>
+      <button class="dev-tab" data-devtab="misc">🏪 ระบบอื่น</button>
+    </div>
+    <div id="devPlayer" class="dev-page">
+      <div class="dev-grid">
+        <label>Max HP<input class="dev-num" data-path="player.maxHp" type="number" step="1"></label>
+        <label>HP เริ่มต้น<input class="dev-num" data-path="player.hp" type="number" step="1"></label>
+        <label>Damage<input class="dev-num" data-path="player.damage" type="number" step="1"></label>
+        <label>Speed<input class="dev-num" data-path="player.speed" type="number" step="1"></label>
+        <label>Fire Rate (วินาที)<input class="dev-num" data-path="player.fireRate" type="number" step="0.01"></label>
+        <label>Bullet Speed<input class="dev-num" data-path="player.bulletSpeed" type="number" step="1"></label>
+        <label>Projectiles<input class="dev-num" data-path="player.projectiles" type="number" step="1"></label>
+        <label>Armor %<input class="dev-num dev-percent" data-path="player.armor" type="number" step="1"></label>
+        <label>Crit %<input class="dev-num dev-percent" data-path="player.crit" type="number" step="1"></label>
+        <label>Dodge %<input class="dev-num dev-percent" data-path="player.dodge" type="number" step="1"></label>
+        <label>Regen HP/s<input class="dev-num" data-path="player.regen" type="number" step="0.1"></label>
+        <label>Lifesteal %<input class="dev-num dev-percent" data-path="player.lifesteal" type="number" step="1"></label>
+        <label>Pickup Radius<input class="dev-num" data-path="player.pickup" type="number" step="1"></label>
+        <label>Gold Multiplier<input class="dev-num" data-path="player.goldMulti" type="number" step="0.1"></label>
+        <label>Revives<input class="dev-num" data-path="player.revives" type="number" step="1"></label>
+      </div>
+    </div>
+    <div id="devEnemy" class="dev-page hidden">
+      <label>ประเภทศัตรู<select id="devEnemyType"><option value="stalker">Stalker</option><option value="runner">Runner</option><option value="brute">Brute</option><option value="shooter">Shooter</option><option value="ghost">Ghost</option><option value="boss">Boss</option></select></label>
+      <div class="dev-grid">
+        <label>Base HP<input class="dev-enemy-num" data-enemy="hp" type="number"></label>
+        <label>Speed<input class="dev-enemy-num" data-enemy="speed" type="number"></label>
+        <label>Damage<input class="dev-enemy-num" data-enemy="damage" type="number"></label>
+        <label>Radius<input class="dev-enemy-num" data-enemy="r" type="number"></label>
+        <label>Base XP<input class="dev-enemy-num" data-enemy="xp" type="number"></label>
+        <label>Gold Min<input class="dev-enemy-num" data-enemy="goldMin" type="number"></label>
+        <label>Gold Max<input class="dev-enemy-num" data-enemy="goldMax" type="number"></label>
+        <label>Spawn Weight<input class="dev-enemy-num" data-enemy="spawnWeight" type="number" step="0.1"></label>
+      </div>
+    </div>
+    <div id="devWave" class="dev-page hidden"><div class="dev-grid">
+      <label>Starting Wave<input class="dev-num" data-path="wave.start" type="number"></label><label>Wave Duration (s)<input class="dev-num" data-path="wave.duration" type="number" step="0.5"></label>
+      <label>Spawn Interval<input class="dev-num" data-path="wave.spawnInterval" type="number" step="0.01"></label><label>Interval Reduction/Wave<input class="dev-num" data-path="wave.spawnIntervalPerWave" type="number" step="0.001"></label>
+      <label>Min Spawn Interval<input class="dev-num" data-path="wave.minSpawnInterval" type="number" step="0.01"></label><label>Enemies/Batch<input class="dev-num" data-path="wave.batchBase" type="number"></label>
+      <label>Batch + at Wave 2<input class="dev-num" data-path="wave.batchWave2" type="number"></label><label>Batch + at Wave 6<input class="dev-num" data-path="wave.batchWave6" type="number"></label>
+      <label>Batch + at Wave 12<input class="dev-num" data-path="wave.batchWave12" type="number"></label><label>Max Enemies<input class="dev-num" data-path="wave.maxEnemies" type="number"></label>
+      <label>Enemy HP +%/Wave<input class="dev-num dev-percent" data-path="wave.enemyHpPerWave" type="number"></label><label>Enemy Damage +%/Wave<input class="dev-num dev-percent" data-path="wave.enemyDamagePerWave" type="number"></label>
+      <label>Enemy Speed +%/Wave<input class="dev-num dev-percent" data-path="wave.enemySpeedPerWave" type="number"></label><label>XP +%/Wave<input class="dev-num dev-percent" data-path="wave.xpPerWave" type="number"></label>
+      <label>Gold +%/Wave<input class="dev-num dev-percent" data-path="wave.goldPerWave" type="number"></label><label>Boss Every N Waves<input class="dev-num" data-path="wave.bossEvery" type="number"></label>
+      <label>Boss HP Multiplier<input class="dev-num" data-path="wave.bossHpMultiplier" type="number" step="0.1"></label>
+    </div></div>
+    <div id="devDrop" class="dev-page hidden"><div class="dev-grid">
+      <label>XP Drop Multiplier<input class="dev-num" data-path="drop.xpMultiplier" type="number" step="0.1"></label><label>Gold Drop Multiplier<input class="dev-num" data-path="drop.goldMultiplier" type="number" step="0.1"></label>
+      <label>Gold Drop Chance %<input class="dev-num dev-percent" data-path="drop.goldChance" type="number"></label><label>XP Drop Chance %<input class="dev-num dev-percent" data-path="drop.xpChance" type="number"></label>
+      <label>Global Gold Min<input class="dev-num" data-path="drop.goldMin" type="number"></label><label>Global Gold Max<input class="dev-num" data-path="drop.goldMax" type="number"></label>
+      <label>Hero Gold Multiplier<input class="dev-num" data-path="drop.heroGoldMultiplier" type="number" step="0.1"></label><label>XP Merge Threshold<input class="dev-num" data-path="drop.xpMergeThreshold" type="number"></label>
+      <label>XP Need Start<input class="dev-num" data-path="level.xpNeedStart" type="number"></label><label>XP Need Growth<input class="dev-num" data-path="level.xpNeedGrowth" type="number" step="0.01"></label>
+      <label>XP Need Flat<input class="dev-num" data-path="level.xpNeedFlat" type="number"></label><label>Shop Price +%/Wave<input class="dev-num dev-percent" data-path="shop.pricePerWave" type="number"></label>
+      <label>Reroll Base<input class="dev-num" data-path="shop.rerollBase" type="number"></label><label>Reroll Step<input class="dev-num" data-path="shop.rerollStep" type="number"></label>
+    </div></div>
+    <div id="devMisc" class="dev-page hidden"><div class="dev-grid">
+      <label>Difficulty Damage Multiplier<input class="dev-num" data-path="misc.difficultyDamage" type="number" step="0.1"></label><label>Easy Enemy Multiplier<input class="dev-num" data-path="misc.easyEnemy" type="number" step="0.1"></label>
+      <label>Hard Enemy Multiplier<input class="dev-num" data-path="misc.hardEnemy" type="number" step="0.1"></label><label>Boss Bonus XP<input class="dev-num" data-path="misc.bossBonusXp" type="number"></label>
+      <label>Boss Bonus Gold<input class="dev-num" data-path="misc.bossBonusGold" type="number"></label><label>Boss Bonus Drops<input class="dev-num" data-path="misc.bossBonusDrops" type="number"></label>
+      <label>Enemy Spawn Cap<input class="dev-num" data-path="misc.spawnCap" type="number"></label><label>Game Speed<input class="dev-num" data-path="misc.gameSpeed" type="number" step="0.1"></label>
+    </div></div>
+    <div id="devPreview" style="margin:12px 0;padding:10px;background:#020617;border:1px solid #334155;border-radius:8px;font-size:12px;line-height:1.6"></div>
+    <div class="btn-group">
+      <button class="btn btn-gold" id="devApplyBtn">💾 ใช้ค่า</button>
+      <button class="btn btn-blue" id="devResetBtn">↩ ค่าเริ่มต้น</button>
+      <button class="btn btn-sec" id="devCloseBtn">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <!-- Level Up Overlay -->
 <div id="levelOverlay" class="overlay hidden">
   <div class="modal">
@@ -406,7 +485,8 @@ html,body{
   }
   function refreshDevEnemyUI(){
     const type=document.getElementById('devEnemyType')?.value||'stalker';
-    const t=enemyTypes[type];
+    const t=enemyTypes?.[type];
+    if(!t)return;
     const defaults={stalker:[6,2,4,1],runner:[5,2,4,1],brute:[20,2,4,1],shooter:[11,2,4,1],ghost:[8,2,4,1],boss:[100,20,40,1]};
     const [xp,gmin,gmax,weight]=defaults[type]||[5,2,4,100];
     const vals={hp:t.hp,speed:t.speed,damage:t.damage,r:t.r,xp:t.xpBase??xp,goldMin:t.goldMin??gmin,goldMax:t.goldMax??gmax,spawnWeight:t.spawnWeight??weight};
@@ -418,7 +498,8 @@ html,body{
   }
   function readDevEnemyUI(){
     const type=document.getElementById('devEnemyType')?.value||'stalker';
-    const t=enemyTypes[type];
+    const t=enemyTypes?.[type];
+    if(!t)return;
     document.querySelectorAll('.dev-enemy-num').forEach(el=>{
       let v=Number(el.value); if(!Number.isFinite(v))return;
       if(el.classList.contains('dev-enemy-percent')) v/=100;
@@ -842,7 +923,8 @@ html,body{
   });
 
   applyHeroChoice(heroes[0]);
-  loadDevUI();
+  // Developer UI is initialized after the DOM is ready; enemy data may be declared later.
+  setTimeout(()=>loadDevUI(),0);
 
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
