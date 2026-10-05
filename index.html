@@ -1,862 +1,536 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#050a0e">
-<title>Samurai Survivor: Yokai Nightmare</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap');
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-  -webkit-touch-callout:none;
-  user-select:none;
-  -webkit-user-select:none;
-}
-html,body{
-  margin:0;width:100%;height:100%;
-  overflow:hidden;background:#03070a;
-  color:#fff;font-family:'Mali', cursive, sans-serif;
-  touch-action:none;position:fixed;
-}
-#game{position:fixed;inset:0;overflow:hidden;background:#05090d}
-#scene{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-
-/* HUD Panel */
-#hud{
-  position:absolute;z-index:10;inset:0;pointer-events:none;
-  padding-top:max(10px, env(safe-area-inset-top));
-  padding-left:max(10px, env(safe-area-inset-left));
-  padding-right:max(10px, env(safe-area-inset-right));
-  padding-bottom:max(10px, env(safe-area-inset-bottom));
-}
-.top{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-.panel{background:rgba(10, 18, 26, 0.92);border:2px solid #e74c3c;box-shadow:0 0 10px rgba(0,0,0,0.8), inset 0 0 6px rgba(231, 76, 60, 0.3);padding:8px 12px;border-radius:8px;backdrop-filter:blur(4px)}
-.stat{flex:1;max-width:240px;min-width:120px}
-.label{font-size:12px;color:#f39c12;font-weight:700;margin-bottom:2px;text-shadow:1px 1px 2px #000}
-.num{font-size:12px;font-weight:700;margin-top:2px;color:#fff;text-shadow:1px 1px 2px #000}
-.bar{height:10px;background:#0d1117;border:1px solid #5c1d1d;border-radius:4px;padding:1px;position:relative;overflow:hidden}
-.fill{height:100%;width:100%;border-radius:2px;transition:width 0.1s}
-.hp{background:linear-gradient(90deg, #c0392b, #e74c3c);box-shadow:0 0 6px #e74c3c}
-.xp{background:linear-gradient(90deg, #2980b9, #3498db);box-shadow:0 0 6px #3498db}
-.wave{font-size:14px;font-weight:700;text-align:right;line-height:1.4;color:#f1c40f;min-width:100px}
-.small{font-size:11px;color:#bdc3c7;margin-top:2px}
-
-/* Controls */
-#touchZone{position:absolute;z-index:12;inset:0;width:100%;height:100%;pointer-events:auto;touch-action:none}
-#joyBase{position:absolute;width:110px;height:110px;background:rgba(20,10,10,0.75);border:3px solid #e67e22;border-radius:50%;display:none;pointer-events:none;transform:translate(-50%,-50%);z-index:13;box-shadow:0 0 12px rgba(230,126,34,0.5)}
-#joyStick{position:absolute;width:48px;height:48px;left:50%;top:50%;transform:translate(-50%,-50%);background:#e74c3c;border:3px solid #fff;border-radius:50%;box-shadow:0 0 8px #e74c3c}
-
-#status{position:absolute;z-index:11;left:50%;bottom:max(16px, env(safe-area-inset-bottom));transform:translateX(-50%);padding:6px 16px;background:rgba(13, 24, 33, 0.9);border:2px solid #e67e22;border-radius:20px;font-size:12px;font-weight:700;color:#2ecc71;pointer-events:none;text-align:center;white-space:nowrap;box-shadow:0 4px 10px rgba(0,0,0,0.5)}
-.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,7,10,0.88);backdrop-filter:blur(6px)}
-.hidden{display:none!important}
-.modal{width:min(600px,100%);max-height:85vh;overflow:auto;background:#120a0a;border:3px solid #e74c3c;border-radius:12px;padding:20px;box-shadow:0 0 25px rgba(231,76,60,0.4);text-align:center}
-.title{font-size:22px;font-weight:700;color:#f1c40f;margin-bottom:6px;text-shadow:2px 2px 4px #000}
-.sub{font-size:13px;color:#a0b2c6;line-height:1.5;margin-bottom:16px}
-#upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.upgrade{border:2px solid #a93226;background:#1c0d0d;border-radius:8px;padding:12px 8px;text-align:left;color:#fff;cursor:pointer;font-family:inherit;transition:all 0.15s}
-.upgrade:active{background:#381616;border-color:#f1c40f;transform:scale(0.97)}
-.icon{font-size:24px;margin-bottom:4px;text-align:center}
-.uName{font-size:12px;font-weight:700;color:#f1c40f;margin-bottom:4px;line-height:1.3}
-.uDesc{font-size:11px;line-height:1.4;color:#bdc3c7}
-.gameover h1{font-size:24px;color:#e74c3c;margin:0 0 12px;text-shadow:2px 2px 4px #000}
-.stats{line-height:1.8;color:#ecf0f1;font-size:13px;font-weight:700;text-align:left;background:#090e14;padding:12px;border-radius:8px;border:1px solid #c0392b;margin-bottom:14px}
-.btn{border:none;background:linear-gradient(180deg, #e74c3c, #c0392b);color:#fff;font-family:inherit;font-size:14px;font-weight:700;padding:12px 24px;border-radius:8px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.5);margin-top:8px}
-.btn:active{transform:scale(0.95)}
-#startOverlay .modal{max-width:440px}
-.start-title{font-size:22px;font-weight:700;color:#e74c3c;margin-bottom:8px;text-shadow:2px 2px 4px #000}
-.start-sub{color:#cbd5e1;font-size:13px;line-height:1.6;margin-bottom:16px}
-.controls-hint{font-size:11px;color:#94a3b8;line-height:1.6;margin-top:14px;background:rgba(255,255,255,0.05);padding:8px;border-radius:6px}
-
-@media(max-width:600px){
-  #upgrades{grid-template-columns:1fr}
-  .upgrade{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center}
-  .icon{margin:0}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16-Bit Ultra-Detail Samurai vs Yokai</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #050811;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #game-container {
+      position: relative;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(46, 204, 113, 0.2);
+      border: 4px solid #2c3e50;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      background: #000;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .instructions {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #a6acaf;
+      text-align: center;
+    }
+    .key {
+      background: #2c3e50;
+      color: #f1c40f;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #4a6572;
+    }
+  </style>
 </head>
 <body>
-<div id="game">
-<canvas id="scene"></canvas>
-<div id="touchZone"></div>
-<div id="joyBase"><div id="joyStick"></div></div>
 
-<div id="hud">
-  <div class="top">
-    <div class="panel stat">
-      <div class="label">พลังชีวิต (HP)</div>
-      <div class="bar"><div id="hpFill" class="fill hp"></div></div>
-      <div class="num"><span id="hpText">100/100</span></div>
-    </div>
-    <div class="panel stat">
-      <div class="label">ดวงวิญญาณ (EXP)</div>
-      <div class="bar"><div id="xpFill" class="fill xp"></div></div>
-      <div class="num">เวล.<span id="levelText">1</span> (<span id="xpText">0/10</span>)</div>
-    </div>
-    <div class="panel wave">
-      ระลอกที่ <span id="waveText">1</span>
-      <div class="small" id="killsText">กำจัด: 0</div>
-    </div>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
   </div>
-</div>
-
-<div id="status">สัมผัสหน้าจอเพื่อเคลื่อนที่</div>
-
-<div id="startOverlay" class="overlay">
-  <div class="modal">
-    <div class="start-title">SAMURAI SURVIVOR</div>
-    <div class="start-sub">วิญญาณซามูไรไร้พ่าย! ปราบฝูงปีศาจจิ้งจอก นกเท็นงู และยักษ์โอนิ พร้อมสุ่มเก็บ **ลูกแก้วคาถาพิเศษ** สุดอลังการ!</div>
-    <button class="btn" id="startBtn">เริ่มการล่าปีศาจ</button>
-    <div class="controls-hint">มือถือ: ลากนิ้วบนหน้าจอเพื่อเดิน<br>คอมพิวเตอร์: บังคับด้วยปุ่ม WASD / ลูกศร</div>
+  <div class="instructions">
+    การควบคุม: <span class="key">A</span> / <span class="key">D</span> เคลื่อนที่ | <span class="key">Spacebar</span> ฟันดาบซามูไร | เล็งทิศทางดาบด้วยเมาส์
   </div>
-</div>
 
-<div id="levelOverlay" class="overlay hidden"><div class="modal"><div class="title">LEVEL UP!</div><div class="sub">เลือกเบิกพลังวิชาดาบซามูไร</div><div id="upgrades"></div></div></div>
-<div id="gameOver" class="overlay hidden"><div class="modal gameover"><h1>วิญญาณแตกสลาย</h1><div class="stats" id="finalStats"></div><button class="btn" id="restart">หวนคืนสู่ยุทธภพ</button></div></div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-<script>
-(() => {
-  const canvas = document.getElementById('scene');
-  const ctx = canvas.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
-
-  let W = innerWidth, H = innerHeight;
-  const MAX_DELTA = 0.033;
-
-  function resize(){
-    W = innerWidth; H = innerHeight;
-    canvas.width = W; canvas.height = H;
-    ctx.imageSmoothingEnabled = false;
-  }
-  addEventListener('resize', resize); 
-  addEventListener('orientationchange', ()=>setTimeout(resize, 200));
-  resize();
-
-  const keys = {up:false,down:false,left:false,right:false};
-  const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
-  const world = {w:3200, h:3200};
-  
-  const player = {
-    x:1600, y:1600, r:16, hp:100, maxHp:100, speed:240, damage:28, fireRate:.32, fireTimer:0,
-    bulletSpeed:800, projectiles:1, pickup:120, armor:0, crit:.10, regen:0, angle:0, hit:0,
-    animFrame:0, animTimer:0, facing:'right'
-  };
-
-  let bullets=[], enemies=[], xpOrbs=[], skillOrbs=[], specialAttacks=[], sparks=[], petals=[], scenery=[];
-  let running=false, paused=false, over=false;
-  let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0, skillOrbTimer=8;
-  let level=1, xp=0, xpNeed=10;
-
-  // ประเภทของปีศาจ
-  const enemyTypes = {
-    kitsune:{hp:42, speed:70, damage:10, r:15, color:'#e67e22', xp:3}, 
-    tengu:{hp:28, speed:125, damage:7, r:13, color:'#c0392b', xp:4},   
-    oni:{hp:200, speed:38, damage:28, r:26, color:'#8e44ad', xp:12}    
-  };
-
-  // ประเภทสกิลพิเศษแบบสุ่มเก็บ (Skill Orbs)
-  const skillOrbTypes = [
-    { type: 'dragon', name: 'มังกรวารีทะลวงฟัน!', color: '#00d2ff', icon: '🐉' },
-    { type: 'thunder', name: 'อัศนีบาต 360 องศา!', color: '#f1c40f', icon: '⚡' },
-    { type: 'cyclone', name: 'พายุดาบอัคคีพิฆาต!', color: '#e74c3c', icon: '🌀' },
-    { type: 'sakura', name: 'อาณาเขตซากุระสังหาร!', color: '#ff79c6', icon: '🌸' }
-  ];
-
-  function initScenery(){
-    scenery = [];
-    for(let i=0; i<40; i++){
-      scenery.push({
-        x: rand(100, world.w-100),
-        y: rand(100, world.h-100),
-        type: Math.random() < 0.3 ? 'torii' : 'lantern'
-      });
-    }
-    petals = [];
-    for(let i=0; i<60; i++){
-      petals.push({
-        x: rand(0, W), y: rand(0, H),
-        s: rand(2, 4), vx: rand(-20, -50), vy: rand(30, 70),
-        r: rand(0, Math.PI*2)
-      });
-    }
-  }
-
-  const upgrades = [
-    {icon:'⚔️',name:'ดาบสุริยัน',desc:'+25% พลังฟันดาบ',apply:()=>player.damage*=1.25},
-    {icon:'⚡',name:'เนตรวายุ',desc:'โจมตีเร็วขึ้น 20%',apply:()=>player.fireRate*=.8},
-    {icon:'👟',name:'ก้าวข้ามเงา',desc:'+15% ความเร็วเคลื่อนที่',apply:()=>player.speed*=1.15},
-    {icon:'❤️',name:'หัวใจซามูไร',desc:'+30 HP & ฟื้นฟู 30 HP',apply:()=>{player.maxHp+=30;player.hp=Math.min(player.maxHp,player.hp+30)}},
-    {icon:'🗡️',name:'กระจายคลื่นดาบ',desc:'+1 คลื่นพลังดาบเพิ่ม',apply:()=>player.projectiles++},
-    {icon:'🌀',name:'คมดาบไร้เงา',desc:'+25% ความเร็วคลื่นพลัง',apply:()=>player.bulletSpeed*=1.25},
-    {icon:'🔮',name:'แรงดึงดูดวิญญาณ',desc:'+60 ระยะดูดวิญญาณ',apply:()=>player.pickup+=60},
-    {icon:'🛡️',name:'เกราะเหล็กไหล',desc:'ลดความเสียหาย 18%',apply:()=>player.armor+=.18},
-    {icon:'💥',name:'ฟันจุดตาย',desc:'+12% โอกาสติดคริติคอล',apply:()=>player.crit+=.12},
-    {icon:'🍵',name:'ชาเซนฟื้นฟู',desc:'ฟื้นฟู +1 HP ทุกวินาที',apply:()=>player.regen+=1}
-  ];
-
-  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
-  function rand(a,b){return a+Math.random()*(b-a);}
-  function dist(ax,ay,bx,by){return Math.hypot(ax-bx,ay-by);}
-
-  // Control Listeners
-  addEventListener('keydown',e=>{
-    if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=true;
-    if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=true;
-    if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=true;
-    if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=true;
-  });
-  addEventListener('keyup',e=>{
-    if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=false;
-    if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=false;
-    if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=false;
-    if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
-  });
-
-  const touchZone = document.getElementById('touchZone');
-  const joyBase = document.getElementById('joyBase');
-  const joyStick = document.getElementById('joyStick');
-
-  touchZone.addEventListener('pointerdown', e => {
-    if(joy.active || paused || !running) return;
-    joy.active = true; joy.pointerId = e.pointerId;
-    joy.startX = e.clientX; joy.startY = e.clientY;
-    joyBase.style.left = joy.startX + 'px'; joyBase.style.top = joy.startY + 'px';
-    joyBase.style.display = 'block';
-    joyStick.style.transform = 'translate(-50%, -50%)';
-    joy.x = 0; joy.y = 0;
-    touchZone.setPointerCapture(e.pointerId);
-  });
-
-  touchZone.addEventListener('pointermove', e => {
-    if(!joy.active || e.pointerId !== joy.pointerId) return;
-    const dx = e.clientX - joy.startX, dy = e.clientY - joy.startY;
-    const maxR = 45, len = Math.hypot(dx, dy) || 1;
-    const k = Math.min(1, maxR / len);
-    const x = dx * k, y = dy * k;
-    joy.x = x / maxR; joy.y = y / maxR;
-    joyStick.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-  });
-
-  function resetJoy(e){
-    if(e && e.pointerId !== joy.pointerId) return;
-    joy.active = false; joy.x = 0; joy.y = 0;
-    joyBase.style.display = 'none';
-  }
-  touchZone.addEventListener('pointerup', resetJoy);
-  touchZone.addEventListener('pointercancel', resetJoy);
-
-  // Spawning & Logic
-  function spawnEnemy(forceType){
-    const type=forceType || (Math.random()<.15+Math.min(.2,wave*.01)?'oni':Math.random()<.38?'tengu':'kitsune');
-    const t=enemyTypes[type];
-    const a=Math.random()*Math.PI*2; const d=Math.max(W,H)*.5+rand(120,280);
-    const x=clamp(player.x+Math.cos(a)*d,60,world.w-60), y=clamp(player.y+Math.sin(a)*d,60,world.h-60);
-    enemies.push({
-      x,y,r:t.r,hp:t.hp*(1+(wave-1)*.13),maxHp:t.hp*(1+(wave-1)*.13),
-      speed:t.speed*(1+(wave-1)*.02),damage:t.damage*(1+(wave-1)*.05),
-      xp:t.xp,type,color:t.color,hit:0,animFrame:0,animTimer:0
-    });
-  }
-
-  // สุ่มเกิด Skill Orb ในฉาก
-  function spawnSkillOrb(){
-    const orbInfo = skillOrbTypes[Math.floor(Math.random()*skillOrbTypes.length)];
-    const a = Math.random()*Math.PI*2, d = rand(150, 400);
-    skillOrbs.push({
-      x: clamp(player.x + Math.cos(a)*d, 100, world.w-100),
-      y: clamp(player.y + Math.sin(a)*d, 100, world.h-100),
-      r: 16, life: 18, type: orbInfo.type, color: orbInfo.color,
-      icon: orbInfo.icon, name: orbInfo.name, animTimer: 0
-    });
-  }
-
-  // เรียกใช้การโจมตีพิเศษเมื่อเก็บ Skill Orb
-  function triggerSpecialSkill(orb){
-    setStatus(`ปลดปล่อย: ${orb.name}`);
-    makeSparks(player.x, player.y, orb.color, 30);
-
-    if(orb.type === 'dragon'){
-      specialAttacks.push({
-        type:'dragon', x:player.x, y:player.y, vx:Math.cos(player.angle)*1000, vy:Math.sin(player.angle)*1000,
-        r:60, life:1.5, damage:player.damage*4, angle:player.angle
-      });
-    } else if(orb.type === 'thunder'){
-      for(let i=0; i<16; i++){
-        const a = (Math.PI*2/16)*i;
-        bullets.push({
-          x:player.x, y:player.y, vx:Math.cos(a)*900, vy:Math.sin(a)*900,
-          r:12, life:1.2, damage:player.damage*2.5, crit:true, angle:a, isThunder:true
-        });
-      }
-    } else if(orb.type === 'cyclone'){
-      specialAttacks.push({
-        type:'cyclone', x:player.x, y:player.y, r:130, life:3.5, damage:player.damage*3
-      });
-    } else if(orb.type === 'sakura'){
-      for(const e of enemies){
-        hitEnemy(e, player.damage*3.5, true);
-        makeSparks(e.x, e.y, '#ff79c6', 12);
-      }
-      specialAttacks.push({ type:'sakura', x:player.x, y:player.y, r:400, life:0.8 });
-    }
-  }
-
-  function shoot(){
-    let target=null,bd=Infinity;
-    for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<bd){bd=d;target=e;}}
-    if(!target)return;
-    const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
-    for(let i=0;i<player.projectiles;i++){
-      const spread=(i-(player.projectiles-1)/2)*.18;
-      const a=baseAngle+spread;
-      const crit=Math.random()<player.crit;
-      bullets.push({x:player.x+Math.cos(a)*20,y:player.y+Math.sin(a)*20,vx:Math.cos(a)*player.bulletSpeed,vy:Math.sin(a)*player.bulletSpeed,r:8,life:0.9,damage:player.damage*(crit?2.2:1),crit,angle:a});
-    }
-  }
-
-  function addXP(x,y,amount){xpOrbs.push({x,y,r:5,value:amount,life:15,animTimer:Math.random()*10});}
-  function makeSparks(x,y,color,count=6){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=rand(50,180);sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.2,.5),color,size:rand(3,6)});}}
-
-  function hitEnemy(e,damage,crit){
-    e.hp-=damage;e.hit=.12;makeSparks(e.x,e.y,crit?'#f1c40f':'#e74c3c',crit?10:5);
-    if(e.hp<=0){
-      const i=enemies.indexOf(e); if(i>=0)enemies.splice(i,1); kills++; addXP(e.x,e.y,e.xp);
-    }
-  }
-
-  function gainXP(v){
-    xp+=v;
-    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.3+5);openLevelUp();}
-  }
-
-  function openLevelUp(){
-    paused=true; joy.active=false; joyBase.style.display='none';
-    const wrap=document.getElementById('upgrades');wrap.innerHTML='';
-    [...upgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
-      const b=document.createElement('button');b.className='upgrade';
-      b.innerHTML=`<div class="icon">${u.icon}</div><div><div class="uName">${u.name}</div><div class="uDesc">${u.desc}</div></div>`;
-      b.onclick=()=>{u.apply();document.getElementById('levelOverlay').classList.add('hidden');paused=false;setStatus('พร้อมลุย!');};wrap.appendChild(b);
-    });
-    document.getElementById('levelOverlay').classList.remove('hidden');refreshHUD();
-  }
-
-  function hurt(v){if(player.hit>0||over)return;const dmg=Math.max(1,v*(1-player.armor));player.hp-=dmg;player.hit=.35;makeSparks(player.x,player.y,'#e74c3c',12);if(player.hp<=0)endGame();}
-
-  function update(dt){
-    elapsed+=dt; wave=1+Math.floor(elapsed/20);
-    spawnTimer-=dt; skillOrbTimer-=dt; player.fireTimer-=dt;
-    player.hit=Math.max(0,player.hit-dt);
-    if(player.regen>0)player.hp=Math.min(player.maxHp,player.hp+player.regen*dt);
-
-    const kx=(keys.right?1:0)-(keys.left?1:0)+(joy.active?joy.x:0);
-    const ky=(keys.down?1:0)-(keys.up?1:0)+(joy.active?joy.y:0);
-    const len=Math.hypot(kx,ky)||1;
-    const nx=clamp(kx/len,-1,1), ny=clamp(ky/len,-1,1);
-    const magnitude=Math.min(1,Math.hypot(kx,ky));
-
-    if(magnitude>.05){
-      player.x=clamp(player.x+nx*player.speed*magnitude*dt,40,world.w-40);
-      player.y=clamp(player.y+ny*player.speed*magnitude*dt,40,world.h-40);
-      player.angle=Math.atan2(ny,nx);
-      player.facing = nx < 0 ? 'left' : 'right';
-      player.animTimer+=dt*12;
-      if(player.animTimer>=1){player.animFrame=(player.animFrame+1)%4;player.animTimer=0;}
-    } else { player.animFrame=0; }
-
-    if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
-
-    // เกิดศัตรู
-    const spawnRate=Math.max(.12,.60-wave*.015);
-    if(spawnTimer<=0){
-      const batch=wave>=5 && Math.random()<.35?2:1;
-      for(let i=0;i<batch;i++)spawnEnemy();
-      spawnTimer=spawnRate;
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
     }
 
-    // เกิด Skill Orb
-    if(skillOrbTimer<=0){
-      if(skillOrbs.length < 3) spawnSkillOrb();
-      skillOrbTimer = rand(7, 12);
-    }
+    const camera = { x: 0, y: 0 };
+    function sx(worldX, cam) { return worldX - cam.x; }
+    function sy(worldY, cam) { return worldY - cam.y; }
 
-    // อัปเดต Skill Orbs & การชนผู้เล่น
-    for(let i=skillOrbs.length-1; i>=0; i--){
-      const orb = skillOrbs[i];
-      orb.life -= dt; orb.animTimer += dt*4;
-      if(dist(player.x, player.y, orb.x, orb.y) < player.r + orb.r + 8){
-        triggerSpecialSkill(orb);
-        skillOrbs.splice(i, 1);
-        continue;
-      }
-      if(orb.life <= 0) skillOrbs.splice(i, 1);
-    }
-
-    // อัปเดต Special Attacks
-    for(let i=specialAttacks.length-1; i>=0; i--){
-      const sa = specialAttacks[i];
-      sa.life -= dt;
-      if(sa.type === 'dragon'){
-        sa.x += sa.vx*dt; sa.y += sa.vy*dt;
-        for(const e of enemies){
-          if(dist(sa.x, sa.y, e.x, e.y) < sa.r + e.r) hitEnemy(e, sa.damage*dt*5, true);
-        }
-      } else if(sa.type === 'cyclone'){
-        sa.x = player.x; sa.y = player.y;
-        for(const e of enemies){
-          if(dist(sa.x, sa.y, e.x, e.y) < sa.r + e.r) hitEnemy(e, sa.damage*dt*4, true);
-        }
-      }
-      if(sa.life <= 0) specialAttacks.splice(i, 1);
-    }
-
-    for(const e of enemies){
-      const a=Math.atan2(player.y-e.y,player.x-e.x); 
-      e.x+=Math.cos(a)*e.speed*dt; e.y+=Math.sin(a)*e.speed*dt;
-      e.hit=Math.max(0,e.hit-dt);
-      e.animTimer+=dt*8;
-      if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
-      
-      const d=dist(e.x,e.y,player.x,player.y);
-      if(d<e.r+player.r)hurt(e.damage*dt*1.5);
-    }
-
-    for(let i=bullets.length-1;i>=0;i--){
-      const b=bullets[i];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
-      let remove=b.life<=0||b.x<0||b.y<0||b.x>world.w||b.y>world.h;
-      if(!remove){
-        for(const e of enemies){
-          if(dist(b.x,b.y,e.x,e.y)<b.r+e.r){hitEnemy(e,b.damage,b.crit);remove=true;break;}
-        }
-      }
-      if(remove)bullets.splice(i,1);
-    }
-
-    for(let i=xpOrbs.length-1;i>=0;i--){
-      const o=xpOrbs[i];o.life-=dt;o.animTimer+=dt*5;
-      const d=dist(o.x,o.y,player.x,player.y);
-      if(d<player.pickup){
-        const a=Math.atan2(player.y-o.y,player.x-o.x);
-        o.x+=Math.cos(a)*(300+player.pickup*2)*dt;
-        o.y+=Math.sin(a)*(300+player.pickup*2)*dt;
-      }
-      if(d<player.r+o.r){gainXP(o.value);xpOrbs.splice(i,1);continue}
-      if(o.life<=0)xpOrbs.splice(i,1);
-    }
-
-    for(let i=sparks.length-1;i>=0;i--){
-      const s=sparks[i];s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vx*=.92;s.vy*=.92;
-      if(s.life<=0)sparks.splice(i,1);
-    }
-
-    for(const p of petals){
-      p.x += p.vx*dt; p.y += p.vy*dt; p.r += dt;
-      if(p.x<0) p.x=W; if(p.y>H) p.y=0;
-    }
-    refreshHUD();
-  }
-
-  function camera(){
-    return {
-      x:clamp(player.x-W/2, 0, Math.max(0,world.w-W)),
-      y:clamp(player.y-H/2, 0, Math.max(0,world.h-H))
+    const player = {
+      x: 400,
+      y: 330,
+      vx: 0,
+      facing: 'right',
+      animFrame: 0,
+      animTimer: 0,
+      angle: 0,
+      hit: 0,
+      hp: 100,
+      maxHp: 100,
+      isAttacking: false,
+      attackCooldown: 0
     };
-  }
 
-  function sx(x,cam){return Math.floor(x-cam.x);} 
-  function sy(y,cam){return Math.floor(y-cam.y);}
+    const enemies = [];
+    const enemyTypes = ['oni', 'tengu', 'kitsune'];
 
-  function drawGround(cam){
-    ctx.fillStyle='#090d12'; ctx.fillRect(0,0,W,H);
-    const tileSize=32;
-    const startX=-(cam.x%tileSize), startY=-(cam.y%tileSize);
-    
-    ctx.fillStyle='#111820';
-    for(let x=startX; x<W; x+=tileSize){
-      for(let y=startY; y<H; y+=tileSize){
-        const worldX = Math.floor((x+cam.x)/tileSize);
-        const worldY = Math.floor((y+cam.y)/tileSize);
-        if((worldX+worldY)%2===0){
-          ctx.fillRect(Math.floor(x), Math.floor(y), tileSize, tileSize);
+    function spawnEnemy() {
+      const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+      const side = Math.random() < 0.5 ? -40 : 840;
+      let hp = 60, radius = 20, speed = 1.2;
+
+      if (type === 'oni') {
+        hp = 140; radius = 28; speed = 0.7;
+      } else if (type === 'tengu') {
+        hp = 50; radius = 18; speed = 1.8;
+      } else if (type === 'kitsune') {
+        hp = 45; radius = 16; speed = 1.4;
+      }
+
+      enemies.push({
+        x: side,
+        y: 330,
+        type: type,
+        hp: hp,
+        maxHp: hp,
+        r: radius,
+        speed: speed,
+        animFrame: 0,
+        animTimer: 0,
+        hit: 0
+      });
+    }
+
+    setInterval(spawnEnemy, 2300);
+    spawnEnemy();
+
+    const keys = {};
+    let mousePos = { x: 400, y: 300 };
+
+    window.addEventListener('keydown', (e) => { keys[e.code] = true; });
+    window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mousePos.x = e.clientX - rect.left;
+      mousePos.y = e.clientY - rect.top;
+    });
+
+    // ==========================================
+    // 1. ตัวละครซามูไรไร้พ่าย (Enhanced High-Detail Samurai)
+    // ==========================================
+    function drawSamuraiPlayer(cam) {
+      const px = sx(player.x, cam), py = sy(player.y, cam);
+      const flip = player.facing === 'left';
+      const anim = player.animFrame;
+      const isMoving = (anim !== 0);
+      const bob = isMoving ? (anim % 2 === 1 ? -2 : 0) : Math.sin(Date.now() * 0.005) * 1;
+
+      ctx.save();
+      ctx.translate(px, py);
+
+      if (player.hit > 0 && Math.floor(player.hit * 25) % 2 === 0) {
+        ctx.globalAlpha = 0.35;
+      }
+
+      // เงาตัวละครแบบเล่นระดับความโปร่งแสง
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.fillRect(-16, 13, 32, 5);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillRect(-20, 15, 40, 2);
+
+      if (flip) ctx.scale(-1, 1);
+
+      // ผ้าคลุมหลัง Haori (เพิ่มริ้วผ้า Dithering + เงาตกกระทบ)
+      ctx.fillStyle = '#0a0f14'; ctx.fillRect(-16, -11 + bob, 9, 17);
+      ctx.fillStyle = '#15222e'; ctx.fillRect(-15, -10 + bob, 7, 15);
+      ctx.fillStyle = '#213345'; ctx.fillRect(-18 - (isMoving ? anim * 3 : 0), -8 + bob, 6, 13);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(-19 - (isMoving ? anim * 3 : 0), -7 + bob, 2, 11);
+      ctx.fillStyle = '#5d6d7e'; ctx.fillRect(-20 - (isMoving ? anim * 3 : 0), -5 + bob, 1, 7);
+
+      // ทรงผม Chonmage & ผ้าโพกหน้า
+      ctx.fillStyle = '#050505'; ctx.fillRect(-5, -26 + bob, 12, 11);
+      ctx.fillStyle = '#11161b'; ctx.fillRect(-4, -25 + bob, 10, 9);
+      ctx.fillStyle = '#1c2833'; ctx.fillRect(-3, -24 + bob, 4, 5);
+      ctx.fillStyle = '#b7950b'; ctx.fillRect(-6, -27 + bob, 4, 4);
+      ctx.fillStyle = '#f1c40f'; ctx.fillRect(-5, -27 + bob, 2, 3);
+      ctx.fillStyle = '#11161b'; ctx.fillRect(-10, -28 + bob, 6, 5);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(-12, -30 + bob, 5, 4);
+
+      // ใบหน้า & หน้ากากปิดปาก (Menpo)
+      ctx.fillStyle = '#7e5109'; ctx.fillRect(-2, -19 + bob, 9, 8);
+      ctx.fillStyle = '#b9770e'; ctx.fillRect(-1, -18 + bob, 7, 6);
+      ctx.fillStyle = '#f39c12'; ctx.fillRect(1, -17 + bob, 4, 4);
+      // ดวงตามุ่งมั่น (มีจุดเงาและไฮไลต์)
+      ctx.fillStyle = '#111'; ctx.fillRect(1, -18 + bob, 5, 2);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(2, -18 + bob, 3, 2);
+      ctx.fillStyle = '#154360'; ctx.fillRect(3, -18 + bob, 1, 2);
+      ctx.fillStyle = '#2ecc71'; ctx.fillRect(4, -18 + bob, 1, 1);
+      // หน้ากาก Menpo ลายปีศาจ
+      ctx.fillStyle = '#641e16'; ctx.fillRect(-1, -14 + bob, 8, 5);
+      ctx.fillStyle = '#922b21'; ctx.fillRect(1, -13 + bob, 5, 3);
+      ctx.fillStyle = '#f2f4f4'; ctx.fillRect(2, -13 + bob, 1, 2); ctx.fillRect(5, -13 + bob, 1, 2);
+
+      // ผ้าพันคอพันพลิ้วไหว
+      ctx.fillStyle = '#641e16'; ctx.fillRect(-5, -13 + bob, 13, 5);
+      ctx.fillStyle = '#922b21'; ctx.fillRect(-4, -12 + bob, 11, 4);
+      ctx.fillStyle = '#c0392b'; ctx.fillRect(-2, -12 + bob, 8, 2);
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(0, -11 + bob, 5, 1);
+
+      // เกราะไหล่และชุดกิโมโน (Sode & Kimono)
+      ctx.fillStyle = '#112233'; ctx.fillRect(-9, -10 + bob, 19, 15);
+      ctx.fillStyle = '#1a365d'; ctx.fillRect(-8, -9 + bob, 17, 13);
+      ctx.fillStyle = '#2b6cb0'; ctx.fillRect(-6, -9 + bob, 8, 12);
+      ctx.fillStyle = '#4299e1'; ctx.fillRect(-4, -8 + bob, 4, 10);
+      // ลวดลายสีทองบนชุด
+      ctx.fillStyle = '#d69e2e'; ctx.fillRect(-4, -6 + bob, 2, 2); ctx.fillRect(0, -3 + bob, 2, 2);
+      ctx.fillStyle = '#f6e05e'; ctx.fillRect(-3, -6 + bob, 1, 1);
+
+      // แขนเสื้อและเกราะแขน (Kote)
+      ctx.fillStyle = '#0d1f2d'; ctx.fillRect(-14, -9 + bob, 7, 12);
+      ctx.fillStyle = '#1d3557'; ctx.fillRect(-13, -8 + bob, 5, 10);
+      ctx.fillStyle = '#457b9d'; ctx.fillRect(-12, -7 + bob, 2, 8);
+      ctx.fillStyle = '#d69e2e'; ctx.fillRect(-14, -5 + bob, 6, 2); // แถบเกราะทอง
+
+      // เข็มขัดโอบิและเชือกผูกดาบ
+      ctx.fillStyle = '#5f4b06'; ctx.fillRect(-9, 2 + bob, 19, 5);
+      ctx.fillStyle = '#97750a'; ctx.fillRect(-8, 3 + bob, 17, 3);
+      ctx.fillStyle = '#d69e2e'; ctx.fillRect(-3, 2 + bob, 6, 5);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(-2, 3 + bob, 3, 3);
+
+      // กางเกงฮากามะ (Hakama - ลายจีบผ้าซับซ้อน)
+      ctx.fillStyle = '#0a192f'; ctx.fillRect(-10, 7 + bob, 9, 8); ctx.fillRect(2, 7 + bob, 9, 8);
+      ctx.fillStyle = '#1e3a8a'; ctx.fillRect(-9, 7 + bob, 7, 7); ctx.fillRect(3, 7 + bob, 7, 7);
+      ctx.fillStyle = '#3b82f6'; ctx.fillRect(-7, 8 + bob, 3, 5); ctx.fillRect(5, 8 + bob, 3, 5);
+      ctx.fillStyle = '#60a5fa'; ctx.fillRect(-6, 9 + bob, 1, 3); ctx.fillRect(6, 9 + bob, 1, 3);
+
+      // รองเท้าฟาง (Waraji) และถุงเท้า (Tabi)
+      ctx.fillStyle = '#78350f';
+      if (anim === 1) {
+        ctx.fillRect(-8, 14 + bob, 5, 3); ctx.fillRect(4, 12 + bob, 5, 3);
+      } else if (anim === 3) {
+        ctx.fillRect(-8, 12 + bob, 5, 3); ctx.fillRect(4, 14 + bob, 5, 3);
+      } else {
+        ctx.fillRect(-7, 13 + bob, 5, 3); ctx.fillRect(3, 13 + bob, 5, 3);
+      }
+      ctx.fillStyle = '#451a03'; ctx.fillRect(-9, 16 + bob, 7, 2); ctx.fillRect(3, 16 + bob, 7, 2);
+      ctx.fillStyle = '#d97706'; ctx.fillRect(-7, 15 + bob, 2, 1); ctx.fillRect(5, 15 + bob, 2, 1);
+
+      // ดาบคาตานะแบบละเอียดยิ่งขึ้น (Katana with Guard & Aura)
+      ctx.save();
+      ctx.translate(5, -2 + bob);
+      let katanaAngle = player.angle;
+      if (flip) katanaAngle = Math.PI - katanaAngle;
+      ctx.rotate(katanaAngle);
+
+      // ด้ามจับ (Tsuka) + ลายพันเชือก
+      ctx.fillStyle = '#312e81'; ctx.fillRect(-10, -2, 10, 4);
+      ctx.fillStyle = '#991b1b'; ctx.fillRect(-9, -2, 2, 4); ctx.fillRect(-5, -2, 2, 4); ctx.fillRect(-1, -2, 2, 4);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(-11, -1, 2, 2); // หัวด้ามจับ
+      // กระบังมือ (Tsuba)
+      ctx.fillStyle = '#78350f'; ctx.fillRect(0, -6, 3, 12);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(1, -5, 1, 10);
+      // ใบดาบ (Blade) & สันดาบ
+      ctx.fillStyle = '#475569'; ctx.fillRect(3, -3, 26, 4);
+      ctx.fillStyle = '#94a3b8'; ctx.fillRect(3, -2, 26, 2);
+      ctx.fillStyle = '#f8fafc'; ctx.fillRect(3, -1, 26, 1); // คมดาบสะท้อนแสง
+      ctx.fillStyle = '#34d399'; ctx.fillRect(3, 1, 25, 1);  // ประกายเวทมนตร์สีเขียวออร่า
+      ctx.fillStyle = '#a7f3d0'; ctx.fillRect(27, -1, 4, 1);  // ปลายดาบคมกริบ
+
+      // เอฟเฟกต์วงสวิงดาบ (Arc Attack Effect)
+      if (player.isAttacking) {
+        const grad = ctx.createRadialGradient(15, 0, 5, 15, 0, 35);
+        grad.addColorStop(0, 'rgba(52, 211, 153, 0.8)');
+        grad.addColorStop(0.6, 'rgba(16, 185, 129, 0.4)');
+        grad.addColorStop(1, 'rgba(5, 150, 105, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(15, 0, 36, -Math.PI / 2.5, Math.PI / 2.5);
+        ctx.fill();
+      }
+
+      ctx.restore();
+      ctx.restore();
+    }
+
+    // ==========================================
+    // 2. ฝูงปีศาจโยไกดีไซน์ใหม่ (High-Detail Yokai Enemies)
+    // ==========================================
+    function drawYokaiEnemy(e, cam) {
+      const px = sx(e.x, cam), py = sy(e.y, cam);
+      const flip = player.x < e.x;
+      const r = e.r;
+
+      ctx.save();
+      ctx.translate(px, py);
+
+      if (e.hit > 0 && Math.floor(e.hit * 30) % 2 === 0) {
+        ctx.globalAlpha = 0.35;
+      }
+
+      // เงาปีศาจ
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillRect(-r * 0.9, r - 2, r * 1.8, 6);
+
+      if (flip) ctx.scale(-1, 1);
+
+      // --- 2.1 ONI (ยักษ์แดงตาเดียวตัวใหญ่) ---
+      if (e.type === 'oni') {
+        const bob = e.animFrame === 1 ? -3 : 0;
+        // กล้ามเนื้อตัว (Body & Shadows)
+        ctx.fillStyle = '#450a0a'; ctx.fillRect(-22, -24 + bob, 44, 35);
+        ctx.fillStyle = '#7f1d1d'; ctx.fillRect(-20, -22 + bob, 40, 31);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(-14, -20 + bob, 16, 20); // ไฮไลต์อกกล้าม
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(-10, -18 + bob, 8, 12);
+        // กางเกงหนังเสือ
+        ctx.fillStyle = '#78350f'; ctx.fillRect(-20, 6 + bob, 40, 13);
+        ctx.fillStyle = '#d97706'; ctx.fillRect(-18, 7 + bob, 36, 11);
+        ctx.fillStyle = '#18181b'; // ลายเสือ
+        ctx.fillRect(-14, 8 + bob, 5, 9); ctx.fillRect(-2, 10 + bob, 6, 7); ctx.fillRect(10, 8 + bob, 5, 9);
+        // หัวและเขา (Horns & Face)
+        ctx.fillStyle = '#450a0a'; ctx.fillRect(-16, -35 + bob, 32, 15);
+        ctx.fillStyle = '#7f1d1d'; ctx.fillRect(-14, -33 + bob, 28, 12);
+        // เขาสัตว์ละเอียดยาว
+        ctx.fillStyle = '#27272a'; ctx.fillRect(-14, -46 + bob, 7, 13); ctx.fillRect(7, -46 + bob, 7, 13);
+        ctx.fillStyle = '#d4d4d8'; ctx.fillRect(-12, -45 + bob, 4, 10); ctx.fillRect(9, -45 + bob, 4, 10);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(-11, -44 + bob, 2, 8);  ctx.fillRect(10, -44 + bob, 2, 8);
+        // ตาเดียวขนาดใหญ่ (Cyclops Eye)
+        ctx.fillStyle = '#18181b'; ctx.fillRect(-7, -29 + bob, 14, 9);
+        ctx.fillStyle = '#ca8a04'; ctx.fillRect(-5, -28 + bob, 10, 7);
+        ctx.fillStyle = '#facc15'; ctx.fillRect(-3, -27 + bob, 6, 5);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(-1, -26 + bob, 2, 3); // ตาดำแดงน่ากลัว
+        // เขี้ยวล่าง
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(-8, -21 + bob, 3, 5); ctx.fillRect(5, -21 + bob, 3, 5);
+        // กระบองหนาม (Kanabo Club)
+        ctx.fillStyle = '#18181b'; ctx.fillRect(20, -32 + bob, 10, 44);
+        ctx.fillStyle = '#3f3f46'; ctx.fillRect(22, -30 + bob, 6, 40);
+        ctx.fillStyle = '#facc15'; // หนามทองเหลือง
+        ctx.fillRect(18, -28 + bob, 3, 3); ctx.fillRect(29, -20 + bob, 3, 3);
+        ctx.fillRect(18, -12 + bob, 3, 3); ctx.fillRect(29, -4 + bob, 3, 3);
+
+      // --- 2.2 TENGU (ปีศาจอีกาจมูกยาว) ---
+      } else if (e.type === 'tengu') {
+        const bob = e.animFrame === 1 ? -5 : 0;
+        // ปีกอีกาพัดโบก
+        ctx.fillStyle = '#020617'; ctx.fillRect(-25, -20 + bob, 12, 22); ctx.fillRect(13, -20 + bob, 12, 22);
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(-23, -18 + bob, 10, 18); ctx.fillRect(13, -18 + bob, 10, 18);
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(-21, -16 + bob, 6, 14);  ctx.fillRect(15, -16 + bob, 6, 14);
+        // ชุดนักบวชยามะบูชิ
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(-11, -15 + bob, 22, 25);
+        ctx.fillStyle = '#7f1d1d'; ctx.fillRect(-9, -9 + bob, 18, 18);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(-7, -7 + bob, 14, 14);
+        // หน้ากากแดง Tengu & จมูกยาว
+        ctx.fillStyle = '#7f1d1d'; ctx.fillRect(-9, -26 + bob, 18, 13);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(-7, -24 + bob, 14, 10);
+        ctx.fillStyle = '#b91c1c'; ctx.fillRect(7, -22 + bob, 15, 6); // จมูกยื่นยาว
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(7, -23 + bob, 14, 2);
+        // หมวกกลม Tokkin
+        ctx.fillStyle = '#09090b'; ctx.fillRect(-5, -30 + bob, 10, 5);
+        ctx.fillStyle = '#facc15'; ctx.fillRect(-2, -29 + bob, 4, 2);
+        // พัดใบไม้เวทมนตร์ (Patsu)
+        ctx.fillStyle = '#15803d'; ctx.fillRect(9, -12 + bob, 12, 12);
+        ctx.fillStyle = '#4ade80'; ctx.fillRect(11, -10 + bob, 8, 8);
+
+      // --- 2.3 KITSUNE (จิ้งจอกเก้าหางพ่นไฟ) ---
+      } else {
+        const bob = e.animFrame === 1 ? -2 : 1;
+        // หางจิ้งจอกหลายสลวย
+        ctx.fillStyle = '#c2410c'; ctx.fillRect(-26, -18 + bob, 12, 18); ctx.fillRect(-22, -24 + bob, 10, 16);
+        ctx.fillStyle = '#ea580c'; ctx.fillRect(-24, -16 + bob, 10, 14); ctx.fillRect(-20, -22 + bob, 8, 12);
+        ctx.fillStyle = '#f97316'; ctx.fillRect(-22, -12 + bob, 6, 8);   ctx.fillRect(-18, -20 + bob, 5, 8);
+        ctx.fillStyle = '#fef3c7'; ctx.fillRect(-25, -6 + bob, 8, 6);   // ปลายหางสีขาว
+        // ลำตัวและขนอก
+        ctx.fillStyle = '#c2410c'; ctx.fillRect(-12, -13 + bob, 24, 19);
+        ctx.fillStyle = '#f97316'; ctx.fillRect(-10, -11 + bob, 20, 15);
+        ctx.fillStyle = '#fffbeb'; ctx.fillRect(-6, -7 + bob, 12, 11);
+        // หัวและหูยาว
+        ctx.fillStyle = '#c2410c'; ctx.fillRect(-11, -24 + bob, 7, 11); ctx.fillRect(4, -24 + bob, 7, 11);
+        ctx.fillStyle = '#f97316'; ctx.fillRect(-10, -22 + bob, 4, 8);  ctx.fillRect(6, -22 + bob, 4, 8);
+        ctx.fillStyle = '#fecdd3'; ctx.fillRect(-9, -21 + bob, 2, 6);   ctx.fillRect(7, -21 + bob, 2, 6);
+        // ดวงตาเรียววิญญาณ
+        ctx.fillStyle = '#0284c7'; ctx.fillRect(3, -12 + bob, 5, 3);
+        ctx.fillStyle = '#38bdf8'; ctx.fillRect(4, -12 + bob, 2, 2);
+
+        // ลูกไฟจิ้งจอกหมุนรอบตัว (Foxfire / Kitsunebi)
+        const fireA = Date.now() * 0.007;
+        const fx = Math.cos(fireA) * 22;
+        const fy = Math.sin(fireA) * 22 - 6;
+        ctx.fillStyle = '#0284c7'; ctx.fillRect(fx, fy, 6, 6);
+        ctx.fillStyle = '#38bdf8'; ctx.fillRect(fx + 1, fy + 1, 4, 4);
+        ctx.fillStyle = '#e0f2fe'; ctx.fillRect(fx + 2, fy + 2, 2, 2);
+      }
+
+      ctx.restore();
+
+      // หลอด HP สไตล์เกมอาเขต 16-Bit
+      const bw = r * 2.2, bh = 4, hp = clamp(e.hp / e.maxHp, 0, 1);
+      ctx.fillStyle = '#0f172a'; ctx.fillRect(px - bw / 2 - 1, py - r - 14, bw + 2, bh + 2);
+      ctx.fillStyle = '#991b1b'; ctx.fillRect(px - bw / 2, py - r - 13, bw, bh);
+      ctx.fillStyle = '#22c55e'; ctx.fillRect(px - bw / 2, py - r - 13, bw * hp, bh);
+      ctx.fillStyle = '#86efac'; ctx.fillRect(px - bw / 2, py - r - 13, bw * hp, 1);
+    }
+
+    // ==========================================
+    // 3. ฉากหลังญี่ปุ่นโบราณ (High-Detail Background)
+    // ==========================================
+    function drawBackground() {
+      // ท้องฟ้าไล่สีกลางคืน
+      const grad = ctx.createLinearGradient(0, 0, 0, 350);
+      grad.addColorStop(0, '#020617');
+      grad.addColorStop(0.5, '#0f172a');
+      grad.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // ดวงจันทร์เต็มดวงซ้อนเงาเรืองแสง
+      ctx.fillStyle = 'rgba(254, 243, 199, 0.15)';
+      ctx.beginPath(); ctx.arc(680, 80, 52, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fef3c7';
+      ctx.beginPath(); ctx.arc(680, 80, 42, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fde68a';
+      ctx.beginPath(); ctx.arc(668, 86, 36, 0, Math.PI * 2); ctx.fill();
+
+      // ภูเขาไฟฟูจิเงาดำไกลๆ
+      ctx.fillStyle = '#090d16';
+      ctx.beginPath();
+      ctx.moveTo(100, 350); ctx.lineTo(350, 160); ctx.lineTo(600, 350);
+      ctx.fill();
+      // หิมะบนยอดภูเขา
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.moveTo(300, 196); ctx.lineTo(350, 160); ctx.lineTo(400, 196);
+      ctx.lineTo(380, 210); ctx.lineTo(350, 200); ctx.lineTo(320, 210);
+      ctx.fill();
+
+      // พื้นดินและศาลเจ้า Torii
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 340, 800, 110);
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(0, 340, 800, 6);
+
+      // เสาโทริอิ (Torii Gate)
+      ctx.fillStyle = '#7f1d1d';
+      ctx.fillRect(110, 210, 14, 130); ctx.fillRect(190, 210, 14, 130);
+      ctx.fillRect(90, 200, 134, 16); ctx.fillRect(100, 222, 114, 12);
+      ctx.fillStyle = '#991b1b';
+      ctx.fillRect(92, 202, 130, 4);
+    }
+
+    function drawUI() {
+      // กรอบ HP ของซามูไร
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(18, 18, 208, 24);
+      ctx.fillStyle = '#7f1d1d';
+      ctx.fillRect(22, 22, 200, 16);
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(22, 22, 200 * (player.hp / player.maxHp), 16);
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(22, 22, 200 * (player.hp / player.maxHp), 3);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px "Courier New"';
+      ctx.fillText(`SAMURAI HP: ${Math.ceil(player.hp)}/100`, 28, 34);
+    }
+
+    function update() {
+      player.vx = 0;
+      if (keys['KeyA']) {
+        player.vx = -2.6;
+        player.facing = 'left';
+      }
+      if (keys['KeyD']) {
+        player.vx = 2.6;
+        player.facing = 'right';
+      }
+      player.x += player.vx;
+      player.x = clamp(player.x, 30, 770);
+
+      if (player.vx !== 0) {
+        player.animTimer++;
+        if (player.animTimer > 8) {
+          player.animFrame = (player.animFrame + 1) % 4;
+          player.animTimer = 0;
+        }
+      } else {
+        player.animFrame = 0;
+      }
+
+      const dx = mousePos.x - player.x;
+      const dy = mousePos.y - player.y;
+      player.angle = Math.atan2(dy, dx);
+
+      if (player.attackCooldown > 0) player.attackCooldown--;
+      if (keys['Space'] && player.attackCooldown === 0) {
+        player.isAttacking = true;
+        player.attackCooldown = 18;
+
+        enemies.forEach(e => {
+          const dist = Math.hypot(e.x - player.x, e.y - player.y);
+          if (dist < 70) {
+            e.hp -= 38;
+            e.hit = 0.3;
+            e.x += (e.x > player.x ? 28 : -28);
+          }
+        });
+      } else if (player.attackCooldown < 10) {
+        player.isAttacking = false;
+      }
+
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+
+        if (e.x < player.x) e.x += e.speed;
+        else e.x -= e.speed;
+
+        e.animTimer++;
+        if (e.animTimer > 12) {
+          e.animFrame = (e.animFrame + 1) % 2;
+          e.animTimer = 0;
+        }
+
+        if (e.hit > 0) e.hit -= 0.02;
+
+        const distToPlayer = Math.hypot(e.x - player.x, e.y - player.y);
+        if (distToPlayer < 26 && player.hit <= 0) {
+          player.hp -= 12;
+          player.hit = 0.5;
+        }
+
+        if (e.hp <= 0) {
+          enemies.splice(i, 1);
         }
       }
-    }
-    ctx.strokeStyle='#06090c'; ctx.lineWidth=1;
-    for(let x=startX; x<W; x+=tileSize){
-      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-    }
-    for(let y=startY; y<H; y+=tileSize){
-      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-    }
-  }
 
-  function drawScenery(item, cam){
-    const px=sx(item.x,cam), py=sy(item.y,cam);
-    if(px<-50 || px>W+50 || py<-50 || py>H+50) return;
-
-    if(item.type === 'torii'){
-      ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(px-24, py+12, 48, 6);
-      ctx.fillStyle='#922b21';
-      ctx.fillRect(px-20, py-30, 6, 40); ctx.fillRect(px+14, py-30, 6, 40);
-      ctx.fillRect(px-26, py-28, 52, 6);
-      ctx.fillStyle='#c0392b';
-      ctx.fillRect(px-30, py-38, 60, 8);
-      ctx.fillStyle='#111';
-      ctx.fillRect(px-4, py-30, 8, 8);
-    } else {
-      ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(px-8, py+6, 16, 4);
-      ctx.fillStyle='#2c3e50';
-      ctx.fillRect(px-6, py-2, 12, 8);
-      ctx.fillRect(px-2, py-10, 4, 8);
-      ctx.fillStyle='#f39c12'; ctx.fillRect(px-5, py-16, 10, 6);
-      ctx.fillStyle='#34495e'; ctx.fillRect(px-7, py-20, 14, 4);
-    }
-  }
-
-  // วาด Skill Orbs ในฉาก
-  function drawSkillOrbs(cam){
-    for(const orb of skillOrbs){
-      const px=sx(orb.x, cam), py=sy(orb.y, cam);
-      const floatY = Math.sin(orb.animTimer)*6;
-
-      const grad = ctx.createLinearGradient(px, py-100, px, py);
-      grad.addColorStop(0, 'rgba(255,255,255,0)');
-      grad.addColorStop(1, orb.color);
-      ctx.fillStyle = grad;
-      ctx.globalAlpha = 0.35;
-      ctx.fillRect(px-12, py-100+floatY, 24, 100);
-      ctx.globalAlpha = 1.0;
-
-      ctx.fillStyle = orb.color;
-      ctx.beginPath();
-      ctx.arc(px, py+floatY, orb.r, 0, Math.PI*2);
-      ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      ctx.font = '16px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(orb.icon, px, py+floatY);
-    }
-  }
-
-  // วาด Special Attacks อลังการ
-  function drawSpecialAttacks(cam){
-    for(const sa of specialAttacks){
-      const px=sx(sa.x, cam), py=sy(sa.y, cam);
-      if(sa.type === 'dragon'){
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.rotate(sa.angle);
-        ctx.fillStyle = '#00d2ff';
-        ctx.beginPath();
-        ctx.arc(0, 0, sa.r, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(-20, -10, 40, 20);
-        ctx.restore();
-      } else if(sa.type === 'cyclone'){
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.rotate(Date.now()*0.01);
-        ctx.strokeStyle = '#e74c3c';
-        ctx.lineWidth = 8;
-        ctx.beginPath();
-        ctx.arc(0, 0, sa.r, 0, Math.PI*2);
-        ctx.stroke();
-        ctx.restore();
-      } else if(sa.type === 'sakura'){
-        ctx.fillStyle = 'rgba(255, 121, 198, 0.3)';
-        ctx.fillRect(0, 0, W, H);
-      }
-    }
-  }
-
-  // ==========================================
-  // ตัวละครซามูไร พิกเซลอาร์ต Original
-  // ==========================================
-  function drawSamuraiPlayer(cam){
-    const px = sx(player.x, cam), py = sy(player.y, cam);
-    const flip = player.facing === 'left';
-    const anim = player.animFrame;
-    const isMoving = (anim !== 0);
-    const bob = isMoving ? (anim % 2 === 1 ? -2 : 0) : Math.sin(Date.now() * 0.005) * 1;
-
-    ctx.save();
-    ctx.translate(px, py);
-
-    if(player.hit > 0 && Math.floor(player.hit * 25) % 2 === 0){ 
-      ctx.globalAlpha = 0.3; 
+      if (player.hit > 0) player.hit -= 0.02;
+      if (player.hp < 0) player.hp = 0;
     }
 
-    // เงาพิกเซลด้านล่าง
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.fillRect(-12, 13, 24, 4);
-
-    if(flip) ctx.scale(-1, 1);
-
-    // ผ้าคลุมด้านหลัง (Dynamic Cape)
-    ctx.fillStyle = '#1b2631';
-    ctx.fillRect(-12, -8 + bob, 6, 12);
-    ctx.fillStyle = '#283747';
-    ctx.fillRect(-15 - (isMoving ? anim * 2 : 0), -6 + bob, 5, 10);
-
-    // ทรงผมและมวยผมซามูไรไร้พ่าย (Original Ronin Hair)
-    ctx.fillStyle = '#111111';
-    ctx.fillRect(-3, -22 + bob, 8, 8);
-    ctx.fillRect(-7, -24 + bob, 5, 4);
-    ctx.fillRect(-10, -26 + bob, 4, 3);
-    ctx.fillStyle = '#f39c12';
-    ctx.fillRect(-4, -24 + bob, 2, 3);
-
-    // ใบหน้า สายตาพิกเซล และผ้าพันคอ
-    ctx.fillStyle = '#d68910';
-    ctx.fillRect(-2, -18 + bob, 7, 6);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(2, -16 + bob, 2, 2);
-    ctx.fillStyle = '#111111';
-    ctx.fillRect(3, -16 + bob, 1, 2);
-    ctx.fillStyle = '#c0392b';
-    ctx.fillRect(-3, -13 + bob, 9, 3);
-
-    // ลำตัว & ชุดกิโมโน (Custom Cyan-Navy Kimono)
-    ctx.fillStyle = '#1b4f72';
-    ctx.fillRect(-8, -10 + bob, 16, 13);
-
-    ctx.fillStyle = '#2980b9';
-    ctx.fillRect(-6, -10 + bob, 5, 12);
-    ctx.fillRect(-1, -7 + bob, 8, 9);
-    ctx.fillStyle = '#2ecc71';
-    ctx.fillRect(-4, -5 + bob, 2, 2);
-
-    ctx.fillStyle = '#154360';
-    ctx.fillRect(-12, -9 + bob, 5, 10);
-    ctx.fillRect(7, -8 + bob, 5, 9);
-
-    // โอบิ (เข็มขัดผ้าสีทอง)
-    ctx.fillStyle = '#d4ac0d';
-    ctx.fillRect(-8, 1 + bob, 16, 3);
-    ctx.fillStyle = '#f1c40f';
-    ctx.fillRect(-2, 1 + bob, 4, 3);
-
-    // ชายกิโมโนส่วนล่าง
-    ctx.fillStyle = '#1b4f72';
-    ctx.fillRect(-8, 4 + bob, 7, 7);
-    ctx.fillRect(1, 4 + bob, 7, 7);
-    ctx.fillStyle = '#2980b9';
-    ctx.fillRect(-6, 5 + bob, 3, 5);
-
-    // ขาและการก้าวเดิน
-    ctx.fillStyle = '#d68910';
-    if(anim === 1){
-      ctx.fillRect(-6, 11 + bob, 4, 3); ctx.fillRect(3, 9 + bob, 4, 3);
-    } else if(anim === 3){
-      ctx.fillRect(-6, 9 + bob, 4, 3); ctx.fillRect(3, 11 + bob, 4, 3);
-    } else {
-      ctx.fillRect(-5, 10 + bob, 3, 3); ctx.fillRect(2, 10 + bob, 3, 3);
-    }
-    ctx.fillStyle = '#7e5109';
-    ctx.fillRect(-7, 13 + bob, 5, 2); ctx.fillRect(2, 13 + bob, 5, 2);
-
-    // ดาบคาตานะเวทมนตร์ (Aura Katana)
-    ctx.save();
-    ctx.translate(4, -4 + bob);
-    let katanaAngle = player.angle;
-    if(flip) katanaAngle = Math.PI - katanaAngle;
-    ctx.rotate(katanaAngle);
-
-    ctx.fillStyle = '#78281f'; ctx.fillRect(-7, -2, 7, 3);
-    ctx.fillStyle = '#111'; ctx.fillRect(-5, -2, 2, 3);
-    ctx.fillStyle = '#f1c40f'; ctx.fillRect(0, -4, 2, 7);
-    ctx.fillStyle = '#eaeded'; ctx.fillRect(2, -2, 20, 2);
-    ctx.fillStyle = '#2ecc71'; ctx.fillRect(2, -1, 20, 1);
-    ctx.restore();
-
-    ctx.restore();
-  }
-
-  function drawYokaiEnemy(e, cam){
-    const px=sx(e.x,cam), py=sy(e.y,cam);
-    const flip = player.x < e.x;
-    const r = e.r;
-
-    ctx.save();
-    ctx.translate(px, py);
-
-    if(e.hit>0 && Math.floor(e.hit*30)%2===0){ ctx.globalAlpha=0.3; }
-
-    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(-r*.8, r-4, r*1.6, 5);
-
-    if(flip) ctx.scale(-1, 1);
-
-    if(e.type === 'oni'){ 
-      const bob = e.animFrame === 1 ? -3 : 0;
-      ctx.fillStyle='#78281f'; ctx.fillRect(-18, -20+bob, 36, 30);
-      ctx.fillStyle='#f39c12'; ctx.fillRect(-16, 5+bob, 32, 10);
-      ctx.fillStyle='#111'; ctx.fillRect(-12, 7+bob, 5, 5); ctx.fillRect(5, 8+bob, 6, 4);
-
-      ctx.fillStyle='#922b21'; ctx.fillRect(-12, -30+bob, 24, 12);
-      ctx.fillStyle='#f1c40f';
-      ctx.fillRect(-10, -38+bob, 4, 9); ctx.fillRect(6, -38+bob, 4, 9);
-
-      ctx.fillStyle='#f39c12'; ctx.fillRect(3, -25+bob, 5, 4);
-      ctx.fillStyle='#fff'; ctx.fillRect(-5, -21+bob, 3, 4); ctx.fillRect(2, -21+bob, 3, 4);
-
-      ctx.fillStyle='#1b2631'; ctx.fillRect(16, -24+bob, 7, 36);
-      ctx.fillStyle='#bdc3c7'; ctx.fillRect(14, -20+bob, 2, 2); ctx.fillRect(23, -12+bob, 2, 2); ctx.fillRect(14, -4+bob, 2, 2);
-
-    } else if(e.type === 'tengu'){ 
-      const bob = e.animFrame === 1 ? -3 : 0;
-      ctx.fillStyle='#111';
-      ctx.fillRect(-16, -14+bob, 8, 16); ctx.fillRect(8, -14+bob, 8, 16);
-
-      ctx.fillStyle='#1c2833'; ctx.fillRect(-9, -12+bob, 18, 22);
-      ctx.fillStyle='#c0392b'; ctx.fillRect(-7, -6+bob, 14, 14);
-
-      ctx.fillStyle='#e74c3c'; ctx.fillRect(-7, -22+bob, 14, 11);
-      ctx.fillRect(7, -18+bob, 10, 4);
-
-      ctx.fillStyle='#111'; ctx.fillRect(-3, -25+bob, 6, 3);
-      ctx.fillStyle='#2ecc71'; ctx.fillRect(7, -8+bob, 8, 8);
-
-    } else { 
-      const bob = e.animFrame === 1 ? -2 : 1;
-      ctx.fillStyle='#ecf0f1'; ctx.fillRect(-11, -10+bob, 22, 16);
-      ctx.fillStyle='#e67e22'; ctx.fillRect(-9, -12+bob, 18, 6);
-
-      ctx.fillStyle='#d35400';
-      ctx.fillRect(-18, -16+bob, 8, 14); ctx.fillRect(-20, -10+bob, 6, 12);
-      ctx.fillStyle='#fff'; ctx.fillRect(-18, -18+bob, 5, 4);
-
-      ctx.fillStyle='#d35400'; ctx.fillRect(-9, -20+bob, 4, 8); ctx.fillRect(3, -20+bob, 4, 8);
-      ctx.fillStyle='#f1c40f'; ctx.fillRect(4, -10+bob, 4, 3);
-
-      const fireA = Date.now()*0.005;
-      ctx.fillStyle='#3498db';
-      ctx.fillRect(Math.cos(fireA)*18, Math.sin(fireA)*18-5, 4, 4);
-      ctx.fillRect(Math.cos(fireA+2)*18, Math.sin(fireA+2)*18-5, 4, 4);
+    function gameLoop() {
+      update();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBackground();
+      drawSamuraiPlayer(camera);
+      enemies.forEach(e => {
+        drawYokaiEnemy(e, camera);
+      });
+      drawUI();
+      requestAnimationFrame(gameLoop);
     }
 
-    ctx.restore();
-
-    const bw=r*2, bh=3, hp=clamp(e.hp/e.maxHp,0,1);
-    ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-11, bw+2, bh+2);
-    ctx.fillStyle='#c0392b'; ctx.fillRect(px-bw/2, py-r-10, bw, bh);
-    ctx.fillStyle='#2ecc71'; ctx.fillRect(px-bw/2, py-r-10, bw*hp, bh);
-  }
-
-  function drawSlashWave(b, cam){
-    const px=sx(b.x,cam), py=sy(b.y,cam);
-    ctx.save();
-    ctx.translate(px, py);
-    ctx.rotate(b.angle);
-
-    ctx.fillStyle=b.isThunder?'#f1c40f':(b.crit?'#f39c12':'#3498db');
-    ctx.beginPath();
-    ctx.arc(0, 0, b.isThunder?16:14, -Math.PI/2, Math.PI/2, false);
-    ctx.arc(-4, 0, b.isThunder?12:10, Math.PI/2, -Math.PI/2, true);
-    ctx.fill();
-
-    ctx.fillStyle='#ffffff';
-    ctx.fillRect(-2, -8, 2, 16);
-
-    ctx.restore();
-  }
-
-  function drawOnibiOrb(o, cam){
-    const px=sx(o.x,cam), py=sy(o.y,cam);
-    const bob=Math.sin(o.animTimer)*4;
-    
-    ctx.fillStyle='rgba(52, 152, 219, 0.35)'; ctx.fillRect(px-6, py-6+bob, 12, 12);
-    ctx.fillStyle='#2ecc71'; ctx.fillRect(px-3, py-3+bob, 6, 6);
-    ctx.fillStyle='#fff'; ctx.fillRect(px-1, py-1+bob, 2, 2);
-  }
-
-  function drawSparks(cam){
-    for(const s of sparks){
-      const px=sx(s.x,cam), py=sy(s.y,cam);
-      ctx.fillStyle=s.color; ctx.fillRect(px, py, s.size, s.size);
-    }
-  }
-
-  function drawPetals(){
-    ctx.fillStyle='rgba(255, 182, 193, 0.7)';
-    for(const p of petals){
-      ctx.fillRect(p.x, p.y, p.s, p.s);
-    }
-  }
-
-  function render(){
-    const cam=camera();
-    drawGround(cam);
-
-    for(const s of scenery) drawScenery(s, cam);
-
-    drawSkillOrbs(cam);
-    drawSpecialAttacks(cam);
-
-    for(const o of xpOrbs) drawOnibiOrb(o,cam);
-    for(const b of bullets) drawSlashWave(b,cam);
-    
-    const sorted=[...enemies].sort((a,b)=>a.y-b.y);
-    let playerDrawn=false;
-    for(const e of sorted){
-      if(!playerDrawn && player.y < e.y){
-        drawSamuraiPlayer(cam); playerDrawn=true;
-      }
-      drawYokaiEnemy(e,cam);
-    }
-    if(!playerDrawn) drawSamuraiPlayer(cam);
-
-    drawSparks(cam);
-    drawPetals();
-  }
-
-  function refreshHUD(){
-    document.getElementById('hpText').textContent=`${Math.ceil(Math.max(0,player.hp))}/${Math.ceil(player.maxHp)}`;
-    document.getElementById('hpFill').style.width=(100*player.hp/player.maxHp)+'%';
-    document.getElementById('xpFill').style.width=(100*xp/xpNeed)+'%';
-    document.getElementById('levelText').textContent=level;
-    document.getElementById('xpText').textContent=`${Math.floor(xp)}/${xpNeed}`;
-    document.getElementById('waveText').textContent=wave;
-    document.getElementById('killsText').textContent=`กำจัด: ${kills}`;
-  }
-  
-  function setStatus(t){document.getElementById('status').textContent=t;}
-
-  function endGame(){
-    if(over)return;over=true;running=false;paused=true;
-    joy.active=false; joyBase.style.display='none';
-    document.getElementById('finalStats').innerHTML=`เวลาที่รอดชีวิต: ${formatTime(elapsed)}<br>ระลอกที่รอด: ${wave}<br>จำนวนศัตรูที่กำจัด: ${kills}<br>เลเวลสูงสุด: ${level}`;
-    document.getElementById('gameOver').classList.remove('hidden');
-  }
-  function formatTime(v){const s=Math.floor(v),m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');}
-
-  function resetGame(){
-    bullets=[];enemies=[];xpOrbs=[];skillOrbs=[];specialAttacks=[];sparks=[];elapsed=0;wave=1;kills=0;spawnTimer=0;skillOrbTimer=5;level=1;xp=0;xpNeed=10;over=false;paused=false;running=true;
-    joy.active=false; joyBase.style.display='none';
-    initScenery();
-    Object.assign(player,{x:world.w/2,y:world.h/2,hp:100,maxHp:100,speed:240,damage:28,fireRate:.32,fireTimer:0,bulletSpeed:800,projectiles:1,pickup:120,armor:0,crit:.10,regen:0});
-    for(let i=0;i<6;i++)spawnEnemy(i===0?'oni':null);
-    document.getElementById('gameOver').classList.add('hidden');document.getElementById('levelOverlay').classList.add('hidden');refreshHUD();setStatus('พร้อมลุย!');
-  }
-
-  document.getElementById('startBtn').onclick=()=>{document.getElementById('startOverlay').classList.add('hidden');resetGame();};
-  document.getElementById('restart').onclick=()=>resetGame();
-
-  function loop(now){
-    const dt=Math.min(MAX_DELTA,(now-last)/1000);last=now;
-    if(running&&!paused&&!over)update(dt);
-    render();
-    requestAnimationFrame(loop);
-  }
-  refreshHUD();requestAnimationFrame(loop);
-})();
-</script>
+    gameLoop();
+  </script>
 </body>
 </html>
