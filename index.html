@@ -1205,10 +1205,33 @@ html,body{
   const hx=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
   const tone=(h,f)=>`rgb(${hx(h).map(v=>Math.round(v*f))})`;
   const lite=(h,f)=>`rgb(${hx(h).map(v=>Math.round(v+(255-v)*f))})`;
+  const _tc=document.createElement('canvas').getContext('2d',{willReadFrequently:true}); _tc.canvas.width=_tc.canvas.height=1;
+  const _pc={}, cl=v=>Math.max(0,Math.min(255,Math.round(v)));
+  function rgbOf(c){if(_pc[c])return _pc[c];_tc.clearRect(0,0,1,1);_tc.fillStyle=c;_tc.fillRect(0,0,1,1);const d=_tc.getImageData(0,0,1,1).data;return _pc[c]=[d[0],d[1],d[2]];}
+  const shd=(c,f)=>[cl(c[0]*(1-.3*f)),cl(c[1]*(1-.36*f)),cl(c[2]*(1-.12*f)+22*f)];
+  const hil=(c,f)=>[cl(c[0]+(255-c[0])*.3*f+10*f),cl(c[1]+(255-c[1])*.26*f+5*f),cl(c[2]+(255-c[2])*.1*f)];
   function sprite(key,grid,ex,flash){
     const k=key+(flash?'!':''); if(SP[k]) return SP[k];
     const cv=document.createElement('canvas'); cv.width=cv.height=16; const c=cv.getContext('2d');
-    grid.forEach((row,y)=>{for(let x=0;x<16;x++){const col=ex[row[x]]||PAL[row[x]]; if(col){c.fillStyle=flash?'#fff':col;c.fillRect(x,y,1,1);}}});
+    const at=(x,y)=>(x<0||y<0||x>15||y>15)?'.':(grid[y][x]||'.');
+    const fillAt=(x,y)=>{const h=at(x,y);return h!=='.'&&h!=='k';};
+    const col=h=>{const v=ex[h]||PAL[h];return v?rgbOf(v):null;};
+    for(let y=0;y<16;y++)for(let x=0;x<16;x++){
+      const ch=at(x,y), base=col(ch); if(!base) continue; let o=base;
+      if(flash) o=[255,255,255];
+      else if(ch==='k'){
+        for(const[dx,dy]of[[0,1],[1,0],[0,-1],[-1,0],[1,1],[-1,-1]]){
+          if(fillAt(x+dx,y+dy)){const lit=(dx>=0&&dy>=0), t=shd(col(at(x+dx,y+dy)),1), m=lit?.5:.25; o=[cl(t[0]*m),cl(t[1]*m),cl(t[2]*m+(lit?14:8))]; break;}
+        }
+      } else if('wcrxy'.indexOf(ch)<0){
+        const up=!fillAt(x,y-1), lf=!fillAt(x-1,y), dn=!fillAt(x,y+1), rt=!fillAt(x+1,y);
+        if(up||lf) o=hil(base,up&&lf?1.2:.8);
+        else if(dn||rt) o=shd(base,dn&&rt?1.1:.7);
+        else if(y>10&&(x+y)%2===0) o=shd(base,.5);
+        else if(y<5&&(x+y)%2===1) o=hil(base,.25);
+      }
+      c.fillStyle=`rgb(${o})`; c.fillRect(x,y,1,1);
+    }
     return SP[k]=cv;
   }
   const HG={
@@ -1229,7 +1252,7 @@ html,body{
   function drawPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam), h=selectedHero, t=performance.now()/1000;
     const mv=player.animFrame>0, w=Math.sin(t*14);
-    const bob=mv?w*2:Math.sin(t*3);
+    const bob=mv?(w>0?-3:0):(Math.sin(t*3)>.6?-3:0);
     if(player.orbitBlades>0){
       for(let i=0;i<player.orbitBlades;i++){
         const an=elapsed*3+i*(Math.PI*2/player.orbitBlades), bx=px+Math.cos(an)*65, by=py+Math.sin(an)*65;
@@ -1248,7 +1271,7 @@ html,body{
     const flash=player.hit>0&&Math.floor(player.hit*25)%2===0;
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
-    ctx.save(); ctx.translate(px,py+bob); ctx.scale(sd,1); if(mv)ctx.rotate(w*.05); ctx.scale(1+(mv?w*.04:0),1-(mv?w*.04:0));
+    ctx.save(); ctx.translate(px,py+bob); ctx.scale(sd,1);
     if(flash)ctx.globalAlpha=.55;
     ctx.drawImage(cv,-24,-30,48,48);
     if(flash){ctx.globalAlpha=.7;ctx.drawImage(fl,-24,-30,48,48);}
@@ -1260,13 +1283,13 @@ html,body{
     const sc=Math.max(2,Math.round(r*2.9/16)), S=sc*16, flip=player.x<e.x, fly=ty==='ghost'||ty==='shooter';
     const ex={a:e.color,A:tone(e.color,.55),l:lite(e.color,.5)};
     const cv=sprite('e_'+ty,EG[ty],ex,false), fl=sprite('e_'+ty,EG[ty],ex,true);
-    let bob=Math.sin(t*(ty==='runner'?16:5))*(fly?4:2), rot=0, kx=1, ky=1;
-    if(ty==='stalker') rot=Math.sin(t*6)*.12;
-    if(ty==='runner'){kx=1.12;ky=.9;rot=.1;}
-    if(ty==='brute'){const q=Math.sin(t*3);ky=1-q*.05;kx=1+q*.05;}
+    let bob=Math.round(Math.sin(t*(ty==='runner'?16:5))*(fly?4:2)/sc)*sc, xo=0;
+    if(ty==='stalker') xo=Math.round(Math.sin(t*6)*.8)*sc;
+    if(ty==='runner') xo=sc;
+    if(ty==='brute') bob+=Math.sin(t*3)>.5?sc:0;
     ctx.fillStyle='rgba(0,0,0,'+(fly?.25:.45)+')'; ctx.beginPath(); ctx.ellipse(px,py+S*(fly?.42:.34),r*(fly?.6:.9),r*.3,0,0,7); ctx.fill();
     if(ty==='boss'){ctx.strokeStyle='rgba(255,40,40,'+(.35+Math.sin(t*4)*.15)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r+16+Math.sin(t*4)*4,0,7);ctx.stroke();}
-    ctx.save(); ctx.translate(px,py+bob); if(flip)ctx.scale(-1,1); ctx.rotate(rot); ctx.scale(kx,ky);
+    ctx.save(); ctx.translate(px+xo,py+bob); if(flip)ctx.scale(-1,1);
     if(ty==='ghost') ctx.globalAlpha=.7+Math.sin(t*4)*.15;
     ctx.drawImage(cv,-S/2,-S/2,S,S);
     if(e.hit>0&&Math.floor(e.hit*30)%2===0){ctx.globalAlpha=.8;ctx.drawImage(fl,-S/2,-S/2,S,S);}
