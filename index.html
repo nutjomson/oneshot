@@ -7,8 +7,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#030712">
 <title>16-Bit Survivor Arena - Expanded Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Prompt:wght@400;600;800&display=swap');
 
 *{
   box-sizing:border-box;
@@ -31,7 +34,7 @@ html,body{
 
 /* HUD System */
 #hud{
-  position:absolute;z-index:10;inset:0;pointer-events:none;
+  position:absolute;z-index:14;inset:0;pointer-events:none;
   padding-top:max(8px, env(safe-area-inset-top));
   padding-left:max(8px, env(safe-area-inset-left));
   padding-right:max(8px, env(safe-area-inset-right));
@@ -83,11 +86,11 @@ html,body{
 }
 
 #status{
-  position:absolute;z-index:11;left:50%;
+  position:absolute;z-index:200;left:50%;
   bottom:max(12px, env(safe-area-inset-bottom));
   transform:translateX(-50%);padding:6px 14px;background:rgba(15, 23, 42, 0.95);
   border:2px solid #22c55e;font-size:12px;font-weight:800;color:#4ade80;
-  pointer-events:none;text-align:center;white-space:nowrap;
+  pointer-events:none;text-align:center;white-space:nowrap;transition:opacity .3s;
   box-shadow:0 0 15px rgba(34, 197, 94, 0.3);
 }
 
@@ -106,6 +109,7 @@ html,body{
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   pointer-events:auto;
 }
+#settingsOverlay{z-index:110}
 .hidden{display:none!important}
 .modal{
   width:min(760px, 100%);
@@ -203,7 +207,7 @@ html,body{
       เวฟ <span id="waveText">1</span>
       <div class="small gold-text" id="goldText">ทอง: 0</div>
       <div class="small" id="killsText">กำจัด: 0</div>
-      <button class="hud-btn" id="pauseHudBtn">⏸ เมนูหลัก</button>
+      <button class="hud-btn" id="pauseHudBtn">⏸ พัก</button>
     </div>
   </div>
 </div>
@@ -382,7 +386,8 @@ html,body{
   let running=false, paused=false, over=false;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0;
-  let screenShake = 0;
+  let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, bossWave=0, toastT=0, bests={wave:0,kills:0};
+  try{bests=JSON.parse(localStorage.getItem('sa_best'))||bests}catch(e){}
 
   const enemyTypes = {
     stalker: {hp:35, speed:65, damage:10, r:16, color:'#ff0055', type:'stalker'},
@@ -418,14 +423,14 @@ html,body{
     {icon:'⚡', name:'สายฟ้าช็อตต่อเนื่อง (Chain Volt)', desc:'กระสุนกระจายสายฟ้าใส่ศัตรูใกล้เคียง 20 Dmg', apply:()=>player.lightningChain+=20},
     {icon:'💣', name:'กระสุนระเบิดวงกว้าง (Impact Bomb)', desc:'เกิดระเบิดรัศมี 40px เมื่อกระสุนกระทบเป้าหมาย', apply:()=>player.explosiveRadius+=40},
     {icon:'🥊', name:'พลังผลักกระแทก (Heavy Knockback)', desc:'ผลักศัตรูถอยหลังอย่างรุนแรงเมื่อยิงโดน', apply:()=>player.knockback+=180},
-    {icon:'💀', name:'รังสีสังหารทันที (Executioner)', desc:'สังหารศัตรูเลนปกติทันทีถ้า HP เหลือต่ำกว่า 15%', apply:()=>player.executionThreshold+=0.15},
+    {icon:'💀', name:'รังสีสังหารทันที (Executioner)', desc:'สังหารศัตรูทั่วไป (ไม่รวมบอส) ทันทีถ้า HP เหลือต่ำกว่า 15%', apply:()=>player.executionThreshold+=0.15},
     {icon:'🗡️', name:'คมดาบดาวบริวาร (Orbiting Blades)', desc:'สร้างคมดาบหมุนวนรอบตัวฮีโร่ 1 เล่ม', apply:()=>player.orbitBlades+=1},
 
     // --- SPECIAL HYBRID & PASSIVE MECHANICS ---
     {icon:'🔥', name:'ระเบิดเพลิงผลาญ', desc:'การโจมตีปกติแรงขึ้น 20% และเพิ่มระเบิดกว้างขึ้น', apply:()=>{player.damage*=1.2; player.explosiveRadius+=25;}},
     {icon:'⚡', name:'สปีดและสายฟ้า', desc:'เคลื่อนที่เร็วขึ้น 15% พร้อมเพิ่มช็อตสายฟ้า 15 Dmg', apply:()=>{player.speed*=1.15; player.lightningChain+=15;}},
     {icon:'🧪', name:'พิษร้ายสะสม', desc:'เพิ่มพิษกัดกร่อน 25 HP/วิ และ คริติคอล +5%', apply:()=>{player.poisonDmg+=25; player.crit+=0.05;}},
-    {icon:'🛡', name:'เกราะผลักสะท้อน', desc:'เพิ่มเกราะ 10% และผลักศัตรูที่เข้าใกล้', apply:()=>{player.armor+=0.10; player.knockback+=100;}},
+    {icon:'🛡', name:'เกราะผลักสะท้อน', desc:'เพิ่มเกราะ 10% และแรงผลักเมื่อยิงโดน', apply:()=>{player.armor+=0.10; player.knockback+=100;}},
     {icon:'💫', name:'สปีดยิงกระสุนสะท้อน', desc:'ความเร็วกระสุน +25% และ เพิ่มกระสุนเด้ง +1 ครั้ง', apply:()=>{player.bulletSpeed*=1.25; player.ricochet+=1;}},
 
     // --- UTILITY & SURVIVAL SKILLS ---
@@ -453,7 +458,7 @@ html,body{
     {icon:'🩸', name:'โหมดบ้าคลั่ง', desc:'+12% ดูดเลือด และ โอกาสคริติคอล +10%', apply:()=>{player.lifesteal+=0.12; player.crit+=0.10;}},
     {icon:'🥊', name:'กำแพงคลื่นกระแทก', desc:'ผลักศัตรูถอยหลัง +250px และ +50 Max HP', apply:()=>{player.knockback+=250; player.maxHp+=50; player.hp+=50;}},
     {icon:'🌀', name:'ร่างเงาหลบหลีก', desc:'โอกาสหลบหลีก +15% และ ความเร็ว +10%', apply:()=>{player.dodge+=0.15; player.speed*=1.1;}},
-    {icon:'💀', name:'เคียวเก็บวิญญาณ', desc:'สังหารศัตรู HP ต่ำกว่า 25% ทันที', apply:()=>player.executionThreshold+=0.10},
+    {icon:'💀', name:'เคียวเก็บวิญญาณ', desc:'เพิ่มเกณฑ์สังหารทันที +10% (ศัตรูที่ HP ต่ำกว่านี้ตายทันที)', apply:()=>player.executionThreshold+=0.10},
     {icon:'🚀', name:'จรวดมิสไซล์ติดสปีด', desc:'ความเร็วกระสุน +40% และ พลังโจมตี +15%', apply:()=>{player.bulletSpeed*=1.4; player.damage*=1.15;}},
     {icon:'⚡', name:'วงจรไฟฟ้าแรงสูง', desc:'ยิงเร็วขึ้น +12% และ สายฟ้าช็อต +20 Dmg', apply:()=>{player.fireRate*=0.88; player.lightningChain+=20;}},
     {icon:'🛡️', name:'โล่แก้วปริซึม', desc:'ลดความเสียหาย 15% และ ฟื้นฟู HP +2.5/วิ', apply:()=>{player.armor+=0.15; player.regen+=2.5;}},
@@ -505,10 +510,16 @@ html,body{
   ];
 
   let activeShopItems = [];
+  const shopFix={s_wpn1:{bt:'laser',desc:'เลเซอร์: กระสุนเร็ว +40% และเจาะทะลุ +1'},s_wpn2:{bt:'fireball',desc:'ลูกไฟ: กระสุนใหญ่ ระเบิดเล็กทุกครั้งที่โดน'},s_wpn3:{bt:'plasma',desc:'พลาสม่า: คริ +8% และคริแรงขึ้น (x2.8)'},s_wpn4:{bt:'arcane',desc:'อาร์เคน: กระสุนเด้งสะท้อนผนัง +1 ครั้ง'},s_pot4:{name:'ยาเพิ่มพลังชีวิตถาวร'},s_rel5:{desc:'ศัตรูเคลื่อนที่ช้าลง 15% และยิงเร็วขึ้น +15%',apply:()=>{player.fireRate*=0.85;player.timeSlow=(player.timeSlow||0)+.15;return true;}}};
+  luxuryShopPool.forEach(i=>Object.assign(i,shopFix[i.id]||{}));
 
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
   function rand(a,b){return a+Math.random()*(b-a);}
   function dist(ax,ay,bx,by){return Math.hypot(ax-bx,ay-by);}
+  function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function resetInput(){joy.active=false;joy.pointerId=null;joy.x=0;joy.y=0;joyBase.style.display='none';keys.up=keys.down=keys.left=keys.right=false}
+  function syncPause(){paused=levelOpen||shopOpen||pauseOpen;touchZone.classList.toggle('hidden',paused||!running);if(paused)resetInput()}
+  function clampStats(){player.dodge=clamp(player.dodge,0,.6);player.crit=clamp(player.crit,0,.75);player.armor=clamp(player.armor,-.5,.75);player.executionThreshold=Math.min(.35,player.executionThreshold);player.fireRate=Math.max(.05,player.fireRate);player.lifesteal=Math.min(.4,player.lifesteal);player.pierce=Math.min(12,player.pierce);player.projectiles=Math.min(12,player.projectiles);player.ricochet=Math.min(6,player.ricochet);player.orbitBlades=Math.min(8,player.orbitBlades);player.timeSlow=Math.min(.5,player.timeSlow||0)}
 
   // Audio System using Web Audio API Synth (Synthesized Sound FX)
   let audioCtx = null;
@@ -522,8 +533,10 @@ html,body{
     }
   }
 
+  const lastPlay={};
   function playSound(type) {
     if(!settings.sfx) return;
+    const tn=performance.now(); if(tn-(lastPlay[type]||0)<45) return; lastPlay[type]=tn;
     initAudio();
     if(!audioCtx) return;
 
@@ -569,6 +582,9 @@ html,body{
   }
 
   window.addEventListener('pointerdown', initAudio, { once: true });
+  window.addEventListener('blur', resetInput);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!over&&!pauseOpen)openPause()});
+  window.addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyP'){pauseOpen?closePause():openPause()}});
   window.addEventListener('keydown', initAudio, { once: true });
 
   window.addEventListener('keydown',e=>{
@@ -628,6 +644,7 @@ html,body{
 
   touchZone.addEventListener('pointerup', resetJoy);
   touchZone.addEventListener('pointercancel', resetJoy);
+  touchZone.addEventListener('lostpointercapture', resetJoy);
 
   function renderCharacterStatsHtml(p) {
     return `
@@ -657,6 +674,7 @@ html,body{
     player.armor = h.armor;
     player.crit = h.crit;
     player.bulletType = h.bulletType;
+    Object.assign(player,{projectiles:1,bulletSpeed:800,pickup:180,regen:1.0,goldMulti:1,pierce:1,dodge:0,lifesteal:0,revives:0,ricochet:0,poisonDmg:0,lightningChain:0,explosiveRadius:0,knockback:0,executionThreshold:0,orbitBlades:0,timeSlow:0,fireTimer:0,hit:0});
     document.getElementById('startHeroStats').innerHTML = renderCharacterStatsHtml(player);
   }
 
@@ -697,7 +715,7 @@ html,body{
     let type = forceType;
     if(!type){
       const r = Math.random();
-      if(wave % 5 === 0 && !enemies.some(e => e.type === 'boss')) type = 'boss';
+      if(wave % 5 === 0 && bossWave !== wave){ type = 'boss'; bossWave = wave; setStatus('⚠ บอสปรากฏตัว!'); }
       else if(r < .2) type = 'runner';
       else if(r < .4) type = 'shooter';
       else if(r < .55) type = 'ghost';
@@ -705,9 +723,15 @@ html,body{
       else type = 'stalker';
     }
 
+    if(type!=='boss'&&enemies.length>=220)return;
     const t = enemyTypes[type];
-    const a = Math.random()*Math.PI*2; const d = Math.max(W,H)*.55+rand(120,280);
-    const x = clamp(player.x+Math.cos(a)*d,50,world.w-50), y = clamp(player.y+Math.sin(a)*d,50,world.h-50);
+    let x,y;
+    for(let k=0;k<12;k++){
+      const a = Math.random()*Math.PI*2, d = Math.max(W,H)*.55+rand(120,280);
+      x = clamp(player.x+Math.cos(a)*d,50,world.w-50); y = clamp(player.y+Math.sin(a)*d,50,world.h-50);
+      if(dist(x,y,player.x,player.y)>Math.max(W,H)*.45) break;
+    }
+    if(dist(x,y,player.x,player.y)<300){ x=player.x<world.w/2?world.w-60:60; y=player.y<world.h/2?world.h-60:60; }
     
     const diffMult = settings.difficulty === 'easy' ? 0.7 : settings.difficulty === 'hard' ? 1.4 : 1.0;
 
@@ -715,7 +739,7 @@ html,body{
       x, y, r:t.r, hp:t.hp*(1+(wave-1)*.18)*diffMult, maxHp:t.hp*(1+(wave-1)*.18)*diffMult,
       speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05)*diffMult,
       xp:12, gold:Math.floor(rand(3,8)*(1+wave*0.25)), type:t.type, color:t.color, hit:0, 
-      animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0
+      animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0, bladeCd:0, contactCd:0, dead:false
     });
   }
 
@@ -729,13 +753,13 @@ html,body{
     for(let i=0;i<player.projectiles;i++){
       const spread=(i-(player.projectiles-1)/2)*.14;
       const a=baseAngle+spread;
-      const crit=Math.random()<player.crit;
+      const bt=player.bulletType, crit=Math.random()<player.crit+(bt==='plasma'?.08:0), sp=player.bulletSpeed*(bt==='laser'?1.4:1);
       bullets.push({
         x:player.x+Math.cos(a)*18, y:player.y+Math.sin(a)*18,
-        vx:Math.cos(a)*player.bulletSpeed, vy:Math.sin(a)*player.bulletSpeed,
+        vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
         r:player.bulletType==='fireball'?10:5, life:1.3,
-        damage:player.damage*(crit?2.2:1), crit, type:player.bulletType,
-        pierce:player.pierce, bounce:player.ricochet, hitList:[],
+        damage:player.damage*(crit?(bt==='plasma'?2.8:2.2):1), crit, type:player.bulletType,
+        pierce:player.pierce+(bt==='laser'?1:0), bounce:player.ricochet+(bt==='arcane'?1:0), hitList:[],
         trail:[]
       });
     }
@@ -750,93 +774,77 @@ html,body{
   }
 
   function addDrops(x,y,xpAmt,goldAmt){
-    xpOrbs.push({x,y,r:6,value:xpAmt,life:25,animTimer:Math.random()*10});
+    if(xpOrbs.length>200){xpOrbs[xpOrbs.length-1].value+=xpAmt;xpOrbs[xpOrbs.length-1].life=25;} else xpOrbs.push({x,y,r:6,value:xpAmt,life:25,animTimer:Math.random()*10});
     if(goldAmt > 0){
       goldCoins.push({x:x+rand(-12,12),y:y+rand(-12,12),r:5,value:Math.ceil(goldAmt*player.goldMulti),life:25,animTimer:Math.random()*10});
     }
   }
 
   function makeSparks(x,y,color,count=8){
-    if(!settings.particles) return;
+    if(!settings.particles||sparks.length>300) return;
     for(let i=0;i<count;i++){
       const a=Math.random()*Math.PI*2, s=rand(60,220);
       sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.2,.45),color,size:rand(2,6)});
     }
   }
 
-  function hitEnemy(e,damage,crit,bullet){
-    // Executioner mechanic
-    if(player.executionThreshold > 0 && e.type !== 'boss' && (e.hp/e.maxHp) <= player.executionThreshold){
-      damage = e.hp + 999;
-      makeSparks(e.x, e.y, '#f43f5e', 20);
+  function dealRaw(o,amt,color){o.hp-=amt;o.hit=.08;makeSparks(o.x,o.y,color,5);if(o.hp<=0)o.dead=true;}
+  function hitEnemy(e,damage,crit,bullet,blade){
+    if(e.dead) return;
+    const heal=damage;
+    if(player.executionThreshold>0&&e.type!=='boss'&&(e.hp/e.maxHp)<=player.executionThreshold){
+      damage=e.hp+999; makeSparks(e.x,e.y,'#f43f5e',20);
     }
-
     e.hp-=damage; e.hit=.12;
     playSound('hit');
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
-    if(crit && settings.shake) screenShake = 4;
-    
-    // Knockback
-    if(player.knockback > 0){
-      const a = Math.atan2(e.y - player.y, e.x - player.x);
-      e.x = clamp(e.x + Math.cos(a)*player.knockback*0.1, 40, world.w-40);
-      e.y = clamp(e.y + Math.sin(a)*player.knockback*0.1, 40, world.h-40);
+    if(crit&&settings.shake) screenShake=4;
+    if(player.knockback>0){
+      const a=Math.atan2(e.y-player.y,e.x-player.x), k=player.knockback*(blade?.03:.1);
+      e.x=clamp(e.x+Math.cos(a)*k,40,world.w-40); e.y=clamp(e.y+Math.sin(a)*k,40,world.h-40);
     }
-
-    // Poison
-    if(player.poisonDmg > 0){
-      e.poisonTimer = 3.0;
+    if(player.poisonDmg>0) e.poisonTimer=3.0;
+    if(player.lightningChain>0){
+      enemies.filter(o=>o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<160)
+        .sort((p,q)=>dist(e.x,e.y,p.x,p.y)-dist(e.x,e.y,q.x,q.y)).slice(0,4)
+        .forEach(o=>dealRaw(o,player.lightningChain,'#00f0ff'));
     }
-
-    // Chain Lightning Volt
-    if(player.lightningChain > 0){
-      for(const other of enemies){
-        if(other !== e && dist(e.x, e.y, other.x, other.y) < 160){
-          other.hp -= player.lightningChain;
-          makeSparks(other.x, other.y, '#00f0ff', 6);
-        }
+    const expR=player.explosiveRadius+(bullet&&bullet.type==='fireball'?35:0);
+    if(expR>0){
+      makeSparks(e.x,e.y,'#f97316',15);
+      for(const o of enemies) if(o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<expR) dealRaw(o,heal*.5,'#f97316');
+    }
+    if(player.lifesteal>0) player.hp=Math.min(player.maxHp,player.hp+heal*player.lifesteal);
+    if(e.hp<=0) e.dead=true;
+  }
+  function sweepDead(){
+    for(let i=enemies.length-1;i>=0;i--){
+      const e=enemies[i];
+      if(e.dead||e.hp<=0){
+        enemies.splice(i,1); kills++; addDrops(e.x,e.y,e.xp,e.gold);
+        if(e.type==='boss'){for(let k=0;k<6;k++)addDrops(e.x+rand(-30,30),e.y+rand(-30,30),20,30);setStatus('☠ กำจัดบอสสำเร็จ!');}
       }
-    }
-
-    // Area-of-Effect Explosive Damage
-    if(player.explosiveRadius > 0){
-      makeSparks(e.x, e.y, '#f97316', 15);
-      for(const other of enemies){
-        if(other !== e && dist(e.x, e.y, other.x, other.y) < player.explosiveRadius){
-          other.hp -= damage * 0.5;
-        }
-      }
-    }
-
-    if(player.lifesteal > 0){
-      player.hp = Math.min(player.maxHp, player.hp + damage * player.lifesteal);
-    }
-
-    if(e.hp<=0){
-      const i=enemies.indexOf(e); if(i>=0)enemies.splice(i,1);
-      kills++; addDrops(e.x,e.y,e.xp,e.gold);
     }
   }
 
   function gainXP(v){
     xp+=v;
-    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.28+6);openLevelUp();}
+    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.28+6);pendingLevels++;}
+    if(pendingLevels>0&&!levelOpen) openLevelUp();
   }
 
   function openLevelUp(){
-    paused=true; joy.active=false; joyBase.style.display='none';
-    touchZone.classList.add('hidden');
+    pendingLevels--; levelOpen=true; syncPause();
     playSound('levelup');
     const wrap=document.getElementById('upgrades');wrap.innerHTML='';
-    [...levelUpgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
+    shuffle(levelUpgrades).slice(0,3).forEach(u=>{
       const b=document.createElement('button');b.className='upgrade';
       b.innerHTML=`<div class="icon">${u.icon}</div><div><div class="uName">${u.name}</div><div class="uDesc">${u.desc}</div></div>`;
       b.onclick=()=>{
-        u.apply();
+        u.apply(); clampStats();
+        levelOpen=false;
         document.getElementById('levelOverlay').classList.add('hidden');
-        touchZone.classList.remove('hidden');
-        paused=false;
-        setStatus('ต่อสู้ต่อ!');
+        if(pendingLevels>0) openLevelUp(); else { syncPause(); setStatus('ต่อสู้ต่อ!'); }
       };
       wrap.appendChild(b);
     });
@@ -848,7 +856,7 @@ html,body{
   }
 
   function generateShopList() {
-    activeShopItems = [...luxuryShopPool].sort(()=>Math.random()-.5).slice(0, 6);
+    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&i.bt===player.bulletType))).slice(0, 6).map(i=>({...i}));
     renderShopItems();
   }
 
@@ -876,13 +884,13 @@ html,body{
         if(item.purchased) return;
         if(player.gold >= item.cost){
           player.gold -= item.cost;
-          item.apply();
+          item.apply(); clampStats();
           item.purchased = true;
           playSound('coin');
           renderShopItems();
           refreshHUD();
         } else {
-          alert('ทองไม่เพียงพอสำหรับการซื้อไอเทมนี้!');
+          setStatus('ทองไม่เพียงพอ!');
         }
       };
       shopWrap.appendChild(b);
@@ -890,8 +898,7 @@ html,body{
   }
 
   function openShop(){
-    paused=true; joy.active=false; joyBase.style.display='none';
-    touchZone.classList.add('hidden');
+    shopOpen=true; syncPause();
     document.getElementById('shopWaveNum').textContent = wave;
     generateShopList();
     document.getElementById('shopOverlay').classList.remove('hidden');
@@ -905,43 +912,49 @@ html,body{
       generateShopList();
       refreshHUD();
     } else {
-      alert(`ต้องการทองอย่างน้อย ${cost} ทองในการรีโรลร้านค้า!`);
+      setStatus(`ต้องการทอง ${cost} ในการรีโรล`);
     }
   };
 
   document.getElementById('closeShopBtn').onclick = () => {
     document.getElementById('shopOverlay').classList.add('hidden');
-    touchZone.classList.remove('hidden');
-    paused=false; setStatus('ลุยเวฟถัดไป!');
+    shopOpen=false; syncPause(); setStatus('ลุยเวฟถัดไป!');
   };
 
-  document.getElementById('pauseHudBtn').onclick = () => {
-    if(over || !running) return;
-    paused = true;
-    touchZone.classList.add('hidden');
-    document.getElementById('pauseHeroStats').innerHTML = renderCharacterStatsHtml(player);
+  function openPause(){
+    if(over||!running||levelOpen||shopOpen) return;
+    pauseOpen=true;
+    document.getElementById('pauseHeroStats').innerHTML=renderCharacterStatsHtml(player);
     document.getElementById('pauseOverlay').classList.remove('hidden');
-  };
-  document.getElementById('resumeBtn').onclick = () => {
+    syncPause();
+  }
+  function closePause(){
+    pauseOpen=false;
     document.getElementById('pauseOverlay').classList.add('hidden');
-    touchZone.classList.remove('hidden');
-    paused = false;
-  };
-  document.getElementById('quitBtn').onclick = () => {
-    location.reload();
-  };
+    document.getElementById('settingsOverlay').classList.add('hidden');
+    syncPause();
+  }
+  function toTitle(){
+    running=false; over=false; enemies=[]; bullets=[]; enemyBullets=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
+    levelOpen=shopOpen=pauseOpen=false;
+    ['pauseOverlay','gameOver','levelOverlay','shopOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    document.getElementById('startOverlay').classList.remove('hidden');
+    syncPause(); applyHeroChoice(selectedHero);
+  }
+  document.getElementById('pauseHudBtn').onclick=openPause;
+  document.getElementById('resumeBtn').onclick=closePause;
+  document.getElementById('quitBtn').onclick=toTitle;
 
   function hurt(v){
     if(player.hit>0||over)return;
     if(Math.random() < player.dodge){
       makeSparks(player.x, player.y, '#38bdf8', 6);
-      setStatus('💨 หลบหลีกสำเร็จ!');
+      setStatus('💨 หลบหลีกสำเร็จ!'); player.hit=.3;
       return;
     }
 
     const armorMult = Math.max(0.05, 1 - player.armor);
-    const diffMult = settings.difficulty === 'easy' ? 0.6 : settings.difficulty === 'hard' ? 1.3 : 1.0;
-    const dmg = Math.max(1, v * armorMult * diffMult);
+    const dmg = Math.max(1, v * armorMult);
     
     player.hp-=dmg; player.hit=.30;
     if(settings.shake) screenShake = 6;
@@ -953,7 +966,7 @@ html,body{
         player.hp = player.maxHp * 0.6;
         player.hit = 2.5;
         makeSparks(player.x,player.y,'#facc15',35);
-        alert('💎 ศิลาคืนชีพอมตะทำงาน! คุณได้รับการชุบชีวิตฟื้นฟู HP 60%!');
+        setStatus('💎 ศิลาคืนชีพทำงาน! ฟื้นฟู HP 60%');
       } else {
         endGame();
       }
@@ -1003,7 +1016,7 @@ html,body{
 
         for(const e of enemies){
           if(dist(bx, by, e.x, e.y) < e.r + 12){
-            hitEnemy(e, player.damage * dt * 2, false, null);
+            if(e.bladeCd<=0&&!e.dead){hitEnemy(e, player.damage*.65, false, null, true); e.bladeCd=.35;}
           }
         }
       }
@@ -1019,7 +1032,8 @@ html,body{
     for(let i=enemies.length-1; i>=0; i--){
       const e = enemies[i];
       const a=Math.atan2(player.y-e.y,player.x-e.x); 
-      e.x+=Math.cos(a)*e.speed*dt; e.y+=Math.sin(a)*e.speed*dt;
+      e.bladeCd=Math.max(0,e.bladeCd-dt);
+      const sp=e.speed*(1-(player.timeSlow||0)); e.x+=Math.cos(a)*sp*dt; e.y+=Math.sin(a)*sp*dt;
       e.hit=Math.max(0,e.hit-dt);
       e.animTimer+=dt*6;
       if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
@@ -1029,9 +1043,7 @@ html,body{
         e.poisonTimer -= dt;
         e.hp -= player.poisonDmg * dt;
         if(Math.random()<0.3) makeSparks(e.x, e.y, '#22c55e', 2);
-        if(e.hp <= 0){
-          enemies.splice(i,1); kills++; addDrops(e.x,e.y,e.xp,e.gold); continue;
-        }
+        if(e.hp <= 0) e.dead=true;
       }
 
       if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < 500){
@@ -1043,7 +1055,8 @@ html,body{
       }
       
       const d=dist(e.x,e.y,player.x,player.y);
-      if(d<e.r+player.r)hurt(e.damage*dt*1.2);
+      e.contactCd=Math.max(0,e.contactCd-dt);
+      if(d<e.r+player.r&&e.contactCd<=0&&!e.dead&&player.hit<=0){hurt(e.damage*.7);e.contactCd=.8;}
     }
 
     for(let i=bullets.length-1;i>=0;i--){
@@ -1064,7 +1077,7 @@ html,body{
 
       if(!remove){
         for(const e of enemies){
-          if(!b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
+          if(!e.dead && !b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
             b.hitList.push(e);
             hitEnemy(e,b.damage,b.crit,b);
             b.pierce--;
@@ -1074,6 +1087,7 @@ html,body{
       }
       if(remove)bullets.splice(i,1);
     }
+    sweepDead();
 
     for(let i=enemyBullets.length-1;i>=0;i--){
       const eb=enemyBullets[i]; eb.x+=eb.vx*dt; eb.y+=eb.vy*dt; eb.life-=dt;
@@ -1355,7 +1369,8 @@ html,body{
   }
 
   function setStatus(msg){
-    document.getElementById('status').textContent=msg;
+    const el=document.getElementById('status'); el.textContent=msg; el.style.opacity=1;
+    clearTimeout(toastT); toastT=setTimeout(()=>{el.style.opacity=0},2200);
   }
 
   function startGame(){
@@ -1363,36 +1378,37 @@ html,body{
     running=true; paused=false; over=false;
     elapsed=0; wave=1; kills=0; level=1; xp=0; xpNeed=10; lastShopWave=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
-    player.x=world.w/2; player.y=world.h/2; player.gold=0; player.revives=0;
+    player.x=world.w/2; player.y=world.h/2; player.gold=0; screenShake=0; spawnTimer=0; bossWave=0; levelOpen=shopOpen=pauseOpen=false; pendingLevels=0; resetInput();
     player.dodge=0.0; player.lifesteal=0.0; player.pierce=1;
     player.ricochet=0; player.poisonDmg=0; player.lightningChain=0; 
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
 
-    document.getElementById('startOverlay').classList.add('hidden');
-    document.getElementById('gameOver').classList.add('hidden');
-    touchZone.classList.remove('hidden');
+    ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    syncPause();
     setStatus('เริ่มต้นการต่อสู้!');
     refreshHUD();
   }
 
   function endGame(){
-    over=true; running=false;
-    touchZone.classList.add('hidden');
+    over=true; running=false; syncPause();
+    if(wave>bests.wave||kills>bests.kills){bests={wave:Math.max(wave,bests.wave),kills:Math.max(kills,bests.kills)};try{localStorage.setItem('sa_best',JSON.stringify(bests))}catch(e){}}
     document.getElementById('finalStats').innerHTML= `
       <div class="stat-item"><span>เวฟที่ไปถึง:</span><span class="val">${wave}</span></div>
       <div class="stat-item"><span>จำนวนศัตรูที่กำจัด:</span><span class="val">${kills} ตัว</span></div>
       <div class="stat-item"><span>เลเวลสูงสุด:</span><span class="val">LV.${level}</span></div>
       <div class="stat-item"><span>ทองที่สะสมได้:</span><span class="val" style="color:#facc15">${player.gold} ทอง</span></div>
+      <div class="stat-item"><span>สถิติสูงสุด:</span><span class="val">เวฟ ${bests.wave} / ${bests.kills} ตัว</span></div>
     `;
     document.getElementById('gameOver').classList.remove('hidden');
   }
 
   document.getElementById('startBtn').onclick=startGame;
   document.getElementById('restart').onclick=startGame;
-  document.getElementById('quitTitle').onclick=()=>location.reload();
+  document.getElementById('quitTitle').onclick=toTitle;
 
+  setStatus('ยินดีต้อนรับสู่สนามรบ!');
   requestAnimationFrame(loop);
 })();
 </script>
