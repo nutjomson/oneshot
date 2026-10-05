@@ -2,11 +2,11 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#030712">
-<title>16-Bit Survivor Arena - Neon Chaos & Vivid Pixel Edition</title>
+<title>16-Bit Survivor Arena - Safari Mobile Enhanced</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Prompt:wght@400;600;800&display=swap');
 
@@ -22,6 +22,7 @@ html,body{
   overflow:hidden;background:#030712;
   color:#fff;font-family:'Prompt', 'Press Start 2P', monospace, sans-serif;
   touch-action:none;position:fixed;
+  inset:0;
 }
 #game{position:fixed;inset:0;overflow:hidden;background:#030712}
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
@@ -29,151 +30,149 @@ html,body{
 /* HUD System */
 #hud{
   position:absolute;z-index:10;inset:0;pointer-events:none;
-  padding-top:max(12px, env(safe-area-inset-top));
-  padding-left:max(12px, env(safe-area-inset-left));
-  padding-right:max(12px, env(safe-area-inset-right));
-  padding-bottom:max(12px, env(safe-area-inset-bottom));
+  padding-top:max(8px, env(safe-area-inset-top));
+  padding-left:max(8px, env(safe-area-inset-left));
+  padding-right:max(8px, env(safe-area-inset-right));
+  padding-bottom:max(8px, env(safe-area-inset-bottom));
 }
-.top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.top{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
 .panel{
   background:rgba(15, 23, 42, 0.88);
-  border:3px solid #38bdf8;
-  box-shadow:inset -3px -3px 0px #0284c7, inset 3px 3px 0px #7dd3fc, 0 8px 20px rgba(0,0,0,0.6);
-  padding:10px 14px;
-  border-radius:0px;
+  border:2px solid #38bdf8;
+  box-shadow:inset -2px -2px 0px #0284c7, inset 2px 2px 0px #7dd3fc, 0 4px 12px rgba(0,0,0,0.6);
+  padding:6px 10px;
   backdrop-filter:blur(4px);
 }
-.stat{flex:1;max-width:240px;min-width:110px}
-.label{font-size:13px;font-weight:800;color:#93c5fd;letter-spacing:1px;margin-bottom:4px;text-shadow:1px 1px 2px #000}
-.num{font-size:12px;font-weight:800;margin-top:5px;color:#fff;text-shadow:1px 1px 2px #000}
-.bar{height:12px;background:#090d16;border:2px solid #334155;padding:1px;position:relative}
+.stat{flex:1;max-width:220px;min-width:90px}
+.label{font-size:11px;font-weight:800;color:#93c5fd;letter-spacing:0.5px;margin-bottom:2px;text-shadow:1px 1px 2px #000}
+.num{font-size:11px;font-weight:800;margin-top:3px;color:#fff;text-shadow:1px 1px 2px #000}
+.bar{height:10px;background:#090d16;border:1px solid #334155;padding:1px;position:relative}
 .fill{height:100%;width:100%;transition:width 0.1s}
 .hp{background:linear-gradient(90deg, #f43f5e, #fb7185);box-shadow:inset 0 -2px 0 #be123c}
 .xp{background:linear-gradient(90deg, #0ea5e9, #38bdf8);box-shadow:inset 0 -2px 0 #0369a1}
-.wave{font-size:14px;font-weight:800;text-align:right;line-height:1.5;color:#facc15;min-width:130px;border-color:#facc15;box-shadow:inset -3px -3px 0px #ca8a04, inset 3px 3px 0px #fef08a, 0 8px 20px rgba(0,0,0,0.6)}
-.small{font-size:12px;font-weight:600;color:#cbd5e1;margin-top:4px}
+.wave{font-size:12px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;min-width:110px;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
+.small{font-size:10px;font-weight:600;color:#cbd5e1;margin-top:2px}
 .gold-text{color:#facc15!important;text-shadow:1px 1px 2px #000;font-weight:800}
 
 .hud-btn{
   pointer-events:auto;background:#2563eb;border:2px solid #fff;color:#fff;
-  font-family:'Prompt', sans-serif;font-size:12px;font-weight:800;padding:5px 10px;cursor:pointer;margin-top:6px;
-  box-shadow:inset -2px -2px 0 #1d4ed8, 0 4px 10px rgba(0,0,0,0.5);
-  transition:all 0.1s;
+  font-family:'Prompt', sans-serif;font-size:11px;font-weight:800;padding:4px 8px;cursor:pointer;margin-top:4px;
+  box-shadow:inset -2px -2px 0 #1d4ed8, 0 2px 6px rgba(0,0,0,0.5);
+  touch-action:manipulation;
 }
-.hud-btn:hover{background:#3b82f6;transform:scale(1.03)}
 .hud-btn:active{transform:translate(1px,1px);box-shadow:none}
 
-/* Controls */
+/* Controls Zone - Fixed so start menu doesn't steal touches via joystick */
 #touchZone{
   position:absolute;z-index:12;inset:0;
   width:100%;height:100%;pointer-events:auto;touch-action:none;
 }
 #joyBase{
-  position:absolute;width:120px;height:120px;
+  position:absolute;width:110px;height:110px;
   background:rgba(15, 23, 42, 0.8);border:3px solid #38bdf8;
   border-radius:50%;display:none;pointer-events:none;
   transform:translate(-50%,-50%);z-index:13;
   box-shadow:0 0 20px rgba(56, 189, 248, 0.4);
 }
 #joyStick{
-  position:absolute;width:50px;height:50px;left:50%;top:50%;
+  position:absolute;width:46px;height:46px;left:50%;top:50%;
   transform:translate(-50%,-50%);background:#f43f5e;
   border:3px solid #fff;border-radius:50%;box-shadow:inset -2px -2px 0 #be123c, 0 0 10px rgba(244, 63, 94, 0.6);
 }
 
 #status{
   position:absolute;z-index:11;left:50%;
-  bottom:max(16px, env(safe-area-inset-bottom));
-  transform:translateX(-50%);padding:8px 18px;background:rgba(15, 23, 42, 0.95);
-  border:2px solid #22c55e;font-size:13px;font-weight:800;color:#4ade80;
+  bottom:max(12px, env(safe-area-inset-bottom));
+  transform:translateX(-50%);padding:6px 14px;background:rgba(15, 23, 42, 0.95);
+  border:2px solid #22c55e;font-size:12px;font-weight:800;color:#4ade80;
   pointer-events:none;text-align:center;white-space:nowrap;
   box-shadow:0 0 15px rgba(34, 197, 94, 0.3);
 }
 
-/* Modals & Overlays */
+/* Modals & Overlays - iOS Safe Scroll Fix */
 .overlay{
-  position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;
-  padding:16px;background:rgba(3, 7, 18, 0.92);
-  backdrop-filter:blur(6px);
+  position:absolute;z-index:100;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  background:rgba(3, 7, 18, 0.94);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  pointer-events:auto;
 }
 .hidden{display:none!important}
 .modal{
-  width:min(720px,100%);max-height:92vh;overflow-y:auto;
-  background:#0f172a;border:4px solid #38bdf8;padding:20px;
-  box-shadow:inset -4px -4px 0 #0284c7, inset 4px 4px 0 #7dd3fc, 0 0 35px rgba(56, 189, 248, 0.3);
+  width:min(720px, 100%);
+  max-height:calc(100vh - max(30px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  background:#0f172a;border:3px solid #38bdf8;padding:16px;
+  box-shadow:inset -3px -3px 0 #0284c7, inset 3px 3px 0 #7dd3fc, 0 0 30px rgba(56, 189, 248, 0.3);
   text-align:center;color:#fff;
+  margin:auto;
 }
-.modal::-webkit-scrollbar { width: 6px; }
-.modal::-webkit-scrollbar-thumb { background: #38bdf8; }
-.modal::-webkit-scrollbar-track { background: #090d16; }
 
-.title{font-size:22px;font-weight:800;color:#facc15;margin-bottom:8px;text-shadow:2px 2px #000, 0 0 10px rgba(250, 204, 21, 0.5);line-height:1.3}
-.sub{font-size:13px;font-weight:600;color:#94a3b8;line-height:1.6;margin-bottom:18px}
+.title{font-size:18px;font-weight:800;color:#facc15;margin-bottom:6px;text-shadow:2px 2px #000, 0 0 8px rgba(250, 204, 21, 0.5);line-height:1.2}
+.sub{font-size:12px;font-weight:600;color:#94a3b8;line-height:1.4;margin-bottom:12px}
 
-#upgrades, #shopItems, #heroSelect{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+#upgrades, #shopItems, #heroSelect{
+  display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;
+}
 .upgrade, .shop-item, .hero-card{
-  border:3px solid #334155;background:#1e293b;padding:12px;text-align:left;color:#fff;cursor:pointer;
+  border:2px solid #334155;background:#1e293b;padding:10px;text-align:left;color:#fff;cursor:pointer;
   font-family:'Prompt', sans-serif;position:relative;transition:all 0.15s ease;
+  touch-action:manipulation;
 }
 .hero-card{text-align:center;border-color:#475569;background:#0f172a}
-.hero-card:hover{border-color:#38bdf8;transform:translateY(-2px)}
-.hero-card.selected{border-color:#facc15;background:#1e293b;box-shadow:0 0 20px rgba(250, 204, 21, 0.4);transform:scale(1.02)}
-.upgrade:hover, .shop-item:hover{border-color:#facc15;background:#334155;transform:translateY(-2px)}
+.hero-card:active{border-color:#38bdf8;background:#1e293b}
+.hero-card.selected{border-color:#facc15;background:#1e293b;box-shadow:0 0 15px rgba(250, 204, 21, 0.4)}
 .upgrade:active, .shop-item:active{background:#475569;border-color:#facc15}
 .shop-item.disabled{opacity:0.4;cursor:not-allowed;border-color:#475569;transform:none!important}
 
-.icon{font-size:26px;margin-bottom:6px;text-align:center;line-height:1}
-.uName{font-size:14px;font-weight:800;color:#facc15;margin-bottom:4px;line-height:1.3}
-.uDesc{font-size:12px;font-weight:600;line-height:1.5;color:#cbd5e1}
-.cost{font-size:13px;color:#facc15;margin-top:8px;font-weight:800;text-shadow:1px 1px #000}
+.icon{font-size:24px;margin-bottom:4px;text-align:center;line-height:1}
+.uName{font-size:13px;font-weight:800;color:#facc15;margin-bottom:2px;line-height:1.2}
+.uDesc{font-size:11px;font-weight:600;line-height:1.4;color:#cbd5e1}
+.cost{font-size:12px;color:#facc15;margin-top:6px;font-weight:800;text-shadow:1px 1px #000}
 
-/* Stats Display Box */
+/* Dynamic Stats Display Box */
 .stats-box{
-  background:#090d16;border:3px solid #334155;padding:12px;margin:12px 0;
-  display:grid;grid-template-columns:repeat(2, 1fr);gap:8px;text-align:left;
-  font-size:12px;font-weight:600;color:#e2e8f0;
+  background:#090d16;border:2px solid #334155;padding:10px;margin:10px 0;
+  display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;text-align:left;
+  font-size:11px;font-weight:600;color:#e2e8f0;
 }
-.stat-item{display:flex;justify-content:space-between;border-bottom:1px solid #1e293b;padding-bottom:4px}
+.stat-item{display:flex;justify-content:space-between;border-bottom:1px solid #1e293b;padding-bottom:3px}
 .stat-item span.val{color:#38bdf8;font-weight:800}
 
-/* Start Menu & Settings */
-.menu-options{display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto}
-.setting-row{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:10px;border:2px solid #334155;margin-bottom:8px;font-size:13px;font-weight:600}
-.setting-row input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#38bdf8}
+/* Settings & Options */
+.setting-row{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:10px;border:2px solid #334155;margin-bottom:8px;font-size:12px;font-weight:600}
+.setting-row input[type="checkbox"]{width:22px;height:22px;cursor:pointer;accent-color:#38bdf8}
+.setting-row select{background:#0f172a;color:#38bdf8;border:1px solid #38bdf8;padding:4px 8px;font-family:'Prompt', sans-serif;border-radius:4px;font-weight:bold}
 
-.btn-group{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.btn-group{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
 .btn{
-  border:3px solid #fff;background:#22c55e;color:#052e16;
-  font-family:'Prompt', sans-serif;font-size:14px;font-weight:800;padding:12px 20px;cursor:pointer;
-  box-shadow:inset -3px -3px 0 #15803d, 0 6px 15px rgba(0,0,0,0.4);flex:1;min-width:140px;
-  transition:all 0.1s;
+  border:2px solid #fff;background:#22c55e;color:#052e16;
+  font-family:'Prompt', sans-serif;font-size:13px;font-weight:800;padding:10px 16px;cursor:pointer;
+  box-shadow:inset -2px -2px 0 #15803d, 0 4px 10px rgba(0,0,0,0.4);flex:1;min-width:130px;
+  touch-action:manipulation;
 }
-.btn:hover{background:#4ade80;transform:scale(1.02)}
-.btn-sec{background:#ef4444;box-shadow:inset -3px -3px 0 #b91c1c;color:#fff}
-.btn-sec:hover{background:#f87171}
-.btn-blue{background:#0284c7;box-shadow:inset -3px -3px 0 #0369a1;color:#fff}
-.btn-blue:hover{background:#38bdf8}
-.btn-gold{background:#eab308;box-shadow:inset -3px -3px 0 #ca8a04;color:#422006}
-.btn-gold:hover{background:#facc15}
-.btn:active{transform:translate(2px, 2px);box-shadow:none}
+.btn-sec{background:#ef4444;box-shadow:inset -2px -2px 0 #b91c1c;color:#fff}
+.btn-blue{background:#0284c7;box-shadow:inset -2px -2px 0 #0369a1;color:#fff}
+.btn-gold{background:#eab308;box-shadow:inset -2px -2px 0 #ca8a04;color:#422006}
+.btn:active{transform:translate(1px, 1px);box-shadow:none}
 
-@media(max-width:600px){
+@media(max-width:640px){
   #upgrades, #shopItems, #heroSelect{grid-template-columns:1fr}
-  .upgrade, .shop-item{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center}
+  .upgrade, .shop-item{display:grid;grid-template-columns:36px 1fr;gap:8px;align-items:center}
   .icon{margin:0}
   .stats-box{grid-template-columns:1fr}
   .btn-group{flex-direction:column}
-  .label{font-size:11px}
-  .num{font-size:11px}
-  .wave{font-size:12px}
-  .title{font-size:18px}
+  .title{font-size:16px}
 }
 </style>
 </head>
 <body>
 <div id="game">
 <canvas id="scene"></canvas>
-<div id="touchZone"></div>
+
+<!-- Touch Control Active Zone -->
+<div id="touchZone" class="hidden"></div>
 <div id="joyBase"><div id="joyStick"></div></div>
 
 <!-- HUD Screen -->
@@ -193,7 +192,7 @@ html,body{
       เวฟ <span id="waveText">1</span>
       <div class="small gold-text" id="goldText">ทอง: 0</div>
       <div class="small" id="killsText">กำจัด: 0</div>
-      <button class="hud-btn" id="pauseHudBtn">⏸️ เมนูหลัก</button>
+      <button class="hud-btn" id="pauseHudBtn">⏸️️ เมนูหลัก</button>
     </div>
   </div>
 </div>
@@ -204,7 +203,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div class="sub">เลือกฮีโร่ของคุณและเตรียมตัวเข้าสู่อารีนาแฟนตาซีสุดพิศวง!</div>
+    <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
 
@@ -221,7 +220,15 @@ html,body{
 <div id="settingsOverlay" class="overlay hidden">
   <div class="modal" style="max-width:480px">
     <div class="title">⚙️ ตั้งค่าเกม (SETTINGS)</div>
-    <div style="margin:20px 0;">
+    <div style="margin:16px 0;">
+      <div class="setting-row">
+        <span>ระดับความยาก (Difficulty)</span>
+        <select id="diffSelect">
+          <option value="easy" selected>ง่าย (Easy - รับความเสียหายลดลง)</option>
+          <option value="normal">ปกติ (Normal)</option>
+          <option value="hard">ท้าทาย (Hard)</option>
+        </select>
+      </div>
       <div class="setting-row">
         <span>เอฟเฟกต์เสียง (Sound FX)</span>
         <input type="checkbox" id="sfxCheck" checked>
@@ -250,7 +257,7 @@ html,body{
   </div>
 </div>
 
-<!-- Wave Shop Overlay -->
+<!-- Wave Shop Overlay (Expanded options at least 3-fold: 12 Items Total) -->
 <div id="shopOverlay" class="overlay hidden">
   <div class="modal">
     <div class="title">🏪 ร้านค้าลึกลับ (ร้านค้าเวฟ <span id="shopWaveNum">3</span>)</div>
@@ -276,6 +283,7 @@ html,body{
     <div class="stats-box" id="pauseHeroStats"></div>
     <div class="btn-group">
       <button class="btn" id="resumeBtn">▶️ เล่นต่อ</button>
+      <button class="btn btn-blue" id="pauseSettingsBtn">⚙️ ตั้งค่า</button>
       <button class="btn btn-sec" id="quitBtn">🏠 กลับหน้าหลัก</button>
     </div>
   </div>
@@ -302,44 +310,46 @@ html,body{
 
   let W = innerWidth, H = innerHeight;
   function resize(){
-    W = innerWidth; H = innerHeight;
-    canvas.width = W; canvas.height = H;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W; 
+    canvas.height = H;
     ctx.imageSmoothingEnabled = false;
   }
-  addEventListener('resize', resize); 
-  addEventListener('orientationchange', ()=>setTimeout(resize, 200));
+  window.addEventListener('resize', resize); 
+  window.addEventListener('orientationchange', ()=>setTimeout(resize, 300));
   resize();
 
-  // Settings State
-  const settings = { sfx: true, particles: true, shake: true };
+  // Settings & Gameplay Difficulty
+  const settings = { sfx: true, particles: true, shake: true, difficulty: 'easy' };
 
   const keys = {up:false,down:false,left:false,right:false};
   const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
   const world = {w:3200, h:3200};
   
-  // Vibrant Colorful Character Definitions
+  // Adjusted Balanced Character Stats (Buffed Prism Knight for easier gameplay)
   const heroes = [
     {
       id:'prism', name:'ปริซึม ไนต์ (PRISM KNIGHT)', icon:'🛡️', 
-      hp:180, maxHp:180, speed:220, damage:25, fireRate:.38, armor:.2, crit:.08, 
+      hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, armor:.35, crit:.12, 
       color:'#00f0ff', secondaryColor:'#ff007f', bulletType:'arcane', 
-      desc:'อัศวินผลึกแก้ว หลากสีสัน ป้องกันสูงและทนทาน'
+      desc:'อัศวินผลึกแก้ว (ปรับปรุงใหม่): ป้องกันสูง ถึกทนทาน และพลังโจมตีรุนแรงขึ้น!'
     },
     {
       id:'neon', name:'นีออน เรนเจอร์ (NEON RANGER)', icon:'🏹', 
-      hp:100, maxHp:100, speed:280, damage:19, fireRate:.16, armor:0, crit:.18, 
+      hp:140, maxHp:140, speed:290, damage:24, fireRate:.15, armor:0.05, crit:.20, 
       color:'#39ff14', secondaryColor:'#00e5ff', bulletType:'laser', 
       desc:'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
     },
     {
       id:'psycho', name:'ไซโค เมจ (PSYCHO MAGE)', icon:'🔮', 
-      hp:90, maxHp:90, speed:225, damage:48, fireRate:.46, armor:0, crit:.28, 
+      hp:130, maxHp:130, speed:235, damage:55, fireRate:.40, armor:0.05, crit:.30, 
       color:'#ff00ff', secondaryColor:'#7600ff', bulletType:'fireball', 
       desc:'จอมเวทพลังสายรุ้งระเบิด คริติคอลรุนแรงมหาศาล'
     },
     {
       id:'cyber', name:'ไซเบอร์ นินจา (CYBER NINJA)', icon:'🥷', 
-      hp:110, maxHp:110, speed:300, damage:28, fireRate:.26, armor:.05, crit:.22, 
+      hp:150, maxHp:150, speed:320, damage:32, fireRate:.22, armor:.10, crit:.25, 
       color:'#ffe600', secondaryColor:'#ff0055', bulletType:'plasma', 
       desc:'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
     }
@@ -347,8 +357,8 @@ html,body{
   let selectedHero = heroes[0];
 
   const player = {
-    x:1600, y:1600, r:16, hp:180, maxHp:180, speed:220, damage:25, fireRate:.38, fireTimer:0,
-    bulletSpeed:750, projectiles:1, pickup:140, armor:.2, crit:.08, regen:0, angle:0, hit:0,
+    x:1600, y:1600, r:16, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
+    bulletSpeed:800, projectiles:1, pickup:180, armor:.35, crit:.12, regen:1.0, angle:0, hit:0,
     animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0
   };
 
@@ -360,40 +370,45 @@ html,body{
 
   // Enemy Metadata
   const enemyTypes = {
-    stalker: {hp:45, speed:70, damage:12, r:16, color:'#ff0055', type:'stalker'},
-    runner:  {hp:32, speed:145, damage:8, r:13, color:'#ff9900', type:'runner'},
-    brute:   {hp:220, speed:45, damage:28, r:24, color:'#aa00ff', type:'brute'},
-    shooter: {hp:70, speed:55, damage:10, r:16, color:'#00e5ff', type:'shooter', shootTimer:2},
-    ghost:   {hp:50, speed:90, damage:15, r:14, color:'#00ffaa', type:'ghost'},
-    boss:    {hp:1200, speed:38, damage:42, r:38, color:'#ff0000', type:'boss', shootTimer:1.0}
+    stalker: {hp:35, speed:65, damage:10, r:16, color:'#ff0055', type:'stalker'},
+    runner:  {hp:25, speed:130, damage:6, r:13, color:'#ff9900', type:'runner'},
+    brute:   {hp:180, speed:40, damage:22, r:24, color:'#aa00ff', type:'brute'},
+    shooter: {hp:55, speed:50, damage:8, r:16, color:'#00e5ff', type:'shooter', shootTimer:2.5},
+    ghost:   {hp:40, speed:80, damage:12, r:14, color:'#00ffaa', type:'ghost'},
+    boss:    {hp:1000, speed:35, damage:35, r:38, color:'#ff0000', type:'boss', shootTimer:1.2}
   };
 
   // Level Up Upgrades
   const levelUpgrades = [
-    {icon:'⚔️', name:'เพิ่มพลังโจมตี', desc:'+20% ความเสียหายโจมตี', apply:()=>player.damage*=1.2},
-    {icon:'⚡', name:'เพิ่มความเร็วการยิง', desc:'ยิงเร็วขึ้น +18%', apply:()=>player.fireRate*=.82},
-    {icon:'🏃', name:'เพิ่มความเร็วเคลื่อนที่', desc:'+15% ความเร็วฮีโร่', apply:()=>player.speed*=1.15},
-    {icon:'❤️', name:'ขยายพลังชีวิตสูงสุด', desc:'+30 Max HP & ฟื้นฟู 30 HP', apply:()=>{player.maxHp+=30;player.hp=Math.min(player.maxHp,player.hp+30)}},
+    {icon:'⚔️', name:'เพิ่มพลังโจมตี', desc:'+25% ความเสียหายโจมตี', apply:()=>player.damage*=1.25},
+    {icon:'⚡', name:'เพิ่มความเร็วการยิง', desc:'ยิงเร็วขึ้น +20%', apply:()=>player.fireRate*=.80},
+    {icon:'🏃', name:'เพิ่มความเร็วเคลื่อนที่', desc:'+18% ความเร็วฮีโร่', apply:()=>player.speed*=1.18},
+    {icon:'❤️', name:'ขยายพลังชีวิตสูงสุด', desc:'+40 Max HP & ฟื้นฟู 40 HP', apply:()=>{player.maxHp+=40;player.hp=Math.min(player.maxHp,player.hp+40)}},
     {icon:'🔫', name:'เพิ่มกระสุนยิงกระจาย', desc:'+1 ลำแสงกระสุนเพิ่มเติม', apply:()=>player.projectiles++},
-    {icon:'💨', name:'เพิ่มความเร็วกระสุน', desc:'+25% ความเร็วกระสุน', apply:()=>player.bulletSpeed*=1.25},
-    {icon:'🧲', name:'ขยายรัศมีแม่เหล็ก', desc:'+80 ระยะดูดเก็บไอเทม', apply:()=>player.pickup+=80},
-    {icon:'🛡️', name:'เสริมเกราะป้องกัน', desc:'ลดความเสียหายลง 12%', apply:()=>player.armor+=.12},
-    {icon:'💥', name:'เพิ่มโอกาสคริติคอล', desc:'+10% โอกาสโจมตีคริติคอล', apply:()=>player.crit+=.10},
-    {icon:'💚', name:'ฟื้นฟูพลังชีวิตต่อเนื่อง', desc:'ฟื้นฟู +2.0 HP ต่อวินาที', apply:()=>player.regen+=2.0}
+    {icon:'💨', name:'เพิ่มความเร็วกระสุน', desc:'+30% ความเร็วกระสุน', apply:()=>player.bulletSpeed*=1.30},
+    {icon:'🧲', name:'ขยายรัศมีแม่เหล็ก', desc:'+100 ระยะดูดเก็บไอเทม', apply:()=>player.pickup+=100},
+    {icon:'🛡️', name:'เสริมเกราะป้องกัน', desc:'ลดความเสียหายลง 15%', apply:()=>player.armor+=.15},
+    {icon:'💥', name:'เพิ่มโอกาสคริติคอล', desc:'+12% โอกาสโจมตีคริติคอล', apply:()=>player.crit+=.12},
+    {icon:'💚', name:'ฟื้นฟูพลังชีวิตต่อเนื่อง', desc:'ฟื้นฟู +3.0 HP ต่อวินาที', apply:()=>player.regen+=3.0}
   ];
 
-  // Extended Luxury Shop Pool
+  // Extended Luxury Shop Pool (Tripled / At least 3x size = 15 Items Total)
   const luxuryShopPool = [
-    {id:'potion', icon:'🧪', name:'ยาฟื้นพลังชีวิตอย่างแรง', desc:'ฟื้นฟูพลังชีวิต 80 HP ทันที', cost:30, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+80); return true;}},
-    {id:'midas', icon:'👑', name:'มงกุฎแห่งกษัตริย์ไมดาส', desc:'รับ GOLD จากการเก็บเหรียญเพิ่มขึ้น 2 เท่า', cost:150, apply:()=>{player.goldMulti*=2; return true;}},
-    {id:'weapon_laser', icon:'⚡', name:'ปืนเลเซอร์นีออนพลาสม่า', desc:'เปลี่ยนเป็นกระสุนเลเซอร์สีเขียวความเร็วสูง', cost:250, apply:()=>{player.bulletType='laser'; return true;}},
-    {id:'weapon_fire', icon:'🔥', name:'ปืนปืนใหญ่เพลิงคอสมิก', desc:'เปลี่ยนเป็นลูกไฟระเบิดสร้างความเสียหายวงกว้าง', cost:300, apply:()=>{player.bulletType='fireball'; return true;}},
-    {id:'weapon_plasma', icon:'💥', name:'ลำแสงพลาสม่าคริสตัล', desc:'เปลี่ยนเป็นพลาสม่าคริสตัลพลังงานสูง คริแรงมาก', cost:400, apply:()=>{player.bulletType='plasma'; return true;}},
-    {id:'aegis', icon:'🛡️', name:'โล่เทพศักดิ์สิทธิ์', desc:'+100 Max HP & ลดความเสียหายลง 20%', cost:500, apply:()=>{player.maxHp+=100; player.hp+=100; player.armor+=0.2; return true;}},
-    {id:'boots', icon:'👟', name:'รองเท้าท่องมิติ', desc:'เพิ่มความเร็วการเคลื่อนที่ +30%', cost:200, apply:()=>{player.speed*=1.3; return true;}},
-    {id:'ring_crit', icon:'💍', name:'แหวนแห่งการทำลายล้าง', desc:'เพิ่มโอกาสติดคริติคอล +25%', cost:350, apply:()=>{player.crit+=0.25; return true;}},
-    {id:'revive', icon:'💎', name:'ศิลาคืนชีพอมตะ', desc:'ชุบชีวิตฟรี 1 ครั้งเมื่อ HP หมด (สะสมได้)', cost:800, apply:()=>{player.revives++; return true;}},
-    {id:'excalibur', icon:'🏆', name:'ดาบตำนานเอ็กซ์คาลิเบอร์', desc:'พลังโจมตี +120% และ คริติคอล +20%', cost:1500, apply:()=>{player.damage*=2.2; player.crit+=0.2; return true;}}
+    {id:'potion_small', icon:'🧪', name:'ยาฟื้นฟูพลังชีวิต', desc:'ฟื้นฟูพลังชีวิต 100 HP ทันที', cost:25, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+100); return true;}},
+    {id:'potion_full', icon:'💖', name:'น้ำยาฟื้นฟูเต็มสูบ', desc:'ฟื้นฟูพลังชีวิตเต็ม Max HP 100%', cost:60, apply:()=>{player.hp=player.maxHp; return true;}},
+    {id:'midas', icon:'👑', name:'มงกุฎแห่งกษัตริย์ไมดาส', desc:'รับ GOLD จากการเก็บเหรียญเพิ่มขึ้น 2 เท่า', cost:120, apply:()=>{player.goldMulti*=2; return true;}},
+    {id:'weapon_laser', icon:'⚡', name:'ปืนเลเซอร์นีออนพลาสม่า', desc:'เปลี่ยนเป็นกระสุนเลเซอร์สีเขียวความเร็วสูง', cost:200, apply:()=>{player.bulletType='laser'; return true;}},
+    {id:'weapon_fire', icon:'🔥', name:'ปืนใหญ่เพลิงคอสมิก', desc:'เปลี่ยนเป็นลูกไฟระเบิดสร้างความเสียหายวงกว้าง', cost:250, apply:()=>{player.bulletType='fireball'; return true;}},
+    {id:'weapon_plasma', icon:'💥', name:'ลำแสงพลาสม่าคริสตัล', desc:'เปลี่ยนเป็นพลาสม่าคริสตัลพลังงานสูง คริแรงมาก', cost:350, apply:()=>{player.bulletType='plasma'; return true;}},
+    {id:'weapon_arcane', icon:'🔮', name:'ปืนเวทมหาปริซึม', desc:'เปลี่ยนเป็นพลังงานเวทปริซึมรอบทิศทาง', cost:220, apply:()=>{player.bulletType='arcane'; return true;}},
+    {id:'aegis', icon:'🛡️', name:'โล่เทพศักดิ์สิทธิ์', desc:'+120 Max HP & ลดความเสียหายลง 20%', cost:400, apply:()=>{player.maxHp+=120; player.hp+=120; player.armor+=0.2; return true;}},
+    {id:'boots', icon:'👟', name:'รองเท้าท่องมิติ', desc:'เพิ่มความเร็วการเคลื่อนที่ +35%', cost:150, apply:()=>{player.speed*=1.35; return true;}},
+    {id:'ring_crit', icon:'💍', name:'แหวนแห่งการทำลายล้าง', desc:'เพิ่มโอกาสติดคริติคอล +30%', cost:300, apply:()=>{player.crit+=0.30; return true;}},
+    {id:'magnet_god', icon:'🧲', name:'แม่เหล็กยักษ์สวรรค์', desc:'เพิ่มระยะดูดเก็บเหรียญและ EXP ทั่วทั้งฉาก +300', cost:180, apply:()=>{player.pickup+=300; return true;}},
+    {id:'regen_pendant', icon:'📿', name:'สร้อยคอฟื้นชีวา', desc:'เพิ่มการฟื้นฟู HP +5.0 ต่อวินาที', cost:220, apply:()=>{player.regen+=5.0; return true;}},
+    {id:'multishot', icon:'🏹', name:'คันศรยิงกระจาย', desc:'เพิ่มจำนวนกระสุนต่อการยิง +2 นัด', cost:450, apply:()=>{player.projectiles+=2; return true;}},
+    {id:'revive', icon:'💎', name:'ศิลาคืนชีพอมตะ', desc:'ชุบชีวิตฟรี 1 ครั้งเมื่อ HP หมด (สะสมได้)', cost:600, apply:()=>{player.revives++; return true;}},
+    {id:'excalibur', icon:'🏆', name:'ดาบตำนานเอ็กซ์คาลิเบอร์', desc:'พลังโจมตี +150% และ คริติคอล +25%', cost:1000, apply:()=>{player.damage*=2.5; player.crit+=0.25; return true;}}
   ];
 
   let activeShopItems = [];
@@ -421,7 +436,7 @@ html,body{
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(120, ctxA.currentTime);
         osc.frequency.linearRampToValueAtTime(40, ctxA.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.2, ctxA.currentTime);
+        gain.gain.setValueAtTime(0.15, ctxA.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, ctxA.currentTime + 0.1);
         osc.start(); osc.stop(ctxA.currentTime + 0.1);
       } else if(type === 'coin') {
@@ -435,20 +450,20 @@ html,body{
   }
 
   // Keyboard Setup
-  addEventListener('keydown',e=>{
+  window.addEventListener('keydown',e=>{
     if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=true;
     if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=true;
     if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=true;
     if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=true;
   });
-  addEventListener('keyup',e=>{
+  window.addEventListener('keyup',e=>{
     if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=false;
     if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=false;
     if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=false;
     if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
   });
 
-  // Touch Controls
+  // Touch Controls Target
   const touchZone = document.getElementById('touchZone');
   const joyBase = document.getElementById('joyBase');
   const joyStick = document.getElementById('joyStick');
@@ -466,14 +481,14 @@ html,body{
     joyStick.style.transform = 'translate(-50%, -50%)';
     
     joy.x = 0; joy.y = 0;
-    touchZone.setPointerCapture(e.pointerId);
+    try { touchZone.setPointerCapture(e.pointerId); } catch(err){}
   });
 
   touchZone.addEventListener('pointermove', e => {
     if(!joy.active || e.pointerId !== joy.pointerId) return;
     const dx = e.clientX - joy.startX;
     const dy = e.clientY - joy.startY;
-    const maxR = 48;
+    const maxR = 45;
     const len = Math.hypot(dx, dy) || 1;
     const k = Math.min(1, maxR / len);
     
@@ -547,10 +562,14 @@ html,body{
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
   };
+  document.getElementById('pauseSettingsBtn').onclick = () => {
+    document.getElementById('settingsOverlay').classList.remove('hidden');
+  };
   document.getElementById('closeSettingsBtn').onclick = () => {
     settings.sfx = document.getElementById('sfxCheck').checked;
     settings.particles = document.getElementById('particlesCheck').checked;
     settings.shake = document.getElementById('shakeCheck').checked;
+    settings.difficulty = document.getElementById('diffSelect').value;
     document.getElementById('settingsOverlay').classList.add('hidden');
   };
 
@@ -571,10 +590,13 @@ html,body{
     const a = Math.random()*Math.PI*2; const d = Math.max(W,H)*.55+rand(120,280);
     const x = clamp(player.x+Math.cos(a)*d,50,world.w-50), y = clamp(player.y+Math.sin(a)*d,50,world.h-50);
     
+    // Scale enemies with difficulty setting
+    const diffMult = settings.difficulty === 'easy' ? 0.7 : settings.difficulty === 'hard' ? 1.4 : 1.0;
+
     enemies.push({
-      x, y, r:t.r, hp:t.hp*(1+(wave-1)*.2), maxHp:t.hp*(1+(wave-1)*.2),
-      speed:t.speed*(1+(wave-1)*.025), damage:t.damage*(1+(wave-1)*.07),
-      xp:10, gold:Math.floor(rand(2,6)*(1+wave*0.2)), type:t.type, color:t.color, hit:0, 
+      x, y, r:t.r, hp:t.hp*(1+(wave-1)*.18)*diffMult, maxHp:t.hp*(1+(wave-1)*.18)*diffMult,
+      speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05)*diffMult,
+      xp:12, gold:Math.floor(rand(3,8)*(1+wave*0.25)), type:t.type, color:t.color, hit:0, 
       animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0
     });
   }
@@ -594,7 +616,7 @@ html,body{
       bullets.push({
         x:player.x+Math.cos(a)*18, y:player.y+Math.sin(a)*18,
         vx:Math.cos(a)*player.bulletSpeed, vy:Math.sin(a)*player.bulletSpeed,
-        r:player.bulletType==='fireball'?9:5, life:1.2,
+        r:player.bulletType==='fireball'?10:5, life:1.3,
         damage:player.damage*(crit?2.2:1), crit, type:player.bulletType,
         trail:[]
       });
@@ -604,15 +626,15 @@ html,body{
   function enemyShoot(e){
     const a = Math.atan2(player.y - e.y, player.x - e.x);
     enemyBullets.push({
-      x: e.x, y: e.y, vx: Math.cos(a)*360, vy: Math.sin(a)*360,
+      x: e.x, y: e.y, vx: Math.cos(a)*340, vy: Math.sin(a)*340,
       r: 6, life: 3, damage: e.damage
     });
   }
 
   function addDrops(x,y,xpAmt,goldAmt){
-    xpOrbs.push({x,y,r:6,value:xpAmt,life:20,animTimer:Math.random()*10});
+    xpOrbs.push({x,y,r:6,value:xpAmt,life:25,animTimer:Math.random()*10});
     if(goldAmt > 0){
-      goldCoins.push({x:x+rand(-12,12),y:y+rand(-12,12),r:5,value:Math.ceil(goldAmt*player.goldMulti),life:20,animTimer:Math.random()*10});
+      goldCoins.push({x:x+rand(-12,12),y:y+rand(-12,12),r:5,value:Math.ceil(goldAmt*player.goldMulti),life:25,animTimer:Math.random()*10});
     }
   }
 
@@ -638,28 +660,35 @@ html,body{
 
   function gainXP(v){
     xp+=v;
-    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.32+8);openLevelUp();}
+    while(xp>=xpNeed){xp-=xpNeed;level++;xpNeed=Math.floor(xpNeed*1.28+6);openLevelUp();}
   }
 
   function openLevelUp(){
     paused=true; joy.active=false; joyBase.style.display='none';
+    touchZone.classList.add('hidden');
     const wrap=document.getElementById('upgrades');wrap.innerHTML='';
     [...levelUpgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
       const b=document.createElement('button');b.className='upgrade';
       b.innerHTML=`<div class="icon">${u.icon}</div><div><div class="uName">${u.name}</div><div class="uDesc">${u.desc}</div></div>`;
-      b.onclick=()=>{u.apply();document.getElementById('levelOverlay').classList.add('hidden');paused=false;setStatus('ต่อสู้ต่อ!');};
+      b.onclick=()=>{
+        u.apply();
+        document.getElementById('levelOverlay').classList.add('hidden');
+        touchZone.classList.remove('hidden');
+        paused=false;
+        setStatus('ต่อสู้ต่อ!');
+      };
       wrap.appendChild(b);
     });
     document.getElementById('levelOverlay').classList.remove('hidden');refreshHUD();
   }
 
-  // Calculate Dynamic Reroll Cost: 5% of remaining gold (min 10)
   function getRerollCost() {
     return Math.max(10, Math.floor(player.gold * 0.05));
   }
 
   function generateShopList() {
-    activeShopItems = [...luxuryShopPool].sort(()=>Math.random()-.5).slice(0, 4);
+    // Return 6 random items each wave from extended luxury pool
+    activeShopItems = [...luxuryShopPool].sort(()=>Math.random()-.5).slice(0, 6);
     renderShopItems();
   }
 
@@ -703,12 +732,12 @@ html,body{
   // Wave Shop (Triggers every 3 Waves)
   function openShop(){
     paused=true; joy.active=false; joyBase.style.display='none';
+    touchZone.classList.add('hidden');
     document.getElementById('shopWaveNum').textContent = wave;
     generateShopList();
     document.getElementById('shopOverlay').classList.remove('hidden');
   }
 
-  // Reroll Shop Button Handler
   document.getElementById('rerollBtn').onclick = () => {
     const cost = getRerollCost();
     if(player.gold >= cost) {
@@ -723,18 +752,20 @@ html,body{
 
   document.getElementById('closeShopBtn').onclick = () => {
     document.getElementById('shopOverlay').classList.add('hidden');
+    touchZone.classList.remove('hidden');
     paused=false; setStatus('ลุยเวฟถัดไป!');
   };
 
-  // Pause / HUD Title Menu Button Handler
   document.getElementById('pauseHudBtn').onclick = () => {
     if(over || !running) return;
     paused = true;
+    touchZone.classList.add('hidden');
     document.getElementById('pauseHeroStats').innerHTML = renderCharacterStatsHtml(player);
     document.getElementById('pauseOverlay').classList.remove('hidden');
   };
   document.getElementById('resumeBtn').onclick = () => {
     document.getElementById('pauseOverlay').classList.add('hidden');
+    touchZone.classList.remove('hidden');
     paused = false;
   };
   document.getElementById('quitBtn').onclick = () => {
@@ -743,18 +774,21 @@ html,body{
 
   function hurt(v){
     if(player.hit>0||over)return;
-    const dmg=Math.max(1,v*(1-player.armor));
-    player.hp-=dmg; player.hit=.35;
-    if(settings.shake) screenShake = 8;
-    makeSparks(player.x,player.y,'#ef4444',14);
+    const armorMult = Math.max(0.1, 1 - player.armor);
+    const diffMult = settings.difficulty === 'easy' ? 0.6 : settings.difficulty === 'hard' ? 1.3 : 1.0;
+    const dmg = Math.max(1, v * armorMult * diffMult);
+    
+    player.hp-=dmg; player.hit=.30;
+    if(settings.shake) screenShake = 6;
+    makeSparks(player.x,player.y,'#ef4444',12);
     
     if(player.hp<=0){
       if(player.revives > 0){
         player.revives--;
-        player.hp = player.maxHp * 0.5;
-        player.hit = 2.0; // Temporary invincibility
+        player.hp = player.maxHp * 0.6;
+        player.hit = 2.5;
         makeSparks(player.x,player.y,'#facc15',35);
-        alert('💎 ศิลาคืนชีพอมตะทำงาน! คุณได้รับการชุบชีวิตฟื้นฟู HP 50%!');
+        alert('💎 ศิลาคืนชีพอมตะทำงาน! คุณได้รับการชุบชีวิตฟื้นฟู HP 60%!');
       } else {
         endGame();
       }
@@ -767,7 +801,6 @@ html,body{
 
     if(screenShake > 0) screenShake = Math.max(0, screenShake - dt * 25);
 
-    // Trigger Shop Menu Every 3 Waves
     if(wave % 3 === 0 && lastShopWave !== wave){
       lastShopWave = wave;
       openShop();
@@ -794,7 +827,7 @@ html,body{
 
     if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
 
-    const spawnRate=Math.max(.08,.55-wave*.018);
+    const spawnRate=Math.max(.1,.60-wave*.015);
     if(spawnTimer<=0){
       const batch=wave>=5 && Math.random()<.4?2:1;
       for(let i=0;i<batch;i++)spawnEnemy();
@@ -809,17 +842,16 @@ html,body{
       e.animTimer+=dt*6;
       if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
 
-      // Ranged Enemy Shooting
       if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < 500){
         e.shootTimer -= dt;
         if(e.shootTimer <= 0){
           enemyShoot(e);
-          e.shootTimer = e.type === 'boss' ? 0.9 : 1.8;
+          e.shootTimer = e.type === 'boss' ? 1.0 : 2.2;
         }
       }
       
       const d=dist(e.x,e.y,player.x,player.y);
-      if(d<e.r+player.r)hurt(e.damage*dt*1.5);
+      if(d<e.r+player.r)hurt(e.damage*dt*1.2);
     }
 
     // Player Bullets
@@ -827,7 +859,7 @@ html,body{
       const b=bullets[i];
       b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
       b.trail.push({x:b.x, y:b.y});
-      if(b.trail.length > 5) b.trail.shift();
+      if(b.trail.length > 4) b.trail.shift();
 
       let remove=b.life<=0||b.x<0||b.y<0||b.x>world.w||b.y>world.h;
       if(!remove){
@@ -855,8 +887,8 @@ html,body{
       const d=dist(o.x,o.y,player.x,player.y);
       if(d<player.pickup){
         const a=Math.atan2(player.y-o.y,player.x-o.x);
-        o.x+=Math.cos(a)*(320+player.pickup*2)*dt;
-        o.y+=Math.sin(a)*(320+player.pickup*2)*dt;
+        o.x+=Math.cos(a)*(340+player.pickup*2)*dt;
+        o.y+=Math.sin(a)*(340+player.pickup*2)*dt;
       }
       if(d<player.r+o.r){gainXP(o.value);xpOrbs.splice(i,1);continue}
       if(o.life<=0)xpOrbs.splice(i,1);
@@ -868,8 +900,8 @@ html,body{
       const d=dist(g.x,g.y,player.x,player.y);
       if(d<player.pickup){
         const a=Math.atan2(player.y-g.y,player.x-g.x);
-        g.x+=Math.cos(a)*(340+player.pickup*2)*dt;
-        g.y+=Math.sin(a)*(340+player.pickup*2)*dt;
+        g.x+=Math.cos(a)*(360+player.pickup*2)*dt;
+        g.y+=Math.sin(a)*(360+player.pickup*2)*dt;
       }
       if(d<player.r+g.r){
         player.gold += g.value; 
@@ -900,9 +932,7 @@ html,body{
   function sx(x,cam){return Math.floor(x-cam.x);} 
   function sy(y,cam){return Math.floor(y-cam.y);}
 
-  // Shader Style Shaded Background
   function drawGround(cam){
-    // Dark Space Gradient Base
     const bgGrad = ctx.createLinearGradient(0, 0, W, H);
     bgGrad.addColorStop(0, '#030712');
     bgGrad.addColorStop(0.5, '#0b0f19');
@@ -913,7 +943,6 @@ html,body{
     const tileSize=40;
     const startX=-(cam.x%tileSize), startY=-(cam.y%tileSize);
     
-    // Vignette / Shadow Overlay Pattern
     for(let x=startX; x<W; x+=tileSize){
       for(let y=startY; y<H; y+=tileSize){
         const worldX = Math.floor((x+cam.x)/tileSize);
@@ -924,20 +953,17 @@ html,body{
           ctx.fillRect(Math.floor(x), Math.floor(y), tileSize, tileSize);
         }
         
-        // Neon Grid Lines
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
         ctx.lineWidth = 1;
         ctx.strokeRect(Math.floor(x), Math.floor(y), tileSize, tileSize);
       }
     }
 
-    // World Boundary Shadow
     ctx.strokeStyle = '#f43f5e';
     ctx.lineWidth = 6;
     ctx.strokeRect(-cam.x, -cam.y, world.w, world.h);
   }
 
-  // Colorful & Weird Custom Pixel Character Drawing (Body shape preserved, colorful tone applied)
   function drawPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam);
     const flip = player.facing === 'left';
@@ -946,29 +972,23 @@ html,body{
     ctx.save(); ctx.translate(px, py);
     if(player.hit>0 && Math.floor(player.hit*25)%2===0) ctx.globalAlpha=0.4;
 
-    // Glowing Neon Shadow
     ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(-12, 12, 24, 6);
     
     if(flip) ctx.scale(-1, 1);
 
-    // Dynamic Colorful Cape
     ctx.fillStyle = selectedHero.secondaryColor; 
     ctx.fillRect(-10, -10+bob, 5, 15);
 
-    // Body / Torso (Vibrant Primary Color)
     ctx.fillStyle = selectedHero.color;
     ctx.fillRect(-7, -8+bob, 14, 14); 
 
-    // Weird Glowing Core Chest Emblem
     ctx.fillStyle = '#ffffff'; 
     ctx.fillRect(-3, -6+bob, 6, 6); 
     ctx.fillStyle = selectedHero.secondaryColor;
     ctx.fillRect(-1, -4+bob, 2, 2);
 
-    // Belt & Straps
     ctx.fillStyle = '#0f172a'; ctx.fillRect(-7, 4+bob, 14, 3);
 
-    // Legs & Running Animation
     ctx.fillStyle = '#1e1b4b';
     if(player.animFrame === 1){
       ctx.fillRect(-7, 7+bob, 5, 8); ctx.fillRect(2, 5+bob, 5, 6);
@@ -978,22 +998,18 @@ html,body{
       ctx.fillRect(-6, 7+bob, 5, 7); ctx.fillRect(1, 7+bob, 5, 7);
     }
 
-    // Colorful Alien/Cyber Helmet & Visor
     ctx.fillStyle = selectedHero.secondaryColor; ctx.fillRect(-6, -18+bob, 12, 10); 
     ctx.fillStyle = '#090d16'; ctx.fillRect(-6, -14+bob, 12, 4); 
     
-    // Weird Glowing Eye Line
     ctx.fillStyle = selectedHero.color; 
     ctx.fillRect(0, -13+bob, 5, 2);
 
-    // Arm & Weapon Mount
     ctx.fillStyle = '#f8fafc'; ctx.fillRect(5, -4+bob, 5, 9);
     ctx.fillStyle = selectedHero.color; ctx.fillRect(6, -2+bob, 4, 5);
 
     ctx.restore();
   }
 
-  // Enemy Rendering
   function drawEnemy(e, cam){
     const px=sx(e.x,cam), py=sy(e.y,cam);
     const flip = player.x < e.x;
@@ -1040,7 +1056,6 @@ html,body{
     ctx.fillStyle='#22c55e'; ctx.fillRect(px-bw/2, py-r-11, bw*hp, bh);
   }
 
-  // Bullet FX Rendering
   function drawBullets(cam){
     for(const b of bullets){
       const px=sx(b.x,cam), py=sy(b.y,cam);
@@ -1075,7 +1090,6 @@ html,body{
     }
   }
 
-  // Drops & Particles Render
   function drawDrops(cam){
     for(const o of xpOrbs){
       const px=sx(o.x,cam), py=sy(o.y,cam);
@@ -1140,12 +1154,14 @@ html,body{
 
     document.getElementById('startOverlay').classList.add('hidden');
     document.getElementById('gameOver').classList.add('hidden');
+    touchZone.classList.remove('hidden');
     setStatus('เริ่มต้นการต่อสู้!');
     refreshHUD();
   }
 
   function endGame(){
     over=true; running=false;
+    touchZone.classList.add('hidden');
     document.getElementById('finalStats').innerHTML= `
       <div class="stat-item"><span>เวฟที่ไปถึง:</span><span class="val">${wave}</span></div>
       <div class="stat-item"><span>จำนวนศัตรูที่กำจัด:</span><span class="val">${kills} ตัว</span></div>
@@ -1155,7 +1171,7 @@ html,body{
     document.getElementById('gameOver').classList.remove('hidden');
   }
 
-  // Buttons Event Listeners
+  // Event Listeners
   document.getElementById('startBtn').onclick=startGame;
   document.getElementById('restart').onclick=startGame;
   document.getElementById('quitTitle').onclick=()=>location.reload();
