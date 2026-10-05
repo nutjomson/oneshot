@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#050a0e">
-<title>16-Bit Survivor Arena - iOS Edition</title>
+<title>Samurai Survivor - 16-Bit Yokai Slayer</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -26,7 +26,7 @@ html,body{
 #game{position:fixed;inset:0;overflow:hidden;background:#090d12}
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 
-/* HUD Panel & Safe Area Supporting */
+/* HUD Panel */
 #hud{
   position:absolute;z-index:10;inset:0;pointer-events:none;
   padding-top:max(12px, env(safe-area-inset-top));
@@ -35,25 +35,25 @@ html,body{
   padding-bottom:max(12px, env(safe-area-inset-bottom));
 }
 .top{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
-.panel{background:#0d1821;border:3px solid #2a4158;box-shadow:inset -3px -3px 0px #060a0e, inset 3px 3px 0px #41607f;padding:8px;border-radius:0px}
+.panel{background:#0d1821;border:3px solid #8e1b1b;box-shadow:inset -3px -3px 0px #060a0e, inset 3px 3px 0px #d35400;padding:8px;border-radius:0px}
 .stat{flex:1;max-width:220px;min-width:110px}
-.label{font-size:8px;color:#8ba3c7;letter-spacing:1px;margin-bottom:4px;text-shadow:1px 1px #000}
+.label{font-size:8px;color:#f39c12;letter-spacing:1px;margin-bottom:4px;text-shadow:1px 1px #000}
 .num{font-size:8px;font-weight:bold;margin-top:4px;color:#fff;text-shadow:1px 1px #000}
-.bar{height:8px;background:#101419;border:2px solid #2a4158;padding:1px;position:relative}
+.bar{height:8px;background:#101419;border:2px solid #5c1d1d;padding:1px;position:relative}
 .fill{height:100%;width:100%;transition:width 0.1s}
 .hp{background:#e74c3c;box-shadow:inset 0 -2px 0 #962d22}
 .xp{background:#3498db;box-shadow:inset 0 -2px 0 #1f618d}
 .wave{font-size:9px;text-align:right;line-height:1.5;color:#f1c40f;min-width:90px}
 .small{font-size:7px;color:#a0b2c6;margin-top:4px}
 
-/* Dynamic Touch Zone for iPhone & iPad */
+/* Dynamic Touch Zone */
 #touchZone{
   position:absolute;z-index:12;inset:0;
   width:100%;height:100%;pointer-events:auto;touch-action:none;
 }
 #joyBase{
   position:absolute;width:110px;height:110px;
-  background:rgba(13,24,33,0.75);border:3px solid #2a4158;
+  background:rgba(20,10,10,0.8);border:3px solid #d35400;
   border-radius:50%;display:none;pointer-events:none;
   transform:translate(-50%,-50%);z-index:13;
 }
@@ -67,30 +67,30 @@ html,body{
   position:absolute;z-index:11;left:50%;
   bottom:max(16px, env(safe-area-inset-bottom));
   transform:translateX(-50%);padding:6px 12px;background:#0d1821;
-  border:2px solid #2a4158;font-size:8px;color:#2ecc71;
+  border:2px solid #d35400;font-size:8px;color:#2ecc71;
   pointer-events:none;text-align:center;white-space:nowrap;
 }
-.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,14,0.85)}
+.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,14,0.88)}
 .hidden{display:none!important}
 .modal{
   width:min(620px,100%);max-height:85vh;overflow:auto;
-  background:#0d1821;border:4px solid #34495e;padding:18px;
-  box-shadow:inset -4px -4px 0 #050a0e, inset 4px 4px 0 #5d6d7e;text-align:center;
+  background:#140c0c;border:4px solid #c0392b;padding:18px;
+  box-shadow:inset -4px -4px 0 #050a0e, inset 4px 4px 0 #e74c3c;text-align:center;
 }
 .title{font-size:18px;color:#f1c40f;margin-bottom:8px;text-shadow:2px 2px #000}
 .sub{font-size:8px;color:#a0b2c6;line-height:1.6;margin-bottom:16px}
 #upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.upgrade{border:3px solid #2a4158;background:#152331;padding:10px;text-align:left;color:#fff;cursor:pointer;font-family:inherit}
-.upgrade:active{background:#1f3347;border-color:#f1c40f}
+.upgrade{border:3px solid #8e1b1b;background:#221111;padding:10px;text-align:left;color:#fff;cursor:pointer;font-family:inherit}
+.upgrade:active{background:#381616;border-color:#f1c40f}
 .icon{font-size:20px;margin-bottom:6px;text-align:center}
 .uName{font-size:8px;color:#f1c40f;margin-bottom:4px;line-height:1.4}
 .uDesc{font-size:7px;line-height:1.5;color:#bdc3c7}
 .gameover h1{font-size:20px;color:#e74c3c;margin:0 0 12px;text-shadow:2px 2px #000}
-.stats{line-height:1.8;color:#bdc3c7;font-size:8px;text-align:left;background:#080d12;padding:10px;border:2px solid #2a4158;margin-bottom:12px}
-.btn{border:3px solid #fff;background:#2ecc71;color:#000;font-family:inherit;font-size:9px;padding:10px 16px;cursor:pointer;box-shadow:inset -3px -3px 0 #27ae60;margin-top:8px}
+.stats{line-height:1.8;color:#bdc3c7;font-size:8px;text-align:left;background:#080d12;padding:10px;border:2px solid #8e1b1b;margin-bottom:12px}
+.btn{border:3px solid #fff;background:#c0392b;color:#fff;font-family:inherit;font-size:9px;padding:10px 16px;cursor:pointer;box-shadow:inset -3px -3px 0 #78281f;margin-top:8px}
 .btn:active{transform:translate(2px, 2px);box-shadow:none}
 #startOverlay .modal{max-width:440px}
-.start-title{font-size:18px;color:#2ecc71;margin-bottom:10px;text-shadow:2px 2px #000}
+.start-title{font-size:16px;color:#e74c3c;margin-bottom:10px;text-shadow:2px 2px #000}
 .start-sub{color:#a0b2c6;font-size:8px;line-height:1.7;margin-bottom:16px}
 .controls-hint{font-size:7px;color:#7f8c8d;line-height:1.7;margin-top:12px}
 
@@ -113,12 +113,12 @@ html,body{
 <div id="hud">
   <div class="top">
     <div class="panel stat">
-      <div class="label">HP</div>
+      <div class="label">HP (พลังชีวิต)</div>
       <div class="bar"><div id="hpFill" class="fill hp"></div></div>
       <div class="num"><span id="hpText">100/100</span></div>
     </div>
     <div class="panel stat">
-      <div class="label">EXP / LV</div>
+      <div class="label">EXP / LV (วิญญาณ)</div>
       <div class="bar"><div id="xpFill" class="fill xp"></div></div>
       <div class="num">LV.<span id="levelText">1</span> (<span id="xpText">0/10</span>)</div>
     </div>
@@ -133,14 +133,14 @@ html,body{
 
 <div id="startOverlay" class="overlay">
   <div class="modal">
-    <div class="start-title">16-BIT SURVIVOR</div>
-    <div class="start-sub">รองรับการเล่นบน iPhone & iPad สมบูรณ์แบบ สัมผัสตรงไหนของหน้าจอก็สามารถบังคับทิศทางได้ทันที</div>
+    <div class="start-title">SAMURAI SURVIVOR</div>
+    <div class="start-sub">สวมบทบาทซามูไรผู้กล้า ปราบเหล่าปีศาจโอนิ เท็นงู และจิ้งจอกเก้าหาง!</div>
     <button class="btn" id="startBtn">START GAME</button>
-    <div class="controls-hint">iPhone/iPad: แตะลากบนหน้าเพื่อเคลื่อนที่<br>PC: บังคับด้วย WASD / ปุ่มลูกศร</div>
+    <div class="controls-hint">Mobile: แตะลากบนหน้าจอเพื่อเคลื่อนที่<br>PC: บังคับด้วย WASD / ปุ่มลูกศร</div>
   </div>
 </div>
 
-<div id="levelOverlay" class="overlay hidden"><div class="modal"><div class="title">LEVEL UP!</div><div class="sub">เลือกอัปเกรดความสามารถ</div><div id="upgrades"></div></div></div>
+<div id="levelOverlay" class="overlay hidden"><div class="modal"><div class="title">LEVEL UP!</div><div class="sub">เลือกอัปเกรดพลังซามูไร</div><div id="upgrades"></div></div></div>
 <div id="gameOver" class="overlay hidden"><div class="modal gameover"><h1>GAME OVER</h1><div class="stats" id="finalStats"></div><button class="btn" id="restart">TRY AGAIN</button></div></div>
 
 <script>
@@ -167,7 +167,7 @@ html,body{
   
   const player = {
     x:1500, y:1500, r:16, hp:100, maxHp:100, speed:240, damage:25, fireRate:.35, fireTimer:0,
-    bulletSpeed:700, projectiles:1, pickup:100, armor:0, crit:.08, regen:0, angle:0, hit:0,
+    bulletSpeed:750, projectiles:1, pickup:100, armor:0, crit:.08, regen:0, angle:0, hit:0,
     animFrame:0, animTimer:0, facing:'right'
   };
 
@@ -176,23 +176,24 @@ html,body{
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10;
 
+  // ปรับคุณสมบัติปีศาจตำนานญี่ปุ่น
   const enemyTypes = {
-    stalker:{hp:45, speed:60, damage:12, r:16, color:'#e74c3c', xp:3},
-    runner:{hp:28, speed:110, damage:8, r:12, color:'#e67e22', xp:4},
-    brute:{hp:160, speed:35, damage:22, r:24, color:'#8e44ad', xp:9}
+    kitsune:{hp:40, speed:65, damage:12, r:15, color:'#e67e22', xp:3}, // จิ้งจอกวิญญาณ
+    tengu:{hp:25, speed:120, damage:8, r:12, color:'#c0392b', xp:4},   // เท็นงู วายุอสูร
+    oni:{hp:180, speed:35, damage:25, r:24, color:'#8e44ad', xp:10}     // ยักษ์โอนิ
   };
 
   const upgrades = [
-    {icon:'⚔️',name:'ATTACK UP',desc:'+25% พลังโจมตี',apply:()=>player.damage*=1.25},
-    {icon:'⚡',name:'RAPID FIRE',desc:'ยิงเร็วขึ้น 20%',apply:()=>player.fireRate*=.8},
-    {icon:'🏃',name:'SPEED UP',desc:'+15% ความเร็วเคลื่อนที่',apply:()=>player.speed*=1.15},
-    {icon:'❤️',name:'MAX HP',desc:'+30 Max HP & ฟื้นฟู 30 HP',apply:()=>{player.maxHp+=30;player.hp=Math.min(player.maxHp,player.hp+30)}},
-    {icon:'🔫',name:'MULTI-SHOT',desc:'+1 กระสุนต่อการยิง',apply:()=>player.projectiles++},
-    {icon:'💨',name:'BULLET SPEED',desc:'+25% ความเร็วกระสุน',apply:()=>player.bulletSpeed*=1.25},
-    {icon:'🧲',name:'MAGNET',desc:'+50 ระยะดูด XP',apply:()=>player.pickup+=50},
-    {icon:'🛡',name:'ARMOR',desc:'ต้านทานความเสียหาย 18%',apply:()=>player.armor+=.18},
-    {icon:'💥',name:'CRITICAL',desc:'+10% โอกาสติดคริติคอล',apply:()=>player.crit+=.10},
-    {icon:'💚',name:'REGEN',desc:'ฟื้นฟู +1 HP ทุกๆ วินาที',apply:()=>player.regen+=1}
+    {icon:'⚔️',name:'KATANA SLASH',desc:'+25% พลังฟันดาบ',apply:()=>player.damage*=1.25},
+    {icon:'⚡',name:'HASTE',desc:'โจมตีเร็วขึ้น 20%',apply:()=>player.fireRate*=.8},
+    {icon:'👟',name:'SWIFT FEET',desc:'+15% ความเร็วเดิน',apply:()=>player.speed*=1.15},
+    {icon:'❤️',name:'BUSHIDO SPIRIT',desc:'+30 Max HP & ฟื้นฟู 30 HP',apply:()=>{player.maxHp+=30;player.hp=Math.min(player.maxHp,player.hp+30)}},
+    {icon:'🗡️',name:'MULTI-SLASH',desc:'+1 คลื่นดาบต่อการฟัน',apply:()=>player.projectiles++},
+    {icon:'🌀',name:'WIND SLASH',desc:'+25% ความเร็วคลื่นดาบ',apply:()=>player.bulletSpeed*=1.25},
+    {icon:'🔮',name:'SOUL MAGNET',desc:'+50 ระยะดูดวิญญาณ',apply:()=>player.pickup+=50},
+    {icon:'🛡️',name:'SAMURAI ARMOR',desc:'ต้านทานความเสียหาย 18%',apply:()=>player.armor+=.18},
+    {icon:'💥',name:'CRITICAL STRIKE',desc:'+10% โอกาสติดคริติคอล',apply:()=>player.crit+=.10},
+    {icon:'🍵',name:'MEDITATION',desc:'ฟื้นฟู +1 HP ทุกๆ วินาที',apply:()=>player.regen+=1}
   ];
 
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
@@ -213,7 +214,7 @@ html,body{
     if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
   });
 
-  // Dynamic Touch Joystick สำหรับ iOS & iPad
+  // Touch Controls
   const touchZone = document.getElementById('touchZone');
   const joyBase = document.getElementById('joyBase');
   const joyStick = document.getElementById('joyStick');
@@ -261,7 +262,7 @@ html,body{
 
   // Spawning & Logic
   function spawnEnemy(forceType){
-    const type=forceType || (Math.random()<.15+Math.min(.2,wave*.01)?'brute':Math.random()<.3?'runner':'stalker');
+    const type=forceType || (Math.random()<.15+Math.min(.2,wave*.01)?'oni':Math.random()<.35?'tengu':'kitsune');
     const t=enemyTypes[type];
     const a=Math.random()*Math.PI*2; const d=Math.max(W,H)*.5+rand(100,250);
     const x=clamp(player.x+Math.cos(a)*d,50,world.w-50), y=clamp(player.y+Math.sin(a)*d,50,world.h-50);
@@ -278,10 +279,10 @@ html,body{
     if(!target)return;
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
     for(let i=0;i<player.projectiles;i++){
-      const spread=(i-(player.projectiles-1)/2)*.12;
+      const spread=(i-(player.projectiles-1)/2)*.15;
       const a=baseAngle+spread;
       const crit=Math.random()<player.crit;
-      bullets.push({x:player.x+Math.cos(a)*18,y:player.y+Math.sin(a)*18,vx:Math.cos(a)*player.bulletSpeed,vy:Math.sin(a)*player.bulletSpeed,r:4,life:1.2,damage:player.damage*(crit?2:1),crit});
+      bullets.push({x:player.x+Math.cos(a)*18,y:player.y+Math.sin(a)*18,vx:Math.cos(a)*player.bulletSpeed,vy:Math.sin(a)*player.bulletSpeed,r:6,life:1.0,damage:player.damage*(crit?2:1),crit,angle:a});
     }
   }
 
@@ -388,7 +389,7 @@ html,body{
     refreshHUD();
   }
 
-  // Camera & Render
+  // Render & Camera
   function camera(){
     return {
       x:clamp(player.x-W/2, 0, Math.max(0,world.w-W)),
@@ -399,12 +400,13 @@ html,body{
   function sx(x,cam){return Math.floor(x-cam.x);} 
   function sy(y,cam){return Math.floor(y-cam.y);}
 
+  // วาดพื้นหลังสไตล์ลานศาลเจ้าญี่ปุ่น
   function drawGround(cam){
-    ctx.fillStyle='#0b131b'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#0f1419'; ctx.fillRect(0,0,W,H);
     const tileSize=32;
     const startX=-(cam.x%tileSize), startY=-(cam.y%tileSize);
     
-    ctx.fillStyle='#111d29';
+    ctx.fillStyle='#17202a';
     for(let x=startX; x<W; x+=tileSize){
       for(let y=startY; y<H; y+=tileSize){
         const worldX = Math.floor((x+cam.x)/tileSize);
@@ -414,9 +416,18 @@ html,body{
         }
       }
     }
+    // เพิ่มเส้นตารางสไตล์แผ่นหิน
+    ctx.strokeStyle='#0b0e12'; ctx.lineWidth=1;
+    for(let x=startX; x<W; x+=tileSize){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    for(let y=startY; y<H; y+=tileSize){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
   }
 
-  function draw16BitPlayer(cam){
+  // วาดตัวละครนักรบซามูไร (Samurai Warrior)
+  function drawSamuraiPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam);
     const flip = player.facing === 'left';
     const bob = (player.animFrame % 2 === 1) ? -1 : 0;
@@ -428,63 +439,82 @@ html,body{
       ctx.globalAlpha=0.4;
     }
 
+    // เงา
     ctx.fillStyle='rgba(0,0,0,0.4)';
-    ctx.fillRect(-10, 12, 20, 6);
+    ctx.fillRect(-10, 12, 20, 5);
 
     if(flip) ctx.scale(-1, 1);
 
+    // ขา & เกราะขา (Hakama/Suneate)
     ctx.fillStyle='#1a252f';
     if(player.animFrame===1){
-      ctx.fillRect(-6, 6+bob, 4, 8); ctx.fillRect(2, 4+bob, 4, 8);
+      ctx.fillRect(-6, 6+bob, 4, 7); ctx.fillRect(2, 4+bob, 4, 7);
     } else if(player.animFrame===3){
-      ctx.fillRect(-6, 4+bob, 4, 8); ctx.fillRect(2, 6+bob, 4, 8);
+      ctx.fillRect(-6, 4+bob, 4, 7); ctx.fillRect(2, 6+bob, 4, 7);
     } else {
-      ctx.fillRect(-6, 5+bob, 4, 8); ctx.fillRect(2, 5+bob, 4, 8);
+      ctx.fillRect(-6, 5+bob, 4, 7); ctx.fillRect(2, 5+bob, 4, 7);
     }
-    ctx.fillStyle='#2c3e50';
-    ctx.fillRect(-6, 11+bob, 5, 3); ctx.fillRect(2, 11+bob, 5, 3);
+    // เกราะหน้าแข้งสีทอง
+    ctx.fillStyle='#f39c12';
+    ctx.fillRect(-6, 10+bob, 4, 3); ctx.fillRect(2, 10+bob, 4, 3);
 
-    ctx.fillStyle='#c0392b';
-    ctx.fillRect(-9, -4+bob, 4, 12);
-
-    ctx.fillStyle='#2980b9';
-    ctx.fillRect(-6, -6+bob, 12, 12);
-    ctx.fillStyle='#3498db';
-    ctx.fillRect(-4, -6+bob, 8, 4);
-    ctx.fillStyle='#f1c40f';
-    ctx.fillRect(-5, 3+bob, 10, 2);
-
-    ctx.fillStyle='#7f8c8d';
-    ctx.fillRect(-8, -7+bob, 4, 4); ctx.fillRect(4, -7+bob, 4, 4);
-
-    ctx.fillStyle='#2c3e50';
-    ctx.fillRect(-6, -16+bob, 12, 10);
-    ctx.fillStyle='#7f8c8d';
-    ctx.fillRect(-4, -18+bob, 8, 2);
-    
-    ctx.fillStyle='#2ecc71';
-    ctx.fillRect(0, -13+bob, 6, 3);
-    ctx.fillStyle='#a3e4d7';
-    ctx.fillRect(3, -13+bob, 2, 2);
-
-    ctx.save();
-    ctx.translate(2, -2+bob);
-    let gunAngle = player.angle;
-    if(flip) gunAngle = Math.PI - gunAngle;
-    ctx.rotate(gunAngle);
-
+    // ชุดเกราะหลัก (Do / Armor Body) สีแดงเข้ม & ดำ
+    ctx.fillStyle='#78281f';
+    ctx.fillRect(-7, -5+bob, 14, 11);
     ctx.fillStyle='#111';
-    ctx.fillRect(2, -3, 14, 5);
-    ctx.fillStyle='#7f8c8d';
-    ctx.fillRect(12, -2, 8, 3);
-    ctx.fillStyle='#e74c3c';
-    ctx.fillRect(6, -2, 4, 3);
+    ctx.fillRect(-5, -3+bob, 10, 8);
+    // สายรัดเกราะขอบทอง
+    ctx.fillStyle='#f1c40f';
+    ctx.fillRect(-7, 3+bob, 14, 2);
+
+    // เกราะไหล่ (Sode)
+    ctx.fillStyle='#922b21';
+    ctx.fillRect(-10, -5+bob, 4, 7);
+    ctx.fillRect(6, -5+bob, 4, 7);
+    ctx.fillStyle='#f39c12';
+    ctx.fillRect(-10, -6+bob, 4, 1);
+    ctx.fillRect(6, -6+bob, 4, 1);
+
+    // หัว & หมวกคาบูโตะ (Kabuto Helmet)
+    ctx.fillStyle='#111';
+    ctx.fillRect(-6, -15+bob, 12, 9); // ตัวหมวก
+    ctx.fillStyle='#78281f';
+    ctx.fillRect(-8, -10+bob, 16, 2); // ปีกหมวก
+    ctx.fillStyle='#f1c40f'; // เขาหมวกซามูไร (Kuwagata)
+    ctx.fillRect(-2, -20+bob, 4, 5);
+    ctx.fillRect(-6, -21+bob, 3, 2);
+    ctx.fillRect(3, -21+bob, 3, 2);
+
+    // หน้ากากอสูรปิดหน้า (Mempo Mask)
+    ctx.fillStyle='#c0392b';
+    ctx.fillRect(-4, -10+bob, 8, 4);
+    ctx.fillStyle='#fff'; // ตาเรืองแสง
+    ctx.fillRect(1, -12+bob, 2, 2);
+
+    // ดาบคาตานะ (Katana)
+    ctx.save();
+    ctx.translate(2, -1+bob);
+    let katanaAngle = player.angle;
+    if(flip) katanaAngle = Math.PI - katanaAngle;
+    ctx.rotate(katanaAngle);
+
+    // ด้ามจับดาบ (Tsuka)
+    ctx.fillStyle='#78281f';
+    ctx.fillRect(0, -2, 6, 3);
+    ctx.fillStyle='#f1c40f'; // กระบังมือ (Tsuba)
+    ctx.fillRect(6, -4, 2, 7);
+    // ใบดาบคาตานะ (Blade)
+    ctx.fillStyle='#ecf0f1';
+    ctx.fillRect(8, -2, 16, 2);
+    ctx.fillStyle='#bdc3c7'; // สันดาบ
+    ctx.fillRect(8, -1, 16, 1);
     ctx.restore();
 
     ctx.restore();
   }
 
-  function draw16BitEnemy(e, cam){
+  // วาดเหล่าปีศาจตำนานญี่ปุ่น (Yokai Enemies)
+  function drawYokaiEnemy(e, cam){
     const px=sx(e.x,cam), py=sy(e.y,cam);
     const flip = player.x < e.x;
     const r = e.r;
@@ -496,74 +526,128 @@ html,body{
       ctx.globalAlpha=0.4;
     }
 
+    // เงา
     ctx.fillStyle='rgba(0,0,0,0.35)';
-    ctx.fillRect(-r*.8, r-4, r*1.6, 6);
+    ctx.fillRect(-r*.8, r-4, r*1.6, 5);
 
     if(flip) ctx.scale(-1, 1);
 
-    if(e.type === 'brute'){
+    if(e.type === 'oni'){ 
+      // --- ยักษ์โอนิ (Red Oni) ---
       const bob = e.animFrame === 1 ? -2 : 0;
-      ctx.fillStyle='#4a235a';
+      // ลำตัวยักษ์สีแดง
+      ctx.fillStyle='#c0392b';
       ctx.fillRect(-16, -18+bob, 32, 28);
-      ctx.fillStyle='#8e44ad';
-      ctx.fillRect(-14, -16+bob, 28, 12);
-      ctx.fillRect(-18, -14+bob, 36, 8);
-      ctx.fillStyle='#1f618d';
-      ctx.fillRect(-6, -22+bob, 12, 6);
-      ctx.fillStyle='#f1c40f';
-      ctx.fillRect(1, -20+bob, 4, 2);
-      ctx.fillStyle='#e74c3c';
-      ctx.fillRect(-4, -8+bob, 8, 8);
+      // กางเกงผ้าเตี่ยวลายเสือ
+      ctx.fillStyle='#f39c12';
+      ctx.fillRect(-14, 4+bob, 28, 8);
+      ctx.fillStyle='#111';
+      ctx.fillRect(-10, 6+bob, 4, 4); ctx.fillRect(4, 7+bob, 5, 3);
+
+      // หัว & เขาคู่
+      ctx.fillStyle='#922b21';
+      ctx.fillRect(-10, -26+bob, 20, 10);
+      ctx.fillStyle='#ecf0f1'; // เขาคู่สีขาว/เหลือง
+      ctx.fillRect(-8, -32+bob, 3, 7); ctx.fillRect(5, -32+bob, 3, 7);
+
+      // ตา & หน้าตาอสูร
+      ctx.fillStyle='#f1c40f'; // ตาเหลือง
+      ctx.fillRect(2, -22+bob, 4, 3);
+      ctx.fillStyle='#fff'; // เขี้ยว
+      ctx.fillRect(-4, -18+bob, 2, 3); ctx.fillRect(2, -18+bob, 2, 3);
+
+      // กระบองหนามเหล็ก (Kanabo)
       ctx.fillStyle='#2c3e50';
-      ctx.fillRect(-12, 8+bob, 8, 10); ctx.fillRect(4, 8+bob, 8, 10);
-    } else if(e.type === 'runner'){
+      ctx.fillRect(14, -20+bob, 6, 32);
+      ctx.fillStyle='#bdc3c7'; // หนาม
+      ctx.fillRect(12, -16+bob, 2, 2); ctx.fillRect(20, -10+bob, 2, 2); ctx.fillRect(12, -4+bob, 2, 2);
+
+    } else if(e.type === 'tengu'){ 
+      // --- ปีศาจเท็นงู (Tengu) ---
       const bob = e.animFrame === 1 ? -3 : 0;
-      ctx.fillStyle='#e67e22';
-      ctx.fillRect(-10, -6+bob, 6, 4);
+      // ชุดนักบวชสีดำ-แดง
       ctx.fillStyle='#1c2833';
       ctx.fillRect(-8, -12+bob, 16, 20);
-      ctx.fillStyle='#2c3e50';
-      ctx.fillRect(-6, -18+bob, 12, 8);
+      ctx.fillStyle='#c0392b';
+      ctx.fillRect(-6, -6+bob, 12, 12);
+
+      // หน้าแดง & จมูกยาว
       ctx.fillStyle='#e74c3c';
-      ctx.fillRect(0, -15+bob, 6, 2);
-      ctx.fillStyle='#bdc3c7';
-      ctx.fillRect(6, -8+bob, 10, 3);
-      ctx.fillRect(14, -10+bob, 2, 7);
-    } else {
-      const bob = e.animFrame === 1 ? -1 : 1;
-      ctx.fillStyle='#78281f';
-      ctx.fillRect(-10, -20+bob, 4, 6); ctx.fillRect(-4, -22+bob, 4, 4);
-      ctx.fillStyle='#b03a2e';
-      ctx.fillRect(-10, -14+bob, 20, 22);
-      ctx.fillStyle='#78281f';
-      ctx.fillRect(-8, -10+bob, 16, 16);
+      ctx.fillRect(-6, -20+bob, 12, 9);
+      ctx.fillRect(6, -17+bob, 8, 3); // จมูกยาวอันเป็นเอกลักษณ์
+
+      // หมวกเล็กบนหัว (Tokkin)
       ctx.fillStyle='#111';
-      ctx.fillRect(-13, -10+bob, 4, 4); ctx.fillRect(-13, -2+bob, 4, 4);
+      ctx.fillRect(-2, -23+bob, 5, 3);
+
+      // พัดขนนก (Feather Fan)
       ctx.fillStyle='#f39c12';
-      ctx.fillRect(2, -10+bob, 5, 5);
-      ctx.fillStyle='#000';
-      ctx.fillRect(4, -9+bob, 2, 3);
+      ctx.fillRect(6, -8+bob, 8, 8);
+      ctx.fillStyle='#2ecc71';
+      ctx.fillRect(8, -6+bob, 4, 4);
+
+    } else { 
+      // --- จิ้งจอกเก้าหาง (Kitsune Spirit) ---
+      const bob = e.animFrame === 1 ? -1 : 1;
+      // ลำตัวจิ้งจอกสีขาว-ส้ม
+      ctx.fillStyle='#ecf0f1';
+      ctx.fillRect(-10, -10+bob, 20, 16);
+      ctx.fillStyle='#e67e22';
+      ctx.fillRect(-8, -12+bob, 16, 6);
+
+      // หางจิ้งจอกพริ้วไหว
+      ctx.fillStyle='#d35400';
+      ctx.fillRect(-16, -14+bob, 6, 12);
+      ctx.fillRect(-18, -8+bob, 4, 10);
+      ctx.fillStyle='#fff';
+      ctx.fillRect(-16, -16+bob, 4, 4);
+
+      // หู & ตาเรืองแสง
+      ctx.fillStyle='#d35400';
+      ctx.fillRect(-8, -18+bob, 4, 6); ctx.fillRect(2, -18+bob, 4, 6);
+      ctx.fillStyle='#f1c40f'; // ตาปีศาจเรืองแสง
+      ctx.fillRect(3, -9+bob, 4, 2);
     }
 
     ctx.restore();
 
+    // หลอดเลือด
     const bw=r*2, bh=3, hp=clamp(e.hp/e.maxHp,0,1);
     ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-11, bw+2, bh+2);
     ctx.fillStyle='#c0392b'; ctx.fillRect(px-bw/2, py-r-10, bw, bh);
     ctx.fillStyle='#2ecc71'; ctx.fillRect(px-bw/2, py-r-10, bw*hp, bh);
   }
 
-  function draw16BitBullet(b, cam){
+  // วาดคลื่นดาบฟัน (Katana Slash Wave)
+  function drawSlashWave(b, cam){
     const px=sx(b.x,cam), py=sy(b.y,cam);
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(b.angle);
+
+    // คลื่นดาบเรืองแสงสีฟ้าสายฟ้า
     ctx.fillStyle=b.crit?'#f1c40f':'#3498db';
-    ctx.fillRect(px-3, py-3, 6, 6);
+    ctx.beginPath();
+    ctx.arc(0, 0, 8, -Math.PI/2, Math.PI/2);
+    ctx.fill();
+
+    ctx.fillStyle='#ecf0f1';
+    ctx.fillRect(-2, -6, 3, 12);
+
+    ctx.restore();
   }
 
-  function draw16BitOrb(o, cam){
+  // วาดดวงวิญญาณโอนิบิ (Onibi Fire Spirit - XP)
+  function drawOnibiOrb(o, cam){
     const px=sx(o.x,cam), py=sy(o.y,cam);
-    const bob=Math.sin(o.animTimer)*2;
+    const bob=Math.sin(o.animTimer)*3;
+    
+    ctx.fillStyle='rgba(52, 152, 219, 0.4)';
+    ctx.fillRect(px-5, py-5+bob, 10, 10);
     ctx.fillStyle='#2ecc71';
     ctx.fillRect(px-3, py-3+bob, 6, 6);
+    ctx.fillStyle='#fff';
+    ctx.fillRect(px-1, py-1+bob, 2, 2);
   }
 
   function drawSparks(cam){
@@ -577,18 +661,18 @@ html,body{
   function render(){
     const cam=camera();
     drawGround(cam);
-    for(const o of xpOrbs) draw16BitOrb(o,cam);
-    for(const b of bullets) draw16BitBullet(b,cam);
+    for(const o of xpOrbs) drawOnibiOrb(o,cam);
+    for(const b of bullets) drawSlashWave(b,cam);
     
     const sorted=[...enemies].sort((a,b)=>a.y-b.y);
     let playerDrawn=false;
     for(const e of sorted){
       if(!playerDrawn && player.y < e.y){
-        draw16BitPlayer(cam); playerDrawn=true;
+        drawSamuraiPlayer(cam); playerDrawn=true;
       }
-      draw16BitEnemy(e,cam);
+      drawYokaiEnemy(e,cam);
     }
-    if(!playerDrawn) draw16BitPlayer(cam);
+    if(!playerDrawn) drawSamuraiPlayer(cam);
     drawSparks(cam);
   }
 
@@ -615,8 +699,8 @@ html,body{
   function resetGame(){
     bullets=[];enemies=[];xpOrbs=[];sparks=[];elapsed=0;wave=1;kills=0;spawnTimer=0;level=1;xp=0;xpNeed=10;over=false;paused=false;running=true;
     joy.active=false; joyBase.style.display='none';
-    Object.assign(player,{x:world.w/2,y:world.h/2,hp:100,maxHp:100,speed:240,damage:25,fireRate:.35,fireTimer:0,bulletSpeed:700,projectiles:1,pickup:100,armor:0,crit:.08,regen:0,angle:0,hit:0});
-    for(let i=0;i<6;i++)spawnEnemy(i===0?'brute':null);
+    Object.assign(player,{x:world.w/2,y:world.h/2,hp:100,maxHp:100,speed:240,damage:25,fireRate:.35,fireTimer:0,bulletSpeed:750,projectiles:1,pickup:100,armor:0,crit:.08,regen:0});
+    for(let i=0;i<6;i++)spawnEnemy(i===0?'oni':null);
     document.getElementById('gameOver').classList.add('hidden');document.getElementById('levelOverlay').classList.add('hidden');refreshHUD();setStatus('TOUCH TO MOVE');
   }
 
