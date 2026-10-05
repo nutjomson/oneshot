@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#030712">
-<title>16-Bit Survivor Arena - Safari Mobile Enhanced</title>
+<title>16-Bit Survivor Arena - 50 Level Up Upgrades Edition</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Prompt:wght@400;600;800&display=swap');
 
@@ -18,13 +18,15 @@
   -webkit-user-select:none;
 }
 html,body{
-  margin:0;width:100%;height:100%;
+  margin:0;width:100%;
+  height:100%;
+  height:100dvh;
   overflow:hidden;background:#030712;
   color:#fff;font-family:'Prompt', 'Press Start 2P', monospace, sans-serif;
   touch-action:none;position:fixed;
   inset:0;
 }
-#game{position:fixed;inset:0;overflow:hidden;background:#030712}
+#game{position:fixed;inset:0;height:100dvh;overflow:hidden;background:#030712}
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 
 /* HUD System */
@@ -62,7 +64,7 @@ html,body{
 }
 .hud-btn:active{transform:translate(1px,1px);box-shadow:none}
 
-/* Controls Zone - Fixed so start menu doesn't steal touches via joystick */
+/* Controls Zone */
 #touchZone{
   position:absolute;z-index:12;inset:0;
   width:100%;height:100%;pointer-events:auto;touch-action:none;
@@ -89,21 +91,30 @@ html,body{
   box-shadow:0 0 15px rgba(34, 197, 94, 0.3);
 }
 
-/* Modals & Overlays - iOS Safe Scroll Fix */
+/* iOS Safari Safe Modal Container */
 .overlay{
-  position:absolute;z-index:100;inset:0;display:flex;align-items:center;justify-content:center;
-  padding:max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  position:fixed;z-index:100;
+  inset:0;
+  height:100%;
+  height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  padding-top:max(12px, env(safe-area-inset-top));
+  padding-bottom:max(16px, env(safe-area-inset-bottom));
+  padding-left:max(12px, env(safe-area-inset-left));
+  padding-right:max(12px, env(safe-area-inset-right));
   background:rgba(3, 7, 18, 0.94);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   pointer-events:auto;
 }
 .hidden{display:none!important}
 .modal{
-  width:min(720px, 100%);
-  max-height:calc(100vh - max(30px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+  width:min(760px, 100%);
+  max-height:calc(100dvh - max(32px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
-  background:#0f172a;border:3px solid #38bdf8;padding:16px;
+  background:#0f172a;border:3px solid #38bdf8;
+  padding:16px;
+  padding-bottom:max(20px, env(safe-area-inset-bottom));
   box-shadow:inset -3px -3px 0 #0284c7, inset 3px 3px 0 #7dd3fc, 0 0 30px rgba(56, 189, 248, 0.3);
   text-align:center;color:#fff;
   margin:auto;
@@ -131,7 +142,7 @@ html,body{
 .uDesc{font-size:11px;font-weight:600;line-height:1.4;color:#cbd5e1}
 .cost{font-size:12px;color:#facc15;margin-top:6px;font-weight:800;text-shadow:1px 1px #000}
 
-/* Dynamic Stats Display Box */
+/* Stats Display Grid */
 .stats-box{
   background:#090d16;border:2px solid #334155;padding:10px;margin:10px 0;
   display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;text-align:left;
@@ -140,15 +151,15 @@ html,body{
 .stat-item{display:flex;justify-content:space-between;border-bottom:1px solid #1e293b;padding-bottom:3px}
 .stat-item span.val{color:#38bdf8;font-weight:800}
 
-/* Settings & Options */
+/* Controls & Buttons */
 .setting-row{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:10px;border:2px solid #334155;margin-bottom:8px;font-size:12px;font-weight:600}
 .setting-row input[type="checkbox"]{width:22px;height:22px;cursor:pointer;accent-color:#38bdf8}
 .setting-row select{background:#0f172a;color:#38bdf8;border:1px solid #38bdf8;padding:4px 8px;font-family:'Prompt', sans-serif;border-radius:4px;font-weight:bold}
 
-.btn-group{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.btn-group{display:flex;gap:8px;justify-content:center;margin-top:14px;padding-bottom:4px;flex-wrap:wrap}
 .btn{
   border:2px solid #fff;background:#22c55e;color:#052e16;
-  font-family:'Prompt', sans-serif;font-size:13px;font-weight:800;padding:10px 16px;cursor:pointer;
+  font-family:'Prompt', sans-serif;font-size:13px;font-weight:800;padding:12px 18px;cursor:pointer;
   box-shadow:inset -2px -2px 0 #15803d, 0 4px 10px rgba(0,0,0,0.4);flex:1;min-width:130px;
   touch-action:manipulation;
 }
@@ -192,7 +203,7 @@ html,body{
       เวฟ <span id="waveText">1</span>
       <div class="small gold-text" id="goldText">ทอง: 0</div>
       <div class="small" id="killsText">กำจัด: 0</div>
-      <button class="hud-btn" id="pauseHudBtn">⏸️️ เมนูหลัก</button>
+      <button class="hud-btn" id="pauseHudBtn">⏸ เมนูหลัก</button>
     </div>
   </div>
 </div>
@@ -210,7 +221,7 @@ html,body{
     <div class="stats-box" id="startHeroStats"></div>
 
     <div class="btn-group">
-      <button class="btn" id="startBtn">▶️ เริ่มเกมทันที</button>
+      <button class="btn" id="startBtn">▶ เริ่มเกมทันที</button>
       <button class="btn btn-blue" id="settingsBtn">⚙️ ตั้งค่าเกม</button>
     </div>
   </div>
@@ -219,7 +230,7 @@ html,body{
 <!-- Settings Overlay -->
 <div id="settingsOverlay" class="overlay hidden">
   <div class="modal" style="max-width:480px">
-    <div class="title">⚙️ ตั้งค่าเกม (SETTINGS)</div>
+    <div class="title">⚙ ตั้งค่าเกม (SETTINGS)</div>
     <div style="margin:16px 0;">
       <div class="setting-row">
         <span>ระดับความยาก (Difficulty)</span>
@@ -257,7 +268,7 @@ html,body{
   </div>
 </div>
 
-<!-- Wave Shop Overlay (Expanded options at least 3-fold: 12 Items Total) -->
+<!-- Wave Shop Overlay -->
 <div id="shopOverlay" class="overlay hidden">
   <div class="modal">
     <div class="title">🏪 ร้านค้าลึกลับ (ร้านค้าเวฟ <span id="shopWaveNum">3</span>)</div>
@@ -265,17 +276,16 @@ html,body{
     
     <div id="shopItems"></div>
 
-    <!-- Detailed Stats during shop -->
     <div class="stats-box" id="shopHeroStats"></div>
 
     <div class="btn-group">
       <button class="btn btn-gold" id="rerollBtn">🎲 รีโรลร้านค้า (<span id="rerollCostText">10</span> ทอง)</button>
-      <button class="btn" id="closeShopBtn">⚔️ ไปยังเวฟถัดไป</button>
+      <button class="btn" id="closeShopBtn">⚔️️ ไปยังเวฟถัดไป</button>
     </div>
   </div>
 </div>
 
-<!-- Pause / Title Overlay -->
+<!-- Pause Overlay -->
 <div id="pauseOverlay" class="overlay hidden">
   <div class="modal" style="max-width:500px">
     <div class="title">⏸️ พักการเล่น (PAUSED)</div>
@@ -292,7 +302,7 @@ html,body{
 <!-- Game Over Overlay -->
 <div id="gameOver" class="overlay hidden">
   <div class="modal">
-    <div class="title" style="color:#ef4444">☠️ พ่ายแพ้การต่อสู้ ☠️</div>
+    <div class="title" style="color:#ef4444">☠️️ พ่ายแพ้การต่อสู้ ☠</div>
     <div class="sub">ฮีโร่ของคุณล้มลงกลางสนามรบ!</div>
     <div class="stats-box" id="finalStats"></div>
     <div class="btn-group">
@@ -308,7 +318,7 @@ html,body{
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
 
-  let W = innerWidth, H = innerHeight;
+  let W = window.innerWidth, H = window.innerHeight;
   function resize(){
     W = window.innerWidth;
     H = window.innerHeight;
@@ -320,20 +330,18 @@ html,body{
   window.addEventListener('orientationchange', ()=>setTimeout(resize, 300));
   resize();
 
-  // Settings & Gameplay Difficulty
   const settings = { sfx: true, particles: true, shake: true, difficulty: 'easy' };
 
   const keys = {up:false,down:false,left:false,right:false};
   const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
   const world = {w:3200, h:3200};
   
-  // Adjusted Balanced Character Stats (Buffed Prism Knight for easier gameplay)
   const heroes = [
     {
       id:'prism', name:'ปริซึม ไนต์ (PRISM KNIGHT)', icon:'🛡️', 
       hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, armor:.35, crit:.12, 
       color:'#00f0ff', secondaryColor:'#ff007f', bulletType:'arcane', 
-      desc:'อัศวินผลึกแก้ว (ปรับปรุงใหม่): ป้องกันสูง ถึกทนทาน และพลังโจมตีรุนแรงขึ้น!'
+      desc:'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน และพลังโจมตีรุนแรง'
     },
     {
       id:'neon', name:'นีออน เรนเจอร์ (NEON RANGER)', icon:'🏹', 
@@ -358,8 +366,16 @@ html,body{
 
   const player = {
     x:1600, y:1600, r:16, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
-    bulletSpeed:800, projectiles:1, pickup:180, armor:.35, crit:.12, regen:1.0, angle:0, hit:0,
-    animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0
+    bulletSpeed:800, projectiles:1, pickup:180, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1,
+    angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0,
+    // Unique Mechanics
+    ricochet: 0,
+    poisonDmg: 0,
+    lightningChain: 0,
+    explosiveRadius: 0,
+    knockback: 0,
+    executionThreshold: 0,
+    orbitBlades: 0
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[];
@@ -368,7 +384,6 @@ html,body{
   let level=1, xp=0, xpNeed=10, lastShopWave=0;
   let screenShake = 0;
 
-  // Enemy Metadata
   const enemyTypes = {
     stalker: {hp:35, speed:65, damage:10, r:16, color:'#ff0055', type:'stalker'},
     runner:  {hp:25, speed:130, damage:6, r:13, color:'#ff9900', type:'runner'},
@@ -378,8 +393,9 @@ html,body{
     boss:    {hp:1000, speed:35, damage:35, r:38, color:'#ff0000', type:'boss', shootTimer:1.2}
   };
 
-  // Level Up Upgrades
+  /* 50 Unique Level Up Options Expansion */
   const levelUpgrades = [
+    // --- Core Stats & Basic Guns ---
     {icon:'⚔️', name:'เพิ่มพลังโจมตี', desc:'+25% ความเสียหายโจมตี', apply:()=>player.damage*=1.25},
     {icon:'⚡', name:'เพิ่มความเร็วการยิง', desc:'ยิงเร็วขึ้น +20%', apply:()=>player.fireRate*=.80},
     {icon:'🏃', name:'เพิ่มความเร็วเคลื่อนที่', desc:'+18% ความเร็วฮีโร่', apply:()=>player.speed*=1.18},
@@ -387,28 +403,105 @@ html,body{
     {icon:'🔫', name:'เพิ่มกระสุนยิงกระจาย', desc:'+1 ลำแสงกระสุนเพิ่มเติม', apply:()=>player.projectiles++},
     {icon:'💨', name:'เพิ่มความเร็วกระสุน', desc:'+30% ความเร็วกระสุน', apply:()=>player.bulletSpeed*=1.30},
     {icon:'🧲', name:'ขยายรัศมีแม่เหล็ก', desc:'+100 ระยะดูดเก็บไอเทม', apply:()=>player.pickup+=100},
-    {icon:'🛡️', name:'เสริมเกราะป้องกัน', desc:'ลดความเสียหายลง 15%', apply:()=>player.armor+=.15},
+    {icon:'🛡️', name:'เสริมเกราะป้องกัน', desc:'ลดความเสียหายลง 12%', apply:()=>player.armor+=.12},
     {icon:'💥', name:'เพิ่มโอกาสคริติคอล', desc:'+12% โอกาสโจมตีคริติคอล', apply:()=>player.crit+=.12},
-    {icon:'💚', name:'ฟื้นฟูพลังชีวิตต่อเนื่อง', desc:'ฟื้นฟู +3.0 HP ต่อวินาที', apply:()=>player.regen+=3.0}
+    {icon:'💚', name:'ฟื้นฟูพลังชีวิตต่อเนื่อง', desc:'ฟื้นฟู +3.0 HP ต่อวินาที', apply:()=>player.regen+=3.0},
+    {icon:'🎯', name:'กระสุนเจาะทะลุ', desc:'กระสุนเจาะทะลุศัตรูเพิ่ม +1 ตัว', apply:()=>player.pierce+=1},
+    {icon:'🩸', name:'ดูดพลังชีวิต', desc:'ฟื้น HP 5% จากความเสียหายที่ทำได้', apply:()=>player.lifesteal+=0.05},
+    {icon:'🌀', name:'หลบหลีกคล่องตัว', desc:'+10% โอกาสหลบการโจมตี', apply:()=>player.dodge+=0.10},
+    {icon:'💰', name:'โบนัสทองคำ', desc:'เพิ่มอัตราดร็อปทอง +35%', apply:()=>player.goldMulti*=1.35},
+    {icon:'🔮', name:'พลังเวทมหาศาล', desc:'+40% ความเสียหายแต่ยิงช้าลง 10%', apply:()=>{player.damage*=1.40; player.fireRate*=1.10;}},
+
+    // --- NEW COMBAT STYLES & DAMAGE MECHANICS ---
+    {icon:'🧱', name:'กระสุนสะท้อนกำแพง (Ricochet)', desc:'กระสุนสามารถเด้งสะท้อน +1 ครั้ง', apply:()=>player.ricochet+=1},
+    {icon:'🧪', name:'กระสุนพิษกัดกร่อน (Poison Dot)', desc:'ทำความเสียหายพิษต่อเนื่อง 15 HP/วิ', apply:()=>player.poisonDmg+=15},
+    {icon:'⚡', name:'สายฟ้าช็อตต่อเนื่อง (Chain Volt)', desc:'กระสุนกระจายสายฟ้าใส่ศัตรูใกล้เคียง 20 Dmg', apply:()=>player.lightningChain+=20},
+    {icon:'💣', name:'กระสุนระเบิดวงกว้าง (Impact Bomb)', desc:'เกิดระเบิดรัศมี 40px เมื่อกระสุนกระทบเป้าหมาย', apply:()=>player.explosiveRadius+=40},
+    {icon:'🥊', name:'พลังผลักกระแทก (Heavy Knockback)', desc:'ผลักศัตรูถอยหลังอย่างรุนแรงเมื่อยิงโดน', apply:()=>player.knockback+=180},
+    {icon:'💀', name:'รังสีสังหารทันที (Executioner)', desc:'สังหารศัตรูเลนปกติทันทีถ้า HP เหลือต่ำกว่า 15%', apply:()=>player.executionThreshold+=0.15},
+    {icon:'🗡️', name:'คมดาบดาวบริวาร (Orbiting Blades)', desc:'สร้างคมดาบหมุนวนรอบตัวฮีโร่ 1 เล่ม', apply:()=>player.orbitBlades+=1},
+
+    // --- SPECIAL HYBRID & PASSIVE MECHANICS ---
+    {icon:'🔥', name:'ระเบิดเพลิงผลาญ', desc:'การโจมตีปกติแรงขึ้น 20% และเพิ่มระเบิดกว้างขึ้น', apply:()=>{player.damage*=1.2; player.explosiveRadius+=25;}},
+    {icon:'⚡', name:'สปีดและสายฟ้า', desc:'เคลื่อนที่เร็วขึ้น 15% พร้อมเพิ่มช็อตสายฟ้า 15 Dmg', apply:()=>{player.speed*=1.15; player.lightningChain+=15;}},
+    {icon:'🧪', name:'พิษร้ายสะสม', desc:'เพิ่มพิษกัดกร่อน 25 HP/วิ และ คริติคอล +5%', apply:()=>{player.poisonDmg+=25; player.crit+=0.05;}},
+    {icon:'🛡️️', name:'เกราะผลักสะท้อน', desc:'เพิ่มเกราะ 10% และผลักศัตรูที่เข้าใกล้', apply:()=>{player.armor+=0.10; player.knockback+=100;}},
+    {icon:'💫', name:'สปีดยิงกระสุนสะท้อน', desc:'ความเร็วกระสุน +25% และ เพิ่มกระสุนเด้ง +1 ครั้ง', apply:()=>{player.bulletSpeed*=1.25; player.ricochet+=1;}},
+
+    // --- UTILITY & SURVIVAL SKILLS ---
+    {icon:'🩸', name:'กระหายเลือดสงคราม', desc:'ดูดเลือด +6% และ เพิ่มความเร็วเคลื่อนที่ 10%', apply:()=>{player.lifesteal+=0.06; player.speed*=1.10;}},
+    {icon:'🛡️', name:'ปราการอัศวิน', desc:'+80 Max HP และ เกราะป้องกัน +8%', apply:()=>{player.maxHp+=80; player.hp+=80; player.armor+=0.08;}},
+    {icon:'🌟', name:'ออร่าดูดซับสมบัติ', desc:'ขยายแม่เหล็กดูดของ +180 Pixel', apply:()=>player.pickup+=180},
+    {icon:'🎲', name:'โชคลาภสงคราม', desc:'เพิ่มคริติคอล +8% และ ดร็อปทอง +25%', apply:()=>{player.crit+=0.08; player.goldMulti*=1.25;}},
+    {icon:'⏱️', name:'จังหวะยิงรัว', desc:'อัตราการยิงเร็วขึ้น +15% และ เจาะทะลุ +1', apply:()=>{player.fireRate*=.85; player.pierce+=1;}},
+
+    // --- ADVANCED ADVANCEMENT STYLES ---
+    {icon:'🗡️', name:'ดาบหมุนคู่อมตะ', desc:'เพิ่มดาบหมุนวนรอบตัวฮีโร่อีก +2 เล่ม', apply:()=>player.orbitBlades+=2},
+    {icon:'💣', name:'หัวกระสุนนิวเคลียร์', desc:'เพิ่มความเสียหาย 30% และ รัศมีระเบิด +30px', apply:()=>{player.damage*=1.3; player.explosiveRadius+=30;}},
+    {icon:'⚡', name:'สายฟ้าแรงสูง', desc:'สายฟ้าช็อตแรงขึ้น +35 Dmg', apply:()=>player.lightningChain+=35},
+    {icon:'🧪', name:'กรดชีวภาพเข้มข้น', desc:'พิษกัดกร่อนแรงขึ้น +30 HP/วิ', apply:()=>player.poisonDmg+=30},
+    {icon:'🧱', name:'เด้งสะท้อนไร้ขีดจำกัด', desc:'กระสุนเด้งสะท้อนเพิ่มขึ้นอีก +2 ครั้ง', apply:()=>player.ricochet+=2},
+
+    // --- EXTREME STAT BALANCING OPTIONS ---
+    {icon:'💥', name:'พลังทำลายล้างไร้ปรานี', desc:'+50% ความเสียหาย แต่เกราะลดลง 10%', apply:()=>{player.damage*=1.5; player.armor-=0.10;}},
+    {icon:'🏃', name:'สายลมพริ้วไหว', desc:'ความเร็วเคลื่อนที่ +30% แต่ Max HP ลดลง 20', apply:()=>{player.speed*=1.3; player.maxHp=Math.max(50, player.maxHp-20); player.hp=Math.min(player.hp, player.maxHp);}},
+    {icon:'🎯', name:'หัวปืนลำแสงแคบ', desc:'กระสุนเจาะทะลุ +3 ตัว แต่ยิงช้าลง 8%', apply:()=>{player.pierce+=3; player.fireRate*=1.08;}},
+    {icon:'💚', name:'พายุกายาฟื้นฟู', desc:'ฟื้นฟู HP +6.0/วิ และ Max HP +30', apply:()=>{player.regen+=6.0; player.maxHp+=30; player.hp+=30;}},
+    {icon:'👑', name:'ขุมทรัพย์จักรพรรดิ', desc:'ดร็อปทอง +50% และ ได้รับ 50 ทองทันที', apply:()=>{player.goldMulti*=1.5; player.gold+=50;}},
+
+    // --- BERSERKER & TACTICAL UPGRADES ---
+    {icon:'🩸', name:'โหมดบ้าคลั่ง', desc:'+12% ดูดเลือด และ โอกาสคริติคอล +10%', apply:()=>{player.lifesteal+=0.12; player.crit+=0.10;}},
+    {icon:'🥊', name:'กำแพงคลื่นกระแทก', desc:'ผลักศัตรูถอยหลัง +250px และ +50 Max HP', apply:()=>{player.knockback+=250; player.maxHp+=50; player.hp+=50;}},
+    {icon:'🌀', name:'ร่างเงาหลบหลีก', desc:'โอกาสหลบหลีก +15% และ ความเร็ว +10%', apply:()=>{player.dodge+=0.15; player.speed*=1.1;}},
+    {icon:'💀', name:'เคียวเก็บวิญญาณ', desc:'สังหารศัตรู HP ต่ำกว่า 25% ทันที', apply:()=>player.executionThreshold+=0.10},
+    {icon:'🚀', name:'จรวดมิสไซล์ติดสปีด', desc:'ความเร็วกระสุน +40% และ พลังโจมตี +15%', apply:()=>{player.bulletSpeed*=1.4; player.damage*=1.15;}},
+    {icon:'⚡', name:'วงจรไฟฟ้าแรงสูง', desc:'ยิงเร็วขึ้น +12% และ สายฟ้าช็อต +20 Dmg', apply:()=>{player.fireRate*=0.88; player.lightningChain+=20;}},
+    {icon:'🛡️', name:'โล่แก้วปริซึม', desc:'ลดความเสียหาย 15% และ ฟื้นฟู HP +2.5/วิ', apply:()=>{player.armor+=0.15; player.regen+=2.5;}},
+    {icon:'🔮', name:'คาถาเวทมนตร์โบราณ', desc:'+1 กระสุนยิง และ +20% ความเสียหาย', apply:()=>{player.projectiles+=1; player.damage*=1.2;}}
   ];
 
-  // Extended Luxury Shop Pool (Tripled / At least 3x size = 15 Items Total)
+  /* 40 Unique Shop Items Pool */
   const luxuryShopPool = [
-    {id:'potion_small', icon:'🧪', name:'ยาฟื้นฟูพลังชีวิต', desc:'ฟื้นฟูพลังชีวิต 100 HP ทันที', cost:25, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+100); return true;}},
-    {id:'potion_full', icon:'💖', name:'น้ำยาฟื้นฟูเต็มสูบ', desc:'ฟื้นฟูพลังชีวิตเต็ม Max HP 100%', cost:60, apply:()=>{player.hp=player.maxHp; return true;}},
-    {id:'midas', icon:'👑', name:'มงกุฎแห่งกษัตริย์ไมดาส', desc:'รับ GOLD จากการเก็บเหรียญเพิ่มขึ้น 2 เท่า', cost:120, apply:()=>{player.goldMulti*=2; return true;}},
-    {id:'weapon_laser', icon:'⚡', name:'ปืนเลเซอร์นีออนพลาสม่า', desc:'เปลี่ยนเป็นกระสุนเลเซอร์สีเขียวความเร็วสูง', cost:200, apply:()=>{player.bulletType='laser'; return true;}},
-    {id:'weapon_fire', icon:'🔥', name:'ปืนใหญ่เพลิงคอสมิก', desc:'เปลี่ยนเป็นลูกไฟระเบิดสร้างความเสียหายวงกว้าง', cost:250, apply:()=>{player.bulletType='fireball'; return true;}},
-    {id:'weapon_plasma', icon:'💥', name:'ลำแสงพลาสม่าคริสตัล', desc:'เปลี่ยนเป็นพลาสม่าคริสตัลพลังงานสูง คริแรงมาก', cost:350, apply:()=>{player.bulletType='plasma'; return true;}},
-    {id:'weapon_arcane', icon:'🔮', name:'ปืนเวทมหาปริซึม', desc:'เปลี่ยนเป็นพลังงานเวทปริซึมรอบทิศทาง', cost:220, apply:()=>{player.bulletType='arcane'; return true;}},
-    {id:'aegis', icon:'🛡️', name:'โล่เทพศักดิ์สิทธิ์', desc:'+120 Max HP & ลดความเสียหายลง 20%', cost:400, apply:()=>{player.maxHp+=120; player.hp+=120; player.armor+=0.2; return true;}},
-    {id:'boots', icon:'👟', name:'รองเท้าท่องมิติ', desc:'เพิ่มความเร็วการเคลื่อนที่ +35%', cost:150, apply:()=>{player.speed*=1.35; return true;}},
-    {id:'ring_crit', icon:'💍', name:'แหวนแห่งการทำลายล้าง', desc:'เพิ่มโอกาสติดคริติคอล +30%', cost:300, apply:()=>{player.crit+=0.30; return true;}},
-    {id:'magnet_god', icon:'🧲', name:'แม่เหล็กยักษ์สวรรค์', desc:'เพิ่มระยะดูดเก็บเหรียญและ EXP ทั่วทั้งฉาก +300', cost:180, apply:()=>{player.pickup+=300; return true;}},
-    {id:'regen_pendant', icon:'📿', name:'สร้อยคอฟื้นชีวา', desc:'เพิ่มการฟื้นฟู HP +5.0 ต่อวินาที', cost:220, apply:()=>{player.regen+=5.0; return true;}},
-    {id:'multishot', icon:'🏹', name:'คันศรยิงกระจาย', desc:'เพิ่มจำนวนกระสุนต่อการยิง +2 นัด', cost:450, apply:()=>{player.projectiles+=2; return true;}},
-    {id:'revive', icon:'💎', name:'ศิลาคืนชีพอมตะ', desc:'ชุบชีวิตฟรี 1 ครั้งเมื่อ HP หมด (สะสมได้)', cost:600, apply:()=>{player.revives++; return true;}},
-    {id:'excalibur', icon:'🏆', name:'ดาบตำนานเอ็กซ์คาลิเบอร์', desc:'พลังโจมตี +150% และ คริติคอล +25%', cost:1000, apply:()=>{player.damage*=2.5; player.crit+=0.25; return true;}}
+    {id:'s_pot1', icon:'🧪', name:'ยาฟื้นฟูพลังชีวิตเล็ก', desc:'ฟื้นฟูพลังชีวิต 60 HP ทันที', cost:15, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+60); return true;}},
+    {id:'s_pot2', icon:'🍷', name:'ยาฟื้นฟูพลังชีวิตใหญ่', desc:'ฟื้นฟูพลังชีวิต 150 HP ทันที', cost:35, apply:()=>{player.hp=Math.min(player.maxHp,player.hp+150); return true;}},
+    {id:'s_pot3', icon:'💖', name:'น้ำยาฟื้นฟูเต็มสูบ', desc:'ฟื้นฟูพลังชีวิตเต็ม Max HP 100%', cost:65, apply:()=>{player.hp=player.maxHp; return true;}},
+    {id:'s_pot4', icon:'🧪', name:'ยาเพิ่มสปีดชั่วคราว', desc:'+50 Max HP และฟื้นฟูเต็ม HP', cost:75, apply:()=>{player.maxHp+=50; player.hp=player.maxHp; return true;}},
+    {id:'s_wpn1', icon:'⚡', name:'ปืนเลเซอร์นีออน', desc:'เปลี่ยนกระสุนเป็นเลเซอร์ความเร็วสูง', cost:180, apply:()=>{player.bulletType='laser'; return true;}},
+    {id:'s_wpn2', icon:'🔥', name:'ปืนใหญ่เพลิงคอสมิก', desc:'เปลี่ยนกระสุนเป็นลูกไฟระเบิดแรงสูง', cost:220, apply:()=>{player.bulletType='fireball'; return true;}},
+    {id:'s_wpn3', icon:'💥', name:'ลำแสงพลาสม่าคริสตัล', desc:'เปลี่ยนกระสุนเป็นพลาสม่าสายรุ้ง คริแรง', cost:280, apply:()=>{player.bulletType='plasma'; return true;}},
+    {id:'s_wpn4', icon:'🔮', name:'ปืนเวทมหาปริซึม', desc:'เปลี่ยนกระสุนเป็นเวทปริซึมสะท้อนกระจาย', cost:200, apply:()=>{player.bulletType='arcane'; return true;}},
+    {id:'s_wpn5', icon:'🏹', name:'ธนูสามทิศทาง', desc:'เพิ่มกระสุน +2 นัดในการยิงทุกครั้ง', cost:380, apply:()=>{player.projectiles+=2; return true;}},
+    {id:'s_wpn6', icon:'🎯', name:'หัวกระสุนทังสเตน', desc:'กระสุนเจาะทะลุศัตรูเพิ่มขึ้น +2 ตัว', cost:210, apply:()=>{player.pierce+=2; return true;}},
+    {id:'s_wpn7', icon:'🚀', name:'ตัวเร่งความเร็วกระสุน', desc:'+50% ความเร็วกระสุนฉับไว', cost:130, apply:()=>{player.bulletSpeed*=1.5; return true;}},
+    {id:'s_wpn8', icon:'⚔️', name:'คมดาบสังหาร', desc:'+35% พลังโจมตีพื้นฐาน', cost:160, apply:()=>{player.damage*=1.35; return true;}},
+    {id:'s_def1', icon:'🛡️', name:'โล่เหล็กกล้า', desc:'+50 Max HP และ ลดเสียหาย 10%', cost:120, apply:()=>{player.maxHp+=50; player.hp+=50; player.armor+=0.10; return true;}},
+    {id:'s_def2', icon:'🔰', name:'เกราะไทเทเนียม', desc:'ลดความเสียหายที่ได้รับลง 20%', cost:200, apply:()=>{player.armor+=0.20; return true;}},
+    {id:'s_def3', icon:'🏰', name:'ป้อมปราการศิลา', desc:'+150 Max HP แต่ลดความเร็วเคลื่อนที่ 5%', cost:240, apply:()=>{player.maxHp+=150; player.hp+=150; player.speed*=0.95; return true;}},
+    {id:'s_def4', icon:'🥋', name:'ชุดนินจาพลิ้วไหว', desc:'เพิ่มโอกาสหลบหลีกการโจมตี +15%', cost:170, apply:()=>{player.dodge+=0.15; return true;}},
+    {id:'s_def5', icon:'📿', name:'สร้อยคอฟื้นชีวา', desc:'ฟื้นฟู HP +4.0 ต่อวินาทีตลอดเวลา', cost:190, apply:()=>{player.regen+=4.0; return true;}},
+    {id:'s_acc1', icon:'👟', name:'รองเท้าท่องมิติ', desc:'เพิ่มความเร็วการเคลื่อนที่ +30%', cost:140, apply:()=>{player.speed*=1.30; return true;}},
+    {id:'s_acc2', icon:'🧲', name:'แม่เหล็กยักษ์สวรรค์', desc:'เพิ่มระยะดูดเก็บของ +250 Pixel', cost:150, apply:()=>{player.pickup+=250; return true;}},
+    {id:'s_acc3', icon:'👑', name:'มงกุฎแห่งราชาไมดาส', desc:'รับ GOLD จากการเก็บเหรียญ +100%', cost:220, apply:()=>{player.goldMulti*=2.0; return true;}},
+    {id:'s_acc4', icon:'💍', name:'แหวนคริติคอลพินาศ', desc:'+25% โอกาสติดคริติคอลรุนแรง', cost:210, apply:()=>{player.crit+=0.25; return true;}},
+    {id:'s_acc5', icon:'🩸', name:'จี้หยดเลือดอสูร', desc:'+8% การดูดพลังชีวิตจากความเสียหาย', cost:230, apply:()=>{player.lifesteal+=0.08; return true;}},
+    {id:'s_gem1', icon:'💎', name:'อัญมณีเร่งเวลา', desc:'ยิงเร็วขึ้น +25%', cost:250, apply:()=>{player.fireRate*=.75; return true;}},
+    {id:'s_gem2', icon:'🔮', name:'ลูกแก้วดูดวิญญาณ', desc:'เก็บ EXP / ทอง ได้ไกลขึ้น +300', cost:180, apply:()=>{player.pickup+=300; return true;}},
+    {id:'s_gem3', icon:'⚙️', name:'เฟืองกลไกติดสปีด', desc:'+20% ความเร็วเคลื่อนที่ และ ยิงเร็วขึ้น +10%', cost:220, apply:()=>{player.speed*=1.2; player.fireRate*=.90; return true;}},
+    {id:'s_gem4', icon:'🧿', name:'เครื่องรางคุ้มภัย', desc:'+100 Max HP & หลบหลีก +10%', cost:260, apply:()=>{player.maxHp+=100; player.hp+=100; player.dodge+=0.10; return true;}},
+    {id:'s_rel1', icon:'💎', name:'ศิลาคืนชีพอมตะ', desc:'ชุบชีวิตฟรี 1 ครั้งเมื่อ HP หมด (สะสมได้)', cost:550, apply:()=>{player.revives++; return true;}},
+    {id:'s_rel2', icon:'🏆', name:'ดาบตำนานเอ็กซ์คาลิเบอร์', desc:'พลังโจมตี +120% และ คริติคอล +20%', cost:900, apply:()=>{player.damage*=2.2; player.crit+=0.20; return true;}},
+    {id:'s_rel3', icon:'🌟', name:'ดวงดาวแห่งพรประเสริฐ', desc:'เพิ่มพลังทุกอย่าง +15% (HP/Atk/Speed)', cost:600, apply:()=>{player.maxHp*=1.15; player.hp*=1.15; player.damage*=1.15; player.speed*=1.15; return true;}},
+    {id:'s_rel4', icon:'🔱', name:'ตรีศูลเทพเจ้า', desc:'+3 กระสุน และ กระสุนเจาะทะลุ +3', cost:850, apply:()=>{player.projectiles+=3; player.pierce+=3; return true;}},
+    {id:'s_rel5', icon:'⏳', name:'นาฬิกาหยุดเวลา', desc:'ศัตรูเคลื่อนที่ช้าลง และ ยิงเร็วขึ้น +15%', cost:400, apply:()=>{player.fireRate*=0.85; return true;}},
+    {id:'s_rel6', icon:'⚡', name:'สายฟ้าสวรรค์', desc:'+80% ความเร็วกระสุน และ +30% โจมตี', cost:320, apply:()=>{player.bulletSpeed*=1.8; player.damage*=1.3; return true;}},
+    {id:'s_rel7', icon:'🐉', name:'หัวใจมังกรเพลิง', desc:'+200 Max HP & ฟื้นฟู HP +8.0 ต่อวิ', cost:500, apply:()=>{player.maxHp+=200; player.hp+=200; player.regen+=8.0; return true;}},
+    {id:'s_rel8', icon:'🎰', name:'เหรียญนำโชคทองคำ', desc:'รับทองเพิ่มขึ้น 3 เท่าจากปกติ', cost:450, apply:()=>{player.goldMulti*=3.0; return true;}},
+    {id:'s_rel9', icon:'🏵️', name:'เหรียญเกียรติยศ', desc:'+50% พลังโจมตี แต่ HP ลดลง 10%', cost:300, apply:()=>{player.damage*=1.5; player.maxHp*=0.9; player.hp=Math.min(player.hp, player.maxHp); return true;}},
+    {id:'s_rel10', icon:'🖤', name:'ผลึกมืดกลืนกิน', desc:'ดูดเลือด +15% แต่เกราะลดลง 10%', cost:350, apply:()=>{player.lifesteal+=0.15; player.armor-=0.10; return true;}},
+    {id:'s_rel11', icon:'🌀', name:'รองเท้าก้าวพริบตา', desc:'ความเร็วเคลื่อนที่ +50%', cost:280, apply:()=>{player.speed*=1.50; return true;}},
+    {id:'s_rel12', icon:'🔮', name:'คทาจอมเวทไร้พ่าย', desc:'พลังโจมตี +80% และ ยิงเร็วขึ้น +15%', cost:750, apply:()=>{player.damage*=1.8; player.fireRate*=0.85; return true;}},
+    {id:'s_rel13', icon:'🛡️', name:'โล่สะท้อนสวรรค์', desc:'ลดความเสียหาย 25% และ +100 Max HP', cost:420, apply:()=>{player.armor+=0.25; player.maxHp+=100; player.hp+=100; return true;}},
+    {id:'s_rel14', icon:'☀️', name:'รัศมีสุริยะ', desc:'ฟื้นฟู HP +12.0 ต่อวินาที', cost:480, apply:()=>{player.regen+=12.0; return true;}}
   ];
 
   let activeShopItems = [];
@@ -417,7 +510,6 @@ html,body{
   function rand(a,b){return a+Math.random()*(b-a);}
   function dist(ax,ay,bx,by){return Math.hypot(ax-bx,ay-by);}
 
-  // Sound Synth Effect Generator
   function playSound(type) {
     if(!settings.sfx) return;
     try {
@@ -449,7 +541,6 @@ html,body{
     } catch(e) {}
   }
 
-  // Keyboard Setup
   window.addEventListener('keydown',e=>{
     if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=true;
     if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=true;
@@ -463,7 +554,6 @@ html,body{
     if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
   });
 
-  // Touch Controls Target
   const touchZone = document.getElementById('touchZone');
   const joyBase = document.getElementById('joyBase');
   const joyStick = document.getElementById('joyStick');
@@ -509,7 +599,6 @@ html,body{
   touchZone.addEventListener('pointerup', resetJoy);
   touchZone.addEventListener('pointercancel', resetJoy);
 
-  // Character Detail Formatting Helper
   function renderCharacterStatsHtml(p) {
     return `
       <div class="stat-item"><span>พลังชีวิต (Max HP):</span><span class="val">${Math.round(p.hp)} / ${Math.round(p.maxHp)}</span></div>
@@ -518,10 +607,13 @@ html,body{
       <div class="stat-item"><span>อัตราการยิง (Fire Rate):</span><span class="val">${(1/p.fireRate).toFixed(1)} / วินาที</span></div>
       <div class="stat-item"><span>โอกาสคริติคอล (Crit Chance):</span><span class="val">${Math.round(p.crit*100)}%</span></div>
       <div class="stat-item"><span>การลดความเสียหาย (Armor):</span><span class="val">${Math.round(p.armor*100)}%</span></div>
-      <div class="stat-item"><span>กระสุนต่อการยิง (Projectiles):</span><span class="val">${p.projectiles} นัด</span></div>
-      <div class="stat-item"><span>การฟื้นฟู (Regen):</span><span class="val">${p.regen.toFixed(1)} HP/วิ</span></div>
+      <div class="stat-item"><span>โอกาสหลบหลีก (Dodge):</span><span class="val">${Math.round(p.dodge*100)}%</span></div>
+      <div class="stat-item"><span>กระสุนเด้งสะท้อน (Ricochet):</span><span class="val">${p.ricochet} ครั้ง</span></div>
+      <div class="stat-item"><span>พิษกัดกร่อน (Poison Dot):</span><span class="val">${p.poisonDmg} HP/วิ</span></div>
+      <div class="stat-item"><span>สายฟ้าช็อต (Chain Volt):</span><span class="val">${p.lightningChain} Dmg</span></div>
+      <div class="stat-item"><span>รัศมีระเบิด (Explosive):</span><span class="val">${p.explosiveRadius} px</span></div>
+      <div class="stat-item"><span>ดาบหมุนวน (Orbit Blades):</span><span class="val">${p.orbitBlades} เล่ม</span></div>
       <div class="stat-item"><span>สิทธิ์ชุบชีวิต (Revives):</span><span class="val" style="color:#facc15">${p.revives} ครั้ง</span></div>
-      <div class="stat-item"><span>ประเภทกระสุนปัจจุบัน:</span><span class="val" style="color:#38bdf8">${p.bulletType.toUpperCase()}</span></div>
     `;
   }
 
@@ -538,7 +630,6 @@ html,body{
     document.getElementById('startHeroStats').innerHTML = renderCharacterStatsHtml(player);
   }
 
-  // Render Hero Selection Options
   const heroSelectWrap = document.getElementById('heroSelect');
   heroes.forEach(h => {
     const card = document.createElement('div');
@@ -558,7 +649,6 @@ html,body{
 
   applyHeroChoice(heroes[0]);
 
-  // Settings Handlers
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
   };
@@ -573,7 +663,6 @@ html,body{
     document.getElementById('settingsOverlay').classList.add('hidden');
   };
 
-  // Enemy Spawn Logic
   function spawnEnemy(forceType){
     let type = forceType;
     if(!type){
@@ -590,18 +679,16 @@ html,body{
     const a = Math.random()*Math.PI*2; const d = Math.max(W,H)*.55+rand(120,280);
     const x = clamp(player.x+Math.cos(a)*d,50,world.w-50), y = clamp(player.y+Math.sin(a)*d,50,world.h-50);
     
-    // Scale enemies with difficulty setting
     const diffMult = settings.difficulty === 'easy' ? 0.7 : settings.difficulty === 'hard' ? 1.4 : 1.0;
 
     enemies.push({
       x, y, r:t.r, hp:t.hp*(1+(wave-1)*.18)*diffMult, maxHp:t.hp*(1+(wave-1)*.18)*diffMult,
       speed:t.speed*(1+(wave-1)*.02), damage:t.damage*(1+(wave-1)*.05)*diffMult,
       xp:12, gold:Math.floor(rand(3,8)*(1+wave*0.25)), type:t.type, color:t.color, hit:0, 
-      animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0
+      animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0
     });
   }
 
-  // Shooting Mechanisms
   function shoot(){
     let target=null, bd=Infinity;
     for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<bd){bd=d;target=e;}}
@@ -618,6 +705,7 @@ html,body{
         vx:Math.cos(a)*player.bulletSpeed, vy:Math.sin(a)*player.bulletSpeed,
         r:player.bulletType==='fireball'?10:5, life:1.3,
         damage:player.damage*(crit?2.2:1), crit, type:player.bulletType,
+        pierce:player.pierce, bounce:player.ricochet, hitList:[],
         trail:[]
       });
     }
@@ -646,12 +734,54 @@ html,body{
     }
   }
 
-  function hitEnemy(e,damage,crit){
+  function hitEnemy(e,damage,crit,bullet){
+    // Executioner mechanic
+    if(player.executionThreshold > 0 && e.type !== 'boss' && (e.hp/e.maxHp) <= player.executionThreshold){
+      damage = e.hp + 999;
+      makeSparks(e.x, e.y, '#f43f5e', 20);
+    }
+
     e.hp-=damage; e.hit=.12;
     playSound('hit');
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
     if(crit && settings.shake) screenShake = 4;
     
+    // Knockback
+    if(player.knockback > 0){
+      const a = Math.atan2(e.y - player.y, e.x - player.x);
+      e.x = clamp(e.x + Math.cos(a)*player.knockback*0.1, 40, world.w-40);
+      e.y = clamp(e.y + Math.sin(a)*player.knockback*0.1, 40, world.h-40);
+    }
+
+    // Poison
+    if(player.poisonDmg > 0){
+      e.poisonTimer = 3.0;
+    }
+
+    // Chain Lightning Volt
+    if(player.lightningChain > 0){
+      for(const other of enemies){
+        if(other !== e && dist(e.x, e.y, other.x, other.y) < 160){
+          other.hp -= player.lightningChain;
+          makeSparks(other.x, other.y, '#00f0ff', 6);
+        }
+      }
+    }
+
+    // Area-of-Effect Explosive Damage
+    if(player.explosiveRadius > 0){
+      makeSparks(e.x, e.y, '#f97316', 15);
+      for(const other of enemies){
+        if(other !== e && dist(e.x, e.y, other.x, other.y) < player.explosiveRadius){
+          other.hp -= damage * 0.5;
+        }
+      }
+    }
+
+    if(player.lifesteal > 0){
+      player.hp = Math.min(player.maxHp, player.hp + damage * player.lifesteal);
+    }
+
     if(e.hp<=0){
       const i=enemies.indexOf(e); if(i>=0)enemies.splice(i,1);
       kills++; addDrops(e.x,e.y,e.xp,e.gold);
@@ -687,7 +817,6 @@ html,body{
   }
 
   function generateShopList() {
-    // Return 6 random items each wave from extended luxury pool
     activeShopItems = [...luxuryShopPool].sort(()=>Math.random()-.5).slice(0, 6);
     renderShopItems();
   }
@@ -729,7 +858,6 @@ html,body{
     });
   }
 
-  // Wave Shop (Triggers every 3 Waves)
   function openShop(){
     paused=true; joy.active=false; joyBase.style.display='none';
     touchZone.classList.add('hidden');
@@ -774,7 +902,13 @@ html,body{
 
   function hurt(v){
     if(player.hit>0||over)return;
-    const armorMult = Math.max(0.1, 1 - player.armor);
+    if(Math.random() < player.dodge){
+      makeSparks(player.x, player.y, '#38bdf8', 6);
+      setStatus('💨 หลบหลีกสำเร็จ!');
+      return;
+    }
+
+    const armorMult = Math.max(0.05, 1 - player.armor);
     const diffMult = settings.difficulty === 'easy' ? 0.6 : settings.difficulty === 'hard' ? 1.3 : 1.0;
     const dmg = Math.max(1, v * armorMult * diffMult);
     
@@ -827,6 +961,23 @@ html,body{
 
     if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
 
+    // Orbit Blades Mechanics
+    if(player.orbitBlades > 0){
+      const orbitSpeed = elapsed * 3;
+      const radius = 65;
+      for(let i=0; i<player.orbitBlades; i++){
+        const angle = orbitSpeed + (i * (Math.PI*2 / player.orbitBlades));
+        const bx = player.x + Math.cos(angle)*radius;
+        const by = player.y + Math.sin(angle)*radius;
+
+        for(const e of enemies){
+          if(dist(bx, by, e.x, e.y) < e.r + 12){
+            hitEnemy(e, player.damage * dt * 2, false, null);
+          }
+        }
+      }
+    }
+
     const spawnRate=Math.max(.1,.60-wave*.015);
     if(spawnTimer<=0){
       const batch=wave>=5 && Math.random()<.4?2:1;
@@ -834,13 +985,23 @@ html,body{
       spawnTimer=spawnRate;
     }
 
-    // Update Enemies
-    for(const e of enemies){
+    for(let i=enemies.length-1; i>=0; i--){
+      const e = enemies[i];
       const a=Math.atan2(player.y-e.y,player.x-e.x); 
       e.x+=Math.cos(a)*e.speed*dt; e.y+=Math.sin(a)*e.speed*dt;
       e.hit=Math.max(0,e.hit-dt);
       e.animTimer+=dt*6;
       if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
+
+      // Handle Poison Damage Over Time
+      if(e.poisonTimer > 0){
+        e.poisonTimer -= dt;
+        e.hp -= player.poisonDmg * dt;
+        if(Math.random()<0.3) makeSparks(e.x, e.y, '#22c55e', 2);
+        if(e.hp <= 0){
+          enemies.splice(i,1); kills++; addDrops(e.x,e.y,e.xp,e.gold); continue;
+        }
+      }
 
       if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < 500){
         e.shootTimer -= dt;
@@ -854,25 +1015,35 @@ html,body{
       if(d<e.r+player.r)hurt(e.damage*dt*1.2);
     }
 
-    // Player Bullets
     for(let i=bullets.length-1;i>=0;i--){
       const b=bullets[i];
       b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
       b.trail.push({x:b.x, y:b.y});
       if(b.trail.length > 4) b.trail.shift();
 
-      let remove=b.life<=0||b.x<0||b.y<0||b.x>world.w||b.y>world.h;
+      let remove=b.life<=0;
+
+      // Handle Ricochet Wall Bounces
+      if(b.x < 40 || b.x > world.w - 40){
+        if(b.bounce > 0){ b.vx *= -1; b.bounce--; } else remove = true;
+      }
+      if(b.y < 40 || b.y > world.h - 40){
+        if(b.bounce > 0){ b.vy *= -1; b.bounce--; } else remove = true;
+      }
+
       if(!remove){
         for(const e of enemies){
-          if(dist(b.x,b.y,e.x,e.y)<b.r+e.r){
-            hitEnemy(e,b.damage,b.crit); remove=true; break;
+          if(!b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
+            b.hitList.push(e);
+            hitEnemy(e,b.damage,b.crit,b);
+            b.pierce--;
+            if(b.pierce <= 0){ remove=true; break; }
           }
         }
       }
       if(remove)bullets.splice(i,1);
     }
 
-    // Enemy Bullets
     for(let i=enemyBullets.length-1;i>=0;i--){
       const eb=enemyBullets[i]; eb.x+=eb.vx*dt; eb.y+=eb.vy*dt; eb.life-=dt;
       if(dist(eb.x,eb.y,player.x,player.y) < eb.r + player.r){
@@ -881,7 +1052,6 @@ html,body{
       if(eb.life<=0||eb.x<0||eb.y<0||eb.x>world.w||eb.y>world.h) enemyBullets.splice(i,1);
     }
 
-    // XP Orbs Collection
     for(let i=xpOrbs.length-1;i>=0;i--){
       const o=xpOrbs[i];o.life-=dt;o.animTimer+=dt*4;
       const d=dist(o.x,o.y,player.x,player.y);
@@ -894,7 +1064,6 @@ html,body{
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // Gold Coins Collection
     for(let i=goldCoins.length-1;i>=0;i--){
       const g=goldCoins[i];g.life-=dt;g.animTimer+=dt*4;
       const d=dist(g.x,g.y,player.x,player.y);
@@ -919,7 +1088,6 @@ html,body{
     refreshHUD();
   }
 
-  // Camera & Rendering
   function camera(){
     let shakeX = (Math.random() - 0.5) * screenShake;
     let shakeY = (Math.random() - 0.5) * screenShake;
@@ -968,6 +1136,22 @@ html,body{
     const px=sx(player.x,cam), py=sy(player.y,cam);
     const flip = player.facing === 'left';
     const bob = (player.animFrame % 2 === 1) ? -2 : 0;
+
+    // Draw Orbiting Blades
+    if(player.orbitBlades > 0){
+      const orbitSpeed = elapsed * 3;
+      const radius = 65;
+      for(let i=0; i<player.orbitBlades; i++){
+        const angle = orbitSpeed + (i * (Math.PI*2 / player.orbitBlades));
+        const bx = px + Math.cos(angle)*radius;
+        const by = py + Math.sin(angle)*radius;
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(bx-6, by-6, 12, 12);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(bx-2, by-2, 4, 4);
+      }
+    }
 
     ctx.save(); ctx.translate(px, py);
     if(player.hit>0 && Math.floor(player.hit*25)%2===0) ctx.globalAlpha=0.4;
@@ -1049,7 +1233,6 @@ html,body{
 
     ctx.restore();
 
-    // HP Bar
     const bw=r*2.2, bh=4, hp=clamp(e.hp/e.maxHp,0,1);
     ctx.fillStyle='#000'; ctx.fillRect(px-bw/2-1, py-r-12, bw+2, bh+2);
     ctx.fillStyle='#9f1239'; ctx.fillRect(px-bw/2, py-r-11, bw, bh);
@@ -1149,6 +1332,9 @@ html,body{
     elapsed=0; wave=1; kills=0; level=1; xp=0; xpNeed=10; lastShopWave=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
     player.x=world.w/2; player.y=world.h/2; player.gold=0; player.revives=0;
+    player.dodge=0.0; player.lifesteal=0.0; player.pierce=1;
+    player.ricochet=0; player.poisonDmg=0; player.lightningChain=0; 
+    player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
 
@@ -1171,7 +1357,6 @@ html,body{
     document.getElementById('gameOver').classList.remove('hidden');
   }
 
-  // Event Listeners
   document.getElementById('startBtn').onclick=startGame;
   document.getElementById('restart').onclick=startGame;
   document.getElementById('quitTitle').onclick=()=>location.reload();
