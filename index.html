@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#030712">
-<title>16-Bit Survivor Arena - 50 Level Up Upgrades Edition</title>
+<title>16-Bit Survivor Arena - Expanded Edition</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Prompt:wght@400;600;800&display=swap');
 
@@ -280,7 +280,7 @@ html,body{
 
     <div class="btn-group">
       <button class="btn btn-gold" id="rerollBtn">🎲 รีโรลร้านค้า (<span id="rerollCostText">10</span> ทอง)</button>
-      <button class="btn" id="closeShopBtn">⚔️️ ไปยังเวฟถัดไป</button>
+      <button class="btn" id="closeShopBtn">⚔ ไปยังเวฟถัดไป</button>
     </div>
   </div>
 </div>
@@ -302,7 +302,7 @@ html,body{
 <!-- Game Over Overlay -->
 <div id="gameOver" class="overlay hidden">
   <div class="modal">
-    <div class="title" style="color:#ef4444">☠️️ พ่ายแพ้การต่อสู้ ☠</div>
+    <div class="title" style="color:#ef4444">☠ พ่ายแพ้การต่อสู้ ☠</div>
     <div class="sub">ฮีโร่ของคุณล้มลงกลางสนามรบ!</div>
     <div class="stats-box" id="finalStats"></div>
     <div class="btn-group">
@@ -425,12 +425,12 @@ html,body{
     {icon:'🔥', name:'ระเบิดเพลิงผลาญ', desc:'การโจมตีปกติแรงขึ้น 20% และเพิ่มระเบิดกว้างขึ้น', apply:()=>{player.damage*=1.2; player.explosiveRadius+=25;}},
     {icon:'⚡', name:'สปีดและสายฟ้า', desc:'เคลื่อนที่เร็วขึ้น 15% พร้อมเพิ่มช็อตสายฟ้า 15 Dmg', apply:()=>{player.speed*=1.15; player.lightningChain+=15;}},
     {icon:'🧪', name:'พิษร้ายสะสม', desc:'เพิ่มพิษกัดกร่อน 25 HP/วิ และ คริติคอล +5%', apply:()=>{player.poisonDmg+=25; player.crit+=0.05;}},
-    {icon:'🛡️️', name:'เกราะผลักสะท้อน', desc:'เพิ่มเกราะ 10% และผลักศัตรูที่เข้าใกล้', apply:()=>{player.armor+=0.10; player.knockback+=100;}},
+    {icon:'🛡', name:'เกราะผลักสะท้อน', desc:'เพิ่มเกราะ 10% และผลักศัตรูที่เข้าใกล้', apply:()=>{player.armor+=0.10; player.knockback+=100;}},
     {icon:'💫', name:'สปีดยิงกระสุนสะท้อน', desc:'ความเร็วกระสุน +25% และ เพิ่มกระสุนเด้ง +1 ครั้ง', apply:()=>{player.bulletSpeed*=1.25; player.ricochet+=1;}},
 
     // --- UTILITY & SURVIVAL SKILLS ---
     {icon:'🩸', name:'กระหายเลือดสงคราม', desc:'ดูดเลือด +6% และ เพิ่มความเร็วเคลื่อนที่ 10%', apply:()=>{player.lifesteal+=0.06; player.speed*=1.10;}},
-    {icon:'🛡️', name:'ปราการอัศวิน', desc:'+80 Max HP และ เกราะป้องกัน +8%', apply:()=>{player.maxHp+=80; player.hp+=80; player.armor+=0.08;}},
+    {icon:'🛡️️', name:'ปราการอัศวิน', desc:'+80 Max HP และ เกราะป้องกัน +8%', apply:()=>{player.maxHp+=80; player.hp+=80; player.armor+=0.08;}},
     {icon:'🌟', name:'ออร่าดูดซับสมบัติ', desc:'ขยายแม่เหล็กดูดของ +180 Pixel', apply:()=>player.pickup+=180},
     {icon:'🎲', name:'โชคลาภสงคราม', desc:'เพิ่มคริติคอล +8% และ ดร็อปทอง +25%', apply:()=>{player.crit+=0.08; player.goldMulti*=1.25;}},
     {icon:'⏱️', name:'จังหวะยิงรัว', desc:'อัตราการยิงเร็วขึ้น +15% และ เจาะทะลุ +1', apply:()=>{player.fireRate*=.85; player.pierce+=1;}},
@@ -510,36 +510,66 @@ html,body{
   function rand(a,b){return a+Math.random()*(b-a);}
   function dist(ax,ay,bx,by){return Math.hypot(ax-bx,ay-by);}
 
+  // Audio System using Web Audio API Synth (Synthesized Sound FX)
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
   function playSound(type) {
     if(!settings.sfx) return;
+    initAudio();
+    if(!audioCtx) return;
+
     try {
-      const ctxA = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctxA.createOscillator();
-      const gain = ctxA.createGain();
-      osc.connect(gain); gain.connect(ctxA.destination);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
 
       if(type === 'shoot') {
-        osc.frequency.setValueAtTime(600, ctxA.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, ctxA.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.1, ctxA.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctxA.currentTime + 0.08);
-        osc.start(); osc.stop(ctxA.currentTime + 0.08);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now); osc.stop(now + 0.08);
       } else if(type === 'hit') {
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(120, ctxA.currentTime);
-        osc.frequency.linearRampToValueAtTime(40, ctxA.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.15, ctxA.currentTime);
-        gain.gain.linearRampToValueAtTime(0.01, ctxA.currentTime + 0.1);
-        osc.start(); osc.stop(ctxA.currentTime + 0.1);
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.linearRampToValueAtTime(30, now + 0.1);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
       } else if(type === 'coin') {
-        osc.frequency.setValueAtTime(900, ctxA.currentTime);
-        osc.frequency.setValueAtTime(1400, ctxA.currentTime + 0.05);
-        gain.gain.setValueAtTime(0.12, ctxA.currentTime);
-        gain.gain.linearRampToValueAtTime(0.01, ctxA.currentTime + 0.12);
-        osc.start(); osc.stop(ctxA.currentTime + 0.12);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.06); // E6
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.14);
+        osc.start(now); osc.stop(now + 0.14);
+      } else if(type === 'levelup') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now); osc.stop(now + 0.35);
       }
     } catch(e) {}
   }
+
+  window.addEventListener('pointerdown', initAudio, { once: true });
+  window.addEventListener('keydown', initAudio, { once: true });
 
   window.addEventListener('keydown',e=>{
     if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=true;
@@ -796,6 +826,7 @@ html,body{
   function openLevelUp(){
     paused=true; joy.active=false; joyBase.style.display='none';
     touchZone.classList.add('hidden');
+    playSound('levelup');
     const wrap=document.getElementById('upgrades');wrap.innerHTML='';
     [...levelUpgrades].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
       const b=document.createElement('button');b.className='upgrade';
@@ -1328,6 +1359,7 @@ html,body{
   }
 
   function startGame(){
+    initAudio();
     running=true; paused=false; over=false;
     elapsed=0; wave=1; kills=0; level=1; xp=0; xpNeed=10; lastShopWave=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
