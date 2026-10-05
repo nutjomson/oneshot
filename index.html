@@ -505,7 +505,7 @@ const PLAYER_BASE = {
   bulletSpeed: 500,   // ความเร็วกระสุน
   projectiles: 1,     // จำนวนกระสุนต่อนัด
   pierce: 1,          // เจาะทะลุกี่ตัว
-  pickup: 100,        // รัศมีดูดไอเทม (px)
+  pickup: 230,        // รัศมีดูดไอเทม (px)
   regen: 1.0,         // ฟื้น HP ต่อวินาที
   goldMulti: 1,       // ตัวคูณทองที่เก็บได้
   dodge: 0, lifesteal: 0, revives: 0,
@@ -633,15 +633,15 @@ const PICKUPS = {
 
 /* ===== 11. LEVEL ===== */
 const LEVEL = {
-  xpNeedStart: 100,     // XP เลเวลแรก
-  xpNeedGrowth: 1.55,  // ตัวคูณต่อเลเวล
-  xpNeedFlat: 25,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
+  xpNeedStart: 60,     // XP เลเวลแรก
+  xpNeedGrowth: 1.4,  // ตัวคูณต่อเลเวล
+  xpNeedFlat: 20,      // +คงที่ต่อเลเวล   (สูตร: next = floor(need x growth + flat))
   choices: 3           // จำนวนการ์ดให้เลือกตอนเลเวลอัป
 };
 
 /* ===== 12. SHOP ===== */
 const SHOP = {
-  everyWaves: 3,       // เปิดร้านทุก N เวฟ
+  everyWaves: 2,       // เปิดร้านทุก N เวฟ
   itemsShown: 2,       // จำนวนสินค้าต่อรอบ
   pricePerWave: 0.10,  // ราคา +6%/เวฟ
   rerollBase: 2, rerollStep: 1,  // ค่ารีโรลขั้นต่ำ / เพิ่มต่อครั้ง
