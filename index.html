@@ -280,13 +280,11 @@ html,body{
     makeSparks(player.x, player.y, orb.color, 30);
 
     if(orb.type === 'dragon'){
-      // มังกรวารีทะลวงฟัน
       specialAttacks.push({
         type:'dragon', x:player.x, y:player.y, vx:Math.cos(player.angle)*1000, vy:Math.sin(player.angle)*1000,
         r:60, life:1.5, damage:player.damage*4, angle:player.angle
       });
     } else if(orb.type === 'thunder'){
-      // อัศนีบาต 360 องศา
       for(let i=0; i<16; i++){
         const a = (Math.PI*2/16)*i;
         bullets.push({
@@ -295,12 +293,10 @@ html,body{
         });
       }
     } else if(orb.type === 'cyclone'){
-      // พายุดาบอัคคี
       specialAttacks.push({
         type:'cyclone', x:player.x, y:player.y, r:130, life:3.5, damage:player.damage*3
       });
     } else if(orb.type === 'sakura'){
-      // อาณาเขตซากุระสังหาร (Screen Wipe)
       for(const e of enemies){
         hitEnemy(e, player.damage*3.5, true);
         makeSparks(e.x, e.y, '#ff79c6', 12);
@@ -409,7 +405,7 @@ html,body{
           if(dist(sa.x, sa.y, e.x, e.y) < sa.r + e.r) hitEnemy(e, sa.damage*dt*5, true);
         }
       } else if(sa.type === 'cyclone'){
-        sa.x = player.x; sa.y = player.y; // ตามตัวซามูไร
+        sa.x = player.x; sa.y = player.y;
         for(const e of enemies){
           if(dist(sa.x, sa.y, e.x, e.y) < sa.r + e.r) hitEnemy(e, sa.damage*dt*4, true);
         }
@@ -526,7 +522,6 @@ html,body{
       const px=sx(orb.x, cam), py=sy(orb.y, cam);
       const floatY = Math.sin(orb.animTimer)*6;
 
-      // เสาแสงเรืองแสงขึ้นฟ้า
       const grad = ctx.createLinearGradient(px, py-100, px, py);
       grad.addColorStop(0, 'rgba(255,255,255,0)');
       grad.addColorStop(1, orb.color);
@@ -535,7 +530,6 @@ html,body{
       ctx.fillRect(px-12, py-100+floatY, 24, 100);
       ctx.globalAlpha = 1.0;
 
-      // ตัวลูกแก้ว
       ctx.fillStyle = orb.color;
       ctx.beginPath();
       ctx.arc(px, py+floatY, orb.r, 0, Math.PI*2);
@@ -544,7 +538,6 @@ html,body{
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      // ไอคอนในลูกแก้ว
       ctx.font = '16px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -557,7 +550,6 @@ html,body{
     for(const sa of specialAttacks){
       const px=sx(sa.x, cam), py=sy(sa.y, cam);
       if(sa.type === 'dragon'){
-        // หัวมังกรวารี
         ctx.save();
         ctx.translate(px, py);
         ctx.rotate(sa.angle);
@@ -569,7 +561,6 @@ html,body{
         ctx.fillRect(-20, -10, 40, 20);
         ctx.restore();
       } else if(sa.type === 'cyclone'){
-        // พายุดาบหมุนรอบตัว
         ctx.save();
         ctx.translate(px, py);
         ctx.rotate(Date.now()*0.01);
@@ -580,81 +571,110 @@ html,body{
         ctx.stroke();
         ctx.restore();
       } else if(sa.type === 'sakura'){
-        // แฟลชกลีบซากุระเต็มจอ
         ctx.fillStyle = 'rgba(255, 121, 198, 0.3)';
         ctx.fillRect(0, 0, W, H);
       }
     }
   }
 
+  // ==========================================
+  // ตัวละครซามูไร พิกเซลอาร์ต Original
+  // ==========================================
   function drawSamuraiPlayer(cam){
-    const px=sx(player.x,cam), py=sy(player.y,cam);
+    const px = sx(player.x, cam), py = sy(player.y, cam);
     const flip = player.facing === 'left';
-    const bob = (player.animFrame % 2 === 1) ? -2 : 0;
+    const anim = player.animFrame;
+    const isMoving = (anim !== 0);
+    const bob = isMoving ? (anim % 2 === 1 ? -2 : 0) : Math.sin(Date.now() * 0.005) * 1;
 
     ctx.save();
     ctx.translate(px, py);
 
-    if(player.hit>0 && Math.floor(player.hit*25)%2===0){ ctx.globalAlpha=0.3; }
+    if(player.hit > 0 && Math.floor(player.hit * 25) % 2 === 0){ 
+      ctx.globalAlpha = 0.3; 
+    }
 
-    ctx.fillStyle='rgba(0,0,0,0.45)';
-    ctx.fillRect(-12, 12, 24, 6);
+    // เงาพิกเซลด้านล่าง
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(-12, 13, 24, 4);
 
     if(flip) ctx.scale(-1, 1);
 
-    // ผ้าคลุมสีแดง
-    ctx.fillStyle='#922b21';
-    ctx.beginPath();
-    ctx.moveTo(-4, -6+bob);
-    ctx.lineTo(-14-(player.animFrame*2), 8+bob);
-    ctx.lineTo(-2, 10+bob);
-    ctx.fill();
+    // ผ้าคลุมด้านหลัง (Dynamic Cape)
+    ctx.fillStyle = '#1b2631';
+    ctx.fillRect(-12, -8 + bob, 6, 12);
+    ctx.fillStyle = '#283747';
+    ctx.fillRect(-15 - (isMoving ? anim * 2 : 0), -6 + bob, 5, 10);
 
-    // ขา & เกราะ
-    ctx.fillStyle='#1a252f';
-    if(player.animFrame===1){
-      ctx.fillRect(-7, 6+bob, 5, 8); ctx.fillRect(2, 4+bob, 5, 8);
-    } else if(player.animFrame===3){
-      ctx.fillRect(-7, 4+bob, 5, 8); ctx.fillRect(2, 6+bob, 5, 8);
+    // ทรงผมและมวยผมซามูไรไร้พ่าย (Original Ronin Hair)
+    ctx.fillStyle = '#111111';
+    ctx.fillRect(-3, -22 + bob, 8, 8);
+    ctx.fillRect(-7, -24 + bob, 5, 4);
+    ctx.fillRect(-10, -26 + bob, 4, 3);
+    ctx.fillStyle = '#f39c12';
+    ctx.fillRect(-4, -24 + bob, 2, 3);
+
+    // ใบหน้า สายตาพิกเซล และผ้าพันคอ
+    ctx.fillStyle = '#d68910';
+    ctx.fillRect(-2, -18 + bob, 7, 6);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(2, -16 + bob, 2, 2);
+    ctx.fillStyle = '#111111';
+    ctx.fillRect(3, -16 + bob, 1, 2);
+    ctx.fillStyle = '#c0392b';
+    ctx.fillRect(-3, -13 + bob, 9, 3);
+
+    // ลำตัว & ชุดกิโมโน (Custom Cyan-Navy Kimono)
+    ctx.fillStyle = '#1b4f72';
+    ctx.fillRect(-8, -10 + bob, 16, 13);
+
+    ctx.fillStyle = '#2980b9';
+    ctx.fillRect(-6, -10 + bob, 5, 12);
+    ctx.fillRect(-1, -7 + bob, 8, 9);
+    ctx.fillStyle = '#2ecc71';
+    ctx.fillRect(-4, -5 + bob, 2, 2);
+
+    ctx.fillStyle = '#154360';
+    ctx.fillRect(-12, -9 + bob, 5, 10);
+    ctx.fillRect(7, -8 + bob, 5, 9);
+
+    // โอบิ (เข็มขัดผ้าสีทอง)
+    ctx.fillStyle = '#d4ac0d';
+    ctx.fillRect(-8, 1 + bob, 16, 3);
+    ctx.fillStyle = '#f1c40f';
+    ctx.fillRect(-2, 1 + bob, 4, 3);
+
+    // ชายกิโมโนส่วนล่าง
+    ctx.fillStyle = '#1b4f72';
+    ctx.fillRect(-8, 4 + bob, 7, 7);
+    ctx.fillRect(1, 4 + bob, 7, 7);
+    ctx.fillStyle = '#2980b9';
+    ctx.fillRect(-6, 5 + bob, 3, 5);
+
+    // ขาและการก้าวเดิน
+    ctx.fillStyle = '#d68910';
+    if(anim === 1){
+      ctx.fillRect(-6, 11 + bob, 4, 3); ctx.fillRect(3, 9 + bob, 4, 3);
+    } else if(anim === 3){
+      ctx.fillRect(-6, 9 + bob, 4, 3); ctx.fillRect(3, 11 + bob, 4, 3);
     } else {
-      ctx.fillRect(-7, 5+bob, 5, 8); ctx.fillRect(2, 5+bob, 5, 8);
+      ctx.fillRect(-5, 10 + bob, 3, 3); ctx.fillRect(2, 10 + bob, 3, 3);
     }
-    ctx.fillStyle='#f39c12';
-    ctx.fillRect(-7, 10+bob, 5, 3); ctx.fillRect(2, 10+bob, 5, 3);
+    ctx.fillStyle = '#7e5109';
+    ctx.fillRect(-7, 13 + bob, 5, 2); ctx.fillRect(2, 13 + bob, 5, 2);
 
-    // เกราะ Do
-    ctx.fillStyle='#641e16'; ctx.fillRect(-8, -6+bob, 16, 12);
-    ctx.fillStyle='#111'; ctx.fillRect(-6, -4+bob, 12, 9);
-    ctx.fillStyle='#f1c40f'; ctx.fillRect(-8, 2+bob, 16, 2);
-
-    // เกราะไหล่ Sode
-    ctx.fillStyle='#78281f';
-    ctx.fillRect(-12, -6+bob, 5, 8); ctx.fillRect(7, -6+bob, 5, 8);
-    ctx.fillStyle='#f39c12';
-    ctx.fillRect(-12, -7+bob, 5, 2); ctx.fillRect(7, -7+bob, 5, 2);
-
-    // หมวก Kabuto
-    ctx.fillStyle='#0e141d'; ctx.fillRect(-7, -16+bob, 14, 10);
-    ctx.fillStyle='#78281f'; ctx.fillRect(-9, -11+bob, 18, 3);
-    ctx.fillStyle='#f1c40f';
-    ctx.fillRect(-2, -22+bob, 4, 6);
-    ctx.fillRect(-8, -23+bob, 4, 2); ctx.fillRect(4, -23+bob, 4, 2);
-
-    // หน้ากาก Mempo
-    ctx.fillStyle='#922b21'; ctx.fillRect(-5, -11+bob, 10, 5);
-    ctx.fillStyle='#3498db'; ctx.fillRect(1, -13+bob, 2, 2);
-
-    // ดาบซามูไร
+    // ดาบคาตานะเวทมนตร์ (Aura Katana)
     ctx.save();
-    ctx.translate(2, -2+bob);
+    ctx.translate(4, -4 + bob);
     let katanaAngle = player.angle;
     if(flip) katanaAngle = Math.PI - katanaAngle;
     ctx.rotate(katanaAngle);
 
-    ctx.fillStyle='#78281f'; ctx.fillRect(0, -2, 7, 3);
-    ctx.fillStyle='#f1c40f'; ctx.fillRect(7, -4, 2, 7);
-    ctx.fillStyle='#ecf0f1'; ctx.fillRect(9, -2, 18, 2);
-    ctx.fillStyle='#3498db'; ctx.fillRect(9, -1, 18, 1);
+    ctx.fillStyle = '#78281f'; ctx.fillRect(-7, -2, 7, 3);
+    ctx.fillStyle = '#111'; ctx.fillRect(-5, -2, 2, 3);
+    ctx.fillStyle = '#f1c40f'; ctx.fillRect(0, -4, 2, 7);
+    ctx.fillStyle = '#eaeded'; ctx.fillRect(2, -2, 20, 2);
+    ctx.fillStyle = '#2ecc71'; ctx.fillRect(2, -1, 20, 1);
     ctx.restore();
 
     ctx.restore();
