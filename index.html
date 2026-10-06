@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.66</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.67</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -275,7 +275,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.66</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.67</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -493,10 +493,37 @@ body.gameplay-actions .hud-controls{display:flex}
     <div class="sub">สถานะปัจจุบันของฮีโร่ของคุณ</div>
     <div class="btn-group">
       <button class="btn" id="resumeBtn">▶️ เล่นต่อ</button>
+      <button class="btn btn-blue" id="pauseHistoryBtn">🎁 ประวัติไอเทม</button>
+      <button class="btn btn-blue" id="pauseStatsBtn">📊 สถิติ</button>
       <button class="btn btn-blue" id="pauseSettingsBtn">⚙️ ตั้งค่า</button>
       <button class="btn btn-sec" id="quitBtn">🏠 กลับหน้าหลัก</button>
     </div>
     <div class="stats-box" id="pauseHeroStats"></div>
+  </div>
+</div>
+
+<!-- Item History Overlay -->
+<div id="itemHistoryOverlay" class="overlay hidden">
+  <div class="modal" style="max-width:620px">
+    <div class="title">🎁 ประวัติไอเทมที่ได้รับ</div>
+    <div class="sub">ไอเทมทั้งหมดที่ได้รับในเกมนี้ พร้อมแหล่งที่มา</div>
+    <div id="itemHistoryList" class="stats-box" style="max-height:55vh;overflow:auto;text-align:left"></div>
+    <div class="btn-group">
+      <button class="btn btn-sec" id="closeItemHistoryBtn">↩️ กลับหน้าพัก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Statistics Overlay -->
+<div id="statsOverlay" class="overlay hidden">
+  <div class="modal" style="max-width:680px">
+    <div class="title">📊 สถิติการเล่น</div>
+    <div class="sub">แสดงเฉพาะสถิติสำคัญสำหรับดูความสมดุลของเกม</div>
+    <div id="statsList" class="stats-box" style="max-height:58vh;overflow:auto;text-align:left"></div>
+    <div class="btn-group">
+      <button class="btn btn-gold" id="downloadStatsBtn">📄 โหลดสถิติทั้งหมดเป็น Text</button>
+      <button class="btn btn-sec" id="closeStatsBtn">↩️ กลับหน้าพัก</button>
+    </div>
   </div>
 </div>
 
@@ -1223,6 +1250,8 @@ window.GAME_CONFIG = {
   let treasureChests=[];
   let running=false, paused=false, over=false, lsUsed=0, rewardOpen=false;
 let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
+let itemHistory=[];
+let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
@@ -2912,6 +2941,7 @@ function applyHeroChoice(h){
 
     if(type!=='boss'&&enemies.length>=dev.wave.maxEnemies)return;
     const t = enemyTypes[type];
+    runStats.enemiesSpawned++;
     let x,y;
     for(let k=0;k<12;k++){
       const a = Math.random()*Math.PI*2, d = Math.max(W,H)*.42+rand(60,160);
@@ -3007,6 +3037,9 @@ function applyHeroChoice(h){
       damage=e.hp+999; makeSparks(e.x,e.y,'#f43f5e',20);
     }
     e.hp-=damage; e.hit=.12;
+    runStats.damageDealt+=Math.max(0,damage);
+    runStats.highestDamageHit=Math.max(runStats.highestDamageHit,Math.max(0,damage));
+    if(crit) runStats.critHits++;
     playSound('hit');
     if(!blade&&floaters.length<60)floaters.push({x:e.x+rand(-8,8),y:e.y-e.r,t:.6,v:Math.round(heal),c:crit});
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
@@ -3204,6 +3237,22 @@ function applyHeroChoice(h){
         return;
       }
       const after=snapshotPlayerStats();
+      itemHistory.push({
+        index:itemHistory.length+1,
+        time:Math.floor(elapsed),
+        wave,
+        level,
+        source:source||'ไม่ทราบที่มา',
+        tier:Number(item.tier)||1,
+        id:item.id||'',
+        name:item.name||'ไอเทม',
+        icon:item.icon||'📦',
+        desc:item.desc||'',
+        changes:itemRewardChangesHtml(before,after)
+      });
+      runStats.itemsReceived++;
+      if(String(source||'').includes('บอส')) runStats.bossItemDrops++;
+      if(String(source||'').includes('กล่อง')) runStats.chestsOpened++;
       icon.classList.remove('item-reward-spin');
       icon.textContent=item.icon||'📦';
       tier.textContent='S'+(item.tier||1)+' • ได้รับแล้ว';
@@ -3238,7 +3287,7 @@ function applyHeroChoice(h){
     for(let i=enemies.length-1;i>=0;i--){
       const e=enemies[i];
       if(e.dead||e.hp<=0){
-        enemies.splice(i,1); kills++; addDrops(e.x,e.y,e.xp,e.gold);
+        enemies.splice(i,1); kills++; runStats.enemiesKilled++; if(e.type==='boss') runStats.bossesKilled++; addDrops(e.x,e.y,e.xp,e.gold);
         if(e.type==='boss'){
           for(let k=0;k<dev.misc.bossBonusDrops;k++)addDrops(
             e.x+rand(-30,30),e.y+rand(-30,30),
@@ -3255,7 +3304,7 @@ function applyHeroChoice(h){
     v*=Math.max(0,player.xpMulti||1);
     xp+=v;
     while(xp>=xpNeed){
-      xp-=xpNeed; level++;
+      xp-=xpNeed; level++; runStats.levelUps++;
       {const g=selectedHero&&selectedHero.growth; if(g){ if(g.maxHp){player.maxHp+=g.maxHp;player.hp+=g.maxHp;} if(g.damagePct)player.damage*=1+g.damagePct; if(g.regen)player.regen+=g.regen; }}
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
       pendingLevels++;
@@ -4031,6 +4080,7 @@ function openLevelUp(forceHigherTier=false){
     if(freeShopRerolls > 0) {
       freeShopRerolls--;
       rerollN=0;
+      runStats.rerolls++;
       playSound('coin');
       generateShopList();
       setStatus('🎁 ใช้รีโรลฟรี');
@@ -4090,6 +4140,154 @@ function openLevelUp(forceHigherTier=false){
     shopOpen=false; syncPause(); setStatus('ปิดร้านค้าแล้ว');
   };
 
+  function formatRunTime(sec){
+    sec=Math.max(0,Math.floor(Number(sec)||0));
+    const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+    return (h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+
+  function renderItemHistory(){
+    const box=document.getElementById('itemHistoryList'); if(!box)return;
+    if(!itemHistory.length){
+      box.innerHTML='<div style="text-align:center;color:#94a3b8;padding:25px">ยังไม่มีไอเทมพิเศษจากบอสหรือกล่องในเกมนี้</div>';
+      return;
+    }
+    box.innerHTML=itemHistory.slice().reverse().map((x,idx)=>`
+      <div style="padding:10px 4px;border-bottom:1px solid #334155">
+        <div style="font-weight:900;color:#facc15">${x.icon} S${x.tier} ${x.name}</div>
+        <div style="font-size:11px;color:#94a3b8">#${x.index} · เวฟ ${x.wave} · Lv.${x.level} · เวลา ${formatRunTime(x.time)}</div>
+        <div style="font-size:12px;color:#cbd5e1;margin-top:3px">📍 ${x.source}</div>
+      </div>`).join('');
+  }
+
+  function buildAllStatsText(){
+    const hero=selectedHero?.name||selectedHero?.id||'-';
+    const lines=[];
+    lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
+    lines.push('Game Version: v1.0.67');
+    lines.push('Exported: '+new Date().toISOString());
+    lines.push('');
+    lines.push('[RUN SUMMARY]');
+    lines.push('Hero: '+hero);
+    lines.push('Elapsed Seconds: '+Math.floor(elapsed));
+    lines.push('Elapsed Time: '+formatRunTime(elapsed));
+    lines.push('Wave: '+wave);
+    lines.push('Level: '+level);
+    lines.push('XP Current: '+xp);
+    lines.push('XP Needed: '+xpNeed);
+    lines.push('Kills: '+kills);
+    lines.push('Gold Current: '+Math.floor(player.gold));
+    lines.push('');
+    lines.push('[COMBAT STATISTICS]');
+    lines.push('Enemies Spawned: '+runStats.enemiesSpawned);
+    lines.push('Enemies Killed: '+runStats.enemiesKilled);
+    lines.push('Bosses Killed: '+runStats.bossesKilled);
+    lines.push('Damage Dealt: '+Math.round(runStats.damageDealt));
+    lines.push('Damage Taken: '+Math.round(runStats.damageTaken));
+    lines.push('Highest Single Hit: '+Math.round(runStats.highestDamageHit));
+    lines.push('Critical Hits: '+runStats.critHits);
+    lines.push('Level Ups: '+runStats.levelUps);
+    lines.push('XP Collected: '+Math.round(runStats.xpCollected));
+    lines.push('Gold Collected: '+Math.round(runStats.goldCollected));
+    lines.push('');
+    lines.push('[REWARD / ECONOMY]');
+    lines.push('Special Items Received: '+runStats.itemsReceived);
+    lines.push('Boss Item Drops: '+runStats.bossItemDrops);
+    lines.push('Treasure Chests Opened: '+runStats.chestsOpened);
+    lines.push('Normal Rerolls: '+runStats.rerolls);
+    lines.push('Premium Rerolls: '+runStats.premiumRerolls);
+    lines.push('');
+    lines.push('[CURRENT PLAYER STATS]');
+    PLAYER_STAT_DEFS.forEach(def=>{
+      const v=player[def.key];
+      if(v!==undefined) lines.push(def.key+' ('+def.name+'): '+formatStatValue(def.key,v));
+    });
+    lines.push('');
+    lines.push('[CURRENT BUILD]');
+    lines.push('Bullet Types: '+(Array.isArray(player.bulletTypes)?player.bulletTypes.join(', '):player.bulletType||'-'));
+    lines.push('Armor: '+player.armor);
+    lines.push('Crit: '+player.crit);
+    lines.push('Attack Range: '+player.attackRange);
+    lines.push('Fire Rate: '+player.fireRate);
+    lines.push('');
+    lines.push('[ITEM HISTORY]');
+    if(!itemHistory.length) lines.push('None');
+    itemHistory.forEach(x=>{
+      lines.push('#'+x.index+' | time='+x.time+'s | wave='+x.wave+' | level='+x.level+' | source='+x.source+' | tier=S'+x.tier+' | id='+x.id+' | name='+x.name);
+    });
+    lines.push('');
+    lines.push('[BALANCE CONFIG]');
+    lines.push('Wave Duration: '+dev.wave.duration);
+    lines.push('Spawn Interval: '+dev.wave.spawnInterval);
+    lines.push('Spawn Interval Per Wave: '+dev.wave.spawnIntervalPerWave);
+    lines.push('Max Enemies: '+dev.wave.maxEnemies);
+    lines.push('Batch Base: '+dev.wave.batchBase);
+    lines.push('Enemy HP/Wave: '+dev.wave.enemyHpPerWave);
+    lines.push('Enemy HP Compound: '+dev.wave.enemyHpCompound);
+    lines.push('Enemy Damage/Wave: '+dev.wave.enemyDamagePerWave);
+    lines.push('Enemy Speed/Wave: '+dev.wave.enemySpeedPerWave);
+    lines.push('XP Multiplier: '+dev.drop.xpMultiplier);
+    lines.push('Gold Chance: '+dev.drop.goldChance);
+    lines.push('Hero Gold Multiplier: '+dev.drop.heroGoldMultiplier);
+    lines.push('Boss Every: '+dev.wave.bossEvery);
+    lines.push('Boss HP Multiplier: '+dev.wave.bossHpMultiplier);
+    lines.push('');
+    lines.push('[ITEM COUNTS BY TIER]');
+    for(let t=1;t<=5;t++){
+      const total=luxuryShopPool.filter(i=>Number(i.tier)===t).length;
+      const maxed=luxuryShopPool.filter(i=>Number(i.tier)===t&&isItemMaxed(i)).length;
+      lines.push('S'+t+': total='+total+', maxed='+maxed+', available='+Math.max(0,total-maxed));
+    }
+    return lines.join('\n');
+  }
+
+  function renderRunStats(){
+    const box=document.getElementById('statsList'); if(!box)return;
+    const accuracy=runStats.enemiesSpawned?((runStats.enemiesKilled/runStats.enemiesSpawned)*100):0;
+    const dps=elapsed>0?runStats.damageDealt/elapsed:0;
+    const takenPerMin=elapsed>0?runStats.damageTaken/(elapsed/60):0;
+    const goldPerMin=elapsed>0?runStats.goldCollected/(elapsed/60):0;
+    const rows=[
+      ['⏱️ เวลาที่เล่น',formatRunTime(elapsed)],
+      ['🌊 เวฟปัจจุบัน',wave],
+      ['⭐ เลเวล',level],
+      ['☠️ กำจัดศัตรู',runStats.enemiesKilled+' / '+runStats.enemiesSpawned],
+      ['📈 อัตรากำจัด',accuracy.toFixed(1)+'%'],
+      ['⚔️ ดาเมจรวม',Math.round(runStats.damageDealt)],
+      ['🔥 DPS เฉลี่ย',dps.toFixed(1)],
+      ['💥 ดาเมจสูงสุดต่อครั้ง',Math.round(runStats.highestDamageHit)],
+      ['🎯 Critical Hits',runStats.critHits],
+      ['❤️ ดาเมจที่ได้รับ',Math.round(runStats.damageTaken)],
+      ['📉 ดาเมจที่ได้รับ/นาที',takenPerMin.toFixed(1)],
+      ['✨ XP ที่เก็บ',Math.round(runStats.xpCollected)],
+      ['💰 ทองที่เก็บ',Math.round(runStats.goldCollected)],
+      ['💰 ทอง/นาที',goldPerMin.toFixed(1)],
+      ['🎁 ไอเทมพิเศษที่ได้รับ',runStats.itemsReceived],
+      ['🧰 เปิดกล่อง',runStats.chestsOpened],
+      ['👑 บอสที่ฆ่า',runStats.bossesKilled],
+      ['🎲 รีโรลปกติ',runStats.rerolls],
+      ['✨ Premium Reroll',runStats.premiumRerolls]
+    ];
+    box.innerHTML=rows.map(r=>'<div class="stat-item"><span>'+r[0]+'</span><span class="val">'+r[1]+'</span></div>').join('');
+  }
+
+  function openItemHistory(){
+    if(!pauseOpen)return;
+    renderItemHistory();
+    document.getElementById('itemHistoryOverlay').classList.remove('hidden');
+  }
+  function closeItemHistory(){
+    document.getElementById('itemHistoryOverlay').classList.add('hidden');
+  }
+  function openRunStats(){
+    if(!pauseOpen)return;
+    renderRunStats();
+    document.getElementById('statsOverlay').classList.remove('hidden');
+  }
+  function closeRunStats(){
+    document.getElementById('statsOverlay').classList.add('hidden');
+  }
+
   function openPause(){
     if(over||!running||levelOpen||shopOpen) return;
     pauseOpen=true;
@@ -4107,12 +4305,25 @@ function openLevelUp(forceHigherTier=false){
     document.body.classList.remove('gameplay-actions');
     running=false; over=false; enemies=[]; bullets=[]; enemyBullets=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
     levelOpen=shopOpen=pauseOpen=false;
-    ['pauseOverlay','gameOver','levelOverlay','shopOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    ['pauseOverlay','gameOver','levelOverlay','shopOverlay','itemHistoryOverlay','statsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     document.getElementById('startOverlay').classList.remove('hidden');
     syncPause(); applyHeroChoice(selectedHero);
   }
   document.getElementById('shopHudBtn').onclick=()=>{if(!running||over||levelOpen)return;openShop();};
     document.getElementById('pauseHudBtn').onclick=openPause;
+  document.getElementById('pauseHistoryBtn').onclick=openItemHistory;
+  document.getElementById('pauseStatsBtn').onclick=openRunStats;
+  document.getElementById('closeItemHistoryBtn').onclick=closeItemHistory;
+  document.getElementById('closeStatsBtn').onclick=closeRunStats;
+  document.getElementById('downloadStatsBtn').onclick=()=>{
+    const blob=new Blob([buildAllStatsText()],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='oneshot-balance-stats-'+new Date().toISOString().replace(/[:.]/g,'-')+'.txt';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
   document.getElementById('resumeBtn').onclick=closePause;
   document.getElementById('quitBtn').onclick=toTitle;
 
@@ -4128,6 +4339,7 @@ function openLevelUp(forceHigherTier=false){
     const dmg = Math.max(CFG.combat.minDamage, v * armorMult);
     
     player.hp-=dmg; player.hit=CFG.combat.hitInvuln;
+    runStats.damageTaken+=Math.max(0,dmg);
     if(settings.shake) screenShake = CFG.combat.hurtShake;
     makeSparks(player.x,player.y,'#ef4444',12);
     
@@ -4303,7 +4515,7 @@ function openLevelUp(forceHigherTier=false){
         o.x+=Math.cos(a)*(CFG.pickups.xpFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
         o.y+=Math.sin(a)*(CFG.pickups.xpFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
       }
-      if(d<player.r+o.r){gainXP(o.value);xpOrbs.splice(i,1);continue}
+      if(d<player.r+o.r){runStats.xpCollected+=Math.max(0,o.value||0);gainXP(o.value);xpOrbs.splice(i,1);continue}
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
@@ -4317,6 +4529,7 @@ function openLevelUp(forceHigherTier=false){
       }
       if(d<player.r+g.r){
         player.gold += g.value; 
+        runStats.goldCollected+=Math.max(0,g.value||0);
         playSound('coin');
         goldCoins.splice(i,1); 
         continue;
@@ -4636,6 +4849,8 @@ function openLevelUp(forceHigherTier=false){
     // Audio is optional; this build has no initAudio() dependency.
     running=true; paused=false; over=false;
     elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0; freeShopRerolls=0; rerollN=0; levelRerollN=0;
+    itemHistory=[];
+    runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
     rewardOpen=false; pendingItemReward=null;
     if(itemRewardTimer) clearTimeout(itemRewardTimer);
@@ -4652,7 +4867,7 @@ function openLevelUp(forceHigherTier=false){
     clampStats();
     spawnTreasureChest(wave);
 
-    ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','itemHistoryOverlay','statsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     syncPause();
     setStatus('เริ่มต้นการต่อสู้!');
     refreshHUD();
