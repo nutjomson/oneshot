@@ -3738,7 +3738,7 @@ function openLevelUp(){
       setStatus('ไม่พบฮีโร่สำหรับเริ่มเกม');
       return;
     }
-    initAudio();
+    // Audio is optional; this build has no initAudio() dependency.
     running=true; paused=false; over=false;
     elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
