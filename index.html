@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.3</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.4</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -967,6 +967,85 @@ window.GAME_CONFIG = {
   const keys = {up:false,down:false,left:false,right:false};
   const joy = {active:false, x:0, y:0, startX:0, startY:0, pointerId:null};
   const world = {w:CFG.world.w, h:CFG.world.h};
+
+  /*
+   * INPUT SYSTEM
+   * ก่อนหน้านี้ touchZone มีแต่ DOM/CSS แต่ไม่มี pointer/keyboard listeners
+   * ทำให้เข้าเกมแล้วตัวละครขยับไม่ได้และ joystick ไม่เคยถูกสร้างให้แสดง
+   */
+  const touchZone = document.getElementById('touchZone');
+  const joyBase = document.getElementById('joyBase');
+  const joyStick = document.getElementById('joyStick');
+
+  function updateJoystick(clientX, clientY){
+    if(!joy.active) return;
+    const dx=clientX-joy.startX, dy=clientY-joy.startY;
+    const maxR=48;
+    const len=Math.hypot(dx,dy)||1;
+    const scale=Math.min(1,maxR/len);
+    const sx=dx*scale, sy=dy*scale;
+    joy.x=clamp(sx/maxR,-1,1);
+    joy.y=clamp(sy/maxR,-1,1);
+    joyStick.style.transform=`translate(calc(-50% + ${sx}px), calc(-50% + ${sy}px))`;
+  }
+
+  function showJoystick(clientX,clientY){
+    joy.startX=clientX;
+    joy.startY=clientY;
+    joy.x=0;
+    joy.y=0;
+    joy.active=true;
+    joyBase.style.left=clientX+'px';
+    joyBase.style.top=clientY+'px';
+    joyStick.style.transform='translate(-50%,-50%)';
+    joyBase.style.display='block';
+  }
+
+  touchZone.addEventListener('pointerdown',e=>{
+    if(!running || paused || over) return;
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    e.preventDefault();
+    joy.pointerId=e.pointerId;
+    try{touchZone.setPointerCapture(e.pointerId)}catch(_){}
+    showJoystick(e.clientX,e.clientY);
+    updateJoystick(e.clientX,e.clientY);
+  },{passive:false});
+
+  touchZone.addEventListener('pointermove',e=>{
+    if(!joy.active || e.pointerId!==joy.pointerId) return;
+    e.preventDefault();
+    updateJoystick(e.clientX,e.clientY);
+  },{passive:false});
+
+  function releaseJoystick(e){
+    if(!joy.active || (e && e.pointerId!==joy.pointerId)) return;
+    if(e) e.preventDefault();
+    try{if(e) touchZone.releasePointerCapture(e.pointerId)}catch(_){}
+    resetInput();
+  }
+
+  touchZone.addEventListener('pointerup',releaseJoystick,{passive:false});
+  touchZone.addEventListener('pointercancel',releaseJoystick,{passive:false});
+  touchZone.addEventListener('lostpointercapture',()=>{
+    if(joy.active) resetInput();
+  });
+
+  window.addEventListener('keydown',e=>{
+    if(e.key==='ArrowUp'||e.key.toLowerCase()==='w') keys.up=true;
+    else if(e.key==='ArrowDown'||e.key.toLowerCase()==='s') keys.down=true;
+    else if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a') keys.left=true;
+    else if(e.key==='ArrowRight'||e.key.toLowerCase()==='d') keys.right=true;
+    else if(e.code==='Space'){e.preventDefault();useSkill();}
+    else return;
+    if(running) e.preventDefault();
+  });
+
+  window.addEventListener('keyup',e=>{
+    if(e.key==='ArrowUp'||e.key.toLowerCase()==='w') keys.up=false;
+    else if(e.key==='ArrowDown'||e.key.toLowerCase()==='s') keys.down=false;
+    else if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a') keys.left=false;
+    else if(e.key==='ArrowRight'||e.key.toLowerCase()==='d') keys.right=false;
+  });
   
   const heroes = CFG.heroes.map(h=>({...h,...h.stats,maxHp:h.stats.hp}));
   let selectedHero = heroes[0];
@@ -3709,8 +3788,18 @@ function openLevelUp(){
   function loop(now){
     const dt=Math.min((now-last)/1000, 0.033);
     last=now;
-    if(running && !paused && !over) update(dt*(dev.misc.gameSpeed>0?dev.misc.gameSpeed:1));
-    render();
+    try{
+      if(running && !paused && !over){
+        const speed=Number(dev.misc.gameSpeed);
+        update(dt*(Number.isFinite(speed)&&speed>0?speed:1));
+      }
+      render();
+    }catch(err){
+      console.error('GAME LOOP ERROR',err);
+      running=false;
+      syncPause();
+      setStatus('เกมหยุดชั่วคราว: '+(err?.message||String(err)));
+    }
     requestAnimationFrame(loop);
   }
 
