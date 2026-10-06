@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.41</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.42</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.41</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.42</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -699,6 +699,9 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 1)], weight: 0.3 },
   { tier: 1, icon: '⚔️️', name: 'นักรบสมดุล',                fx: [mul('damage', 1.02), add('maxHp', 10)] },
   { tier: 1, icon: '🏰', name: 'ปราการเล็ก',                fx: [add('armor', 0.01), add('maxHp', 15)] },
+  { tier: 1, icon: '🧭', name: 'เข็มทิศนักเก็บของ', fx: [add('pickup', 35), mul('goldMulti', 1.03)] },
+  { tier: 1, icon: '🩹', name: 'ผ้าพันแผลสนาม', fx: [add('maxHp', 12), add('regen', 0.35)] },
+  { tier: 1, icon: '🔩', name: 'กระสุนเสถียรภาพ', fx: [mul('bulletSpeed', 1.05), add('knockback', 10)] },
 
   // ───────── T2 ดี ─────────
   { tier: 2, icon: '🗡️', name: 'คมดาบแกร่ง',                fx: [mul('damage', 1.08)] },
@@ -748,6 +751,9 @@ const LEVEL_UPGRADES = [
   { tier: 3, icon: '🥊', name: 'กำแพงคลื่นกระแทก',          fx: [add('knockback', 80), mul('maxHp', 1.04)] },
   { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.03)] },
   { tier: 3, icon: '👑', name: 'ราชามิดาส',                fx: [mul('goldMulti', 1.15)] },
+  { tier: 3, icon: '🔭', name: 'กล้องสังหาร', fx: [add('crit', 0.05), add('executionThreshold', 0.015)] },
+  { tier: 3, icon: '🛡️', name: 'เกราะดูดซับ', fx: [add('armor', 0.04), add('knockback', 40)] },
+  { tier: 3, icon: '🧲', name: 'สนามแม่เหล็กลึก', fx: [mul('pickup', 1.25), mul('xpMulti', 1.06)] },
 
   // ───────── T4 ตำนาน ─────────
 { tier: 4, icon: '🏆', name: 'ดาบเทพพิพากษา',
@@ -838,6 +844,9 @@ const SHOP_ITEMS = [
   { id: 's_b2',  tier: 2, icon: '🔰', name: 'เกราะไทเทเนียม',          cost: 400, fx: [add('armor', 0.04)], scale: 0.50 },
   { id: 's_b3',  tier: 2, icon: '🏰', name: 'ป้อมปราการศิลา',          cost: 520, fx: [mul('maxHp', 1.12)], scale: 0.45 },
   { id: 's_b4',  tier: 2, icon: '🩸', name: 'จี้หยดเลือดอสูร',          cost: 450, fx: [add('lifesteal', 0.02)], scale: 0.60 },
+  { id: 's_b5', tier: 2, icon: '🧿', name: 'เลนส์นักล่า', cost: 430, fx: [add('crit', 0.05), add('bulletSpeed', 90)] },
+  { id: 's_b6', tier: 2, icon: '🥾', name: 'รองเท้าจู่โจม', cost: 390, fx: [mul('speed', 1.06), add('knockback', 25)] },
+  { id: 's_b7', tier: 2, icon: '💰', name: 'เหรียญนักสำรวจ', cost: 420, fx: [mul('goldMulti', 1.12), add('pickup', 50)] },
 
   // ───────── S3 หายาก ─────────
   { id: 's_c1', tier: 3, icon: '🔱', name: 'ตรีศูลนักล่า',                  cost: 900,  fx: [mul('damage', 1.14), add('crit', 0.03)] },
@@ -845,6 +854,9 @@ const SHOP_ITEMS = [
   { id: 's_c3', tier: 3, icon: '🦾', name: 'แกนพลังยักษ์',                  cost: 950,  fx: [mul('maxHp', 1.16), add('armor', 0.05)] },
   { id: 's_c4', tier: 3, icon: '🧿', name: 'ดวงตาอสูร',                    cost: 1000, fx: [add('crit', 0.07), add('executionThreshold', 0.02)] },
   { id: 's_c5', tier: 3, icon: '🗡️', name: 'คมดาบเงา',                    cost: 1100, fx: [add('orbitBlades', 1), mul('damage', 1.06)] },
+  { id: 's_c6', tier: 3, icon: '🧲', name: 'แกนแม่เหล็กอาร์ค', cost: 900, fx: [mul('pickup', 1.35), mul('xpMulti', 1.08)] },
+  { id: 's_c7', tier: 3, icon: '🌀', name: 'เสื้อคลุมเฟส', cost: 1000, fx: [add('dodge', 0.05), mul('speed', 1.05)] },
+  { id: 's_c8', tier: 3, icon: '🥊', name: 'หมัดแรงโน้มถ่วง', cost: 1050, fx: [add('knockback', 100), mul('damage', 1.05)] },
 
   // ───────── S4 ตำนาน ─────────
   { id: 's_d1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.20), add('explosiveRadius', 18)] },
@@ -859,6 +871,8 @@ const SHOP_ITEMS = [
   { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.18), mul('goldMulti', 1.25), mul('xpMulti', 1.20)] },
   { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 35), add('lightningChain', 150), mul('damage', 1.15)] },
   { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 4500, fx: [mul('maxHp', 1.30), add('regen', 5), add('lifesteal', 0.05), add('revives', 1)] }
+  { id: 's_e6', tier: 5, icon: '🕳️', name: 'หลุมดำจิ๋ว', cost: 4100, fx: [add('executionThreshold', 0.05), add('knockback', 180), add('explosiveRadius', 25)] },
+  { id: 's_e7', tier: 5, icon: '🪽', name: 'ปีกแห่งโชคชะตา', cost: 3900, fx: [mul('speed', 1.10), add('dodge', 0.06), mul('xpMulti', 1.12)] }
 ];
   
 /* ---------- ส่งออกให้ index.html ---------- */
@@ -3031,27 +3045,27 @@ function openLevelUp(){
   function getTierWeights(w){
     if(w >= 100){
       return {
-        1: 25,
-        2: 35,
-        3: 30,
-        4: 10
+        1: 15,
+        2: 30,
+        3: 38,
+        4: 17
       };
     }
 
     if(w >= 70){
       return {
-        1: 30,
+        1: 20,
         2: 35,
-        3: 28,
-        4: 7
+        3: 35,
+        4: 10
       };
     }
 
     if(w >= 50){
       return {
-        1: 40,
-        2: 35,
-        3: 22,
+        1: 30,
+        2: 40,
+        3: 27,
         4: 3
       };
     }
