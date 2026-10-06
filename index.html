@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.11</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.12</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.11</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.12</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -272,6 +272,14 @@ html,body{
       <div class="setting-row">
         <span>เขย่าหน้าจอเมื่อโจมตี (Screen Shake)</span>
         <input type="checkbox" id="shakeCheck" checked>
+      </div>
+      <div class="setting-row">
+        <span>บันทึกเกม</span>
+        <button class="btn btn-blue" id="saveGameBtn" style="padding:8px 12px">💾 บันทึก</button>
+      </div>
+      <div class="setting-row">
+        <span>โหลดเกมที่บันทึกไว้</span>
+        <button class="btn btn-gold" id="loadGameBtn" style="padding:8px 12px">📂 โหลด</button>
       </div>
       <div class="setting-row">
         <span>โหมดนักพัฒนา (Developer Mode)</span>
@@ -1073,6 +1081,81 @@ window.GAME_CONFIG = {
   let level=1, xp=0, xpNeed=10, lastShopWave=0;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
   try{bests=JSON.parse(localStorage.getItem('sa_best'))||bests}catch(e){}
+  const SAVE_KEY='oneshot_save_v1';
+
+  function saveGame(showMessage=true){
+    try{
+      const data={
+        version:1,savedAt:Date.now(),
+        selectedHeroId:selectedHero?.id||null,
+        player:{...player},
+        wave,level,xp,xpNeed,kills,elapsed,lastShopWave,bossWave,shownWave,pendingLevels,
+        devOverride,dev:JSON.parse(JSON.stringify(dev)),settings:{...settings}
+      };
+      localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+      if(showMessage) setStatus('💾 บันทึกเกมแล้ว');
+      return true;
+    }catch(err){
+      console.error('SAVE GAME ERROR',err);
+      if(showMessage) setStatus('บันทึกเกมไม่สำเร็จ');
+      return false;
+    }
+  }
+
+  function loadGame(){
+    try{
+      const raw=localStorage.getItem(SAVE_KEY);
+      if(!raw){setStatus('ยังไม่มีเกมที่บันทึกไว้');return false;}
+      const data=JSON.parse(raw);
+      if(!data || data.version!==1 || !data.player){
+        setStatus('ไฟล์บันทึกไม่ถูกต้อง'); return false;
+      }
+
+      const hero=heroes.find(h=>h.id===data.selectedHeroId)||heroes[0];
+      devOverride=false;
+      applyHeroChoice(hero);
+      if(data.dev) Object.assign(dev,JSON.parse(JSON.stringify(data.dev)));
+      devOverride=!!data.devOverride;
+      Object.assign(player,data.player);
+      Object.assign(settings,data.settings||{});
+
+      wave=Math.max(1,Number(data.wave)||1);
+      level=Math.max(1,Number(data.level)||1);
+      xp=Math.max(0,Number(data.xp)||0);
+      xpNeed=Math.max(1,Number(data.xpNeed)||10);
+      kills=Math.max(0,Number(data.kills)||0);
+      elapsed=Math.max(0,Number(data.elapsed)||0);
+      lastShopWave=Math.max(0,Number(data.lastShopWave)||0);
+      bossWave=Math.max(0,Number(data.bossWave)||0);
+      shownWave=Math.max(1,Number(data.shownWave)||wave);
+      pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
+
+      bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];
+      spawnTimer=0;skillCd=0;screenShake=0;rerollN=0;
+      levelOpen=false;shopOpen=false;pauseOpen=false;over=false;running=true;paused=false;
+      resetInput();
+      ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','devOverlay']
+        .forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+      clampStats();refreshHUD();syncPause();
+      setStatus('📂 โหลดเกมที่บันทึกไว้แล้ว');
+      return true;
+    }catch(err){
+      console.error('LOAD GAME ERROR',err);
+      setStatus('โหลดเกมไม่สำเร็จ');
+      return false;
+    }
+  }
+
+  let saveTimer=0;
+  function autoSaveTick(dt){
+    saveTimer+=dt;
+    if(saveTimer>=10 && running && !over){
+      saveTimer=0;
+      saveGame(false);
+    }
+  }
+
+
 
   const enemyTypes = JSON.parse(JSON.stringify(CFG.enemies));
   for(const k in enemyTypes) enemyTypes[k].type=k;
@@ -2584,6 +2667,9 @@ function applyHeroChoice(h){
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
   };
+  document.getElementById('saveGameBtn')?.addEventListener('click',()=>saveGame(true));
+  document.getElementById('loadGameBtn')?.addEventListener('click',()=>loadGame());
+  window.addEventListener('beforeunload',()=>{if(running&&!over)saveGame(false);});
   document.getElementById('openDevBtn')?.addEventListener('click', openDeveloper);
   document.getElementById('devCloseBtn')?.addEventListener('click', closeDeveloper);
   document.getElementById('devApplyBtn')?.addEventListener('click', () => { applyDeveloperValues(); closeDeveloper(); });
@@ -3865,6 +3951,7 @@ function openLevelUp(){
       if(running && !paused && !over){
         const speed=Number(dev.misc.gameSpeed);
         update(dt*(Number.isFinite(speed)&&speed>0?speed:1));
+        autoSaveTick(dt);
       }
       render();
     }catch(err){
