@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.39</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.40</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -59,8 +59,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .hp{background:linear-gradient(90deg, #f43f5e, #fb7185);box-shadow:inset 0 -2px 0 #be123c}
 .xp{background:linear-gradient(90deg, #0ea5e9, #38bdf8);box-shadow:inset 0 -2px 0 #0369a1}
 .wave{width:100%;min-width:0;box-sizing:border-box;font-size:12px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
-#minimap{display:block;width:132px;height:132px;margin-top:6px;pointer-events:none;background:rgba(5,12,8,.9);border:2px solid #94a3b8;box-shadow:0 3px 10px rgba(0,0,0,.55);image-rendering:pixelated}
-@media(max-width:620px){#minimap{width:108px;height:108px;margin-top:5px}}
+#minimap{display:block;width:92px;height:92px;margin-top:6px;pointer-events:none;background:rgba(5,12,8,.9);border:2px solid #94a3b8;box-shadow:0 3px 10px rgba(0,0,0,.55);image-rendering:pixelated}
+@media(max-width:620px){#minimap{width:76px;height:76px;margin-top:5px}}
 .small{font-size:10px;font-weight:600;color:#cbd5e1;margin-top:2px}
 .gold-text{color:#facc15!important;text-shadow:1px 1px 2px #000;font-weight:800}
 
@@ -149,7 +149,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-item.disabled{opacity:0.4;cursor:not-allowed;border-color:#475569;transform:none!important}
 
 .icon{font-size:24px;margin-bottom:4px;text-align:center;line-height:1}
-.uName{font-size:13px;font-weight:800;color:#facc15;margin-bottom:2px;line-height:1.2}
+.uName{font-size:13px;font-weight:800;color:#facc15;margin-bottom:2px;line-height:1.2}.tier-badge{display:inline-block;margin-right:5px;padding:1px 5px;border:1px solid #facc15;border-radius:3px;font-size:10px;line-height:1.1;color:#facc15;background:#422006;text-shadow:1px 1px #000;vertical-align:1px}
 .uDesc{font-size:11px;font-weight:600;line-height:1.4;color:#cbd5e1}
 .cost{font-size:12px;color:#facc15;margin-top:6px;font-weight:800;text-shadow:1px 1px #000}
 
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.39</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.40</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3547,7 +3547,7 @@ function openLevelUp(){
       b.innerHTML = `
         <div class="icon">${item.icon}</div>
         <div>
-          <div class="uName">${item.name}</div>
+          <div class="uName"><span class="tier-badge">S${item.tier||1}</span>${item.name}</div>
           <div class="uDesc">${item.desc}</div>
            ${renderItemPreview(item)}
           <div class="cost">${item.purchased ? '<span style="color:#4ade80">ซื้อแล้ว!</span>' : '💰 ' + item.cost + ' ทอง'}</div>
