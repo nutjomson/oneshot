@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.49</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.50</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -263,7 +263,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.49</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.50</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -510,7 +510,7 @@ const HEROES = [
   {
     id: 'prism', name: 'ปริซึม ไนต์ (PRISM KNIGHT)', icon: '🛡️',
     color: '#00f0ff', secondaryColor: '#ff007f', bulletType: 'arcane',
-    stats: { hp: 300, speed: 235, damage: 34, fireRate: 0.30, armor: 0.35, crit: 0.12 },
+    stats: { hp: 300, speed: 235, damage: 38, fireRate: 0.28, armor: 0.35, crit: 0.12 },
     growth: { maxHp: 8, damagePct: 0.005, regen: 0.05 },
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
@@ -531,7 +531,7 @@ const HEROES = [
   {
     id: 'cyber', name: 'ไซเบอร์ นินจา (CYBER NINJA)', icon: '🥷',
     color: '#ffe600', secondaryColor: '#ff0055', bulletType: 'plasma',
-    stats: { hp: 180, speed: 320, damage: 32, fireRate: 0.22, armor: 0.10, crit: 0.25 },
+    stats: { hp: 180, speed: 320, damage: 30, fireRate: 0.22, armor: 0.10, crit: 0.25 },
     growth: { maxHp: 6, damagePct: 0.007, regen: 0.03 },
     desc: 'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
   }
@@ -546,13 +546,13 @@ const PLAYER_BASE = {
 
 /* ===== 4. CAPS ===== */
 const CAPS = {
-dodge: 0.60,
+dodge: 0.50,
   crit: 0.90,
   armorMin: -0.5,
-  armorMax: 0.80,
-  executionThreshold: 0.35,
+  armorMax: 0.75,
+  executionThreshold: 0.25,
   lifesteal: 0.20,
-  timeSlow: 0.60,
+  timeSlow: 0.40,
 
   fireRateMin: 0.04,
 
@@ -567,7 +567,7 @@ dodge: 0.60,
   goldMulti: 10,
   xpMulti: 10,
   knockback: 600,
-  explosiveRadius: 300,
+  explosiveRadius: 220,
   bulletSpeed: 3000,
   pickup: 2500,
 
@@ -584,7 +584,8 @@ const COMBAT = {
   lifestealMaxPerSec: 0.08, knockbackScale: 0.10, knockbackScaleBlade: 0.03,
   knockbackBossResist: 0.2, poisonDuration: 3.0, lightningRange: 160, 
   lightningTargets: 4, explosionDamageMult: 0.5, orbitRadius: 65, 
-  orbitSpeed: 3, orbitHitRadius: 12, orbitDamageMult: 0.65, orbitHitCooldown: 0.35
+  orbitSpeed: 3, orbitHitRadius: 12, orbitDamageMult: 0.65, orbitHitCooldown: 0.35,
+  extraWeaponValue: 0.45 // ปืนชนิดที่ 2,3,4 เพิ่มดาเมจรวมต่อชุด +45% ต่อกระบอก (เดิมคูณเต็ม x2,x3,x4)
 };
 
 /* ===== 6. BULLET_TYPES ===== */
@@ -592,7 +593,7 @@ const BULLET_TYPES = {
   arcane:   { bounce: 1,                    desc: null },
   laser:    { speedMult: 1.4, pierceBonus: 1, desc: null },
   fireball: { radius: 10, explosionRadius: 35, desc: null },
-  plasma:   { critBonus: 0.08, critMult: 2.8, desc: null }
+  plasma:   { critBonus: 0.05, critMult: 2.6, desc: null }
 };
 BULLET_TYPES.arcane.desc   = `อาร์เคน: กระสุนเด้งสะท้อนผนัง +${BULLET_TYPES.arcane.bounce} ครั้ง`;
 BULLET_TYPES.laser.desc    = `เลเซอร์: กระสุนเร็ว +${pct(BULLET_TYPES.laser.speedMult - 1)}% และเจาะทะลุ +${BULLET_TYPES.laser.pierceBonus}`;
@@ -640,7 +641,7 @@ const WAVES = {
 
   enemyStartHpMultiplier: 0.448, enemyStartDamageMultiplier: 0.70,
   enemyHpPerWave: 0.08,        enemyHpCompound: 0.022,        lateWaveHpStart: 10,
-  enemyDamagePerWave: 0.02,    enemyDamageCompound: 0.006,
+  enemyDamagePerWave: 0.03,    enemyDamageCompound: 0.006,
   enemySpeedPerWave: 0.005,    enemySpeedMax: 1.6,
   xpPerWave: 0.02, goldPerWave: 0.035,
 
@@ -659,7 +660,7 @@ const LEVEL = { xpNeedStart: 90, xpNeedGrowth: 1.12, xpNeedFlat: 12, choices: 3 
 const SHOP = { everyWaves: 3, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 10, rerollStep: 0, rerollGoldPct: 0.03, freeRerollEveryWaves: 3 };
 
 /* ===== 13. MISC ===== */
-const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 10, bossBonusGold: 15, bossBonusDrops: 3, gameSpeed: 1 };
+const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 40, bossBonusGold: 40, bossBonusDrops: 3, gameSpeed: 1 };
 
 /* ===== 14. TIERS ===== */
 const TIERS = {
@@ -862,15 +863,15 @@ const SHOP_ITEMS = [
   { id: 's_c8', tier: 3, icon: '🥊', name: 'หมัดแรงโน้มถ่วง', cost: 1050, fx: [add('knockback', 100), mul('damage', 1.05)] },
 
   // ───────── S4 ตำนาน ─────────
-  { id: 's_d1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.20), add('explosiveRadius', 18)] },
-  { id: 's_d2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.86), add('timeSlow', 0.03)] },
-  { id: 's_d3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.25), add('armor', 0.07), add('regen', 2)] },
-  { id: 's_d4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 80), add('crit', 0.05)] },
-  { id: 's_d5', tier: 4, icon: '🔄', name: 'ตราสะท้อนจักรวาล',             cost: 2100, fx: [add('ricochet', 1), mul('bulletSpeed', 1.18)] },
+  { id: 's_f1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.20), add('explosiveRadius', 18)] },
+  { id: 's_f2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.86), add('timeSlow', 0.03)] },
+  { id: 's_f3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.25), add('armor', 0.07), add('regen', 2)] },
+  { id: 's_f4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 80), add('crit', 0.05)] },
+  { id: 's_f5', tier: 4, icon: '🔄', name: 'ตราสะท้อนจักรวาล',             cost: 1500, fx: [add('ricochet', 1), mul('bulletSpeed', 1.18)] },
 
   // ───────── S5 เทพนิยาย ─────────
   { id: 's_e1', tier: 5, icon: '🌌', name: 'แก่นจักรวาล',                  cost: 3800, fx: [mul('damage', 1.30), mul('maxHp', 1.20), mul('speed', 1.08)] },
-  { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3600, fx: [mul('fireRate', 0.78), add('crit', 0.10), add('timeSlow', 0.05)] },
+  { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3900, fx: [mul('fireRate', 0.80), add('crit', 0.08), add('timeSlow', 0.04)] },
   { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.18), mul('goldMulti', 1.25), mul('xpMulti', 1.20)] },
   { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 35), add('lightningChain', 150), mul('damage', 1.15)] },
   { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 4500, fx: [mul('maxHp', 1.30), add('regen', 5), add('lifesteal', 0.05), add('revives', 1)] },
@@ -1178,7 +1179,7 @@ window.GAME_CONFIG = {
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[];
-  let running=false, paused=false, over=false;
+  let running=false, paused=false, over=false, lsUsed=0;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
@@ -2150,6 +2151,16 @@ function clamp(v,a,b){
   );
 }
 
+function isItemMaxed(item){
+  const C=CFG.caps, fx=item.fx||[];
+  const useful=fx.filter(f=>!(f.op==='mul'&&((f.stat==='damage'&&f.v<1)||(f.stat==='fireRate'&&f.v>1))));
+  if(!useful.length) return false;
+  return useful.every(f=>{
+    if(f.op!=='add') return false;
+    const cap=f.stat==='armor'?C.armorMax:C[f.stat];
+    return cap!==undefined&&Number(player[f.stat]||0)>=cap-1e-9;
+  });
+}
 function rand(a,b){
   return a+Math.random()*(b-a);
 }
@@ -2877,7 +2888,7 @@ function applyHeroChoice(h){
       hp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier, maxHp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier,
       speed:t.speed*waveSpeed, damage:t.damage*waveDmg*diffMult*dev.wave.enemyStartDamageMultiplier,
       xp:baseXp*(1+(wave-1)*dev.wave.xpPerWave),
-      gold:enemyGold, type:t.type, color:t.color, hit:0,
+      gold:enemyGold, type:t.type, ai:t.ai, shootInterval:t.shootInterval, eBulletSpeed:t.bulletSpeed, eBulletMult:t.bulletDamageMult, color:t.color, hit:0,
       animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0, bladeCd:0, contactCd:0, dead:false
     });
   }
@@ -2890,13 +2901,14 @@ function applyHeroChoice(h){
     playSound('shoot');
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
     const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
+    const nT=ownedTypes.length, wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.45)*(nT-1))/nT:1;
     for(const bt of ownedTypes){
       for(let i=0;i<player.projectiles;i++){
         const spread=(i-(player.projectiles-1)/2)*CFG.combat.spreadAngle;
         const a=baseAngle+spread;
         const B=CFG.bulletTypes[bt]||{}, K=CFG.combat;
         const crit=Math.random()<player.crit+(B.critBonus||0), sp=player.bulletSpeed*(B.speedMult||1);
-        bullets.push({x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:B.radius||K.bulletRadius,life:K.bulletLife,damage:player.damage*(crit?(B.critMult||K.critMult):1),crit,type:bt,pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),hitList:[],trail:[]});
+        bullets.push({x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:B.radius||K.bulletRadius,life:K.bulletLife,damage:player.damage*wMult*(crit?(B.critMult||K.critMult):1),crit,type:bt,pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),hitList:[],trail:[]});
       }
     }
   }
@@ -2905,8 +2917,8 @@ function applyHeroChoice(h){
   function enemyShoot(e){
     const a = Math.atan2(player.y - e.y, player.x - e.x);
     enemyBullets.push({
-      x: e.x, y: e.y, vx: Math.cos(a)*CFG.enemyAI.shooterBulletSpeed, vy: Math.sin(a)*CFG.enemyAI.shooterBulletSpeed,
-      r: 6, life: 3, damage: e.damage*CFG.enemyAI.shooterBulletDamageMult
+      x: e.x, y: e.y, vx: Math.cos(a)*(e.eBulletSpeed||CFG.enemyAI.shooterBulletSpeed), vy: Math.sin(a)*(e.eBulletSpeed||CFG.enemyAI.shooterBulletSpeed),
+      r: 6, life: 3, damage: e.damage*(e.eBulletMult||CFG.enemyAI.shooterBulletDamageMult)
     });
   }
 
@@ -2962,7 +2974,7 @@ function applyHeroChoice(h){
       makeSparks(e.x,e.y,'#f97316',15);
       for(const o of enemies) if(o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<expR) dealRaw(o,heal*CFG.combat.explosionDamageMult,'#f97316');
     }
-    if(player.lifesteal>0) player.hp=Math.min(player.maxHp,player.hp+heal*player.lifesteal);
+    if(player.lifesteal>0){const lsCap=player.maxHp*(CFG.combat.lifestealMaxPerSec||0.08);const g=Math.min(heal*player.lifesteal,Math.max(0,lsCap-lsUsed));lsUsed+=g;player.hp=Math.min(player.maxHp,player.hp+g);}
     if(e.hp<=0) e.dead=true;
   }
   function sweepDead(){
@@ -2973,7 +2985,7 @@ function applyHeroChoice(h){
         if(e.type==='boss'){
           for(let k=0;k<dev.misc.bossBonusDrops;k++)addDrops(
             e.x+rand(-30,30),e.y+rand(-30,30),
-            dev.misc.bossBonusXp,dev.misc.bossBonusGold
+            dev.misc.bossBonusXp*(1+(wave-1)*dev.wave.xpPerWave),dev.misc.bossBonusGold*(1+(wave-1)*dev.wave.goldPerWave)
           );
           setStatus('☠ กำจัดบอสสำเร็จ!');
         }
@@ -2986,6 +2998,7 @@ function applyHeroChoice(h){
     xp+=v;
     while(xp>=xpNeed){
       xp-=xpNeed; level++;
+      {const g=selectedHero&&selectedHero.growth; if(g){ if(g.maxHp){player.maxHp+=g.maxHp;player.hp+=g.maxHp;} if(g.damagePct)player.damage*=1+g.damagePct; if(g.regen)player.regen+=g.regen; }}
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
       pendingLevels++;
     }
@@ -3143,6 +3156,10 @@ function openLevelUp(){
       }
 
       if(usedIds.has(item.id)){
+        return false;
+      }
+
+      if(isItemMaxed(item)){
         return false;
       }
 
@@ -3593,7 +3610,7 @@ function openLevelUp(){
     if(wave>=30){weights[1]=35;weights[2]=35;weights[3]=30;}
     if(wave>=50){weights[1]=0;weights[2]=30;weights[3]=35;weights[4]=35;}
     if(wave>=80){weights[1]=0;weights[2]=0;weights[3]=35;weights[4]=40;weights[5]=25;}
-    const pool=luxuryShopPool.filter(i=>unlocked.includes(i.tier)&&!(i.bt&&ownedBulletTypes.includes(i.bt)));
+    const pool=luxuryShopPool.filter(i=>unlocked.includes(i.tier)&&!(i.bt&&ownedBulletTypes.includes(i.bt))&&!isItemMaxed(i));
     const chosen=[];
     const available=[...pool];
     const rawWanted=Number(shopCfg.itemsShown);
@@ -3824,6 +3841,7 @@ function openLevelUp(){
     if(screenShake > 0) screenShake = Math.max(0, screenShake - dt * 25);
 
     spawnTimer-=dt; player.fireTimer-=dt;
+    lsUsed=Math.max(0,lsUsed-player.maxHp*(CFG.combat.lifestealMaxPerSec||0.08)*dt);
     player.hit=Math.max(0,player.hit-dt);
     if(player.regen>0)player.hp=Math.min(player.maxHp,player.hp+player.regen*dt);
 
@@ -3880,7 +3898,7 @@ function openLevelUp(){
       const e = enemies[i];
       const a=Math.atan2(player.y-e.y,player.x-e.x); 
       e.bladeCd=Math.max(0,e.bladeCd-dt);
-      const sp=e.speed*(1-(player.timeSlow||0)); const dir=(e.type==='shooter'&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
+      const sp=e.speed*(1-(player.timeSlow||0)); const dir=((e.type==='shooter'||e.ai==='shooter')&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
       e.x=clamp(e.x+Math.cos(a)*sp*dt*dir,30,world.w-30); e.y=clamp(e.y+Math.sin(a)*sp*dt*dir,30,world.h-30);
       e.hit=Math.max(0,e.hit-dt);
       e.animTimer+=dt*6;
@@ -3894,7 +3912,7 @@ function openLevelUp(){
         if(e.hp <= 0) e.dead=true;
       }
 
-      if((e.type === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
+      if((e.type === 'shooter' || e.ai === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
         e.shootTimer -= dt;
         if(e.shootTimer <= 0){
           if(e.type==='boss'){
@@ -3903,7 +3921,7 @@ function openLevelUp(){
             if(e.volley%AI.bossRingEvery===0){for(let k=0;k<AI.bossRingCount;k++)enemyShootAt(e,k*Math.PI*2/AI.bossRingCount);}
             else{enemyShootAt(e,a-AI.bossSpreadAngle);enemyShootAt(e,a);enemyShootAt(e,a+AI.bossSpreadAngle);}
           } else enemyShoot(e);
-          e.shootTimer = e.type === 'boss' ? CFG.enemyAI.bossInterval : CFG.enemyAI.shooterInterval;
+          e.shootTimer = e.type === 'boss' ? CFG.enemyAI.bossInterval : (e.shootInterval||CFG.enemyAI.shooterInterval);
         }
       }
       
