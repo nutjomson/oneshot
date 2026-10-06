@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.48</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.49</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -40,25 +40,26 @@ html,body{
   padding-right:max(8px, env(safe-area-inset-right));
   padding-bottom:max(8px, env(safe-area-inset-bottom));
 }
-.hud-controls{display:none;justify-content:flex-end;gap:6px;margin-top:6px;pointer-events:none}
+.hud-row{display:flex;align-items:stretch;gap:6px;width:100%;box-sizing:border-box}
+.hud-controls{display:none;align-items:stretch;gap:4px;flex:0 0 auto;pointer-events:none}
 body.gameplay-actions .hud-controls{display:flex}
-.hud-controls .hud-btn{margin-top:0;pointer-events:auto}
-.top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}
+.hud-controls .hud-btn{margin-top:0;pointer-events:auto;height:100%}
+.top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-items:stretch;flex:1;min-width:0}
 .panel{
   background:rgba(15, 23, 42, 0.88);
   border:2px solid #38bdf8;
-  box-shadow:inset -2px -2px 0px #0284c7, inset 2px 2px 0px #7dd3fc, 0 4px 12px rgba(0,0,0,0.6);
-  padding:6px 10px;
+  box-shadow:inset -2px -2px 0px #0284c7, inset 2px 2px 0px #7dd3fc, 0 3px 8px rgba(0,0,0,0.6);
+  padding:4px 7px;
   backdrop-filter:blur(4px);
 }
 .stat{width:100%;min-width:0;box-sizing:border-box}
-.label{font-size:11px;font-weight:800;color:#93c5fd;letter-spacing:0.5px;margin-bottom:2px;text-shadow:1px 1px 2px #000}
-.num{font-size:11px;font-weight:800;margin-top:3px;color:#fff;text-shadow:1px 1px 2px #000}
-.bar{height:10px;background:#090d16;border:1px solid #334155;padding:1px;position:relative}
+.label{font-size:10px;font-weight:800;color:#93c5fd;letter-spacing:0.5px;margin-bottom:2px;text-shadow:1px 1px 2px #000}
+.num{font-size:10px;font-weight:800;margin-top:3px;color:#fff;text-shadow:1px 1px 2px #000}
+.bar{height:8px;background:#090d16;border:1px solid #334155;padding:1px;position:relative}
 .fill{height:100%;width:100%;transition:width 0.1s}
 .hp{background:linear-gradient(90deg, #f43f5e, #fb7185);box-shadow:inset 0 -2px 0 #be123c}
 .xp{background:linear-gradient(90deg, #0ea5e9, #38bdf8);box-shadow:inset 0 -2px 0 #0369a1}
-.wave{width:100%;min-width:0;box-sizing:border-box;font-size:12px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
+.wave{width:100%;min-width:0;box-sizing:border-box;font-size:11px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
 #minimap{display:block;width:92px;height:92px;margin-top:6px;pointer-events:none;background:rgba(5,12,8,.9);border:2px solid #94a3b8;box-shadow:0 3px 10px rgba(0,0,0,.55);image-rendering:pixelated}
 @media(max-width:620px){#minimap{width:76px;height:76px;margin-top:5px}}
 .small{font-size:10px;font-weight:600;color:#cbd5e1;margin-top:2px}
@@ -66,7 +67,7 @@ body.gameplay-actions .hud-controls{display:flex}
 
 .hud-btn{
   pointer-events:auto;background:#2563eb;border:2px solid #fff;color:#fff;
-  font-family:'Prompt', sans-serif;font-size:11px;font-weight:800;padding:4px 8px;cursor:pointer;margin-top:4px;
+  font-family:'Prompt', sans-serif;font-size:9px;font-weight:800;padding:3px 5px;cursor:pointer;white-space:nowrap;margin-top:4px;
   box-shadow:inset -2px -2px 0 #1d4ed8, 0 2px 6px rgba(0,0,0,0.5);
   touch-action:manipulation;
 }
@@ -229,6 +230,7 @@ body.gameplay-actions .hud-controls{display:flex}
 
 <!-- HUD Screen -->
 <div id="hud">
+  <div class="hud-row">
   <div class="top">
     <div class="panel stat">
       <div class="label">พลังชีวิต (HP)</div>
@@ -246,11 +248,12 @@ body.gameplay-actions .hud-controls{display:flex}
       <div class="small" id="killsText">กำจัด: 0</div>
     </div>
   </div>
-  <canvas id="minimap" width="132" height="132" aria-label="แผนที่ย่อ"></canvas>
   <div class="hud-controls">
     <button class="hud-btn" id="shopHudBtn" type="button">🏪 ร้านค้า</button>
     <button class="hud-btn" id="pauseHudBtn" type="button">⏸ พัก</button>
   </div>
+  </div>
+  <canvas id="minimap" width="132" height="132" aria-label="แผนที่ย่อ"></canvas>
 </div>
 
 <button id="skillBtn" class="skill-btn">⚡</button>
@@ -260,7 +263,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.48</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.49</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
