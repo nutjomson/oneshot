@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.57</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.58</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -512,28 +512,28 @@ const HEROES = [
   {
     id: 'prism', name: 'ปริซึม ไนต์ (PRISM KNIGHT)', icon: '🛡️',
     color: '#00f0ff', secondaryColor: '#ff007f', bulletType: 'arcane',
-    stats: { hp: 300, speed: 235, damage: 38, fireRate: 0.28, armor: 0.35, crit: 0.12 },
+    stats: { hp: 360, speed: 235, damage: 49.4, fireRate: 0.28, armor: 0.35, crit: 0.12, attackRange: 150 },
     growth: { maxHp: 8, damagePct: 0.005, regen: 0.05 },
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
   {
     id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
     color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
-    stats: { hp: 170, speed: 290, damage: 24, fireRate: 0.15, armor: 0.05, crit: 0.20 },
+    stats: { hp: 204, speed: 290, damage: 31.2, fireRate: 0.15, armor: 0.05, crit: 0.20, attackRange: 360 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
     desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
   },
   {
     id: 'psycho', name: 'ไซโค เมจ (PSYCHO MAGE)', icon: '🔮',
     color: '#ff00ff', secondaryColor: '#7600ff', bulletType: 'fireball',
-    stats: { hp: 160, speed: 235, damage: 55, fireRate: 0.40, armor: 0.05, crit: 0.30 },
+    stats: { hp: 192, speed: 235, damage: 71.5, fireRate: 0.40, armor: 0.05, crit: 0.30, attackRange: 520 },
     growth: { maxHp: 4, damagePct: 0.010, regen: 0.02 },
     desc: 'จอมเวทพลังสายรุ้งระเบิด คริติคอลรุนแรงมหาศาล โตด้านพลังโจมตีดีที่สุด'
   },
   {
     id: 'cyber', name: 'ไซเบอร์ นินจา (CYBER NINJA)', icon: '🥷',
     color: '#ffe600', secondaryColor: '#ff0055', bulletType: 'plasma',
-    stats: { hp: 180, speed: 320, damage: 30, fireRate: 0.22, armor: 0.10, crit: 0.25 },
+    stats: { hp: 216, speed: 320, damage: 39, fireRate: 0.22, armor: 0.10, crit: 0.25, attackRange: 300 },
     growth: { maxHp: 6, damagePct: 0.007, regen: 0.03 },
     desc: 'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
   }
@@ -541,7 +541,7 @@ const HEROES = [
 
 /* ===== 3. PLAYER_BASE ===== */
 const PLAYER_BASE = {
-  bulletSpeed: 800, projectiles: 1, pierce: 1, pickup: 450, regen: 1.0, goldMulti: 1, xpMulti: 1,
+  bulletSpeed: 800, projectiles: 1, pierce: 1, pickup: 450, attackRange: 150, regen: 1.0, goldMulti: 1, xpMulti: 1,
   dodge: 0, lifesteal: 0, revives: 0, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
   explosiveRadius: 0, knockback: 0, executionThreshold: 0, orbitBlades: 0, timeSlow: 0
 };
@@ -553,6 +553,7 @@ dodge: 0.50,
   armorMin: -0.5,
   armorMax: 0.75,
   executionThreshold: 0.25,
+  attackRange: 1000,
   lifesteal: 0.12,
   timeSlow: 0.40,
 
@@ -696,6 +697,7 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.05)] },
   { tier: 1, icon: '🔫', name: 'เพิ่มกระสุนยิงกระจาย',        fx: [add('projectiles', 1), mul('damage', 0.85)], weight: 0.15 },
   { tier: 1, icon: '💨', name: 'กระสุนความเร็วสูง',          fx: [mul('bulletSpeed', 1.08), mul('damage', 1.02)] },
+  { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [add('attackRange', 35)] },
   { tier: 1, icon: '🧱', name: 'กระสุนสะท้อนกำแพง',          fx: [add('ricochet', 1), mul('damage', 0.90)], weight: 0.20 },
   { tier: 1, icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 5)], weight: 0.8 },
   { tier: 1, icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 5)], weight: 0.8 },
@@ -735,6 +737,7 @@ const LEVEL_UPGRADES = [
   { tier: 2, icon: '🌀', name: 'ร่างเงาหลบหลีก',              fx: [add('dodge', 0.025), mul('speed', 1.02)] },
   { tier: 2, icon: '💰', name: 'ขุมทรัพย์นักล่า',            fx: [mul('goldMulti', 1.10), add('pickup', 60)] },
   { tier: 2, icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด',          fx: [mul('bulletSpeed', 1.12), mul('damage', 1.04)] },
+  { tier: 2, icon: '🔭', name: 'กล้องเล็งระยะไกล',              fx: [add('attackRange', 70)] },
   { tier: 2, icon: '⏱️', name: 'จังหวะยิงสังหาร',            fx: [mul('fireRate', 0.95), add('crit', 0.02)] },
   { tier: 2, icon: '🎲', name: 'โชคลาภสงคราม',              fx: [add('crit', 0.03), mul('goldMulti', 1.05)] },
 
@@ -758,6 +761,7 @@ const LEVEL_UPGRADES = [
   { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.03)] },
   { tier: 3, icon: '👑', name: 'ราชามิดาส',                fx: [mul('goldMulti', 1.15)] },
   { tier: 3, icon: '🔭', name: 'กล้องสังหาร', fx: [add('crit', 0.05), add('executionThreshold', 0.015)] },
+  { tier: 3, icon: '📡', name: 'เลนส์นักล่าระยะไกล',             fx: [add('attackRange', 110)] },
   { tier: 3, icon: '🛡️', name: 'เกราะดูดซับ', fx: [add('armor', 0.04), add('knockback', 40)] },
   { tier: 3, icon: '🧲', name: 'สนามแม่เหล็กลึก', fx: [mul('pickup', 1.25), mul('xpMulti', 1.06)] },
 
@@ -783,6 +787,9 @@ const LEVEL_UPGRADES = [
 
 { tier: 4, icon: '🌠', name: 'ลำแสงไร้ขีดจำกัด',
   fx: [add('pierce', 3), mul('bulletSpeed', 1.1)] },
+
+{ tier: 4, icon: '🔭', name: 'สายตาเทพเจ้าระยะไกล',
+  fx: [add('attackRange', 180)] },
 
 { tier: 4, icon: '☣️', name: 'โรคระบาดแห่งหายนะ',
   fx: [add('poisonDmg', 250)] },
@@ -920,7 +927,7 @@ window.GAME_CONFIG = {
   // ค่าทั้งหมดมาจาก balance-config ด้านบน — dev panel ใช้ปรับสดระหว่างเล่นเท่านั้น
   const DEV_DEFAULTS = {
     player:{
-      maxHp:280,hp:280,damage:35,speed:240,fireRate:.30,bulletSpeed:800,
+      maxHp:280,hp:280,damage:35,speed:240,fireRate:.30,bulletSpeed:800,attackRange:150,
       projectiles:1,pierce:1,armor:.35,crit:.12,dodge:0,regen:1,lifesteal:0,
       pickup:450,goldMulti:1,xpMulti:1,knockback:0,explosiveRadius:0,revives:0,
       ricochet:0,orbitBlades:0,timeSlow:0,lightningChain:0,poisonDmg:0,executionThreshold:0,
@@ -929,7 +936,7 @@ window.GAME_CONFIG = {
     wave:{...CFG.waves}, drop:{...CFG.drops}, level:{...CFG.level}, shop:{...CFG.shop}, misc:{...CFG.misc}
   };
   const dev = JSON.parse(JSON.stringify(DEV_DEFAULTS));
-  const DEV_PLAYER_KEYS = ['maxHp','hp','damage','speed','fireRate','bulletSpeed','projectiles','pierce','armor','crit','dodge','regen','lifesteal','pickup','goldMulti','xpMulti','knockback','explosiveRadius','revives','ricochet','orbitBlades','timeSlow','lightningChain','poisonDmg','executionThreshold'];
+  const DEV_PLAYER_KEYS = ['maxHp','hp','damage','speed','fireRate','bulletSpeed','attackRange','projectiles','pierce','armor','crit','dodge','regen','lifesteal','pickup','goldMulti','xpMulti','knockback','explosiveRadius','revives','ricochet','orbitBlades','timeSlow','lightningChain','poisonDmg','executionThreshold'];
   let devOverride = false; // true เมื่อผู้เล่นกด "ใช้ค่า" ใน dev panel → ค่านั้นทับสถานะฮีโร่
   function cloneDevDefaults(){ return JSON.parse(JSON.stringify(DEV_DEFAULTS)); }
   function setNested(obj,path,value){const p=path.split('.');let o=obj;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=value;}
@@ -947,6 +954,7 @@ window.GAME_CONFIG = {
       speed:Number.isFinite(Number(hs.speed))?Number(hs.speed):base.speed,
       damage:Number.isFinite(Number(hs.damage))?Number(hs.damage):base.damage,
       fireRate:Number.isFinite(Number(hs.fireRate))?Number(hs.fireRate):base.fireRate,
+      attackRange:Number.isFinite(Number(hs.attackRange))?Number(hs.attackRange):base.attackRange,
       armor:Number.isFinite(Number(hs.armor))?Number(hs.armor):base.armor,
       crit:Number.isFinite(Number(hs.crit))?Number(hs.crit):base.crit
     };
@@ -960,7 +968,7 @@ window.GAME_CONFIG = {
     Object.assign(player,{
       maxHp:dev.player.maxHp,hp:Math.min(dev.player.hp,dev.player.maxHp),
       damage:dev.player.damage,speed:dev.player.speed,fireRate:dev.player.fireRate,
-      bulletSpeed:dev.player.bulletSpeed,projectiles:Math.max(1,Math.floor(dev.player.projectiles)),
+      bulletSpeed:dev.player.bulletSpeed,attackRange:dev.player.attackRange,projectiles:Math.max(1,Math.floor(dev.player.projectiles)),
       armor:dev.player.armor,crit:dev.player.crit,dodge:dev.player.dodge,regen:dev.player.regen,
       lifesteal:dev.player.lifesteal,pickup:dev.player.pickup,goldMulti:dev.player.goldMulti,
       xpMulti:dev.player.xpMulti,knockback:dev.player.knockback,explosiveRadius:dev.player.explosiveRadius,
@@ -1426,6 +1434,13 @@ const PLAYER_STAT_DEFS = [
     key:'bulletSpeed',
     icon:'💨',
     name:'ความเร็วกระสุน',
+    group:'combat'
+  },
+
+  {
+    key:'attackRange',
+    icon:'🎯',
+    name:'ระยะโจมตี',
     group:'combat'
   },
 
@@ -2897,7 +2912,8 @@ function applyHeroChoice(h){
 
   function shoot(){
     let target=null, bd=Infinity;
-    for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<bd){bd=d;target=e;}}
+    const attackRange=Math.max(0,Number(player.attackRange)||0);
+    for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<=attackRange && d<bd){bd=d;target=e;}}
     if(!target)return;
     
     playSound('shoot');
