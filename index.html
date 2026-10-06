@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.75</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.76</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.75</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.76</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -763,7 +763,7 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.05)] },
   { tier: 1, icon: '🔫', name: 'เพิ่มกระสุนยิงกระจาย',        fx: [add('projectiles', 1), mul('damage', 0.85)], weight: 0.15 },
   { tier: 1, icon: '💨', name: 'กระสุนความเร็วสูง',          fx: [mul('bulletSpeed', 1.08), mul('damage', 1.02)] },
-  { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [add('attackRange', 35)] },
+  { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.25)] },
   { tier: 1, icon: '🧱', name: 'กระสุนสะท้อนกำแพง',          fx: [add('ricochet', 1), mul('damage', 0.90)], weight: 0.20 },
   { tier: 1, icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 5)], weight: 0.8 },
   { tier: 1, icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 5)], weight: 0.8 },
@@ -803,7 +803,7 @@ const LEVEL_UPGRADES = [
   { tier: 2, icon: '🌀', name: 'ร่างเงาหลบหลีก',              fx: [add('dodge', 0.025), mul('speed', 1.02)] },
   { tier: 2, icon: '💰', name: 'ขุมทรัพย์นักล่า',            fx: [mul('goldMulti', 1.10), add('pickup', 60)] },
   { tier: 2, icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด',          fx: [mul('bulletSpeed', 1.12), mul('damage', 1.04)] },
-  { tier: 2, icon: '🔭', name: 'กล้องเล็งระยะไกล',              fx: [add('attackRange', 70)] },
+  { tier: 2, icon: '🔭', name: 'กล้องเล็งระยะไกล',              fx: [mul('attackRange', 1.50)] },
   { tier: 2, icon: '⏱️', name: 'จังหวะยิงสังหาร',            fx: [mul('fireRate', 0.95), add('crit', 0.02)] },
   { tier: 2, icon: '🎲', name: 'โชคลาภสงคราม',              fx: [add('crit', 0.03), mul('goldMulti', 1.05)] },
 
@@ -827,7 +827,7 @@ const LEVEL_UPGRADES = [
   { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.03)] },
   { tier: 3, icon: '👑', name: 'ราชามิดาส',                fx: [mul('goldMulti', 1.15)] },
   { tier: 3, icon: '🔭', name: 'กล้องสังหาร', fx: [add('crit', 0.05), add('executionThreshold', 0.015)] },
-  { tier: 3, icon: '📡', name: 'เลนส์นักล่าระยะไกล',             fx: [add('attackRange', 110)] },
+  { tier: 3, icon: '📡', name: 'เลนส์นักล่าระยะไกล',             fx: [mul('attackRange', 1.75)] },
   { tier: 3, icon: '🛡️', name: 'เกราะดูดซับ', fx: [add('armor', 0.04), add('knockback', 40)] },
   { tier: 3, icon: '🧲', name: 'สนามแม่เหล็กลึก', fx: [mul('pickup', 1.25), mul('xpMulti', 1.06)] },
 
@@ -855,7 +855,7 @@ const LEVEL_UPGRADES = [
   fx: [add('pierce', 3), mul('bulletSpeed', 1.1)] },
 
 { tier: 4, icon: '🔭', name: 'สายตาเทพเจ้าระยะไกล',
-  fx: [add('attackRange', 180)] },
+  fx: [mul('attackRange', 2.00)] },
 
 { tier: 4, icon: '☣️', name: 'โรคระบาดแห่งหายนะ',
   fx: [add('poisonDmg', 250)] },
