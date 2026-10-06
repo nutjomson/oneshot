@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.13</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.14</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -222,7 +222,8 @@ html,body{
       เวฟ <span id="waveText">1</span>
       <div class="small gold-text" id="goldText">ทอง: 0</div>
       <div class="small" id="killsText">กำจัด: 0</div>
-      <button class="hud-btn" id="pauseHudBtn">⏸ พัก</button>
+      <button class="hud-btn" id="shopHudBtn" type="button">🏪 ร้านค้า</button>
+      <button class="hud-btn" id="pauseHudBtn" type="button">⏸ พัก</button>
     </div>
   </div>
 </div>
@@ -234,7 +235,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.13</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.14</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -416,7 +417,7 @@ html,body{
 
     <div class="btn-group">
       <button class="btn btn-gold" id="rerollBtn">🎲 รีโรลร้านค้า (<span id="rerollCostText">10</span> ทอง)</button>
-      <button class="btn" id="closeShopBtn">⚔ ไปยังเวฟถัดไป</button>
+      <button class="btn" id="closeShopBtn">✕ ปิดร้านค้า</button>
     </div>
   </div>
 </div>
@@ -3525,6 +3526,7 @@ function openLevelUp(){
   }
 
   function openShop(){
+    if(!running || over || levelOpen) return;
     shopOpen=true; rerollN=0; syncPause();
     document.getElementById('shopWaveNum').textContent = wave;
     generateShopList();
@@ -3545,7 +3547,7 @@ function openLevelUp(){
 
   document.getElementById('closeShopBtn').onclick = () => {
     document.getElementById('shopOverlay').classList.add('hidden');
-    shopOpen=false; syncPause(); setStatus('ลุยเวฟถัดไป!');
+    shopOpen=false; syncPause(); setStatus('ปิดร้านค้าแล้ว');
   };
 
   function openPause(){
@@ -3568,7 +3570,8 @@ function openLevelUp(){
     document.getElementById('startOverlay').classList.remove('hidden');
     syncPause(); applyHeroChoice(selectedHero);
   }
-  document.getElementById('pauseHudBtn').onclick=openPause;
+  document.getElementById('shopHudBtn').onclick=()=>{if(!running||over||levelOpen)return;openShop();};
+    document.getElementById('pauseHudBtn').onclick=openPause;
   document.getElementById('resumeBtn').onclick=closePause;
   document.getElementById('quitBtn').onclick=toTitle;
 
