@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.63</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.65</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -263,7 +263,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.63</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.65</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -653,7 +653,7 @@ const WAVES = {
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
-const DROPS = { xpMultiplier: 0.4994080000000001, goldMultiplier: 0.60, xpChance: 1, goldChance: 1, goldMin: 1, goldMax: 3, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
+const DROPS = { xpMultiplier: 0.4994080000000001, goldMultiplier: 0.84, xpChance: 1, goldChance: 1, goldMin: 1, goldMax: 3, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
 const PICKUPS = { xpLife: 25, goldLife: 25, xpFlySpeed: 340, goldFlySpeed: 360, flyPickupFactor: 2 };
 
 /* ===== 11. LEVEL ===== */
@@ -1189,6 +1189,7 @@ window.GAME_CONFIG = {
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[];
+  let treasureChests=[];
   let running=false, paused=false, over=false, lsUsed=0;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0;
@@ -1251,7 +1252,7 @@ window.GAME_CONFIG = {
       devOverride=!!data.devOverride;Object.assign(player,data.player);Object.assign(settings,data.settings||{});
       wave=Math.max(1,Number(data.wave)||1);level=Math.max(1,Number(data.level)||1);xp=Math.max(0,Number(data.xp)||0);xpNeed=Math.max(1,Number(data.xpNeed)||10);
       kills=Math.max(0,Number(data.kills)||0);elapsed=Math.max(0,Number(data.elapsed)||0);lastShopWave=Math.max(0,Number(data.lastShopWave)||0);bossWave=Math.max(0,Number(data.bossWave)||0);shownWave=Math.max(1,Number(data.shownWave)||wave);pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
-      bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];spawnTimer=0;skillCd=0;screenShake=0;rerollN=0;
+      bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];spawnTimer=0; treasureChests=[];skillCd=0;screenShake=0;rerollN=0;
       levelOpen=false;shopOpen=false;pauseOpen=false;over=false;running=true;paused=false;resetInput();
       ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','devOverlay','saveManagerOverlay'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
       clampStats();refreshHUD();syncPause();setStatus('📂 โหลดเซฟแล้ว');return true;
@@ -3054,6 +3055,55 @@ function applyHeroChoice(h){
     return item;
   }
 
+  function getShopTierWeightsNow(){
+    const weights={1:70,2:30,3:0,4:0,5:0};
+    if(wave>=15){weights[1]=60;weights[2]=40;}
+    if(wave>=30){weights[1]=35;weights[2]=35;weights[3]=30;}
+    if(wave>=50){weights[1]=0;weights[2]=30;weights[3]=35;weights[4]=35;}
+    if(wave>=80){weights[1]=0;weights[2]=0;weights[3]=35;weights[4]=40;weights[5]=25;}
+    return weights;
+  }
+
+  function getShopTierForChest(){
+    const weights=getShopTierWeightsNow();
+    const available=Object.keys(weights).map(Number).filter(t=>weights[t]>0 && luxuryShopPool.some(i=>Number(i.tier)===t&&!isItemMaxed(i)));
+    if(!available.length) return null;
+    let total=available.reduce((s,t)=>s+weights[t],0), roll=Math.random()*total;
+    for(const t of available){roll-=weights[t];if(roll<=0)return t;}
+    return available[available.length-1];
+  }
+
+  function spawnTreasureChest(w){
+    if((w-1)%5!==0) return;
+    if(treasureChests.some(c=>c.wave===w)) return;
+    const margin=90;
+    const x=rand(margin,Math.max(margin,world.w-margin));
+    const y=rand(margin,Math.max(margin,world.h-margin));
+    const tier=getShopTierForChest();
+    if(tier==null) return;
+    treasureChests.push({x,y,r:18,tier,wave:w,animTimer:0});
+    setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • S${tier}`);
+  }
+
+  function openTreasureChest(chest){
+    const pool=luxuryShopPool.filter(i=>
+      Number(i.tier)===Number(chest.tier) &&
+      !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
+      !isItemMaxed(i)
+    );
+    if(!pool.length){
+      setStatus(`🧰 กล่องสมบัติ S${chest.tier} ไม่มีไอเท็มที่ใช้ได้`);
+      return false;
+    }
+    const item=weightedPick(pool);
+    if(!item) return false;
+    item.apply();
+    clampStats();
+    playSound('coin');
+    setStatus(`🎁 เปิดกล่องสมบัติฟรี: S${item.tier} ${item.icon||'📦'} ${item.name}`);
+    return true;
+  }
+
   function sweepDead(){
     for(let i=enemies.length-1;i>=0;i--){
       const e=enemies[i];
@@ -3970,6 +4020,7 @@ function openLevelUp(forceHigherTier=false){
     if(wave!==shownWave){
       const prevWave=shownWave;
       shownWave=wave;
+      spawnTreasureChest(wave);
       const every=Math.max(1,Math.floor(dev.shop.freeRerollEveryWaves||3));
       const gained=Math.max(0,Math.floor(wave/every)-Math.floor(prevWave/every));
       if(gained>0) freeShopRerolls+=gained;
@@ -4104,6 +4155,14 @@ function openLevelUp(forceHigherTier=false){
         hurt(eb.damage); enemyBullets.splice(i,1); continue;
       }
       if(eb.life<=0||eb.x<0||eb.y<0||eb.x>world.w||eb.y>world.h) enemyBullets.splice(i,1);
+    }
+
+    for(let i=treasureChests.length-1;i>=0;i--){
+      const chest=treasureChests[i];
+      chest.animTimer+=dt*4;
+      if(dist(chest.x,chest.y,player.x,player.y)<player.r+chest.r+12){
+        if(openTreasureChest(chest)) treasureChests.splice(i,1);
+      }
     }
 
     for(let i=xpOrbs.length-1;i>=0;i--){
@@ -4329,6 +4388,17 @@ function openLevelUp(forceHigherTier=false){
       ctx.fillStyle='#ffffff'; ctx.fillRect(px-2, py-2, 4, 4);
     }
 
+    for(const chest of treasureChests){
+      const px=sx(chest.x,cam), py=sy(chest.y,cam);
+      const pulse=Math.sin(chest.animTimer)*2;
+      ctx.fillStyle='#92400e'; ctx.fillRect(px-13-pulse/2,py-10-pulse/2,26+pulse,20+pulse);
+      ctx.fillStyle='#facc15'; ctx.fillRect(px-13,py-2,26,4);
+      ctx.fillStyle='#fde68a'; ctx.fillRect(px-5,py-8,10,5);
+      ctx.fillStyle='#78350f'; ctx.fillRect(px-3,py-3,6,6);
+      ctx.font='bold 9px Prompt,sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff';
+      ctx.fillText('S'+chest.tier,px,py-14-pulse);
+    }
+
     for(const g of goldCoins){
       const px=sx(g.x,cam), py=sy(g.y,cam);
       const pulse = Math.cos(g.animTimer)*2;
@@ -4437,7 +4507,7 @@ function openLevelUp(forceHigherTier=false){
     running=true; paused=false; over=false;
     elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0; freeShopRerolls=0; rerollN=0; levelRerollN=0;
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
-    player.x=world.w/2; player.y=world.h/2; player.gold=0; screenShake=0; spawnTimer=0; bossWave=0; levelOpen=shopOpen=pauseOpen=false; pendingLevels=0; floaters=[]; skillCd=0; shownWave=1; resetInput();
+    player.x=world.w/2; player.y=world.h/2; player.gold=0; screenShake=0; spawnTimer=0; bossWave=0; treasureChests=[]; levelOpen=shopOpen=pauseOpen=false; pendingLevels=0; floaters=[]; skillCd=0; shownWave=1; resetInput();
     player.dodge=0.0; player.lifesteal=0.0; player.pierce=1;
     player.bulletTypes=[selectedHero?.bulletType||'arcane'];
     player.bulletType=player.bulletTypes[0];
@@ -4446,6 +4516,7 @@ function openLevelUp(forceHigherTier=false){
     
     applyHeroChoice(selectedHero);
     clampStats();
+    spawnTreasureChest(wave);
 
     ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     syncPause();
