@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.47</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.48</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.47</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.48</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3583,10 +3583,8 @@ function openLevelUp(){
       {tier:4,min:50,max:79},
       {tier:5,min:80,max:9999}
     ];
-    const unlocked=SHOP_TIERS ? Object.keys(SHOP_TIERS).map(Number).filter(t=>{
-      const rule=tierRules.find(r=>r.tier===t);
-      return rule && wave>=rule.min;
-    }) : [1];
+    // ใช้ tierRules โดยตรง ไม่อ้างอิงตัวแปร SHOP_TIERS เพื่อป้องกัน Safari "Can't find variable"
+    const unlocked=tierRules.filter(r=>wave>=r.min).map(r=>r.tier);
     const weights={1:70,2:30,3:0,4:0,5:0};
     if(wave>=15){weights[1]=60;weights[2]=40;}
     if(wave>=30){weights[1]=35;weights[2]=35;weights[3]=30;}
