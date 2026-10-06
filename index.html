@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.43</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.44</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.43</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.44</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -2034,24 +2034,35 @@ function previewItemStats(item){
   const saved={...player, bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
   const before=snapshotPlayerStats();
   try{
-    (item.fx||[]).forEach(applyEffect);
+    (Array.isArray(item?.fx)?item.fx:[]).forEach(applyEffect);
     try{ clampStats(); }catch(e){}
     return {before, after:snapshotPlayerStats()};
-  }finally{ Object.assign(player,saved); }
+  }catch(e){
+    console.warn('ITEM PREVIEW ERROR',item?.id,e);
+    return {before, after:before};
+  }finally{
+    Object.assign(player,saved);
+    if(Array.isArray(saved.bulletTypes)) player.bulletTypes=[...saved.bulletTypes];
+  }
 }
 
 function renderItemPreview(item){
-  const preview=previewItemStats(item), rows=[];
-  PLAYER_STAT_DEFS.forEach(def=>{
-    const a=preview.before[def.key], b=preview.after[def.key];
-    if(a===undefined || b===undefined) return;
-    if(def.key==='bulletType') return;
-    const na=Number(a), nb=Number(b);
-    if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
-    const positive=def.key==='fireRate' ? nb<na : nb>na;
-    rows.push('<span style="color:'+(positive?'#4ade80':'#f87171')+'">'+def.icon+' '+def.name+': '+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>');
-  });
-  return rows.length ? '<div style="margin-top:6px;padding:6px 7px;border-top:1px solid #334155;background:rgba(15,23,42,.55);border-radius:6px;font-size:11px;line-height:1.65"><b style="color:#e2e8f0">📊 เลือกแล้วจะเป็น</b><br>'+rows.join('<br>')+'</div>' : '';
+  try{
+    const preview=previewItemStats(item), rows=[];
+    PLAYER_STAT_DEFS.forEach(def=>{
+      const a=preview.before[def.key], b=preview.after[def.key];
+      if(a===undefined || b===undefined) return;
+      if(def.key==='bulletType') return;
+      const na=Number(a), nb=Number(b);
+      if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
+      const positive=def.key==='fireRate' ? nb<na : nb>na;
+      rows.push('<span style="color:'+(positive?'#4ade80':'#f87171')+'">'+def.icon+' '+def.name+': '+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>');
+    });
+    return rows.length ? '<div style="margin-top:6px;padding:6px 7px;border-top:1px solid #334155;background:rgba(15,23,42,.55);border-radius:6px;font-size:11px;line-height:1.65"><b style="color:#e2e8f0">📊 เลือกแล้วจะเป็น</b><br>'+rows.join('<br>')+'</div>' : '';
+  }catch(e){
+    console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
+    return '';
+  }
 }
 
 function buildItem(def,i){
