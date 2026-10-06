@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.45</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.46</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.45</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.46</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3675,17 +3675,35 @@ function openLevelUp(){
 
   function openShop(){
     if(!running || over || levelOpen) return;
-    shopOpen=true; syncPause();
-    document.getElementById('shopWaveNum').textContent = wave;
-    // Keep the current shop inventory while reopening it.
-    // A new roll happens only after a purchase or an explicit reroll.
-    if(!Array.isArray(activeShopItems) || !activeShopItems.length){
-      rerollN=0;
-      generateShopList();
-    } else {
-      renderShopItems();
+
+    const overlay=document.getElementById('shopOverlay');
+    const waveText=document.getElementById('shopWaveNum');
+
+    // แสดง Overlay ก่อน เพื่อไม่ให้เกมดูเหมือน "ค้าง" หากขั้นตอนเตรียมสินค้าเกิดข้อผิดพลาด
+    if(overlay) overlay.classList.remove('hidden');
+    shopOpen=true;
+    syncPause();
+
+    try{
+      if(waveText) waveText.textContent=wave;
+
+      // Keep the current shop inventory while reopening it.
+      // A new roll happens only after a purchase or an explicit reroll.
+      if(!Array.isArray(activeShopItems) || !activeShopItems.length){
+        rerollN=0;
+        generateShopList();
+      }else{
+        renderShopItems();
+      }
+    }catch(e){
+      console.error('OPEN SHOP ERROR',e);
+      activeShopItems=[];
+      const wrap=document.getElementById('shopItems');
+      if(wrap){
+        wrap.innerHTML='<div style="padding:20px;text-align:center;color:#f87171">⚠️ ร้านค้ามีข้อผิดพลาด กรุณาปิดแล้วลองใหม่</div>';
+      }
+      setStatus('ร้านค้ามีข้อผิดพลาด — เกมยังทำงานต่อได้');
     }
-    document.getElementById('shopOverlay').classList.remove('hidden');
   }
 
   document.getElementById('rerollBtn').onclick = () => {
