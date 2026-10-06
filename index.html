@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.37</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.38</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -59,6 +59,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .hp{background:linear-gradient(90deg, #f43f5e, #fb7185);box-shadow:inset 0 -2px 0 #be123c}
 .xp{background:linear-gradient(90deg, #0ea5e9, #38bdf8);box-shadow:inset 0 -2px 0 #0369a1}
 .wave{width:100%;min-width:0;box-sizing:border-box;font-size:12px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
+#minimap{display:block;width:132px;height:132px;margin-top:6px;pointer-events:none;background:rgba(5,12,8,.9);border:2px solid #94a3b8;box-shadow:0 3px 10px rgba(0,0,0,.55);image-rendering:pixelated}
+@media(max-width:620px){#minimap{width:108px;height:108px;margin-top:5px}}
 .small{font-size:10px;font-weight:600;color:#cbd5e1;margin-top:2px}
 .gold-text{color:#facc15!important;text-shadow:1px 1px 2px #000;font-weight:800}
 
@@ -244,6 +246,7 @@ body.gameplay-actions .hud-controls{display:flex}
       <div class="small" id="killsText">กำจัด: 0</div>
     </div>
   </div>
+  <canvas id="minimap" width="132" height="132" aria-label="แผนที่ย่อ"></canvas>
   <div class="hud-controls">
     <button class="hud-btn" id="shopHudBtn" type="button">🏪 ร้านค้า</button>
     <button class="hud-btn" id="pauseHudBtn" type="button">⏸ พัก</button>
@@ -257,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.37</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.38</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -497,7 +500,7 @@ const healFull = ()         => ({ op: 'healPct', v: 1 });
 const pct  = (x)            => Math.round(x * 100);
 
 /* ===== 1. WORLD ===== */
-const WORLD = { w: 3200, h: 3200 };
+const WORLD = { w: 1600, h: 1600 };
 
 /* ===== 2. HEROES ===== */
 const HEROES = [
@@ -4061,6 +4064,40 @@ function openLevelUp(){
     ctx.font='bold 13px Prompt,sans-serif';ctx.textAlign='center';
     for(const f of floaters){ctx.fillStyle=f.c?'#facc15':'#fff';ctx.globalAlpha=Math.min(1,f.t*3);ctx.fillText(f.v,sx(f.x,cam),sy(f.y,cam));}
     ctx.globalAlpha=1;
+    drawMinimap();
+  }
+
+  function drawMinimap(){
+    const mm=document.getElementById('minimap');
+    if(!mm) return;
+    const g=mm.getContext('2d');
+    const mw=mm.width, mh=mm.height;
+    g.clearRect(0,0,mw,mh);
+    g.fillStyle='#102615';
+    g.fillRect(0,0,mw,mh);
+    g.strokeStyle='#3b2412';
+    g.lineWidth=5;
+    g.strokeRect(2.5,2.5,mw-5,mh-5);
+    g.strokeStyle='#a16207';
+    g.lineWidth=2;
+    g.strokeRect(5,5,mw-10,mh-10);
+    const sxm=(x)=>5+clamp(x/world.w,0,1)*(mw-10);
+    const sym=(y)=>5+clamp(y/world.h,0,1)*(mh-10);
+    for(const e of enemies){
+      if(e.x<0||e.x>world.w||e.y<0||e.y>world.h) continue;
+      const boss=!!e.boss;
+      g.fillStyle=boss?'#facc15':'#ef4444';
+      const r=boss?3:1.7;
+      g.fillRect(sxm(e.x)-r,sym(e.y)-r,r*2,r*2);
+    }
+    if(player){
+      const px=sxm(player.x), py=sym(player.y);
+      g.fillStyle='#67e8f9';
+      g.fillRect(px-2,py-2,4,4);
+      g.strokeStyle='#e0f2fe';
+      g.lineWidth=1;
+      g.strokeRect(px-3,py-3,6,6);
+    }
   }
 
   function loop(now){
