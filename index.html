@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.46</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.47</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.46</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.47</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3573,6 +3573,8 @@ function openLevelUp(){
   }
 
   function generateShopList() {
+    // ร้านค้าต้องทนต่อค่า Developer ที่อาจยังไม่มี/ไม่สมบูรณ์
+    const shopCfg=(dev&&dev.shop&&typeof dev.shop==='object')?dev.shop:{};
     const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
     const tierRules=[
       {tier:1,min:1,max:14},
@@ -3593,7 +3595,8 @@ function openLevelUp(){
     const pool=luxuryShopPool.filter(i=>unlocked.includes(i.tier)&&!(i.bt&&ownedBulletTypes.includes(i.bt)));
     const chosen=[];
     const available=[...pool];
-    const wanted=Math.max(1,Math.floor(dev.shop.itemsShown));
+    const rawWanted=Number(shopCfg.itemsShown);
+    const wanted=Math.max(1,Number.isFinite(rawWanted)?Math.floor(rawWanted):3);
     while(chosen.length<wanted&&available.length){
       let total=available.reduce((s,i)=>s+(weights[i.tier]||0),0);
       if(total<=0) break;
@@ -3608,7 +3611,9 @@ function openLevelUp(){
     if(chosen.length<wanted){
       chosen.push(...shuffle(available).slice(0,wanted-chosen.length));
     }
-    activeShopItems=chosen.map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*dev.shop.pricePerWave))}));
+    const rawPricePerWave=Number(shopCfg.pricePerWave);
+    const pricePerWave=Number.isFinite(rawPricePerWave)?rawPricePerWave:0.08;
+    activeShopItems=chosen.map(i=>({...i,cost:Math.round(Number(i.cost||0)*(1+(wave-1)*pricePerWave))}));
     renderShopItems();
   }
 
@@ -3700,7 +3705,7 @@ function openLevelUp(){
       activeShopItems=[];
       const wrap=document.getElementById('shopItems');
       if(wrap){
-        wrap.innerHTML='<div style="padding:20px;text-align:center;color:#f87171">⚠️ ร้านค้ามีข้อผิดพลาด กรุณาปิดแล้วลองใหม่</div>';
+        wrap.innerHTML='<div style="padding:20px;text-align:center;color:#f87171">⚠️ ร้านค้ามีข้อผิดพลาด<br><small style="color:#fca5a5">'+String(e?.message||e||'ไม่ทราบสาเหตุ').replace(/[<>&"]/g,'')+'</small></div>';
       }
       setStatus('ร้านค้ามีข้อผิดพลาด — เกมยังทำงานต่อได้');
     }
