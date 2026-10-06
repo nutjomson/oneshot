@@ -956,7 +956,7 @@ window.GAME_CONFIG = {
 
   const player = {
     x:CFG.world.w/2, y:CFG.world.h/2, r:CFG.combat.playerRadius, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
-    bulletSpeed:800, projectiles:1, pickup:450, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1,
+    bulletSpeed:800, projectiles:1, pickup:450, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1, xpMulti:1, timeSlow:0,
     angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0,
     // Unique Mechanics
     ricochet: 0,
@@ -2092,6 +2092,7 @@ function clampStats(){
 
   const C=CFG.caps;
   const hb=selectedHero;
+  if(!hb) return;
 
   player.dodge=
     clamp(
@@ -2218,9 +2219,9 @@ function clampStats(){
 
   player.xpMulti=
     clamp(
-      player.xpMulti||1,
+      Number.isFinite(player.xpMulti) ? player.xpMulti : 1,
       0,
-      C.xpMulti
+      Number.isFinite(C.xpMulti) ? C.xpMulti : 10
     );
 }
 
