@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.25</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.26</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -257,7 +257,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.25</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.26</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -631,24 +631,24 @@ const WAVES = {
   enemyHpPerWave: 0.08,        enemyHpCompound: 0.022,
   enemyDamagePerWave: 0.04,    enemyDamageCompound: 0.012,
   enemySpeedPerWave: 0.005,    enemySpeedMax: 1.6,
-  xpPerWave: 0.05, goldPerWave: 0.06,
+  xpPerWave: 0.03, goldPerWave: 0.035,
 
   bossEvery: 5, bossHpMultiplier: 3, megaBossEvery: 25, 
   megaHp: 2.2, megaDamage: 1.25, megaRadius: 1.25, megaRewardMult: 3
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
-const DROPS = { xpMultiplier: 1.0, goldMultiplier: 1.0, xpChance: 1, goldChance: 1, goldMin: 2, goldMax: 4, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
+const DROPS = { xpMultiplier: 0.70, goldMultiplier: 0.60, xpChance: 1, goldChance: 1, goldMin: 1, goldMax: 3, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
 const PICKUPS = { xpLife: 25, goldLife: 25, xpFlySpeed: 340, goldFlySpeed: 360, flyPickupFactor: 2 };
 
 /* ===== 11. LEVEL ===== */
-const LEVEL = { xpNeedStart: 45, xpNeedGrowth: 1.045, xpNeedFlat: 5, choices: 3 };
+const LEVEL = { xpNeedStart: 60, xpNeedGrowth: 1.08, xpNeedFlat: 8, choices: 3 };
 
 /* ===== 12. SHOP ===== */
 const SHOP = { everyWaves: 3, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 25, rerollStep: 18, rerollGoldPct: 0.02 };
 
 /* ===== 13. MISC ===== */
-const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 20, bossBonusGold: 30, bossBonusDrops: 6, gameSpeed: 1 };
+const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 10, bossBonusGold: 15, bossBonusDrops: 3, gameSpeed: 1 };
 
 /* ===== 14. TIERS ===== */
 const TIERS = {
