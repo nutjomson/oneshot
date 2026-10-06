@@ -578,28 +578,28 @@ const HEROES = [
   {
     id: 'prism', name: 'ปริซึม ไนต์ (PRISM KNIGHT)', icon: '🛡️',
     color: '#00f0ff', secondaryColor: '#ff007f', bulletType: 'arcane',
-    stats: { hp: 360, speed: 235, damage: 49.4, fireRate: 0.30434782608695654, armor: 0.35, crit: 0.12, attackRange: 180 },
+    stats: { hp: 360, speed: 235, damage: 64.22, fireRate: 0.30434782608695654, armor: 0.35, crit: 0.12, attackRange: 180 },
     growth: { maxHp: 8, damagePct: 0.005, regen: 0.05 },
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
   {
     id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
     color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
-    stats: { hp: 204, speed: 290, damage: 23.4, fireRate: 0.2173913043478261, armor: 0.05, crit: 0.20, attackRange: 302.4 },
+    stats: { hp: 204, speed: 290, damage: 30.42, fireRate: 0.2173913043478261, armor: 0.05, crit: 0.20, attackRange: 241.92 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
     desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
   },
   {
     id: 'psycho', name: 'ไซโค เมจ (PSYCHO MAGE)', icon: '🔮',
     color: '#ff00ff', secondaryColor: '#7600ff', bulletType: 'fireball',
-    stats: { hp: 192, speed: 235, damage: 71.5, fireRate: 0.4347826086956522, armor: 0.05, crit: 0.30, attackRange: 624 },
+    stats: { hp: 192, speed: 235, damage: 92.95, fireRate: 0.4347826086956522, armor: 0.05, crit: 0.30, attackRange: 624 },
     growth: { maxHp: 4, damagePct: 0.010, regen: 0.02 },
     desc: 'จอมเวทพลังสายรุ้งระเบิด คริติคอลรุนแรงมหาศาล โตด้านพลังโจมตีดีที่สุด'
   },
   {
     id: 'cyber', name: 'ไซเบอร์ นินจา (CYBER NINJA)', icon: '🥷',
     color: '#ffe600', secondaryColor: '#ff0055', bulletType: 'plasma',
-    stats: { hp: 216, speed: 320, damage: 39, fireRate: 0.23913043478260873, armor: 0.10, crit: 0.25, attackRange: 360 },
+    stats: { hp: 216, speed: 320, damage: 50.7, fireRate: 0.23913043478260873, armor: 0.10, crit: 0.25, attackRange: 360 },
     growth: { maxHp: 6, damagePct: 0.007, regen: 0.03 },
     desc: 'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
   }
@@ -607,7 +607,7 @@ const HEROES = [
 
 /* ===== 3. PLAYER_BASE ===== */
 const PLAYER_BASE = {
-  bulletSpeed: 800, projectiles: 1, pierce: 1, pickup: 450, attackRange: 150, regen: 1.0, goldMulti: 1, xpMulti: 1,
+  bulletSpeed: 800, projectiles: 1, pierce: 1, pickup: 315, attackRange: 150, regen: 1.0, goldMulti: 1, xpMulti: 1,
   dodge: 0, lifesteal: 0, revives: 0, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
   explosiveRadius: 0, knockback: 0, executionThreshold: 0, orbitBlades: 0, timeSlow: 0
 };
@@ -708,7 +708,7 @@ const WAVES = {
   start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005, minSpawnInterval: 0.25,
   batchBase: 0.9260999999999999, batchBaseMultiplier: 1.14, batchWave2: 0.48999999999999994, batchWave6: 0.7349999999999999, batchWave12: 0.7349999999999999, batchPerWave: 0.05879999999999999, lateWaveStart: 8, maxEnemies: 147,
 
-  enemyStartHpMultiplier: 0.448, enemyStartDamageMultiplier: 0.70,
+  enemyStartHpMultiplier: 0.5376, enemyStartDamageMultiplier: 0.70,
   enemyHpPerWave: 0.10976,     enemyHpCompound: 0.02352,       lateWaveHpStart: 8,
   enemyDamagePerWave: 0.03,    enemyDamageCompound: 0.006,
   enemySpeedPerWave: 0.005,    enemySpeedMax: 1.6,
