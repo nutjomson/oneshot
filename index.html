@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.12</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.13</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -112,7 +112,7 @@ html,body{
 #settingsOverlay{z-index:110}
 .skill-btn{position:absolute;z-index:15;right:max(16px,env(safe-area-inset-right));bottom:max(70px,env(safe-area-inset-bottom));width:70px;height:70px;border-radius:50%;border:3px solid #fff;background:#7c3aed;color:#fff;font-size:26px;font-weight:800;box-shadow:inset -3px -3px 0 #5b21b6,0 0 14px rgba(124,58,237,.7);touch-action:manipulation;pointer-events:auto;padding:0}
 .skill-btn:active{transform:scale(.94)}
-.hidden{display:none!important}
+#saveManagerOverlay{z-index:125}.save-list{display:grid;gap:8px;margin:12px 0;text-align:left}.save-card{border:2px solid #334155;background:#111827;border-radius:8px;padding:10px}.save-card.auto{border-color:#facc15}.save-card.empty{opacity:.7}.save-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.save-meta{font-size:11px;color:#94a3b8;line-height:1.5}.save-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.save-actions .btn{padding:7px 10px;font-size:11px}.hidden{display:none!important}
 .modal{
   width:min(760px, 100%);
   max-height:calc(100dvh - max(32px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
@@ -234,7 +234,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.12</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.13</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -242,8 +242,22 @@ html,body{
     <div class="stats-box" id="startHeroStats"></div>
 
     <div class="btn-group">
-      <button type="button" class="btn" id="startBtn">▶ เริ่มเกมทันที</button>
-      <button class="btn btn-blue" id="settingsBtn">⚙️ ตั้งค่าเกม</button>
+      <button type="button" class="btn" id="startBtn">🆕 เริ่มเกมใหม่</button>
+      <button type="button" class="btn btn-gold" id="homeLoadBtn">📂 โหลดเซฟ</button>
+      <button type="button" class="btn btn-blue" id="settingsBtn">⚙️ ตั้งค่าเกม</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save Manager Overlay -->
+<div id="saveManagerOverlay" class="overlay hidden">
+  <div class="modal" style="max-width:650px">
+    <div class="title">📂 จัดการเซฟเกม</div>
+    <div class="sub">เซฟด้วยตัวเองสูงสุด 10 ช่อง + Auto Save 1 ช่อง</div>
+    <div id="saveList" class="save-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-sec" id="deleteAllSavesBtn">🗑 ลบเซฟทั้งหมด</button>
+      <button class="btn" id="closeSaveManagerBtn">ย้อนกลับ</button>
     </div>
   </div>
 </div>
@@ -1081,77 +1095,97 @@ window.GAME_CONFIG = {
   let level=1, xp=0, xpNeed=10, lastShopWave=0;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
   try{bests=JSON.parse(localStorage.getItem('sa_best'))||bests}catch(e){}
-  const SAVE_KEY='oneshot_save_v1';
+  const SAVE_KEY='oneshot_saves_v2';
+  const SAVE_VERSION=2;
+  const MAX_MANUAL_SAVES=10;
 
-  function saveGame(showMessage=true){
-    try{
-      const data={
-        version:1,savedAt:Date.now(),
-        selectedHeroId:selectedHero?.id||null,
-        player:{...player},
-        wave,level,xp,xpNeed,kills,elapsed,lastShopWave,bossWave,shownWave,pendingLevels,
-        devOverride,dev:JSON.parse(JSON.stringify(dev)),settings:{...settings}
-      };
-      localStorage.setItem(SAVE_KEY,JSON.stringify(data));
-      if(showMessage) setStatus('💾 บันทึกเกมแล้ว');
-      return true;
-    }catch(err){
-      console.error('SAVE GAME ERROR',err);
-      if(showMessage) setStatus('บันทึกเกมไม่สำเร็จ');
-      return false;
-    }
-  }
-
-  function loadGame(){
+  function readSaveStore(){
     try{
       const raw=localStorage.getItem(SAVE_KEY);
-      if(!raw){setStatus('ยังไม่มีเกมที่บันทึกไว้');return false;}
-      const data=JSON.parse(raw);
-      if(!data || data.version!==1 || !data.player){
-        setStatus('ไฟล์บันทึกไม่ถูกต้อง'); return false;
-      }
-
-      const hero=heroes.find(h=>h.id===data.selectedHeroId)||heroes[0];
-      devOverride=false;
-      applyHeroChoice(hero);
-      if(data.dev) Object.assign(dev,JSON.parse(JSON.stringify(data.dev)));
-      devOverride=!!data.devOverride;
-      Object.assign(player,data.player);
-      Object.assign(settings,data.settings||{});
-
-      wave=Math.max(1,Number(data.wave)||1);
-      level=Math.max(1,Number(data.level)||1);
-      xp=Math.max(0,Number(data.xp)||0);
-      xpNeed=Math.max(1,Number(data.xpNeed)||10);
-      kills=Math.max(0,Number(data.kills)||0);
-      elapsed=Math.max(0,Number(data.elapsed)||0);
-      lastShopWave=Math.max(0,Number(data.lastShopWave)||0);
-      bossWave=Math.max(0,Number(data.bossWave)||0);
-      shownWave=Math.max(1,Number(data.shownWave)||wave);
-      pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
-
-      bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];
-      spawnTimer=0;skillCd=0;screenShake=0;rerollN=0;
-      levelOpen=false;shopOpen=false;pauseOpen=false;over=false;running=true;paused=false;
-      resetInput();
-      ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','devOverlay']
-        .forEach(id=>document.getElementById(id)?.classList.add('hidden'));
-      clampStats();refreshHUD();syncPause();
-      setStatus('📂 โหลดเกมที่บันทึกไว้แล้ว');
-      return true;
-    }catch(err){
-      console.error('LOAD GAME ERROR',err);
-      setStatus('โหลดเกมไม่สำเร็จ');
-      return false;
-    }
+      const data=raw?JSON.parse(raw):{};
+      return {version:SAVE_VERSION,slots:Array.isArray(data.slots)?data.slots.slice(0,MAX_MANUAL_SAVES):[],auto:data.auto&&data.auto.player?data.auto:null};
+    }catch(err){return {version:SAVE_VERSION,slots:[],auto:null};}
   }
+  function makeSaveData(){
+    return {version:SAVE_VERSION,savedAt:Date.now(),selectedHeroId:selectedHero?.id||null,player:{...player},
+      wave,level,xp,xpNeed,kills,elapsed,lastShopWave,bossWave,shownWave,pendingLevels,
+      devOverride,dev:JSON.parse(JSON.stringify(dev)),settings:{...settings}};
+  }
+  function writeSaveStore(store){
+    localStorage.setItem(SAVE_KEY,JSON.stringify({version:SAVE_VERSION,slots:store.slots.slice(0,MAX_MANUAL_SAVES),auto:store.auto||null}));
+  }
+  function saveToSlot(slot,showMessage=true){
+    const n=Number(slot); if(!Number.isInteger(n)||n<1||n>MAX_MANUAL_SAVES)return false;
+    try{const store=readSaveStore();store.slots[n-1]=makeSaveData();writeSaveStore(store);renderSaveManager();if(showMessage)setStatus('💾 บันทึกลงช่อง '+n+' แล้ว');return true;}
+    catch(err){console.error('SAVE SLOT ERROR',err);if(showMessage)setStatus('บันทึกเกมไม่สำเร็จ');return false;}
+  }
+  function saveAutoGame(showMessage=false){
+    try{const store=readSaveStore();store.auto=makeSaveData();writeSaveStore(store);if(showMessage)setStatus('💾 Auto Save แล้ว');return true;}
+    catch(err){console.error('AUTO SAVE ERROR',err);if(showMessage)setStatus('Auto Save ไม่สำเร็จ');return false;}
+  }
+  function deleteSaveSlot(slot){
+    const n=Number(slot);if(!Number.isInteger(n)||n<1||n>MAX_MANUAL_SAVES)return;
+    const store=readSaveStore();store.slots[n-1]=null;writeSaveStore(store);renderSaveManager();setStatus('🗑 ลบเซฟช่อง '+n+' แล้ว');
+  }
+  function deleteAutoSave(){
+    const store=readSaveStore();store.auto=null;writeSaveStore(store);renderSaveManager();setStatus('🗑 ลบ Auto Save แล้ว');
+  }
+  function deleteAllSaves(){
+    if(!confirm('ต้องการลบเซฟทั้งหมด รวม Auto Save ใช่หรือไม่?'))return;
+    localStorage.removeItem(SAVE_KEY);renderSaveManager();setStatus('🗑 ลบเซฟทั้งหมดแล้ว');
+  }
+  function formatSaveTime(ts){
+    if(!ts)return 'ไม่มีข้อมูล';
+    try{return new Date(ts).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});}catch(e){return new Date(ts).toLocaleString();}
+  }
+  function saveSummary(data){
+    if(!data)return '';
+    const hero=heroes.find(h=>h.id===data.selectedHeroId),mins=Math.floor((Number(data.elapsed)||0)/60),secs=Math.floor((Number(data.elapsed)||0)%60);
+    return 'ฮีโร่: '+(hero?.name||data.selectedHeroId||'-')+' · เวฟ '+(Number(data.wave)||1)+' · Lv.'+(Number(data.level)||1)+' · กำจัด '+(Number(data.kills)||0)+' · เวลา '+mins+':'+String(secs).padStart(2,'0');
+  }
+  function loadSaveData(data){
+    try{
+      if(!data||!data.player){setStatus('ไฟล์เซฟไม่ถูกต้อง');return false;}
+      const hero=heroes.find(h=>h.id===data.selectedHeroId)||heroes[0];
+      devOverride=false;applyHeroChoice(hero);
+      if(data.dev)Object.assign(dev,JSON.parse(JSON.stringify(data.dev)));
+      devOverride=!!data.devOverride;Object.assign(player,data.player);Object.assign(settings,data.settings||{});
+      wave=Math.max(1,Number(data.wave)||1);level=Math.max(1,Number(data.level)||1);xp=Math.max(0,Number(data.xp)||0);xpNeed=Math.max(1,Number(data.xpNeed)||10);
+      kills=Math.max(0,Number(data.kills)||0);elapsed=Math.max(0,Number(data.elapsed)||0);lastShopWave=Math.max(0,Number(data.lastShopWave)||0);bossWave=Math.max(0,Number(data.bossWave)||0);shownWave=Math.max(1,Number(data.shownWave)||wave);pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
+      bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];spawnTimer=0;skillCd=0;screenShake=0;rerollN=0;
+      levelOpen=false;shopOpen=false;pauseOpen=false;over=false;running=true;paused=false;resetInput();
+      ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','devOverlay','saveManagerOverlay'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+      clampStats();refreshHUD();syncPause();setStatus('📂 โหลดเซฟแล้ว');return true;
+    }catch(err){console.error('LOAD GAME ERROR',err);setStatus('โหลดเกมไม่สำเร็จ: '+(err?.message||String(err)));return false;}
+  }
+  function loadSaveSlot(slot){const d=readSaveStore().slots[Number(slot)-1];if(d)loadSaveData(d);}
+  function loadAutoSave(){const d=readSaveStore().auto;if(d)loadSaveData(d);}
+  function renderSaveManager(){
+    const box=document.getElementById('saveList');if(!box)return;const store=readSaveStore(),cards=[],auto=store.auto;
+    cards.push(auto?'<div class="save-card auto"><div class="save-card-head"><b>⚡ AUTO SAVE</b><span class="save-meta">'+formatSaveTime(auto.savedAt)+'</span></div><div class="save-meta">'+saveSummary(auto)+'</div><div class="save-actions"><button class="btn btn-gold" data-load-auto>📂 โหลด</button><button class="btn btn-sec" data-delete-auto>🗑 ลบ</button></div></div>':'<div class="save-card auto empty"><b>⚡ AUTO SAVE</b><div class="save-meta">ยังไม่มี Auto Save</div></div>');
+    for(let i=0;i<MAX_MANUAL_SAVES;i++){
+      const d=store.slots[i];
+      cards.push(d?'<div class="save-card"><div class="save-card-head"><b>💾 ช่อง '+(i+1)+'</b><span class="save-meta">'+formatSaveTime(d.savedAt)+'</span></div><div class="save-meta">'+saveSummary(d)+'</div><div class="save-actions"><button class="btn btn-gold" data-load-slot="'+(i+1)+'">📂 โหลด</button><button class="btn btn-blue" data-overwrite-slot="'+(i+1)+'">💾 เซฟทับ</button><button class="btn btn-sec" data-delete-slot="'+(i+1)+'">🗑 ลบ</button></div></div>':'<div class="save-card empty"><div class="save-card-head"><b>💾 ช่อง '+(i+1)+'</b><span class="save-meta">ว่าง</span></div><div class="save-actions"><button class="btn btn-blue" data-save-slot="'+(i+1)+'">💾 เซฟลงช่องนี้</button></div></div>');
+    }
+    box.innerHTML=cards.join('');
+    box.querySelectorAll('[data-load-auto]').forEach(b=>b.onclick=()=>loadAutoSave());
+    box.querySelectorAll('[data-delete-auto]').forEach(b=>b.onclick=()=>deleteAutoSave());
+    box.querySelectorAll('[data-load-slot]').forEach(b=>b.onclick=()=>loadSaveSlot(b.dataset.loadSlot));
+    box.querySelectorAll('[data-overwrite-slot]').forEach(b=>b.onclick=()=>{if(confirm('ต้องการเซฟทับช่อง '+b.dataset.overwriteSlot+' ใช่หรือไม่?'))saveToSlot(b.dataset.overwriteSlot,true);});
+    box.querySelectorAll('[data-delete-slot]').forEach(b=>b.onclick=()=>deleteSaveSlot(b.dataset.deleteSlot));
+    box.querySelectorAll('[data-save-slot]').forEach(b=>b.onclick=()=>{if(running&&!over)saveToSlot(b.dataset.saveSlot,true);else setStatus('เริ่มเกมก่อนจึงจะบันทึกได้');});
+  }
+  function openSaveManager(){renderSaveManager();document.getElementById('saveManagerOverlay')?.classList.remove('hidden');}
+  function closeSaveManager(){document.getElementById('saveManagerOverlay')?.classList.add('hidden');}
+  function saveGame(showMessage=true){openSaveManager();if(showMessage)setStatus('เลือกช่องสำหรับบันทึกเกม');return true;}
+  function loadGame(){openSaveManager();return true;}
 
   let saveTimer=0;
   function autoSaveTick(dt){
     saveTimer+=dt;
     if(saveTimer>=10 && running && !over){
       saveTimer=0;
-      saveGame(false);
+      saveAutoGame(false);
     }
   }
 
@@ -2664,14 +2698,19 @@ function applyHeroChoice(h){
   // Developer UI is initialized after the DOM is ready; enemy data may be declared later.
   setTimeout(()=>loadDevUI(),0);
 
+  document.getElementById('homeLoadBtn')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();openSaveManager();});
+  document.getElementById('closeSaveManagerBtn')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();closeSaveManager();});
+  document.getElementById('deleteAllSavesBtn')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();deleteAllSaves();});
   document.getElementById('settingsBtn').onclick = () => {
     document.getElementById('settingsOverlay').classList.remove('hidden');
   };
-  document.getElementById('saveGameBtn')?.addEventListener('click',()=>saveGame(true));
-  document.getElementById('loadGameBtn')?.addEventListener('click',()=>loadGame());
-  window.addEventListener('beforeunload',()=>{if(running&&!over)saveGame(false);});
-  document.getElementById('openDevBtn')?.addEventListener('click', openDeveloper);
-  document.getElementById('devCloseBtn')?.addEventListener('click', closeDeveloper);
+  document.getElementById('saveGameBtn')?.addEventListener('click',(e)=>{e.preventDefault();openSaveManager();});
+  document.getElementById('loadGameBtn')?.addEventListener('click',(e)=>{e.preventDefault();openSaveManager();});
+  window.addEventListener('beforeunload',()=>{if(running&&!over)saveAutoGame(false);});
+  const openDevButton=document.getElementById('openDevBtn');
+  if(openDevButton){openDevButton.type='button';openDevButton.onclick=(e)=>{e.preventDefault();e.stopPropagation();try{document.getElementById('settingsOverlay')?.classList.add('hidden');openDeveloper();}catch(err){console.error('OPEN DEVELOPER ERROR',err);setStatus('เปิด Developer Mode ไม่สำเร็จ: '+(err?.message||String(err)));}};}
+  const devCloseButton=document.getElementById('devCloseBtn');
+  if(devCloseButton){devCloseButton.type='button';devCloseButton.onclick=(e)=>{e.preventDefault();e.stopPropagation();closeDeveloper();};}
   document.getElementById('devApplyBtn')?.addEventListener('click', () => { applyDeveloperValues(); closeDeveloper(); });
   document.getElementById('devResetBtn')?.addEventListener('click', () => {
     Object.assign(dev, cloneDevDefaults());
