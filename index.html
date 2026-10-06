@@ -197,6 +197,23 @@ html,body{
 .dev-danger{margin-top:10px;border:2px solid #7f1d1d;background:#450a0a;color:#fca5a5;padding:9px;font-size:10px;font-weight:800}
 @media(max-width:640px){.dev-grid{grid-template-columns:1fr}.dev-modal{padding:10px}.dev-tab{min-width:92px;font-size:10px}}
 
+
+.dev-modal{width:min(980px,100%);}
+.dev-modal .sub{margin-bottom:10px}
+.dev-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;position:sticky;top:0;z-index:5;background:#0f172a;padding:4px 0 8px}
+.dev-tab{min-height:42px;padding:8px 6px;border:2px solid #334155;border-radius:7px;background:#111827;color:#cbd5e1;font-weight:800;font-size:12px;cursor:pointer;touch-action:manipulation}
+.dev-tab.active{border-color:#38bdf8;background:#0c4a6e;color:#fff;box-shadow:0 0 0 1px #38bdf8 inset}
+.dev-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dev-grid label,.dev-page>label{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:50px;padding:7px 9px;background:#111827;border:1px solid #334155;border-radius:7px;color:#cbd5e1;font-size:12px;font-weight:700}
+.dev-grid input,.dev-page>label select{width:110px;min-width:110px;height:38px;padding:6px 8px;border:2px solid #475569;border-radius:6px;background:#020617;color:#fff;font-size:16px;font-weight:800;text-align:right}
+.dev-page>label{margin-bottom:8px}
+.dev-page>label select{text-align:left}
+.dev-stepper{display:flex;align-items:center;gap:4px;width:140px;min-width:140px}
+.dev-stepper input{width:78px;min-width:78px!important;text-align:center!important}
+.dev-step{width:28px;height:34px;padding:0;border:2px solid #475569;border-radius:6px;background:#1e293b;color:#fff;font-size:18px;font-weight:900;cursor:pointer;touch-action:manipulation}
+.dev-step:active{transform:scale(.94)}
+.dev-actions{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:7px;padding-top:10px;background:linear-gradient(#0f172a00,#0f172a 25%)}
+@media(max-width:620px){.dev-tabs{grid-template-columns:repeat(3,1fr)}.dev-grid{grid-template-columns:1fr}.dev-grid label{min-height:54px}.dev-modal{padding:10px}.dev-actions{grid-template-columns:1fr 1fr 1fr}}
 </style>
 </head>
 <body>
@@ -325,7 +342,7 @@ html,body{
     </div>
     <div id="devPlayer" class="dev-page">
       <div class="dev-grid">
-        <label>Max HP<input class="dev-num" data-path="player.maxHp" type="number" step="1"></label>
+        <label>Max HP<div class="dev-stepper"><button type="button" class="dev-step dev-minus">−</button><input class="dev-num" data-path="player.maxHp" type="number" step="1"></div></label>
         <label>HP เริ่มต้น<input class="dev-num" data-path="player.hp" type="number" step="1"></label>
         <label>Damage<input class="dev-num" data-path="player.damage" type="number" step="1"></label>
         <label>Speed<input class="dev-num" data-path="player.speed" type="number" step="1"></label>
@@ -392,7 +409,7 @@ html,body{
       <label>Shop Every N Waves<input class="dev-num" data-path="shop.everyWaves" type="number"></label><label>Game Speed<input class="dev-num" data-path="misc.gameSpeed" type="number" step="0.1"></label>
     </div></div>
     <div id="devPreview" style="margin:12px 0;padding:10px;background:#020617;border:1px solid #334155;border-radius:8px;font-size:12px;line-height:1.6"></div>
-    <div class="btn-group">
+    <div class="dev-actions">
       <button class="btn btn-gold" id="devApplyBtn">💾 ใช้ค่า</button>
       <button class="btn btn-blue" id="devResetBtn">↩ ค่าเริ่มต้น</button>
       <button class="btn btn-sec" id="devCloseBtn">ปิด</button>
@@ -903,7 +920,26 @@ window.GAME_CONFIG = {
       executionThreshold:dev.player.executionThreshold,pierce:Math.max(0,Math.floor(dev.player.pierce))
     });
   }
+  function enhanceDevSteppers(){
+    document.querySelectorAll('.dev-num,.dev-enemy-num').forEach(input=>{
+      if(input.parentElement?.classList.contains('dev-stepper')) return;
+      const wrap=document.createElement('div'); wrap.className='dev-stepper';
+      input.parentNode.insertBefore(wrap,input); wrap.appendChild(input);
+      const minus=document.createElement('button'); minus.type='button'; minus.className='dev-step'; minus.textContent='−';
+      const plus=document.createElement('button'); plus.type='button'; plus.className='dev-step'; plus.textContent='+';
+      wrap.insertBefore(minus,input); wrap.appendChild(plus);
+      const step=()=>Number(input.step)||((input.classList.contains('dev-percent'))?1:1);
+      const change=(dir)=>{
+        let v=Number(input.value); if(!Number.isFinite(v))v=0;
+        input.value=(v+dir*step()).toFixed(String(step()).includes('.')?String(step()).split('.')[1].length:0);
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+      };
+      minus.onclick=()=>change(-1); plus.onclick=()=>change(1);
+      input.addEventListener('focus',()=>input.select());
+    });
+  }
   function loadDevUI(){
+    enhanceDevSteppers();
     document.querySelectorAll('.dev-num').forEach(el=>{
       let v=getNested(dev,el.dataset.path);
       if(el.classList.contains('dev-percent')) v=devPctInputValue(v);
