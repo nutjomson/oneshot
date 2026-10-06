@@ -954,226 +954,1405 @@ window.GAME_CONFIG = {
   for(const k in enemyTypes) enemyTypes[k].type=k;
 
   /* ===== ระบบอัปเกรด/สินค้า แบบ data-driven (ข้อมูลอยู่ใน balance-config ด้านบน) ===== */
-  function applyEffect(f){
-    if(f.op==='heal'){ player.hp=Math.min(player.maxHp,player.hp+f.v); return; }
-    if(f.op==='healPct'){ player.hp=Math.min(player.maxHp,player.hp+player.maxHp*f.v); return; }
-    const before=player.maxHp, cur=player[f.stat]||0;
-    let nv=f.op==='mul'?cur*f.v:f.op==='add'?cur+f.v:f.v;
-    if(f.min!==undefined) nv=Math.max(f.min,nv);
-    player[f.stat]=nv;
-    if(f.stat==='maxHp'){ const d=player.maxHp-before; if(d>0)player.hp+=d; else player.hp=Math.min(player.hp,player.maxHp); }
+/* =========================================================
+   PLAYER STATS SYSTEM v2
+   - แสดง Stat ครบ
+   - แสดง Before → After
+   - แสดงค่าที่เพิ่มจาก Upgrade / Shop ทันที
+   - ใช้ระบบเดียวกับ Level Up + Shop
+   ========================================================= */
+
+function formatStatValue(stat, value){
+
+  if(value === undefined || value === null || !Number.isFinite(Number(value))){
+    return '-';
   }
-  const pctN=x=>Math.round(Math.abs(x)*100);
-  const numN=x=>{x=Math.abs(x);return Number.isInteger(x)?x:+x.toFixed(1)};
-  const MUL_LABEL={damage:'พลังโจมตี',speed:'ความเร็วเคลื่อนที่',bulletSpeed:'ความเร็วกระสุน',maxHp:'Max HP',goldMulti:'ทองที่ได้รับ'};
-  const FRAC_LABEL={armor:'ลดความเสียหาย',crit:'โอกาสคริติคอล',dodge:'โอกาสหลบหลีก',lifesteal:'ดูดเลือด',executionThreshold:'สังหารทันทีเมื่อศัตรู HP ต่ำกว่า',timeSlow:'ศัตรูเคลื่อนที่ช้าลง'};
-  const INT_LABEL={maxHp:['Max HP',''],projectiles:['กระสุน','นัด'],pierce:['เจาะทะลุ','ตัว'],pickup:['ระยะดูดไอเทม','px'],regen:['ฟื้นฟู HP','/วิ'],ricochet:['กระสุนเด้ง','ครั้ง'],poisonDmg:['พิษกัดกร่อน','HP/วิ'],lightningChain:['สายฟ้าช็อต','Dmg'],explosiveRadius:['รัศมีระเบิด','px'],knockback:['แรงผลักศัตรู','px'],orbitBlades:['ดาบหมุนวน','เล่ม'],revives:['ชุบชีวิต','ครั้ง'],gold:['รับทอง','ทันที']};
-  function descEffect(f){
-    const s=f.stat,v=f.v;
-    if(f.op==='heal') return `ฟื้นฟู ${numN(v)} HP ทันที`;
-    if(f.op==='healPct') return v>=1?'ฟื้นฟู HP เต็ม':`ฟื้นฟู HP ${pctN(v)}% ทันที`;
-    if(f.op==='set') return null;
-    if(f.op==='mul'){
-      if(s==='fireRate') return v<1?`ยิงเร็วขึ้น ${pctN(1-v)}%`:`ยิงช้าลง ${pctN(v-1)}%`;
-      return `${MUL_LABEL[s]||s} ${v>=1?'+':'-'}${pctN(v-1)}%`;
+
+  const v = Number(value);
+
+  switch(stat){
+
+    case 'damage':
+      return Math.round(v);
+
+    case 'maxHp':
+    case 'hp':
+      return Math.round(v);
+
+    case 'speed':
+      return Math.round(v);
+
+    case 'fireRate':
+      return `${(1 / Math.max(0.001,v)).toFixed(2)} ครั้ง/วิ`;
+
+    case 'bulletSpeed':
+      return Math.round(v);
+
+    case 'projectiles':
+      return `${Math.floor(v)} นัด`;
+
+    case 'pierce':
+      return `${Math.floor(v)} ตัว`;
+
+    case 'armor':
+      return `${(v*100).toFixed(1)}%`;
+
+    case 'crit':
+      return `${(v*100).toFixed(1)}%`;
+
+    case 'dodge':
+      return `${(v*100).toFixed(1)}%`;
+
+    case 'regen':
+      return `${v.toFixed(1)} HP/วิ`;
+
+    case 'lifesteal':
+      return `${(v*100).toFixed(1)}%`;
+
+    case 'pickup':
+      return `${Math.round(v)} px`;
+
+    case 'goldMulti':
+      return `${v.toFixed(2)}x`;
+
+    case 'revives':
+      return `${Math.floor(v)} ครั้ง`;
+
+    case 'ricochet':
+      return `${Math.floor(v)} ครั้ง`;
+
+    case 'poisonDmg':
+      return `${Math.round(v)} Dmg`;
+
+    case 'lightningChain':
+      return `${Math.round(v)} Dmg`;
+
+    case 'explosiveRadius':
+      return `${Math.round(v)} px`;
+
+    case 'knockback':
+      return `${Math.round(v)}`;
+
+    case 'executionThreshold':
+      return `${(v*100).toFixed(1)}% HP`;
+
+    case 'orbitBlades':
+      return `${Math.floor(v)} เล่ม`;
+
+    case 'timeSlow':
+      return `${(v*100).toFixed(1)}%`;
+
+    case 'gold':
+      return `${Math.round(v)}`;
+
+    default:
+      return Number.isInteger(v)
+        ? String(v)
+        : v.toFixed(2);
+  }
+}
+
+
+/* =========================================================
+   STAT DEFINITIONS
+   ========================================================= */
+
+const PLAYER_STAT_DEFS = [
+
+  {
+    key:'damage',
+    icon:'⚔️',
+    name:'พลังโจมตี',
+    group:'combat'
+  },
+
+  {
+    key:'fireRate',
+    icon:'🔥',
+    name:'ความเร็วการยิง',
+    group:'combat'
+  },
+
+  {
+    key:'projectiles',
+    icon:'🔫',
+    name:'จำนวนกระสุน',
+    group:'combat'
+  },
+
+  {
+    key:'pierce',
+    icon:'🎯',
+    name:'เจาะทะลุ',
+    group:'combat'
+  },
+
+  {
+    key:'bulletSpeed',
+    icon:'💨',
+    name:'ความเร็วกระสุน',
+    group:'combat'
+  },
+
+  {
+    key:'crit',
+    icon:'💥',
+    name:'คริติคอล',
+    group:'combat'
+  },
+
+  {
+    key:'ricochet',
+    icon:'🧱',
+    name:'กระสุนสะท้อน',
+    group:'combat'
+  },
+
+  {
+    key:'poisonDmg',
+    icon:'🧪',
+    name:'พิษ',
+    group:'special'
+  },
+
+  {
+    key:'lightningChain',
+    icon:'⚡',
+    name:'สายฟ้า',
+    group:'special'
+  },
+
+  {
+    key:'explosiveRadius',
+    icon:'💣',
+    name:'รัศมีระเบิด',
+    group:'special'
+  },
+
+  {
+    key:'knockback',
+    icon:'🥊',
+    name:'แรงผลัก',
+    group:'special'
+  },
+
+  {
+    key:'executionThreshold',
+    icon:'☠️',
+    name:'สังหารศัตรูที่ HP ต่ำ',
+    group:'special'
+  },
+
+  {
+    key:'orbitBlades',
+    icon:'🗡️',
+    name:'ดาบหมุนวน',
+    group:'special'
+  },
+
+  {
+    key:'timeSlow',
+    icon:'⏳',
+    name:'หน่วงเวลา',
+    group:'special'
+  },
+
+  {
+    key:'maxHp',
+    icon:'❤️',
+    name:'พลังชีวิตสูงสุด',
+    group:'defense'
+  },
+
+  {
+    key:'hp',
+    icon:'💚',
+    name:'พลังชีวิตปัจจุบัน',
+    group:'defense'
+  },
+
+  {
+    key:'armor',
+    icon:'🛡️',
+    name:'เกราะ',
+    group:'defense'
+  },
+
+  {
+    key:'dodge',
+    icon:'🌀',
+    name:'หลบหลีก',
+    group:'defense'
+  },
+
+  {
+    key:'regen',
+    icon:'💚',
+    name:'ฟื้นฟู HP',
+    group:'defense'
+  },
+
+  {
+    key:'lifesteal',
+    icon:'🩸',
+    name:'ดูดเลือด',
+    group:'defense'
+  },
+
+  {
+    key:'revives',
+    icon:'♻️',
+    name:'ชุบชีวิต',
+    group:'defense'
+  },
+
+  {
+    key:'speed',
+    icon:'🏃',
+    name:'ความเร็วเคลื่อนที่',
+    group:'utility'
+  },
+
+  {
+    key:'pickup',
+    icon:'🧲',
+    name:'ระยะดูด XP / ทอง',
+    group:'utility'
+  },
+
+  {
+    key:'goldMulti',
+    icon:'💰',
+    name:'ตัวคูณทอง',
+    group:'utility'
+  },
+
+  {
+    key:'bulletType',
+    icon:'🔮',
+    name:'ชนิดกระสุน',
+    group:'utility'
+  }
+];
+
+
+/* =========================================================
+   SNAPSHOT
+   ========================================================= */
+
+function snapshotPlayerStats(){
+
+  const result = {};
+
+  PLAYER_STAT_DEFS.forEach(def => {
+
+    const value = player[def.key];
+
+    if(value !== undefined){
+      result[def.key] = value;
     }
-    if(FRAC_LABEL[s]){ if(s==='armor'&&v<0) return `เกราะ -${pctN(v)}%`; if(s==='timeSlow') return `${FRAC_LABEL[s]} ${pctN(v)}%`; return `${FRAC_LABEL[s]} ${v>=0?'+':'-'}${pctN(v)}%`; }
-    const [lb,un]=INT_LABEL[s]||[s,''];
-    return `${lb} ${v>=0?'+':'-'}${numN(v)}${un?(un[0]==='/'?'':' ')+un:''}`.trim();
-  }
-  function buildItem(def,i){
-    const fx=def.fx||[];
-    const setBt=fx.find(f=>f.op==='set'&&f.stat==='bulletType');
-    const o={...def,id:def.id||('u'+i),
-      desc:def.desc||fx.map(descEffect).filter(Boolean).join(' และ '),
-      apply:()=>{fx.forEach(applyEffect);return true;}};
-    if(setBt)o.bt=setBt.v;
-    return o;
-  }
-  const levelUpgrades = CFG.levelUpgrades.map(buildItem);
-  const luxuryShopPool = CFG.shopItems.map(buildItem);
-  let activeShopItems = [];
 
-  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
-  function rand(a,b){return a+Math.random()*(b-a);}
-  function dist(ax,ay,bx,by){return Math.hypot(ax-bx,ay-by);}
-  const SK={}; for(const k in CFG.skills) SK[k]={...CFG.skills[k],ic:CFG.skills[k].icon};
-  function useSkill(){
-    if(!running||paused||over||skillCd>0) return;
-    const h=selectedHero.id, S=CFG.skills[h]; skillCd=S.cd;
-    if(h==='prism'){player.hit=S.invuln;makeSparks(player.x,player.y,'#00f0ff',30);for(const e of enemies)if(dist(e.x,e.y,player.x,player.y)<S.range){const a=Math.atan2(e.y-player.y,e.x-player.x);e.x+=Math.cos(a)*S.push;e.y+=Math.sin(a)*S.push;}}
-    else if(h==='neon'){for(let k=0;k<S.bullets;k++){const a=k*Math.PI*2/S.bullets;bullets.push({x:player.x,y:player.y,vx:Math.cos(a)*player.bulletSpeed,vy:Math.sin(a)*player.bulletSpeed,r:5,life:S.life,damage:player.damage*S.damageMult,crit:false,type:'laser',pierce:S.pierce,bounce:0,hitList:[],trail:[]});}}
-    else if(h==='psycho'){makeSparks(player.x,player.y,'#ff00ff',40);if(settings.shake)screenShake=S.shake;for(const e of enemies)if(!e.dead&&dist(e.x,e.y,player.x,player.y)<S.radius)dealRaw(e,player.damage*S.damageMult,'#ff00ff');}
-    else{const a=player.angle;player.hit=S.invuln;player.x=clamp(player.x+Math.cos(a)*S.dashDistance,40,world.w-40);player.y=clamp(player.y+Math.sin(a)*S.dashDistance,40,world.h-40);makeSparks(player.x,player.y,'#ffe600',25);}
-    playSound('levelup');
-  }
-  function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-  function resetInput(){joy.active=false;joy.pointerId=null;joy.x=0;joy.y=0;joyBase.style.display='none';keys.up=keys.down=keys.left=keys.right=false}
-  function syncPause(){paused=levelOpen||shopOpen||pauseOpen;touchZone.classList.toggle('hidden',paused||!running);if(paused)resetInput()}
-  function clampStats(){
-    const C=CFG.caps, hb=selectedHero;
-    player.dodge=clamp(player.dodge,0,C.dodge); player.crit=clamp(player.crit,0,C.crit); player.armor=clamp(player.armor,C.armorMin,C.armorMax);
-    player.executionThreshold=Math.min(C.executionThreshold,player.executionThreshold);
-    player.fireRate=Math.max(C.fireRateMin,player.fireRate); player.lifesteal=Math.min(C.lifesteal,player.lifesteal);
-    player.pierce=Math.min(C.pierce,player.pierce); player.projectiles=Math.min(C.projectiles,player.projectiles);
-    player.ricochet=Math.min(C.ricochet,player.ricochet); player.orbitBlades=Math.min(C.orbitBlades,player.orbitBlades);
-    player.timeSlow=Math.min(C.timeSlow,player.timeSlow||0);
-    player.speed=Math.min(player.speed,hb.speed*C.speedMultOfHero); player.regen=Math.min(player.regen,C.regen);
-    player.goldMulti=Math.min(player.goldMulti,C.goldMulti); player.knockback=Math.min(player.knockback,C.knockback);
-    player.explosiveRadius=Math.min(player.explosiveRadius,C.explosiveRadius); player.damage=Math.min(player.damage,hb.damage*C.damageMultOfHero);
-    player.revives=Math.min(player.revives,C.revives); player.bulletSpeed=Math.min(player.bulletSpeed,C.bulletSpeed); player.pickup=Math.min(player.pickup,C.pickup);
-  }
+  });
 
-  // Audio System using Web Audio API Synth (Synthesized Sound FX)
-  let audioCtx = null;
-  function initAudio() {
-    if (!audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) audioCtx = new AudioContext();
+  return result;
+}
+
+
+/* =========================================================
+   DELTA SYSTEM
+   ========================================================= */
+
+let statDeltaTimer = null;
+
+function showStatDelta(before, after, sourceName='อัปเกรด'){
+
+  const changes = [];
+
+  PLAYER_STAT_DEFS.forEach(def => {
+
+    const a = before[def.key];
+    const b = after[def.key];
+
+    if(a === undefined || b === undefined){
+      return;
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-  }
 
-  const lastPlay={};
-  function playSound(type) {
-    if(!settings.sfx) return;
-    const tn=performance.now(); if(tn-(lastPlay[type]||0)<45) return; lastPlay[type]=tn;
-    initAudio();
-    if(!audioCtx) return;
+    /*
+     * Bullet Type เป็นข้อความ
+     */
+    if(def.key === 'bulletType'){
 
-    try {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
+      if(String(a) !== String(b)){
 
-      const now = audioCtx.currentTime;
+        changes.push({
+          icon:def.icon,
+          name:def.name,
+          before:String(a),
+          after:String(b),
+          positive:true,
+          text:`${a} → ${b}`
+        });
 
-      if(type === 'shoot') {
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-        osc.start(now); osc.stop(now + 0.08);
-      } else if(type === 'hit') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, now);
-        osc.frequency.linearRampToValueAtTime(30, now + 0.1);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.1);
-        osc.start(now); osc.stop(now + 0.1);
-      } else if(type === 'coin') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(987.77, now); // B5
-        osc.frequency.setValueAtTime(1318.51, now + 0.06); // E6
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.14);
-        osc.start(now); osc.stop(now + 0.14);
-      } else if(type === 'levelup') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-        osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
-        osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.35);
-        osc.start(now); osc.stop(now + 0.35);
       }
-    } catch(e) {}
+
+      return;
+    }
+
+    const na = Number(a);
+    const nb = Number(b);
+
+    if(!Number.isFinite(na) || !Number.isFinite(nb)){
+      return;
+    }
+
+    /*
+     * ไม่แสดงค่าที่ไม่ได้เปลี่ยน
+     */
+    if(Math.abs(nb-na) < 0.000001){
+      return;
+    }
+
+    const positive = nb > na;
+
+    /*
+     * Fire Rate:
+     * ค่าภายในลดลง = ยิงเร็วขึ้น
+     */
+    let isPositive = positive;
+
+    if(def.key === 'fireRate'){
+      isPositive = nb < na;
+    }
+
+    changes.push({
+      icon:def.icon,
+      name:def.name,
+      before:formatStatValue(def.key,na),
+      after:formatStatValue(def.key,nb),
+      positive:isPositive,
+      rawDiff:nb-na
+    });
+
+  });
+
+  if(!changes.length){
+    return;
   }
 
-  window.addEventListener('pointerdown', initAudio, { once: true });
-  window.addEventListener('blur', resetInput);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!over&&!pauseOpen)openPause()});
-  window.addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyP'){pauseOpen?closePause():openPause()} if(e.code==='Space'||e.code==='KeyE'){e.preventDefault();useSkill()}});
-  window.addEventListener('keydown', initAudio, { once: true });
+  let box = document.getElementById('statDeltaToast');
 
-  window.addEventListener('keydown',e=>{
-    if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=true;
-    if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=true;
-    if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=true;
-    if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=true;
-  });
-  window.addEventListener('keyup',e=>{
-    if(e.code==='KeyW'||e.code==='ArrowUp') keys.up=false;
-    if(e.code==='KeyS'||e.code==='ArrowDown') keys.down=false;
-    if(e.code==='KeyA'||e.code==='ArrowLeft') keys.left=false;
-    if(e.code==='KeyD'||e.code==='ArrowRight') keys.right=false;
-  });
+  if(!box){
 
-  const touchZone = document.getElementById('touchZone');
-  const joyBase = document.getElementById('joyBase');
-  const joyStick = document.getElementById('joyStick');
+    box = document.createElement('div');
 
-  touchZone.addEventListener('pointerdown', e => {
-    if(joy.active || paused || !running) return;
-    joy.active = true;
-    joy.pointerId = e.pointerId;
-    joy.startX = e.clientX;
-    joy.startY = e.clientY;
-    
-    joyBase.style.left = joy.startX + 'px';
-    joyBase.style.top = joy.startY + 'px';
-    joyBase.style.display = 'block';
-    joyStick.style.transform = 'translate(-50%, -50%)';
-    
-    joy.x = 0; joy.y = 0;
-    try { touchZone.setPointerCapture(e.pointerId); } catch(err){}
-  });
+    box.id = 'statDeltaToast';
 
-  touchZone.addEventListener('pointermove', e => {
-    if(!joy.active || e.pointerId !== joy.pointerId) return;
-    const dx = e.clientX - joy.startX;
-    const dy = e.clientY - joy.startY;
-    const maxR = 45;
-    const len = Math.hypot(dx, dy) || 1;
-    const k = Math.min(1, maxR / len);
-    
-    const x = dx * k;
-    const y = dy * k;
-    joy.x = x / maxR;
-    joy.y = y / maxR;
-    joyStick.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-  });
-
-  function resetJoy(e){
-    if(e && e.pointerId !== joy.pointerId) return;
-    joy.active = false;
-    joy.x = 0; joy.y = 0;
-    joyBase.style.display = 'none';
-  }
-
-  touchZone.addEventListener('pointerup', resetJoy);
-  touchZone.addEventListener('pointercancel', resetJoy);
-  touchZone.addEventListener('lostpointercapture', resetJoy);
-
-  function renderCharacterStatsHtml(p) {
-    return `
-      <div class="stat-item"><span>พลังชีวิต (Max HP):</span><span class="val">${Math.round(p.hp)} / ${Math.round(p.maxHp)}</span></div>
-      <div class="stat-item"><span>พลังโจมตี (Damage):</span><span class="val">${Math.round(p.damage)}</span></div>
-      <div class="stat-item"><span>ความเร็วเคลื่อนที่ (Speed):</span><span class="val">${Math.round(p.speed)}</span></div>
-      <div class="stat-item"><span>อัตราการยิง (Fire Rate):</span><span class="val">${(1/p.fireRate).toFixed(1)} / วินาที</span></div>
-      <div class="stat-item"><span>โอกาสคริติคอล (Crit Chance):</span><span class="val">${Math.round(p.crit*100)}%</span></div>
-      <div class="stat-item"><span>การลดความเสียหาย (Armor):</span><span class="val">${Math.round(p.armor*100)}%</span></div>
-      <div class="stat-item"><span>โอกาสหลบหลีก (Dodge):</span><span class="val">${Math.round(p.dodge*100)}%</span></div>
-      <div class="stat-item"><span>กระสุนเด้งสะท้อน (Ricochet):</span><span class="val">${p.ricochet} ครั้ง</span></div>
-      <div class="stat-item"><span>พิษกัดกร่อน (Poison Dot):</span><span class="val">${p.poisonDmg} HP/วิ</span></div>
-      <div class="stat-item"><span>สายฟ้าช็อต (Chain Volt):</span><span class="val">${p.lightningChain} Dmg</span></div>
-      <div class="stat-item"><span>รัศมีระเบิด (Explosive):</span><span class="val">${p.explosiveRadius} px</span></div>
-      <div class="stat-item"><span>ดาบหมุนวน (Orbit Blades):</span><span class="val">${p.orbitBlades} เล่ม</span></div>
-      <div class="stat-item"><span>สิทธิ์ชุบชีวิต (Revives):</span><span class="val" style="color:#facc15">${p.revives} ครั้ง</span></div>
+    box.style.cssText = `
+      position:fixed;
+      z-index:9999;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:min(460px,calc(100vw - 30px));
+      background:rgba(2,6,23,.97);
+      border:3px solid #facc15;
+      box-shadow:
+        0 0 0 2px #713f12,
+        0 12px 35px rgba(0,0,0,.75);
+      padding:12px;
+      pointer-events:none;
+      font-family:'Prompt',sans-serif;
+      opacity:0;
+      transition:
+        opacity .18s ease,
+        transform .18s ease;
     `;
+
+    document.body.appendChild(box);
   }
 
-  function applyHeroChoice(h) {
-    selectedHero = h;
-    Object.assign(player, heroStartStats(h), {bulletType:h.bulletType, fireTimer:0, hit:0});
-    if(devOverride) applyDevPlayer(); else syncDevPlayerFromHero();
-    clampStats();
-    document.getElementById('startHeroStats').innerHTML = renderCharacterStatsHtml(player);
+  clearTimeout(statDeltaTimer);
+
+  const rows = changes.map(c => {
+
+    let diffText = '';
+
+    if(c.rawDiff !== undefined){
+
+      const d = Math.abs(c.rawDiff);
+
+      if(c.positive){
+
+        diffText = `
+          <span
+            style="
+              color:#4ade80;
+              font-weight:900;
+              margin-left:5px;
+            "
+          >
+            ▲
+          </span>
+        `;
+
+      }else{
+
+        diffText = `
+          <span
+            style="
+              color:#f87171;
+              font-weight:900;
+              margin-left:5px;
+            "
+          >
+            ▼
+          </span>
+        `;
+      }
+    }
+
+    return `
+      <div
+        style="
+          display:grid;
+          grid-template-columns:28px 1fr auto;
+          align-items:center;
+          gap:5px;
+          padding:5px 3px;
+          border-bottom:1px solid #1e293b;
+        "
+      >
+
+        <div
+          style="
+            font-size:18px;
+            text-align:center;
+          "
+        >
+          ${c.icon}
+        </div>
+
+        <div
+          style="
+            color:#e2e8f0;
+            font-size:11px;
+            font-weight:800;
+          "
+        >
+          ${c.name}
+        </div>
+
+        <div
+          style="
+            color:${c.positive ? '#4ade80':'#f87171'};
+            font-size:11px;
+            font-weight:900;
+            text-align:right;
+            white-space:nowrap;
+          "
+        >
+          ${c.before}
+          <span style="color:#64748b"> → </span>
+          ${c.after}
+          ${diffText}
+        </div>
+
+      </div>
+    `;
+
+  }).join('');
+
+  box.innerHTML = `
+
+    <div
+      style="
+        color:#facc15;
+        font-size:15px;
+        font-weight:900;
+        text-align:center;
+        margin-bottom:5px;
+      "
+    >
+      ✨ ${sourceName}
+    </div>
+
+    <div
+      style="
+        color:#94a3b8;
+        font-size:10px;
+        text-align:center;
+        margin-bottom:8px;
+      "
+    >
+      ค่าสถานะที่เปลี่ยนแปลง
+    </div>
+
+    ${rows}
+
+  `;
+
+  box.style.opacity = '1';
+  box.style.transform = 'translate(-50%,-50%) scale(1)';
+
+  statDeltaTimer = setTimeout(() => {
+
+    box.style.opacity = '0';
+    box.style.transform = 'translate(-50%,-50%) scale(.96)';
+
+  },2800);
+}
+
+
+/* =========================================================
+   EFFECT APPLICATION
+   ========================================================= */
+
+function applyEffect(f){
+
+  if(f.op==='heal'){
+
+    player.hp=Math.min(
+      player.maxHp,
+      player.hp+f.v
+    );
+
+    return;
   }
+
+  if(f.op==='healPct'){
+
+    player.hp=Math.min(
+      player.maxHp,
+      player.hp+player.maxHp*f.v
+    );
+
+    return;
+  }
+
+  const beforeMaxHp = player.maxHp;
+
+  const cur =
+    player[f.stat] === undefined
+      ? 0
+      : player[f.stat];
+
+  let nv =
+    f.op==='mul'
+      ? cur*f.v
+      : f.op==='add'
+        ? cur+f.v
+        : f.v;
+
+  if(f.min!==undefined){
+    nv=Math.max(f.min,nv);
+  }
+
+  player[f.stat]=nv;
+
+  /*
+   * Max HP เพิ่ม → เพิ่ม HP ปัจจุบันตามจำนวนที่ Max HP เพิ่ม
+   */
+  if(f.stat==='maxHp'){
+
+    const d=player.maxHp-beforeMaxHp;
+
+    if(d>0){
+
+      player.hp+=d;
+
+    }else{
+
+      player.hp=Math.min(
+        player.hp,
+        player.maxHp
+      );
+
+    }
+  }
+}
+
+
+/* =========================================================
+   LABEL / DESCRIPTION SYSTEM
+   ========================================================= */
+
+const pctN=x =>
+  Math.round(Math.abs(x)*100);
+
+const numN=x => {
+
+  x=Math.abs(x);
+
+  return Number.isInteger(x)
+    ? x
+    : +x.toFixed(1);
+};
+
+
+const MUL_LABEL = {
+
+  damage:'พลังโจมตี',
+
+  speed:'ความเร็วเคลื่อนที่',
+
+  bulletSpeed:'ความเร็วกระสุน',
+
+  maxHp:'Max HP',
+
+  goldMulti:'ทองที่ได้รับ'
+};
+
+
+const FRAC_LABEL = {
+
+  armor:'ลดความเสียหาย',
+
+  crit:'โอกาสคริติคอล',
+
+  dodge:'โอกาสหลบหลีก',
+
+  lifesteal:'ดูดเลือด',
+
+  executionThreshold:'สังหารทันทีเมื่อศัตรู HP ต่ำกว่า',
+
+  timeSlow:'ศัตรูเคลื่อนที่ช้าลง'
+};
+
+
+const INT_LABEL = {
+
+  maxHp:['Max HP',''],
+
+  projectiles:['กระสุน','นัด'],
+
+  pierce:['เจาะทะลุ','ตัว'],
+
+  pickup:['ระยะดูดไอเทม','px'],
+
+  regen:['ฟื้นฟู HP','/วิ'],
+
+  ricochet:['กระสุนเด้ง','ครั้ง'],
+
+  poisonDmg:['พิษกัดกร่อน','HP/วิ'],
+
+  lightningChain:['สายฟ้าช็อต','Dmg'],
+
+  explosiveRadius:['รัศมีระเบิด','px'],
+
+  knockback:['แรงผลักศัตรู','px'],
+
+  orbitBlades:['ดาบหมุนวน','เล่ม'],
+
+  revives:['ชุบชีวิต','ครั้ง'],
+
+  gold:['รับทอง','ทันที']
+};
+
+
+function descEffect(f){
+
+  const s=f.stat;
+  const v=f.v;
+
+  if(f.op==='heal')
+    return `ฟื้นฟู ${numN(v)} HP ทันที`;
+
+  if(f.op==='healPct')
+    return v>=1
+      ? 'ฟื้นฟู HP เต็ม'
+      : `ฟื้นฟู HP ${pctN(v)}% ทันที`;
+
+  if(f.op==='set')
+    return null;
+
+  if(f.op==='mul'){
+
+    if(s==='fireRate'){
+
+      return v<1
+        ? `ยิงเร็วขึ้น ${pctN(1-v)}%`
+        : `ยิงช้าลง ${pctN(v-1)}%`;
+
+    }
+
+    return `${MUL_LABEL[s]||s} ${v>=1?'+':'-'}${pctN(v-1)}%`;
+  }
+
+  if(FRAC_LABEL[s]){
+
+    if(s==='armor'&&v<0)
+      return `เกราะ -${pctN(v)}%`;
+
+    if(s==='timeSlow')
+      return `${FRAC_LABEL[s]} ${pctN(v)}%`;
+
+    return `${FRAC_LABEL[s]} ${v>=0?'+':'-'}${pctN(v)}%`;
+  }
+
+  const [lb,un]=INT_LABEL[s]||[s,''];
+
+  return `${lb} ${v>=0?'+':'-'}${numN(v)}${un?(un[0]==='/'?'':' ')+un:''}`.trim();
+}
+
+
+/* =========================================================
+   BUILD ITEM
+   ========================================================= */
+
+function buildItem(def,i){
+
+  const fx=def.fx||[];
+
+  const setBt=
+    fx.find(
+      f=>f.op==='set'&&f.stat==='bulletType'
+    );
+
+  const o={
+
+    ...def,
+
+    id:def.id||('u'+i),
+
+    desc:
+      def.desc ||
+      fx
+        .map(descEffect)
+        .filter(Boolean)
+        .join(' และ '),
+
+    /*
+     * จุดสำคัญ:
+     * snapshot ก่อนใช้ Item
+     * ใช้ Effect ทั้งหมด
+     * snapshot หลังใช้ Item
+     * แล้วแสดง Delta รวมทีเดียว
+     */
+    apply:()=>{
+
+      const before=snapshotPlayerStats();
+
+      fx.forEach(applyEffect);
+
+      const after=snapshotPlayerStats();
+
+      /*
+       * clamp ก่อนแสดงผลจริง
+       * เพื่อให้ตัวเลขที่แสดงตรงกับ Stat จริง
+       */
+      try{
+        clampStats();
+      }catch(e){}
+
+      const finalStats=snapshotPlayerStats();
+
+      /*
+       * แสดงเฉพาะค่าที่เปลี่ยนจริง
+       */
+      showStatDelta(
+        before,
+        finalStats,
+        def.name || 'อัปเกรด'
+      );
+
+      return true;
+    }
+  };
+
+  if(setBt)
+    o.bt=setBt.v;
+
+  return o;
+}
+
+
+/* =========================================================
+   ITEM DATA
+   ========================================================= */
+
+const levelUpgrades =
+  CFG.levelUpgrades.map(buildItem);
+
+const luxuryShopPool =
+  CFG.shopItems.map(buildItem);
+
+let activeShopItems=[];
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function clamp(v,a,b){
+  return Math.max(
+    a,
+    Math.min(b,v)
+  );
+}
+
+function rand(a,b){
+  return a+Math.random()*(b-a);
+}
+
+function dist(ax,ay,bx,by){
+  return Math.hypot(
+    ax-bx,
+    ay-by
+  );
+}
+
+
+/* =========================================================
+   SKILL DATA
+   ========================================================= */
+
+const SK={};
+
+for(const k in CFG.skills){
+
+  SK[k]={
+    ...CFG.skills[k],
+    ic:CFG.skills[k].icon
+  };
+}
+
+
+/* =========================================================
+   SKILL SYSTEM
+   ========================================================= */
+
+function useSkill(){
+
+  if(
+    !running ||
+    paused ||
+    over ||
+    skillCd>0
+  ){
+    return;
+  }
+
+  const h=selectedHero.id;
+  const S=CFG.skills[h];
+
+  skillCd=S.cd;
+
+  if(h==='prism'){
+
+    player.hit=S.invuln;
+
+    makeSparks(
+      player.x,
+      player.y,
+      '#00f0ff',
+      30
+    );
+
+    for(const e of enemies){
+
+      if(
+        dist(
+          e.x,
+          e.y,
+          player.x,
+          player.y
+        )<S.range
+      ){
+
+        const a=Math.atan2(
+          e.y-player.y,
+          e.x-player.x
+        );
+
+        e.x+=Math.cos(a)*S.push;
+        e.y+=Math.sin(a)*S.push;
+      }
+    }
+
+  }else if(h==='neon'){
+
+    for(
+      let k=0;
+      k<S.bullets;
+      k++
+    ){
+
+      const a=
+        k*Math.PI*2/S.bullets;
+
+      bullets.push({
+
+        x:player.x,
+
+        y:player.y,
+
+        vx:
+          Math.cos(a)*
+          player.bulletSpeed,
+
+        vy:
+          Math.sin(a)*
+          player.bulletSpeed,
+
+        r:5,
+
+        life:S.life,
+
+        damage:
+          player.damage*
+          S.damageMult,
+
+        crit:false,
+
+        type:'laser',
+
+        pierce:player.pierce,
+
+        bounce:0,
+
+        hitList:[],
+
+        trail:[]
+      });
+    }
+
+  }else if(h==='psycho'){
+
+    makeSparks(
+      player.x,
+      player.y,
+      '#ff00ff',
+      40
+    );
+
+    if(settings.shake)
+      screenShake=S.shake;
+
+    for(const e of enemies){
+
+      if(
+        !e.dead &&
+        dist(
+          e.x,
+          e.y,
+          player.x,
+          player.y
+        )<S.radius
+      ){
+
+        dealRaw(
+          e,
+          player.damage*S.damageMult,
+          '#ff00ff'
+        );
+      }
+    }
+
+  }else{
+
+    const a=player.angle;
+
+    player.hit=S.invuln;
+
+    player.x=clamp(
+      player.x+
+      Math.cos(a)*
+      S.dashDistance,
+      40,
+      world.w-40
+    );
+
+    player.y=clamp(
+      player.y+
+      Math.sin(a)*
+      S.dashDistance,
+      40,
+      world.h-40
+    );
+
+    makeSparks(
+      player.x,
+      player.y,
+      '#ffe600',
+      25
+    );
+  }
+
+  playSound('levelup');
+}
+
+
+/* =========================================================
+   SHUFFLE / INPUT
+   ========================================================= */
+
+function shuffle(a){
+
+  a=[...a];
+
+  for(
+    let i=a.length-1;
+    i>0;
+    i--
+  ){
+
+    const j=
+      Math.floor(
+        Math.random()*(i+1)
+      );
+
+    [
+      a[i],
+      a[j]
+    ]=[
+      a[j],
+      a[i]
+    ];
+  }
+
+  return a;
+}
+
+
+function resetInput(){
+
+  joy.active=false;
+
+  joy.pointerId=null;
+
+  joy.x=0;
+  joy.y=0;
+
+  joyBase.style.display='none';
+
+  keys.up=
+  keys.down=
+  keys.left=
+  keys.right=false;
+}
+
+
+function syncPause(){
+
+  paused=
+    levelOpen ||
+    shopOpen ||
+    pauseOpen;
+
+  touchZone.classList.toggle(
+    'hidden',
+    paused||!running
+  );
+
+  if(paused)
+    resetInput();
+}
+
+
+/* =========================================================
+   CLAMP STATS
+   ========================================================= */
+
+function clampStats(){
+
+  const C=CFG.caps;
+  const hb=selectedHero;
+
+  player.dodge=
+    clamp(
+      player.dodge,
+      0,
+      C.dodge
+    );
+
+  player.crit=
+    clamp(
+      player.crit,
+      0,
+      C.crit
+    );
+
+  player.armor=
+    clamp(
+      player.armor,
+      C.armorMin,
+      C.armorMax
+    );
+
+  player.executionThreshold=
+    Math.min(
+      C.executionThreshold,
+      player.executionThreshold
+    );
+
+  player.fireRate=
+    Math.max(
+      C.fireRateMin,
+      player.fireRate
+    );
+
+  player.lifesteal=
+    Math.min(
+      C.lifesteal,
+      player.lifesteal
+    );
+
+  player.pierce=
+    Math.min(
+      C.pierce,
+      player.pierce
+    );
+
+  player.projectiles=
+    Math.min(
+      C.projectiles,
+      player.projectiles
+    );
+
+  player.ricochet=
+    Math.min(
+      C.ricochet,
+      player.ricochet
+    );
+
+  player.orbitBlades=
+    Math.min(
+      C.orbitBlades,
+      player.orbitBlades
+    );
+
+  player.timeSlow=
+    Math.min(
+      C.timeSlow,
+      player.timeSlow||0
+    );
+
+  player.speed=
+    Math.min(
+      player.speed,
+      hb.speed*C.speedMultOfHero
+    );
+
+  player.regen=
+    Math.min(
+      player.regen,
+      C.regen
+    );
+
+  player.goldMulti=
+    Math.min(
+      player.goldMulti,
+      C.goldMulti
+    );
+
+  player.knockback=
+    Math.min(
+      player.knockback,
+      C.knockback
+    );
+
+  player.explosiveRadius=
+    Math.min(
+      player.explosiveRadius,
+      C.explosiveRadius
+    );
+
+  player.damage=
+    Math.min(
+      player.damage,
+      hb.damage*C.damageMultOfHero
+    );
+
+  player.revives=
+    Math.min(
+      player.revives,
+      C.revives
+    );
+
+  player.bulletSpeed=
+    Math.min(
+      player.bulletSpeed,
+      C.bulletSpeed
+    );
+
+  player.pickup=
+    Math.min(
+      player.pickup,
+      C.pickup
+    );
+}
+
+
+/* =========================================================
+   CHARACTER STATS PANEL — FULL VERSION
+   ========================================================= */
+
+function renderCharacterStatsHtml(p){
+
+  const groups={
+
+    combat:{
+      title:'⚔️ การโจมตี',
+      color:'#facc15'
+    },
+
+    defense:{
+      title:'🛡️ การป้องกัน',
+      color:'#4ade80'
+    },
+
+    special:{
+      title:'✨ ความสามารถพิเศษ',
+      color:'#c084fc'
+    },
+
+    utility:{
+      title:'🏃 การเคลื่อนที่ / เศรษฐกิจ',
+      color:'#38bdf8'
+    }
+  };
+
+
+  const renderGroup=(groupKey)=>{
+
+    const g=groups[groupKey];
+
+    const rows=
+      PLAYER_STAT_DEFS
+        .filter(
+          d=>d.group===groupKey
+        )
+        .filter(
+          d=>p[d.key]!==undefined
+        )
+        .map(def=>{
+
+          const value=
+            formatStatValue(
+              def.key,
+              p[def.key]
+            );
+
+          return `
+
+            <div
+              class="stat-item"
+              style="
+                padding:5px 3px;
+                min-height:27px;
+              "
+            >
+
+              <span
+                style="
+                  display:flex;
+                  align-items:center;
+                  gap:5px;
+                  color:#cbd5e1;
+                "
+              >
+                <span>${def.icon}</span>
+                <span>${def.name}</span>
+              </span>
+
+              <span
+                class="val"
+                style="
+                  color:${g.color};
+                  font-weight:900;
+                  text-align:right;
+                "
+              >
+                ${value}
+              </span>
+
+            </div>
+          `;
+        })
+        .join('');
+
+    if(!rows)
+      return '';
+
+    return `
+
+      <div
+        style="
+          grid-column:1/-1;
+          margin-top:4px;
+          margin-bottom:2px;
+          padding:5px 6px;
+          color:${g.color};
+          font-size:11px;
+          font-weight:900;
+          border-bottom:1px solid #334155;
+        "
+      >
+        ${g.title}
+      </div>
+
+      ${rows}
+
+    `;
+  };
+
+
+  return `
+
+    <div
+      style="
+        display:grid;
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+        gap:3px 12px;
+        text-align:left;
+      "
+    >
+
+      ${renderGroup('combat')}
+
+      ${renderGroup('defense')}
+
+      ${renderGroup('special')}
+
+      ${renderGroup('utility')}
+
+    </div>
+
+  `;
+}
+
+
+/* =========================================================
+   HERO CHOICE
+   ========================================================= */
+
+function applyHeroChoice(h){
+
+  selectedHero=h;
+
+  Object.assign(
+    player,
+    heroStartStats(h),
+    {
+      bulletType:h.bulletType,
+      fireTimer:0,
+      hit:0
+    }
+  );
+
+  if(devOverride)
+    applyDevPlayer();
+  else
+    syncDevPlayerFromHero();
+
+  clampStats();
+
+  document
+    .getElementById('startHeroStats')
+    .innerHTML=
+      renderCharacterStatsHtml(player);
+}
 
   const heroSelectWrap = document.getElementById('heroSelect');
   heroes.forEach(h => {
