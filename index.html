@@ -719,7 +719,7 @@ const WAVES = {
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
-const DROPS = { xpMultiplier: 0.4994080000000001, goldMultiplier: 0.84, xpChance: 1, goldChance: 1, goldMin: 1, goldMax: 3, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
+const DROPS = { xpMultiplier: 0.4994080000000001, goldMultiplier: 1.008, xpChance: 1, goldChance: 1, goldMin: 1, goldMax: 3, heroGoldMultiplier: 1, xpMergeThreshold: 200 };
 const PICKUPS = { xpLife: 25, goldLife: 25, xpFlySpeed: 340, goldFlySpeed: 360, flyPickupFactor: 2 };
 
 /* ===== 11. LEVEL ===== */
@@ -3995,7 +3995,7 @@ function openLevelUp(forceHigherTier=false){
     }
     const rawPricePerWave=Number(shopCfg.pricePerWave);
     const pricePerWave=Number.isFinite(rawPricePerWave)?rawPricePerWave:0.08;
-    activeShopItems=chosen.map(i=>({...i,cost:Math.round(Number(i.cost||0)*(1+(wave-1)*pricePerWave))}));
+    activeShopItems=chosen.map(i=>({...i,cost:Math.round(Number(i.cost||0)*0.80*(1+(wave-1)*pricePerWave))}));
     renderShopItems();
   }
 
