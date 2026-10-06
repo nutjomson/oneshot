@@ -2995,6 +2995,65 @@ function applyHeroChoice(h){
     if(player.lifesteal>0){const lsCap=player.maxHp*(CFG.combat.lifestealMaxPerSec||0.08);const g=Math.min(heal*player.lifesteal,Math.max(0,lsCap-lsUsed));lsUsed+=g;player.hp=Math.min(player.maxHp,player.hp+g);}
     if(e.hp<=0) e.dead=true;
   }
+  // Boss Item Drop: uses the current shop tier rates, shifted up by +1 tier.
+  function dropBossItem(){
+    const tierRules=[
+      {tier:1,min:1,max:14},
+      {tier:2,min:15,max:29},
+      {tier:3,min:30,max:49},
+      {tier:4,min:50,max:79},
+      {tier:5,min:80,max:9999}
+    ];
+    const unlocked=tierRules.filter(r=>wave>=r.min).map(r=>r.tier);
+    if(!unlocked.length || !Array.isArray(luxuryShopPool) || !luxuryShopPool.length) return null;
+
+    // Keep the same shop rates at the current wave, then shift the resulting tier +1.
+    const shopWeights={1:70,2:30,3:0,4:0,5:0};
+    if(wave>=15){shopWeights[1]=60;shopWeights[2]=40;}
+    if(wave>=30){shopWeights[1]=35;shopWeights[2]=35;shopWeights[3]=30;}
+    if(wave>=50){shopWeights[1]=0;shopWeights[2]=30;shopWeights[3]=35;shopWeights[4]=35;}
+    if(wave>=80){shopWeights[1]=0;shopWeights[2]=0;shopWeights[3]=35;shopWeights[4]=40;shopWeights[5]=25;}
+
+    const shifted={};
+    for(const tier of Object.keys(shopWeights)){
+      const w=Number(shopWeights[tier]||0);
+      if(w<=0) continue;
+      const target=Math.min(5,Number(tier)+1);
+      shifted[target]=(shifted[target]||0)+w;
+    }
+
+    const availableTargets=Object.keys(shifted)
+      .map(Number)
+      .filter(t=>luxuryShopPool.some(i=>Number(i.tier)===t&&!isItemMaxed(i)));
+
+    if(!availableTargets.length) return null;
+
+    let total=0;
+    for(const t of availableTargets) total+=Number(shifted[t]||0);
+    let roll=Math.random()*total;
+    let targetTier=availableTargets[availableTargets.length-1];
+    for(const t of availableTargets){
+      roll-=Number(shifted[t]||0);
+      if(roll<=0){targetTier=t;break;}
+    }
+
+    const pool=luxuryShopPool.filter(i=>
+      Number(i.tier)===targetTier &&
+      !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
+      !isItemMaxed(i)
+    );
+    if(!pool.length) return null;
+
+    const item=weightedPick(pool);
+    if(!item) return null;
+
+    item.apply();
+    clampStats();
+    playSound('coin');
+    setStatus(`🎁 บอสดรอปฟรี: S${item.tier} ${item.icon||'📦'} ${item.name}`);
+    return item;
+  }
+
   function sweepDead(){
     for(let i=enemies.length-1;i>=0;i--){
       const e=enemies[i];
@@ -3005,6 +3064,7 @@ function applyHeroChoice(h){
             e.x+rand(-30,30),e.y+rand(-30,30),
             dev.misc.bossBonusXp*(1+(wave-1)*dev.wave.xpPerWave),dev.misc.bossBonusGold*(1+(wave-1)*dev.wave.goldPerWave)
           );
+          dropBossItem();
           setStatus('☠ กำจัดบอสสำเร็จ!');
         }
       }
