@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.31</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.32</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -257,7 +257,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.31</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.32</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -486,7 +486,8 @@ body.gameplay-actions .hud-controls{display:flex}
 
 const mul  = (stat, v)      => ({ op: 'mul', stat, v });
 const add  = (stat, v, min) => ({ op: 'add', stat, v, min });
-const set  = (stat, v)      => ({ op: 'set', stat, v });
+const set  = (stat, v)      => ({ op: 'set', stat, v })
+const addBulletType = v => ({ op: 'addBulletType', stat: 'bulletType', v });
 const heal = (v)            => ({ op: 'heal', v });
 const healPct = (v)         => ({ op: 'healPct', v });
 const healFull = ()         => ({ op: 'healPct', v: 1 });
@@ -807,10 +808,10 @@ const SHOP_ITEMS = [
   { id: 's_pot3', tier: 1, icon: '💖', name: 'น้ำยาฟื้นฟูเต็มสูบ',       cost: 75,  fx: [healFull()] },
   { id: 's_pot4', tier: 1, icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 95,  fx: [add('maxHp', 30), healFull()], scale: 0.40 },
 
-  { id: 's_wpn1', tier: 1, icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 180, fx: [set('bulletType', 'laser')],    desc: BULLET_TYPES.laser.desc },
-  { id: 's_wpn2', tier: 1, icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 220, fx: [set('bulletType', 'fireball')], desc: BULLET_TYPES.fireball.desc },
-  { id: 's_wpn3', tier: 1, icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 260, fx: [set('bulletType', 'plasma')],   desc: BULLET_TYPES.plasma.desc },
-  { id: 's_wpn4', tier: 1, icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 200, fx: [set('bulletType', 'arcane')],   desc: BULLET_TYPES.arcane.desc },
+  { id: 's_wpn1', tier: 1, icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 180, fx: [addBulletType('laser')],    desc: BULLET_TYPES.laser.desc },
+  { id: 's_wpn2', tier: 1, icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 220, fx: [addBulletType('fireball')], desc: BULLET_TYPES.fireball.desc },
+  { id: 's_wpn3', tier: 1, icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 260, fx: [addBulletType('plasma')],   desc: BULLET_TYPES.plasma.desc },
+  { id: 's_wpn4', tier: 1, icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 200, fx: [addBulletType('arcane')],   desc: BULLET_TYPES.arcane.desc },
 
   { id: 's_a1', tier: 1, icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.06)], scale: 0.40 },
   { id: 's_a2', tier: 1, icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.15)] },
@@ -1121,7 +1122,7 @@ window.GAME_CONFIG = {
   const player = {
     x:CFG.world.w/2, y:CFG.world.h/2, r:CFG.combat.playerRadius, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
     bulletSpeed:800, projectiles:1, pickup:450, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1, xpMulti:1, timeSlow:0,
-    angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', goldMulti:1, revives:0,
+    angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', bulletTypes:['arcane'], goldMulti:1, revives:0,
     // Unique Mechanics
     ricochet: 0,
     poisonDmg: 0,
@@ -1574,23 +1575,7 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
     /*
      * Bullet Type เป็นข้อความ
      */
-    if(def.key === 'bulletType'){
-
-      if(String(a) !== String(b)){
-
-        changes.push({
-          icon:def.icon,
-          name:def.name,
-          before:String(a),
-          after:String(b),
-          positive:true,
-          text:`${a} → ${b}`
-        });
-
-      }
-
-      return;
-    }
+    if(def.key === 'bulletType') return;
 
     const na = Number(a);
     const nb = Number(b);
@@ -1803,6 +1788,14 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
 
 function applyEffect(f){
 
+  if(f.op==='addBulletType' || (f.op==='set' && f.stat==='bulletType')){
+    const bt=String(f.v||'arcane');
+    if(!Array.isArray(player.bulletTypes)) player.bulletTypes=[player.bulletType||'arcane'];
+    if(!player.bulletTypes.includes(bt)) player.bulletTypes.push(bt);
+    player.bulletType=player.bulletTypes[0]||bt;
+    return;
+  }
+
   if(f.op==='heal'){
 
     player.hp=Math.min(
@@ -1956,6 +1949,9 @@ function descEffect(f){
       ? 'ฟื้นฟู HP เต็ม'
       : `ฟื้นฟู HP ${pctN(v)}% ทันที`;
 
+  if(f.op==='addBulletType')
+    return 'เพิ่มกระสุนชนิดใหม่เข้าคลัง — ยิงร่วมกับกระสุนเดิม';
+
   if(f.op==='set')
     return null;
 
@@ -1994,7 +1990,7 @@ function descEffect(f){
    ========================================================= */
 
 function previewItemStats(item){
-  const saved={...player};
+  const saved={...player, bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
   const before=snapshotPlayerStats();
   try{
     (item.fx||[]).forEach(applyEffect);
@@ -2008,10 +2004,7 @@ function renderItemPreview(item){
   PLAYER_STAT_DEFS.forEach(def=>{
     const a=preview.before[def.key], b=preview.after[def.key];
     if(a===undefined || b===undefined) return;
-    if(def.key==='bulletType'){
-      if(String(a)!==String(b)) rows.push('<span style="color:#4ade80">'+def.icon+' '+def.name+': '+a+' → '+b+'</span>');
-      return;
-    }
+    if(def.key==='bulletType') return;
     const na=Number(a), nb=Number(b);
     if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
     const positive=def.key==='fireRate' ? nb<na : nb>na;
@@ -2024,10 +2017,7 @@ function buildItem(def,i){
 
   const fx=def.fx||[];
 
-  const setBt=
-    fx.find(
-      f=>f.op==='set'&&f.stat==='bulletType'
-    );
+  const setBt=fx.find(f=>(f.op==='set'||f.op==='addBulletType')&&f.stat==='bulletType');
 
   const o={
 
@@ -2701,6 +2691,7 @@ function applyHeroChoice(h){
     heroStartStats(h),
     {
       bulletType:h.bulletType,
+      bulletTypes:Array.isArray(h.bulletTypes)&&h.bulletTypes.length ? [...h.bulletTypes] : [h.bulletType||'arcane'],
       fireTimer:0,
       hit:0
     }
@@ -2839,19 +2830,15 @@ function applyHeroChoice(h){
     
     playSound('shoot');
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
-    for(let i=0;i<player.projectiles;i++){
-      const spread=(i-(player.projectiles-1)/2)*CFG.combat.spreadAngle;
-      const a=baseAngle+spread;
-      const bt=player.bulletType, B=CFG.bulletTypes[bt]||{}, K=CFG.combat;
-      const crit=Math.random()<player.crit+(B.critBonus||0), sp=player.bulletSpeed*(B.speedMult||1);
-      bullets.push({
-        x:player.x+Math.cos(a)*K.muzzleOffset, y:player.y+Math.sin(a)*K.muzzleOffset,
-        vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
-        r:B.radius||K.bulletRadius, life:K.bulletLife,
-        damage:player.damage*(crit?(B.critMult||K.critMult):1), crit, type:bt,
-        pierce:player.pierce+(B.pierceBonus||0), bounce:player.ricochet+(B.bounce||0), hitList:[],
-        trail:[]
-      });
+    const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
+    for(const bt of ownedTypes){
+      for(let i=0;i<player.projectiles;i++){
+        const spread=(i-(player.projectiles-1)/2)*CFG.combat.spreadAngle;
+        const a=baseAngle+spread;
+        const B=CFG.bulletTypes[bt]||{}, K=CFG.combat;
+        const crit=Math.random()<player.crit+(B.critBonus||0), sp=player.bulletSpeed*(B.speedMult||1);
+        bullets.push({x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:B.radius||K.bulletRadius,life:K.bulletLife,damage:player.damage*(crit?(B.critMult||K.critMult):1),crit,type:bt,pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),hitList:[],trail:[]});
+      }
     }
   }
 
@@ -3525,7 +3512,8 @@ function openLevelUp(){
   }
 
   function generateShopList() {
-    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&i.bt===player.bulletType))).slice(0, Math.max(1,Math.floor(dev.shop.itemsShown))).map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*dev.shop.pricePerWave))}));
+    const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
+    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&ownedBulletTypes.includes(i.bt)))).slice(0, Math.max(1,Math.floor(dev.shop.itemsShown))).map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*dev.shop.pricePerWave))}));
     renderShopItems();
   }
 
@@ -4083,6 +4071,8 @@ function openLevelUp(){
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
     player.x=world.w/2; player.y=world.h/2; player.gold=0; screenShake=0; spawnTimer=0; bossWave=0; levelOpen=shopOpen=pauseOpen=false; pendingLevels=0; floaters=[]; skillCd=0; shownWave=1; resetInput();
     player.dodge=0.0; player.lifesteal=0.0; player.pierce=1;
+    player.bulletTypes=[selectedHero?.bulletType||'arcane'];
+    player.bulletType=player.bulletTypes[0];
     player.ricochet=0; player.poisonDmg=0; player.lightningChain=0; 
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
