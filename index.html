@@ -232,8 +232,9 @@ html,body{
 
 <!-- Start Menu & Hero Selection Overlay -->
 <div id="startOverlay" class="overlay">
-  <div class="modal">
+  <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.3</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -241,7 +242,7 @@ html,body{
     <div class="stats-box" id="startHeroStats"></div>
 
     <div class="btn-group">
-      <button class="btn" id="startBtn">▶ เริ่มเกมทันที</button>
+      <button type="button" class="btn" id="startBtn">▶ เริ่มเกมทันที</button>
       <button class="btn btn-blue" id="settingsBtn">⚙️ ตั้งค่าเกม</button>
     </div>
   </div>
@@ -824,7 +825,13 @@ window.GAME_CONFIG = {
 
   // ค่าทั้งหมดมาจาก balance-config ด้านบน — dev panel ใช้ปรับสดระหว่างเล่นเท่านั้น
   const DEV_DEFAULTS = {
-    player:{},
+    player:{
+      maxHp:280,hp:280,damage:35,speed:240,fireRate:.30,bulletSpeed:800,
+      projectiles:1,pierce:1,armor:.35,crit:.12,dodge:0,regen:1,lifesteal:0,
+      pickup:450,goldMulti:1,xpMulti:1,knockback:0,explosiveRadius:0,revives:0,
+      ricochet:0,orbitBlades:0,timeSlow:0,lightningChain:0,poisonDmg:0,executionThreshold:0,
+      ...CFG.playerBase
+    },
     wave:{...CFG.waves}, drop:{...CFG.drops}, level:{...CFG.level}, shop:{...CFG.shop}, misc:{...CFG.misc}
   };
   const dev = JSON.parse(JSON.stringify(DEV_DEFAULTS));
@@ -835,7 +842,17 @@ window.GAME_CONFIG = {
   function getNested(obj,path){return path.split('.').reduce((o,k)=>o?.[k],obj);}
   function devPctInputValue(v){return Math.round(v*100*100)/100;}
   function heroStartStats(h){
-    return {maxHp:h.hp,hp:h.hp,speed:h.speed,damage:h.damage,fireRate:h.fireRate,armor:h.armor,crit:h.crit,...CFG.playerBase,...(h.base||{})};
+    const base={...DEV_DEFAULTS.player,...CFG.playerBase,...(h.base||{})};
+    return {
+      maxHp:Number.isFinite(Number(h.hp))?Number(h.hp):base.maxHp,
+      hp:Number.isFinite(Number(h.hp))?Number(h.hp):base.hp,
+      speed:Number.isFinite(Number(h.speed))?Number(h.speed):base.speed,
+      damage:Number.isFinite(Number(h.damage))?Number(h.damage):base.damage,
+      fireRate:Number.isFinite(Number(h.fireRate))?Number(h.fireRate):base.fireRate,
+      armor:Number.isFinite(Number(h.armor))?Number(h.armor):base.armor,
+      crit:Number.isFinite(Number(h.crit))?Number(h.crit):base.crit,
+      ...base
+    };
   }
   function syncDevPlayerFromHero(){
     if(!selectedHero)return;
@@ -3716,6 +3733,11 @@ function openLevelUp(){
   }
 
   function startGame(){
+    if(!selectedHero && heroes && heroes.length) selectedHero=heroes[0];
+    if(!selectedHero){
+      setStatus('ไม่พบฮีโร่สำหรับเริ่มเกม');
+      return;
+    }
     initAudio();
     running=true; paused=false; over=false;
     elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0;
@@ -3747,9 +3769,27 @@ function openLevelUp(){
     document.getElementById('gameOver').classList.remove('hidden');
   }
 
-  document.getElementById('skillBtn').addEventListener('pointerdown',e=>{e.stopPropagation();useSkill()});
-  document.getElementById('startBtn').onclick=startGame;
-  document.getElementById('restart').onclick=startGame;
+  document.getElementById('skillBtn')?.addEventListener('pointerdown',e=>{e.stopPropagation();useSkill()});
+
+  const startButton=document.getElementById('startBtn');
+  if(startButton){
+    startButton.type='button';
+    startButton.onclick=(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      try{
+        startGame();
+      }catch(err){
+        console.error('START GAME ERROR',err);
+        setStatus('เริ่มเกมไม่สำเร็จ: '+(err?.message||String(err)));
+      }
+    };
+  }
+
+  document.getElementById('restart')?.addEventListener('click',(e)=>{
+    e.preventDefault();
+    try{startGame()}catch(err){console.error(err);setStatus('เริ่มเกมไม่สำเร็จ: '+(err?.message||String(err)));}
+  });
   document.getElementById('quitTitle').onclick=toTitle;
 
   setStatus('ยินดีต้อนรับสู่สนามรบ!');
