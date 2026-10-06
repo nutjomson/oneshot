@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.42</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.43</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.42</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.43</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -870,7 +870,7 @@ const SHOP_ITEMS = [
   { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3600, fx: [mul('fireRate', 0.78), add('crit', 0.10), add('timeSlow', 0.05)] },
   { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.18), mul('goldMulti', 1.25), mul('xpMulti', 1.20)] },
   { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 35), add('lightningChain', 150), mul('damage', 1.15)] },
-  { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 4500, fx: [mul('maxHp', 1.30), add('regen', 5), add('lifesteal', 0.05), add('revives', 1)] }
+  { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 4500, fx: [mul('maxHp', 1.30), add('regen', 5), add('lifesteal', 0.05), add('revives', 1)] },
   { id: 's_e6', tier: 5, icon: '🕳️', name: 'หลุมดำจิ๋ว', cost: 4100, fx: [add('executionThreshold', 0.05), add('knockback', 180), add('explosiveRadius', 25)] },
   { id: 's_e7', tier: 5, icon: '🪽', name: 'ปีกแห่งโชคชะตา', cost: 3900, fx: [mul('speed', 1.10), add('dodge', 0.06), mul('xpMulti', 1.12)] }
 ];
