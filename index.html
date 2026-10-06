@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.40</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.41</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.40</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.41</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -837,7 +837,28 @@ const SHOP_ITEMS = [
   { id: 's_b1',  tier: 2, icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ',        cost: 420, fx: [mul('damage', 1.10)], scale: 0.45 },
   { id: 's_b2',  tier: 2, icon: '🔰', name: 'เกราะไทเทเนียม',          cost: 400, fx: [add('armor', 0.04)], scale: 0.50 },
   { id: 's_b3',  tier: 2, icon: '🏰', name: 'ป้อมปราการศิลา',          cost: 520, fx: [mul('maxHp', 1.12)], scale: 0.45 },
-  { id: 's_b4',  tier: 2, icon: '🩸', name: 'จี้หยดเลือดอสูร',          cost: 450, fx: [add('lifesteal', 0.02)], scale: 0.60 }
+  { id: 's_b4',  tier: 2, icon: '🩸', name: 'จี้หยดเลือดอสูร',          cost: 450, fx: [add('lifesteal', 0.02)], scale: 0.60 },
+
+  // ───────── S3 หายาก ─────────
+  { id: 's_c1', tier: 3, icon: '🔱', name: 'ตรีศูลนักล่า',                  cost: 900,  fx: [mul('damage', 1.14), add('crit', 0.03)] },
+  { id: 's_c2', tier: 3, icon: '🌪️', name: 'แกนพายุหมุน',                  cost: 850,  fx: [mul('fireRate', 0.91), mul('bulletSpeed', 1.10)] },
+  { id: 's_c3', tier: 3, icon: '🦾', name: 'แกนพลังยักษ์',                  cost: 950,  fx: [mul('maxHp', 1.16), add('armor', 0.05)] },
+  { id: 's_c4', tier: 3, icon: '🧿', name: 'ดวงตาอสูร',                    cost: 1000, fx: [add('crit', 0.07), add('executionThreshold', 0.02)] },
+  { id: 's_c5', tier: 3, icon: '🗡️', name: 'คมดาบเงา',                    cost: 1100, fx: [add('orbitBlades', 1), mul('damage', 1.06)] },
+
+  // ───────── S4 ตำนาน ─────────
+  { id: 's_d1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.20), add('explosiveRadius', 18)] },
+  { id: 's_d2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.86), add('timeSlow', 0.03)] },
+  { id: 's_d3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.25), add('armor', 0.07), add('regen', 2)] },
+  { id: 's_d4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 80), add('crit', 0.05)] },
+  { id: 's_d5', tier: 4, icon: '🔄', name: 'ตราสะท้อนจักรวาล',             cost: 2100, fx: [add('ricochet', 1), mul('bulletSpeed', 1.18)] },
+
+  // ───────── S5 เทพนิยาย ─────────
+  { id: 's_e1', tier: 5, icon: '🌌', name: 'แก่นจักรวาล',                  cost: 3800, fx: [mul('damage', 1.30), mul('maxHp', 1.20), mul('speed', 1.08)] },
+  { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3600, fx: [mul('fireRate', 0.78), add('crit', 0.10), add('timeSlow', 0.05)] },
+  { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.18), mul('goldMulti', 1.25), mul('xpMulti', 1.20)] },
+  { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 35), add('lightningChain', 150), mul('damage', 1.15)] },
+  { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 4500, fx: [mul('maxHp', 1.30), add('regen', 5), add('lifesteal', 0.05), add('revives', 1)] }
 ];
   
 /* ---------- ส่งออกให้ index.html ---------- */
@@ -3528,7 +3549,41 @@ function openLevelUp(){
 
   function generateShopList() {
     const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
-    activeShopItems = shuffle(luxuryShopPool.filter(i=>!(i.bt&&ownedBulletTypes.includes(i.bt)))).slice(0, Math.max(1,Math.floor(dev.shop.itemsShown))).map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*dev.shop.pricePerWave))}));
+    const tierRules=[
+      {tier:1,min:1,max:14},
+      {tier:2,min:15,max:29},
+      {tier:3,min:30,max:49},
+      {tier:4,min:50,max:79},
+      {tier:5,min:80,max:9999}
+    ];
+    const unlocked=SHOP_TIERS ? Object.keys(SHOP_TIERS).map(Number).filter(t=>{
+      const rule=tierRules.find(r=>r.tier===t);
+      return rule && wave>=rule.min;
+    }) : [1];
+    const weights={1:70,2:30,3:0,4:0,5:0};
+    if(wave>=15){weights[1]=60;weights[2]=40;}
+    if(wave>=30){weights[1]=35;weights[2]=35;weights[3]=30;}
+    if(wave>=50){weights[1]=0;weights[2]=30;weights[3]=35;weights[4]=35;}
+    if(wave>=80){weights[1]=0;weights[2]=0;weights[3]=35;weights[4]=40;weights[5]=25;}
+    const pool=luxuryShopPool.filter(i=>unlocked.includes(i.tier)&&!(i.bt&&ownedBulletTypes.includes(i.bt)));
+    const chosen=[];
+    const available=[...pool];
+    const wanted=Math.max(1,Math.floor(dev.shop.itemsShown));
+    while(chosen.length<wanted&&available.length){
+      let total=available.reduce((s,i)=>s+(weights[i.tier]||0),0);
+      if(total<=0) break;
+      let roll=Math.random()*total, pick=available[available.length-1];
+      for(const item of available){
+        roll-=weights[item.tier]||0;
+        if(roll<=0){pick=item;break;}
+      }
+      chosen.push(pick);
+      available.splice(available.indexOf(pick),1);
+    }
+    if(chosen.length<wanted){
+      chosen.push(...shuffle(available).slice(0,wanted-chosen.length));
+    }
+    activeShopItems=chosen.map(i=>({...i,cost:Math.round(i.cost*(1+(wave-1)*dev.shop.pricePerWave))}));
     renderShopItems();
   }
 
