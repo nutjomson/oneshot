@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.71</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.72</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.71</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.72</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3044,16 +3044,17 @@ function applyHeroChoice(h){
   function dealRaw(o,amt,color){o.hp-=amt;o.hit=.08;makeSparks(o.x,o.y,color,5);if(o.hp<=0)o.dead=true;}
   function hitEnemy(e,damage,crit,bullet,blade){
     if(e.dead) return;
-    const heal=damage;
+    // ใช้ความเสียหายจริงที่หัก HP และแสดงตัวเลขเดียวกัน เพื่อไม่ให้เลขดาเมจคลาดเคลื่อน
     if(player.executionThreshold>0&&e.type!=='boss'&&(e.hp/e.maxHp)<=player.executionThreshold){
-      damage=e.hp+999; makeSparks(e.x,e.y,'#f43f5e',20);
+      damage=Math.max(0,e.hp); makeSparks(e.x,e.y,'#f43f5e',20);
     }
-    e.hp-=damage; e.hit=.12;
-    runStats.damageDealt+=Math.max(0,damage);
-    runStats.highestDamageHit=Math.max(runStats.highestDamageHit,Math.max(0,damage));
+    const actualDamage=Math.max(0,damage);
+    e.hp-=actualDamage; e.hit=.12;
+    runStats.damageDealt+=actualDamage;
+    runStats.highestDamageHit=Math.max(runStats.highestDamageHit,actualDamage);
     if(crit) runStats.critHits++;
     playSound('hit');
-    if(!blade&&floaters.length<60)floaters.push({x:e.x+rand(-8,8),y:e.y-e.r,t:.6,v:Math.round(heal),c:crit});
+    if(!blade&&floaters.length<60)floaters.push({x:e.x+rand(-8,8),y:e.y-e.r,t:.6,v:Math.round(actualDamage),c:crit});
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
     if(crit&&settings.shake) screenShake=4;
     if(player.knockback>0){
