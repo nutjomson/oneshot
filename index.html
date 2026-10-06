@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.9</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.9</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.10</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -842,16 +842,19 @@ window.GAME_CONFIG = {
   function getNested(obj,path){return path.split('.').reduce((o,k)=>o?.[k],obj);}
   function devPctInputValue(v){return Math.round(v*100*100)/100;}
   function heroStartStats(h){
+    // เริ่มจากค่ากลาง แล้วให้ค่าประจำฮีโร่ทับลงไป
+    // เพื่อให้แต่ละตัวเริ่มเกมด้วยสถานะตามคุณลักษณะของตัวเองจริง
     const base={...DEV_DEFAULTS.player,...CFG.playerBase,...(h.base||{})};
+    const hs=h.stats||h;
     return {
-      maxHp:Number.isFinite(Number(h.hp))?Number(h.hp):base.maxHp,
-      hp:Number.isFinite(Number(h.hp))?Number(h.hp):base.hp,
-      speed:Number.isFinite(Number(h.speed))?Number(h.speed):base.speed,
-      damage:Number.isFinite(Number(h.damage))?Number(h.damage):base.damage,
-      fireRate:Number.isFinite(Number(h.fireRate))?Number(h.fireRate):base.fireRate,
-      armor:Number.isFinite(Number(h.armor))?Number(h.armor):base.armor,
-      crit:Number.isFinite(Number(h.crit))?Number(h.crit):base.crit,
-      ...base
+      ...base,
+      maxHp:Number.isFinite(Number(hs.hp))?Number(hs.hp):base.maxHp,
+      hp:Number.isFinite(Number(hs.hp))?Number(hs.hp):base.hp,
+      speed:Number.isFinite(Number(hs.speed))?Number(hs.speed):base.speed,
+      damage:Number.isFinite(Number(hs.damage))?Number(hs.damage):base.damage,
+      fireRate:Number.isFinite(Number(hs.fireRate))?Number(hs.fireRate):base.fireRate,
+      armor:Number.isFinite(Number(hs.armor))?Number(hs.armor):base.armor,
+      crit:Number.isFinite(Number(hs.crit))?Number(hs.crit):base.crit
     };
   }
   function syncDevPlayerFromHero(){
