@@ -3166,7 +3166,19 @@ function applyHeroChoice(h){
       setStatus(`🧰 กล่องสมบัติ S${chest.tier} ไม่มีไอเท็มที่ใช้ได้`);
       return false;
     }
-    const item=weightedPick(pool);
+    // สุ่มไอเทมตาม weight โดยไม่พึ่ง weightedPick เพื่อป้องกัน scope error บนอุปกรณ์บางรุ่น
+    let totalWeight=0;
+    for(const candidate of pool){
+      const w=Number(candidate.weight);
+      totalWeight += Number.isFinite(w)&&w>0 ? w : 1;
+    }
+    let roll=Math.random()*totalWeight;
+    let item=pool[pool.length-1];
+    for(const candidate of pool){
+      const w=Number(candidate.weight);
+      roll -= Number.isFinite(w)&&w>0 ? w : 1;
+      if(roll<=0){ item=candidate; break; }
+    }
     if(!item) return false;
     showItemReward(item,'🧰 ได้ไอเทมจากกล่องสมบัติ');
     return true;
