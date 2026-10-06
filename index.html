@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.5</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ html,body{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.5</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.6</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1830,6 +1830,33 @@ function descEffect(f){
    BUILD ITEM
    ========================================================= */
 
+function previewItemStats(item){
+  const saved={...player};
+  const before=snapshotPlayerStats();
+  try{
+    (item.fx||[]).forEach(applyEffect);
+    try{ clampStats(); }catch(e){}
+    return {before, after:snapshotPlayerStats()};
+  }finally{ Object.assign(player,saved); }
+}
+
+function renderItemPreview(item){
+  const preview=previewItemStats(item), rows=[];
+  PLAYER_STAT_DEFS.forEach(def=>{
+    const a=preview.before[def.key], b=preview.after[def.key];
+    if(a===undefined || b===undefined) return;
+    if(def.key==='bulletType'){
+      if(String(a)!==String(b)) rows.push('<span style="color:#4ade80">'+def.icon+' '+def.name+': '+a+' → '+b+'</span>');
+      return;
+    }
+    const na=Number(a), nb=Number(b);
+    if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
+    const positive=def.key==='fireRate' ? nb<na : nb>na;
+    rows.push('<span style="color:'+(positive?'#4ade80':'#f87171')+'">'+def.icon+' '+def.name+': '+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>');
+  });
+  return rows.length ? '<div style="margin-top:5px;padding-top:5px;border-top:1px solid #334155;font-size:10px;line-height:1.55">'+rows.join('<br>')+'</div>' : '';
+}
+
 function buildItem(def,i){
 
   const fx=def.fx||[];
@@ -1880,13 +1907,7 @@ function buildItem(def,i){
       /*
        * แสดงเฉพาะค่าที่เปลี่ยนจริง
        */
-      showStatDelta(
-        before,
-        finalStats,
-        def.name || 'อัปเกรด'
-      );
-
-      return true;
+       return true;
     }
   };
 
@@ -3044,6 +3065,7 @@ function openLevelUp(){
         <div>
           <div class="uName">${u.name}</div>
           <div class="uDesc">${u.desc}</div>
+       ${renderItemPreview(u)}
         </div>
       `;
 
@@ -3350,6 +3372,7 @@ function openLevelUp(){
         <div>
           <div class="uName">${item.name}</div>
           <div class="uDesc">${item.desc}</div>
+           ${renderItemPreview(item)}
           <div class="cost">${item.purchased ? '<span style="color:#4ade80">ซื้อแล้ว!</span>' : '💰 ' + item.cost + ' ทอง'}</div>
         </div>`;
       
