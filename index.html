@@ -577,7 +577,7 @@ const HEROES = [
   {
     id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
     color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
-    stats: { hp: 204, speed: 290, damage: 31.2, fireRate: 0.2173913043478261, armor: 0.05, crit: 0.20, attackRange: 432 },
+    stats: { hp: 204, speed: 290, damage: 23.4, fireRate: 0.2173913043478261, armor: 0.05, crit: 0.20, attackRange: 302.4 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
     desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
   },
@@ -4723,6 +4723,16 @@ function openLevelUp(forceHigherTier=false){
     }
   }
 
+  function drawTreasureChestMarkers(cam){
+    const t=performance.now()/220;
+    for(const chest of treasureChests){
+      const px=sx(chest.x,cam), py=sy(chest.y,cam), pulse=0.75+0.25*Math.sin(t+chest.wave);
+      ctx.save(); ctx.globalAlpha=0.4+0.3*pulse; ctx.strokeStyle='#facc15'; ctx.lineWidth=3; ctx.shadowColor='#facc15'; ctx.shadowBlur=14;
+      ctx.beginPath(); ctx.arc(px,py,28+5*pulse,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=0.18+0.12*pulse; ctx.lineWidth=8; ctx.beginPath(); ctx.arc(px,py,38+7*pulse,0,Math.PI*2); ctx.stroke(); ctx.restore();
+    }
+  }
+
   function drawDrops(cam){
     for(const o of xpOrbs){
       const px=sx(o.x,cam), py=sy(o.y,cam);
@@ -4760,6 +4770,7 @@ function openLevelUp(forceHigherTier=false){
     ctx.clearRect(0,0,W,H);
     drawGround(cam);
     drawDrops(cam);
+    drawTreasureChestMarkers(cam);
     for(const e of enemies) if(e.x>cam.x-90&&e.x<cam.x+W+90&&e.y>cam.y-90&&e.y<cam.y+H+90) drawEnemy(e, cam);
     drawPlayer(cam);
     drawBullets(cam);
