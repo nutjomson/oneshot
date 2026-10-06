@@ -118,6 +118,10 @@ body.gameplay-actions .hud-controls{display:flex}
 #settingsOverlay{z-index:110}
 .skill-btn{position:absolute;z-index:15;right:max(16px,env(safe-area-inset-right));bottom:max(70px,env(safe-area-inset-bottom));width:70px;height:70px;border-radius:50%;border:3px solid #fff;background:#7c3aed;color:#fff;font-size:26px;font-weight:800;box-shadow:inset -3px -3px 0 #5b21b6,0 0 14px rgba(124,58,237,.7);touch-action:manipulation;pointer-events:auto;padding:0}
 .skill-btn:active{transform:scale(.94)}
+.range-btns{position:absolute;z-index:15;right:max(34px,calc(env(safe-area-inset-right) + 34px));bottom:max(8px,calc(env(safe-area-inset-bottom) + 8px));display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto}
+.range-btn{width:35px;height:35px;border-radius:50%;border:2px solid #fff;background:#334155;color:#fff;font-size:16px;font-weight:800;box-shadow:0 0 10px rgba(148,163,184,.45);touch-action:manipulation;pointer-events:auto;padding:0}
+.range-btn:active,.range-btn.active{transform:scale(.94);background:#a16207;box-shadow:0 0 14px rgba(250,204,21,.8)}
+
 #saveManagerOverlay{z-index:125}.save-list{display:grid;gap:8px;margin:12px 0;text-align:left}.save-card{border:2px solid #334155;background:#111827;border-radius:8px;padding:10px}.save-card.auto{border-color:#facc15}.save-card.empty{opacity:.7}.save-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.save-meta{font-size:11px;color:#94a3b8;line-height:1.5}.save-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.save-actions .btn{padding:7px 10px;font-size:11px}.hidden{display:none!important}
 #itemRewardOverlay{z-index:230}
 .item-reward-modal{width:min(560px,100%);max-width:560px}
@@ -269,6 +273,10 @@ body.gameplay-actions .hud-controls{display:flex}
 </div>
 
 <button id="skillBtn" class="skill-btn">⚡</button>
+<div id="rangeBtns" class="range-btns">
+  <button id="attackRangeBtn" class="range-btn" type="button" aria-label="แสดงระยะโจมตี">🎯</button>
+  <button id="pickupRangeBtn" class="range-btn" type="button" aria-label="แสดงระยะเก็บของ">🧲</button>
+</div>
 <div id="status">ยินดีต้อนรับสู่สนามรบ!</div>
 
 <!-- Start Menu & Hero Selection Overlay -->
@@ -1249,6 +1257,7 @@ window.GAME_CONFIG = {
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[];
   let treasureChests=[];
   let running=false, paused=false, over=false, lsUsed=0, rewardOpen=false;
+  let showAttackRange=false, showPickupRange=false;
 let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
@@ -4638,6 +4647,20 @@ function openLevelUp(forceHigherTier=false){
     boss:G(`.k....kkkk....k. .kk..kyyyyk..kk. ..kk.kyryyk.kk.. ..kkkkkkkkkkkk.. ..kaaaaaaaaaak.. .kaawwaaaawwaak. .kaarwaaaarwaak. .kaaaaaaaaaaaak. ..kaakkwwkkaak.. ..kaawwwwwwaak.. .kkkaaaaaaaakkk. kyykaaAAAAaakyyk kyykaaAyyAaakyyk .kkkaaAAAAaakkk. ..kAAkaaaakAAk.. ..kkkk....kkkk..`)
   };
 
+  function drawRangeIndicators(cam){
+    const px=sx(player.x,cam), py=sy(player.y,cam);
+    ctx.save();
+    if(showAttackRange){
+      ctx.globalAlpha=.14; ctx.fillStyle='#ef4444'; ctx.beginPath(); ctx.arc(px,py,player.attackRange*cam.scale,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=.85; ctx.strokeStyle='#facc15'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(px,py,player.attackRange*cam.scale,0,Math.PI*2); ctx.stroke();
+    }
+    if(showPickupRange){
+      ctx.globalAlpha=.10; ctx.fillStyle='#38bdf8'; ctx.beginPath(); ctx.arc(px,py,player.pickup*cam.scale,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=.8; ctx.strokeStyle='#38bdf8'; ctx.lineWidth=2; ctx.setLineDash([7,5]); ctx.beginPath(); ctx.arc(px,py,player.pickup*cam.scale,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.restore();
+  }
+
   function drawPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam), h=selectedHero, t=performance.now()/1000;
     const mv=player.animFrame>0, w=Math.sin(t*14);
@@ -4769,6 +4792,7 @@ function openLevelUp(forceHigherTier=false){
     const cam = camera();
     ctx.clearRect(0,0,W,H);
     drawGround(cam);
+    drawRangeIndicators(cam);
     drawDrops(cam);
     drawTreasureChestMarkers(cam);
     for(const e of enemies) if(e.x>cam.x-90&&e.x<cam.x+W+90&&e.y>cam.y-90&&e.y<cam.y+H+90) drawEnemy(e, cam);
@@ -4898,6 +4922,21 @@ function openLevelUp(forceHigherTier=false){
   }
 
   document.getElementById('skillBtn')?.addEventListener('pointerdown',e=>{e.stopPropagation();useSkill()});
+
+  function bindRangeHoldButton(id,key){
+    const btn=document.getElementById(id);
+    if(!btn) return;
+    const set=(on)=>{ if(key==='attack') showAttackRange=on; else showPickupRange=on; btn.classList.toggle('active',on); };
+    btn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();set(true);try{btn.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
+    const release=e=>{e.preventDefault();e.stopPropagation();set(false);};
+    btn.addEventListener('pointerup',release,{passive:false});
+    btn.addEventListener('pointercancel',release,{passive:false});
+    btn.addEventListener('lostpointercapture',()=>set(false));
+  }
+  bindRangeHoldButton('attackRangeBtn','attack');
+  bindRangeHoldButton('pickupRangeBtn','pickup');
+
+
 
   const startButton=document.getElementById('startBtn');
   if(startButton){
