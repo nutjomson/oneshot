@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.52</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.55</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -263,7 +263,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.52</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.55</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -887,7 +887,7 @@ window.GAME_CONFIG = {
   combat: COMBAT, bulletTypes: BULLET_TYPES, skills: SKILLS,
   enemies: ENEMIES, enemyAI: ENEMY_AI, waves: WAVES,
   drops: DROPS, pickups: PICKUPS, level: LEVEL, shop: SHOP, misc: MISC,
-  levelUpgrades: LEVEL_UPGRADES, shopItems: SHOP_ITEMS
+  levelUpgrades: LEVEL_UPGRADES, shopItems: SHOP_ITEMS, tiers: TIERS
 };
 
 })();
@@ -3282,11 +3282,15 @@ function openLevelUp(forceHigherTier=false){
   const availableTiers = existingTiers.filter(
     tier => isTierAvailable(tier)
   );
-  // Premium ต้องการ Tier ถัดไปจาก Tier สูงสุดที่เปิดปกติในเวฟนี้
-  // แต่ห้ามให้ isTierAvailable() บล็อก Tier เป้าหมาย เพราะ Premium มีหน้าที่
-  // ฝืนตารางสุ่มปกติและการันตี Tier ที่สูงขึ้น 1 ระดับ
-  const premiumBaseTier = availableTiers.length ? Math.max(...availableTiers) : 1;
-  const premiumTargetTier = forceHigherTier ? premiumBaseTier + 1 : null;
+
+  // Premium อิง Tier สูงสุดที่ปลดล็อกตาม Wave ปกติจริง ๆ แล้วบังคับ +1 Tier
+  // โดยไม่ให้กฎ Wave ของ Tier เป้าหมายมาขวาง Premium
+  const premiumBaseTier = availableTiers.length
+    ? Math.max(...availableTiers)
+    : 1;
+  const premiumTargetTier = forceHigherTier
+    ? premiumBaseTier + 1
+    : null;
 
   /*
    * ถ้า config ไม่มี Tier ที่ใช้ได้
@@ -3538,11 +3542,11 @@ function openLevelUp(forceHigherTier=false){
             margin-bottom:2px;
           "
         >
-          T${u.tier || 1} • ${tierName}
+          ${forceHigherTier && Number(u.tier||1) === Number(premiumTargetTier) ? '✨ PREMIUM • ' : ''}T${u.tier || 1} • ${tierName}
         </div>
 
         <div class="uName">
-          ${u.name}
+          ${forceHigherTier && Number(u.tier||1) === Number(premiumTargetTier) ? '✨ ' : ''}${u.name}
         </div>
 
         <div class="uDesc">
