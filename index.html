@@ -3282,7 +3282,11 @@ function openLevelUp(forceHigherTier=false){
   const availableTiers = existingTiers.filter(
     tier => isTierAvailable(tier)
   );
-  const premiumTargetTier = forceHigherTier && availableTiers.length ? Math.max(...availableTiers) + 1 : null;
+  // Premium ต้องการ Tier ถัดไปจาก Tier สูงสุดที่เปิดปกติในเวฟนี้
+  // แต่ห้ามให้ isTierAvailable() บล็อก Tier เป้าหมาย เพราะ Premium มีหน้าที่
+  // ฝืนตารางสุ่มปกติและการันตี Tier ที่สูงขึ้น 1 ระดับ
+  const premiumBaseTier = availableTiers.length ? Math.max(...availableTiers) : 1;
+  const premiumTargetTier = forceHigherTier ? premiumBaseTier + 1 : null;
 
   /*
    * ถ้า config ไม่มี Tier ที่ใช้ได้
@@ -3374,7 +3378,10 @@ function openLevelUp(forceHigherTier=false){
   const usedIds = new Set();
   const selected = [];
   if(forceHigherTier && Number.isFinite(premiumTargetTier)){
-    const premiumPool=levelUpgrades.filter(item=>Number(item.tier||1)===premiumTargetTier&&!isItemMaxed(item));
+    const premiumPool=levelUpgrades.filter(item =>
+      Number(item.tier||1)===premiumTargetTier &&
+      !isItemMaxed(item)
+    );
     if(premiumPool.length){
       const guaranteed=premiumPool[Math.floor(Math.random()*premiumPool.length)];
       selected.push(guaranteed); usedIds.add(guaranteed.id);
