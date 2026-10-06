@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.74</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.75</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.74</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.75</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3125,7 +3125,19 @@ function applyHeroChoice(h){
     );
     if(!pool.length) return null;
 
-    const item=weightedPick(pool);
+    let totalItemWeight=0;
+    for(const candidate of pool){
+      const w=Number(candidate.weight);
+      totalItemWeight += Number.isFinite(w)&&w>0 ? w : 1;
+    }
+    if(totalItemWeight<=0) return null;
+    let itemRoll=Math.random()*totalItemWeight;
+    let item=pool[pool.length-1];
+    for(const candidate of pool){
+      const w=Number(candidate.weight);
+      itemRoll -= Number.isFinite(w)&&w>0 ? w : 1;
+      if(itemRoll<=0){item=candidate;break;}
+    }
     if(!item) return null;
 
     return item;
@@ -4891,6 +4903,25 @@ function openLevelUp(forceHigherTier=false){
       g.fillStyle=boss?'#facc15':'#ef4444';
       const r=boss?3:1.7;
       g.fillRect(sxm(e.x)-r,sym(e.y)-r,r*2,r*2);
+    }
+    // Highlight treasure chests on the minimap so they are easy to spot.
+    if(Array.isArray(treasureChests)){
+      const pulse=1+Math.sin(performance.now()/180)*0.28;
+      for(const chest of treasureChests){
+        if(!chest || chest.opened) continue;
+        const cx=sxm(chest.x), cy=sym(chest.y);
+        const r=2.8*pulse;
+        g.save();
+        g.fillStyle='#facc15';
+        g.shadowColor='#facc15';
+        g.shadowBlur=5;
+        g.fillRect(cx-r,cy-r,r*2,r*2);
+        g.shadowBlur=0;
+        g.strokeStyle='#fff7ae';
+        g.lineWidth=1;
+        g.strokeRect(cx-r-1,cy-r-1,r*2+2,r*2+2);
+        g.restore();
+      }
     }
     if(player){
       const px=sxm(player.x), py=sym(player.y);
