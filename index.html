@@ -1393,23 +1393,575 @@ window.GAME_CONFIG = {
     if(pendingLevels>0&&!levelOpen) openLevelUp();
   }
 
-  function openLevelUp(){
-    pendingLevels--; levelOpen=true; syncPause();
-    playSound('levelup');
-    const wrap=document.getElementById('upgrades');wrap.innerHTML='';
-    shuffle(levelUpgrades).slice(0,Math.max(1,Math.floor(dev.level.choices))).forEach(u=>{
-      const b=document.createElement('button');b.className='upgrade';
-      b.innerHTML=`<div class="icon">${u.icon}</div><div><div class="uName">${u.name}</div><div class="uDesc">${u.desc}</div></div>`;
-      b.onclick=()=>{
-        u.apply(); clampStats();
-        levelOpen=false;
-        document.getElementById('levelOverlay').classList.add('hidden');
-        if(pendingLevels>0) openLevelUp(); else { syncPause(); setStatus('ต่อสู้ต่อ!'); }
+function openLevelUp(){
+  pendingLevels--;
+  levelOpen = true;
+  syncPause();
+  playSound('levelup');
+
+  const wrap = document.getElementById('upgrades');
+  wrap.innerHTML = '';
+
+  /* =========================================================
+     LEVEL UP RANDOMIZER
+     ระบบ:
+     1. ตรวจ Tier ที่เปิดใช้ได้ตาม Wave
+     2. สุ่ม Tier ตามน้ำหนักของช่วง Wave
+     3. สุ่ม Item ภายใน Tier ด้วย weight
+     4. ป้องกัน Item ซ้ำในหน้าต่างเดียวกัน
+     5. ถ้า Tier ที่สุ่มไม่มีของพอ → fallback
+     ========================================================= */
+
+  const choiceCount = Math.max(
+    1,
+    Math.floor(Number(dev.level.choices) || 3)
+  );
+
+  /*
+   * ตารางโอกาส Tier ของ Level Up
+   *
+   * Wave 1-14
+   *   T1 100%
+   *
+   * Wave 15-29
+   *   T1 75%
+   *   T2 25%
+   *
+   * Wave 30-34
+   *   T1 65%
+   *   T2 30%
+   *   T3 5%
+   *
+   * Wave 35-49
+   *   T1 50%
+   *   T2 35%
+   *   T3 15%
+   *
+   * Wave 50-69
+   *   T1 40%
+   *   T2 35%
+   *   T3 22%
+   *   T4 3%
+   *
+   * Wave 70-99
+   *   T1 30%
+   *   T2 35%
+   *   T3 28%
+   *   T4 7%
+   *
+   * Wave 100+
+   *   T1 25%
+   *   T2 35%
+   *   T3 30%
+   *   T4 10%
+   */
+
+  function getTierWeights(w){
+    if(w >= 100){
+      return {
+        1: 25,
+        2: 35,
+        3: 30,
+        4: 10
       };
+    }
+
+    if(w >= 70){
+      return {
+        1: 30,
+        2: 35,
+        3: 28,
+        4: 7
+      };
+    }
+
+    if(w >= 50){
+      return {
+        1: 40,
+        2: 35,
+        3: 22,
+        4: 3
+      };
+    }
+
+    if(w >= 35){
+      return {
+        1: 50,
+        2: 35,
+        3: 15
+      };
+    }
+
+    if(w >= 30){
+      return {
+        1: 65,
+        2: 30,
+        3: 5
+      };
+    }
+
+    if(w >= 15){
+      return {
+        1: 75,
+        2: 25
+      };
+    }
+
+    return {
+      1: 100
+    };
+  }
+
+  /*
+   * ตรวจว่า Tier นี้เปิดใช้งานใน Wave ปัจจุบันหรือไม่
+   */
+  function isTierAvailable(tier){
+    const T = CFG.tiers || {};
+    const info = T[tier];
+
+    if(!info) return true;
+
+    const minWave = Number.isFinite(info.minWave)
+      ? info.minWave
+      : 1;
+
+    const maxWave = Number.isFinite(info.maxWave)
+      ? info.maxWave
+      : Infinity;
+
+    return wave >= minWave && wave <= maxWave;
+  }
+
+  /*
+   * ดึง Item ที่อยู่ใน Tier และเปิดใช้ได้ใน Wave นี้
+   */
+  function getItemsByTier(tier, usedIds){
+    return levelUpgrades.filter(item => {
+
+      if(Number(item.tier || 1) !== Number(tier)){
+        return false;
+      }
+
+      if(usedIds.has(item.id)){
+        return false;
+      }
+
+      return isTierAvailable(Number(tier));
+
+    });
+  }
+
+  /*
+   * Weighted Random
+   *
+   * ถ้า Item ไม่มี weight:
+   * ใช้ weight = 1
+   *
+   * weight ต่ำ = ออกยาก
+   * weight สูง = ออกง่าย
+   */
+  function weightedPick(list){
+
+    if(!list.length) return null;
+
+    let total = 0;
+
+    for(const item of list){
+      const w = Number(item.weight);
+
+      total += (
+        Number.isFinite(w) && w > 0
+          ? w
+          : 1
+      );
+    }
+
+    if(total <= 0){
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    let r = Math.random() * total;
+
+    for(const item of list){
+
+      const w = Number(item.weight);
+
+      const weight = (
+        Number.isFinite(w) && w > 0
+          ? w
+          : 1
+      );
+
+      r -= weight;
+
+      if(r <= 0){
+        return item;
+      }
+    }
+
+    return list[list.length - 1];
+  }
+
+  /*
+   * สุ่ม Tier
+   */
+  function weightedPickTier(weights, availableTiers){
+
+    const list = [];
+
+    for(const tier of availableTiers){
+
+      const weight = Number(weights[tier] || 0);
+
+      if(weight > 0){
+        list.push({
+          tier:Number(tier),
+          weight
+        });
+      }
+    }
+
+    if(!list.length){
+      return null;
+    }
+
+    let total = 0;
+
+    for(const x of list){
+      total += x.weight;
+    }
+
+    let r = Math.random() * total;
+
+    for(const x of list){
+
+      r -= x.weight;
+
+      if(r <= 0){
+        return x.tier;
+      }
+    }
+
+    return list[list.length - 1].tier;
+  }
+
+  /*
+   * Tier ที่มีอยู่จริงใน LEVEL_UPGRADES
+   */
+  const existingTiers = [
+    ...new Set(
+      levelUpgrades
+        .map(item => Number(item.tier || 1))
+        .filter(t => Number.isFinite(t))
+    )
+  ].sort((a,b) => a-b);
+
+  /*
+   * Tier ที่เปิดใช้ใน Wave ปัจจุบัน
+   */
+  const availableTiers = existingTiers.filter(
+    tier => isTierAvailable(tier)
+  );
+
+  /*
+   * ถ้า config ไม่มี Tier ที่ใช้ได้
+   * fallback เป็น Item ทั้งหมด
+   */
+  if(!availableTiers.length){
+
+    const fallback = shuffle(levelUpgrades)
+      .slice(0, choiceCount);
+
+    fallback.forEach(u => {
+
+      const b = document.createElement('button');
+
+      b.className = 'upgrade';
+
+      b.innerHTML = `
+        <div class="icon">${u.icon}</div>
+        <div>
+          <div class="uName">${u.name}</div>
+          <div class="uDesc">${u.desc}</div>
+        </div>
+      `;
+
+      b.onclick = () => {
+
+        u.apply();
+        clampStats();
+
+        levelOpen = false;
+
+        document
+          .getElementById('levelOverlay')
+          .classList.add('hidden');
+
+        if(pendingLevels > 0){
+          openLevelUp();
+        }else{
+          syncPause();
+          setStatus('ต่อสู้ต่อ!');
+        }
+      };
+
       wrap.appendChild(b);
     });
-    document.getElementById('levelOverlay').classList.remove('hidden');refreshHUD();
+
+    document
+      .getElementById('levelOverlay')
+      .classList.remove('hidden');
+
+    refreshHUD();
+
+    return;
   }
+
+  /*
+   * ตารางโอกาส Tier
+   */
+  const tierWeights = getTierWeights(wave);
+
+  /*
+   * เอาเฉพาะ Tier ที่:
+   * - มีอยู่จริง
+   * - เปิดใน Wave นี้
+   * - มี Item อยู่
+   */
+  const usableTiers = availableTiers.filter(tier => {
+
+    if(!(tierWeights[tier] > 0)){
+      return false;
+    }
+
+    return getItemsByTier(tier, new Set()).length > 0;
+  });
+
+  /*
+   * ถ้า Tier ที่ตรงกับ Wave ไม่มีของ
+   * fallback เป็น Tier ที่มีของจริง
+   */
+  const tierPool = usableTiers.length
+    ? usableTiers
+    : availableTiers.filter(
+        tier => getItemsByTier(tier, new Set()).length > 0
+      );
+
+  const usedIds = new Set();
+  const selected = [];
+
+  /*
+   * ---------------------------------------------------------
+   * สุ่มตัวเลือกทีละช่อง
+   * ---------------------------------------------------------
+   */
+  let safety = 0;
+
+  while(
+    selected.length < choiceCount &&
+    safety < 100
+  ){
+
+    safety++;
+
+    /*
+     * 1. สุ่ม Tier
+     */
+    let tier;
+
+    if(usableTiers.length){
+
+      tier = weightedPickTier(
+        tierWeights,
+        usableTiers
+      );
+
+    }else{
+
+      tier =
+        tierPool[
+          Math.floor(
+            Math.random() * tierPool.length
+          )
+        ];
+    }
+
+    /*
+     * 2. หา Item ใน Tier
+     */
+    let candidates = getItemsByTier(
+      tier,
+      usedIds
+    );
+
+    /*
+     * ถ้า Tier นี้ไม่มี Item เหลือ
+     * ลอง Tier อื่นที่ยังมี Item
+     */
+    if(!candidates.length){
+
+      const fallbackTiers = tierPool.filter(
+        t =>
+          getItemsByTier(t, usedIds).length > 0
+      );
+
+      if(!fallbackTiers.length){
+        break;
+      }
+
+      tier =
+        fallbackTiers[
+          Math.floor(
+            Math.random() * fallbackTiers.length
+          )
+        ];
+
+      candidates = getItemsByTier(
+        tier,
+        usedIds
+      );
+    }
+
+    /*
+     * 3. Weighted Random Item
+     */
+    const picked = weightedPick(candidates);
+
+    if(!picked){
+      continue;
+    }
+
+    /*
+     * 4. กันซ้ำ
+     */
+    if(usedIds.has(picked.id)){
+      continue;
+    }
+
+    usedIds.add(picked.id);
+    selected.push(picked);
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * Safety fallback
+   *
+   * กรณีมี Item น้อยกว่าจำนวนช่องที่ต้องการ
+   * ---------------------------------------------------------
+   */
+  if(selected.length < choiceCount){
+
+    const remaining = shuffle(
+      levelUpgrades.filter(
+        item => !usedIds.has(item.id)
+      )
+    );
+
+    for(const item of remaining){
+
+      if(selected.length >= choiceCount){
+        break;
+      }
+
+      selected.push(item);
+      usedIds.add(item.id);
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * Render
+   * ---------------------------------------------------------
+   */
+  selected.forEach(u => {
+
+    const b = document.createElement('button');
+
+    b.className = 'upgrade';
+
+    /*
+     * แสดง Tier บนการ์ดด้วย
+     * ทำให้เห็นว่าไอเทมนี้เป็น T1/T2/T3/T4
+     */
+    const tierName =
+      (CFG.tiers && CFG.tiers[u.tier])
+        ? CFG.tiers[u.tier].name
+        : `Tier ${u.tier || 1}`;
+
+    b.innerHTML = `
+      <div class="icon">${u.icon}</div>
+
+      <div>
+        <div
+          style="
+            font-size:9px;
+            font-weight:800;
+            color:#94a3b8;
+            margin-bottom:2px;
+          "
+        >
+          T${u.tier || 1} • ${tierName}
+        </div>
+
+        <div class="uName">
+          ${u.name}
+        </div>
+
+        <div class="uDesc">
+          ${u.desc}
+        </div>
+      </div>
+    `;
+
+    b.onclick = () => {
+
+      /*
+       * ใช้ Upgrade
+       */
+      u.apply();
+
+      /*
+       * จำกัดค่า Stat ตาม CAPS
+       */
+      clampStats();
+
+      /*
+       * ปิดหน้าต่าง
+       */
+      levelOpen = false;
+
+      document
+        .getElementById('levelOverlay')
+        .classList.add('hidden');
+
+      /*
+       * ถ้ามี Level รออยู่
+       * เปิด Level Up ต่อทันที
+       */
+      if(pendingLevels > 0){
+
+        openLevelUp();
+
+      }else{
+
+        syncPause();
+
+        setStatus('ต่อสู้ต่อ!');
+      }
+    };
+
+    wrap.appendChild(b);
+  });
+
+  /*
+   * เปิดหน้าต่าง Level Up
+   */
+  document
+    .getElementById('levelOverlay')
+    .classList.remove('hidden');
+
+  refreshHUD();
+}
 
   function getRerollCost() {
     return Math.max(dev.shop.rerollBase, Math.floor(player.gold * dev.shop.rerollGoldPct)) + rerollN*dev.shop.rerollStep;
