@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.79</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.80</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.79</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.80</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -749,27 +749,27 @@ const SHOP_TIERS = {
 /* ===== 15. LEVEL_UPGRADES ===== */
 const LEVEL_UPGRADES = [
   // ───────── T1 ทั่วไป ─────────
-  { tier: 1, icon: '⚔️', name: 'เพิ่มพลังโจมตี',             fx: [mul('damage', 1.04)] },
-  { tier: 1, icon: '⚡', name: 'เพิ่มความเร็วการยิง',        fx: [mul('fireRate', 0.96)] },
-  { tier: 1, icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.02)] },
-  { tier: 1, icon: '❤️', name: 'ขยายพลังชีวิตสูงสุด',        fx: [add('maxHp', 20)] },
-  { tier: 1, icon: '🧲', name: 'ขยายรัศมีแม่เหล็ก',          fx: [add('pickup', 40)] },
-  { tier: 1, icon: '🛡️', name: 'เสริมเกราะป้องกัน',          fx: [add('armor', 0.02)] },
-  { tier: 1, icon: '💥', name: 'เพิ่มโอกาสคริติคอล',          fx: [add('crit', 0.02)] },
-  { tier: 1, icon: '💚', name: 'ฟื้นฟูพลังชีวิตต่อเนื่อง',      fx: [add('regen', 0.5)] },
+  { tier: 1, icon: '⚔️', name: 'เพิ่มพลังโจมตี',             fx: [mul('damage', 1.035)] },
+  { tier: 1, icon: '⚡', name: 'เพิ่มความเร็วการยิง',        fx: [mul('fireRate', 0.97)] },
+  { tier: 1, icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.015)] },
+  { tier: 1, icon: '❤️', name: 'ขยายพลังชีวิตสูงสุด',        fx: [add('maxHp', 18)] },
+  { tier: 1, icon: '🧲', name: 'ขยายรัศมีแม่เหล็ก',          fx: [add('pickup', 32)] },
+  { tier: 1, icon: '🛡️', name: 'เสริมเกราะป้องกัน',          fx: [add('armor', 0.018)] },
+  { tier: 1, icon: '💥', name: 'เพิ่มโอกาสคริติคอล',          fx: [add('crit', 0.018)] },
+  { tier: 1, icon: '💚', name: 'ฟื้นฟูพลังชีวิตต่อเนื่อง',      fx: [add('regen', 0.4)] },
   { tier: 1, icon: '🎯', name: 'กระสุนเจาะทะลุ',              fx: [add('pierce', 1)], weight: 0.5 },
-  { tier: 1, icon: '🩸', name: 'ดูดพลังชีวิต',                fx: [add('lifesteal', 0.01)] },
-  { tier: 1, icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.015)] },
-  { tier: 1, icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.05)] },
-  { tier: 1, icon: '🔫', name: 'เพิ่มกระสุนยิงกระจาย',        fx: [add('projectiles', 1), mul('damage', 0.85)], weight: 0.15 },
-  { tier: 1, icon: '💨', name: 'กระสุนความเร็วสูง',          fx: [mul('bulletSpeed', 1.08), mul('damage', 1.02)] },
-  { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.25)] },
-  { tier: 1, icon: '🧱', name: 'กระสุนสะท้อนกำแพง',          fx: [add('ricochet', 1), mul('damage', 0.90)], weight: 0.20 },
-  { tier: 1, icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 5)], weight: 0.8 },
-  { tier: 1, icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 5)], weight: 0.8 },
-  { tier: 1, icon: '💣', name: 'กระสุนระเบิดวงกว้าง',        fx: [add('explosiveRadius', 10)], weight: 0.8 },
-  { tier: 1, icon: '🥊', name: 'พลังผลักกระแทก',            fx: [add('knockback', 30)], weight: 0.7 },
-  { tier: 1, icon: '💀', name: 'รังสีสังหารทันที',            fx: [add('executionThreshold', 0.01)], weight: 0.5 },
+  { tier: 1, icon: '🩸', name: 'ดูดพลังชีวิต',                fx: [add('lifesteal', 0.008)] },
+  { tier: 1, icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.012)] },
+  { tier: 1, icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.04)] },
+  { tier: 1, icon: '🔫', name: 'เพิ่มกระสุนยิงกระจาย',        fx: [add('projectiles', 1), mul('damage', 0.88)], weight: 0.15 },
+  { tier: 1, icon: '💨', name: 'กระสุนความเร็วสูง',          fx: [mul('bulletSpeed', 1.06), mul('damage', 1.015)] },
+  { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.20)] },
+  { tier: 1, icon: '🧱', name: 'กระสุนสะท้อนกำแพง',          fx: [add('ricochet', 1), mul('damage', 0.92)], weight: 0.20 },
+  { tier: 1, icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 4)], weight: 0.8 },
+  { tier: 1, icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 4)], weight: 0.8 },
+  { tier: 1, icon: '💣', name: 'กระสุนระเบิดวงกว้าง',        fx: [add('explosiveRadius', 8)], weight: 0.8 },
+  { tier: 1, icon: '🥊', name: 'พลังผลักกระแทก',            fx: [add('knockback', 25)], weight: 0.7 },
+  { tier: 1, icon: '💀', name: 'รังสีสังหารทันที',            fx: [add('executionThreshold', 0.008)], weight: 0.5 },
   { tier: 1, icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 1)], weight: 0.3 },
   { tier: 1, icon: '⚔️️', name: 'นักรบสมดุล',                fx: [mul('damage', 1.02), add('maxHp', 10)] },
   { tier: 1, icon: '🏰', name: 'ปราการเล็ก',                fx: [add('armor', 0.01), add('maxHp', 15)] },
@@ -778,112 +778,112 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '🔩', name: 'กระสุนเสถียรภาพ', fx: [mul('bulletSpeed', 1.05), add('knockback', 10)] },
 
   // ───────── T2 ดี ─────────
-  { tier: 2, icon: '🗡️', name: 'คมดาบแกร่ง',                fx: [mul('damage', 1.08)] },
-  { tier: 2, icon: '⚡', name: 'ยิงรัวต่อเนื่อง',            fx: [mul('fireRate', 0.92)] },
-  { tier: 2, icon: '🏃', name: 'ก้าวพริบตา',                fx: [mul('speed', 1.04), add('dodge', 0.01)] },
-  { tier: 2, icon: '❤', name: 'หัวใจเหล็ก',                fx: [mul('maxHp', 1.05), add('maxHp', 30)] },
-  { tier: 2, icon: '🛡️', name: 'เกราะเสริมแกร่ง',            fx: [add('armor', 0.03)] },
-  { tier: 2, icon: '💥', name: 'จุดตายแม่นยำ',              fx: [add('crit', 0.04)] },
-  { tier: 2, icon: '💚', name: 'ฟื้นฟูทวีคูณ',              fx: [add('regen', 1.5)] },
-  { tier: 2, icon: '🩸', name: 'กระหายเลือดสงคราม',          fx: [add('lifesteal', 0.015), mul('speed', 1.02)] },
+  { tier: 2, icon: '🗡️', name: 'คมดาบแกร่ง',                fx: [mul('damage', 1.06)] },
+  { tier: 2, icon: '⚡', name: 'ยิงรัวต่อเนื่อง',            fx: [mul('fireRate', 0.95)] },
+  { tier: 2, icon: '🏃', name: 'ก้าวพริบตา',                fx: [mul('speed', 1.03), add('dodge', 0.008)] },
+  { tier: 2, icon: '❤', name: 'หัวใจเหล็ก',                fx: [mul('maxHp', 1.04), add('maxHp', 24)] },
+  { tier: 2, icon: '🛡️', name: 'เกราะเสริมแกร่ง',            fx: [add('armor', 0.025)] },
+  { tier: 2, icon: '💥', name: 'จุดตายแม่นยำ',              fx: [add('crit', 0.03)] },
+  { tier: 2, icon: '💚', name: 'ฟื้นฟูทวีคูณ',              fx: [add('regen', 1.2)] },
+  { tier: 2, icon: '🩸', name: 'กระหายเลือดสงคราม',          fx: [add('lifesteal', 0.015), mul('speed', 1.015)] },
 { tier: 2, icon: '🎯', name: 'หัวกระสุนเจาะเกราะ',
-  fx: [add('pierce', 1), mul('fireRate', 1.08)],
+  fx: [add('pierce', 1), mul('fireRate', 1.05)],
   weight: 0.30 },
 
 { tier: 2, icon: '🔫', name: 'ยิงกระจายคู่',
-  fx: [add('projectiles', 1), mul('damage', 0.80)],
+  fx: [add('projectiles', 1), mul('damage', 0.84)],
   weight: 0.20 },
-  { tier: 2, icon: '🧪', name: 'พิษร้ายสะสม',                fx: [add('poisonDmg', 15)] },
-  { tier: 2, icon: '⚡', name: 'สายฟ้าแรงสูง',              fx: [add('lightningChain', 20)] },
-  { tier: 2, icon: '💣', name: 'ระเบิดเพลิงผลาญ',            fx: [add('explosiveRadius', 15), mul('damage', 1.02)] },
-  { tier: 2, icon: '🥊', name: 'คลื่นกระแทกหนักหน่วง',        fx: [add('knockback', 50), add('maxHp', 20)] },
-  { tier: 2, icon: '💀', name: 'เคียวเก็บวิญญาณ',            fx: [add('executionThreshold', 0.02)] },
-  { tier: 2, icon: '🗡️', name: 'ดาบหมุนคู่อมตะ',            fx: [add('orbitBlades', 1), mul('damage', 1.02)], weight: 0.4 },
-  { tier: 2, icon: '🧱', name: 'เด้งสะท้อนไร้ขอบเขต',        fx: [add('ricochet', 2), mul('damage', 0.90)], weight: 0.35 },
-  { tier: 2, icon: '🌀', name: 'ร่างเงาหลบหลีก',              fx: [add('dodge', 0.025), mul('speed', 1.02)] },
-  { tier: 2, icon: '💰', name: 'ขุมทรัพย์นักล่า',            fx: [mul('goldMulti', 1.10), add('pickup', 60)] },
-  { tier: 2, icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด',          fx: [mul('bulletSpeed', 1.12), mul('damage', 1.04)] },
-  { tier: 2, icon: '🔭', name: 'กล้องเล็งระยะไกล',              fx: [mul('attackRange', 1.50)] },
-  { tier: 2, icon: '⏱️', name: 'จังหวะยิงสังหาร',            fx: [mul('fireRate', 0.95), add('crit', 0.02)] },
-  { tier: 2, icon: '🎲', name: 'โชคลาภสงคราม',              fx: [add('crit', 0.03), mul('goldMulti', 1.05)] },
+  { tier: 2, icon: '🧪', name: 'พิษร้ายสะสม',                fx: [add('poisonDmg', 12)] },
+  { tier: 2, icon: '⚡', name: 'สายฟ้าแรงสูง',              fx: [add('lightningChain', 16)] },
+  { tier: 2, icon: '💣', name: 'ระเบิดเพลิงผลาญ',            fx: [add('explosiveRadius', 12), mul('damage', 1.015)] },
+  { tier: 2, icon: '🥊', name: 'คลื่นกระแทกหนักหน่วง',        fx: [add('knockback', 50), add('maxHp', 18)] },
+  { tier: 2, icon: '💀', name: 'เคียวเก็บวิญญาณ',            fx: [add('executionThreshold', 0.016)] },
+  { tier: 2, icon: '🗡️', name: 'ดาบหมุนคู่อมตะ',            fx: [add('orbitBlades', 1), mul('damage', 1.015)], weight: 0.4 },
+  { tier: 2, icon: '🧱', name: 'เด้งสะท้อนไร้ขอบเขต',        fx: [add('ricochet', 1), mul('damage', 0.93)], weight: 0.35 },
+  { tier: 2, icon: '🌀', name: 'ร่างเงาหลบหลีก',              fx: [add('dodge', 0.025), mul('speed', 1.015)] },
+  { tier: 2, icon: '💰', name: 'ขุมทรัพย์นักล่า',            fx: [mul('goldMulti', 1.08), add('pickup', 48)] },
+  { tier: 2, icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด',          fx: [mul('bulletSpeed', 1.12), mul('damage', 1.035)] },
+  { tier: 2, icon: '🔭', name: 'กล้องเล็งระยะไกล',              fx: [mul('attackRange', 1.40)] },
+  { tier: 2, icon: '⏱️', name: 'จังหวะยิงสังหาร',            fx: [mul('fireRate', 0.95), add('crit', 0.018)] },
+  { tier: 2, icon: '🎲', name: 'โชคลาภสงคราม',              fx: [add('crit', 0.03), mul('goldMulti', 1.04)] },
 
   // ───────── T3 หายาก ─────────
-  { tier: 3, icon: '💥', name: 'พลังทำลายล้าง',              fx: [mul('damage', 1.15)] },
-  { tier: 3, icon: '⚡', name: 'พายุกระสุน',                fx: [mul('fireRate', 0.9)] },
-  { tier: 3, icon: '🏰', name: 'ปราการอัศวิน',              fx: [mul('maxHp', 1.10), add('maxHp', 80)] },
-  { tier: 3, icon: '🛡️', name: 'โล่แก้วปริซึม',              fx: [add('armor', 0.05), add('regen', 1.5)] },
-  { tier: 3, icon: '💚', name: 'พายุกายาฟื้นฟู',              fx: [add('regen', 4)] },
-  { tier: 3, icon: '🩸', name: 'ราชันย์โลหิต',                fx: [add('lifesteal', 0.025), add('crit', 0.02)] },
+  { tier: 3, icon: '💥', name: 'พลังทำลายล้าง',              fx: [mul('damage', 1.11)] },
+  { tier: 3, icon: '⚡', name: 'พายุกระสุน',                fx: [mul('fireRate', 0.94)] },
+  { tier: 3, icon: '🏰', name: 'ปราการอัศวิน',              fx: [mul('maxHp', 1.08), add('maxHp', 65)] },
+  { tier: 3, icon: '🛡️', name: 'โล่แก้วปริซึม',              fx: [add('armor', 0.05), add('regen', 1.2)] },
+  { tier: 3, icon: '💚', name: 'พายุกายาฟื้นฟู',              fx: [add('regen', 3)] },
+  { tier: 3, icon: '🩸', name: 'ราชันย์โลหิต',                fx: [add('lifesteal', 0.025), add('crit', 0.018)] },
   { tier: 3, icon: '🔫', name: 'ห่ากระสุน',                  fx: [add('projectiles', 1), mul('damage', 0.90)], weight: 0.25 },
-  { tier: 3, icon: '🎯', name: 'ลำแสงทะลวงเกราะ',            fx: [add('pierce', 3), mul('fireRate', 1.05)], weight: 0.30 },
-  { tier: 3, icon: '🧪', name: 'กรดมรณะ',                  fx: [add('poisonDmg', 60)] },
-  { tier: 3, icon: '⚡', name: 'พายุสายฟ้า',                fx: [add('lightningChain', 60)] },
-  { tier: 3, icon: '💣', name: 'หัวกระสุนนิวเคลียร์',          fx: [add('explosiveRadius', 20), mul('damage', 1.06)] },
-  { tier: 3, icon: '💀', name: 'ผู้พิพากษาแห่งความตาย',       fx: [add('executionThreshold', 0.03)] },
+  { tier: 3, icon: '🎯', name: 'ลำแสงทะลวงเกราะ',            fx: [add('pierce', 2), mul('fireRate', 1.03)], weight: 0.30 },
+  { tier: 3, icon: '🧪', name: 'กรดมรณะ',                  fx: [add('poisonDmg', 45)] },
+  { tier: 3, icon: '⚡', name: 'พายุสายฟ้า',                fx: [add('lightningChain', 45)] },
+  { tier: 3, icon: '💣', name: 'หัวกระสุนนิวเคลียร์',          fx: [add('explosiveRadius', 16), mul('damage', 1.04)] },
+  { tier: 3, icon: '💀', name: 'ผู้พิพากษาแห่งความตาย',       fx: [add('executionThreshold', 0.025)] },
   { tier: 3, icon: '🗡️', name: 'พายุดาบวนรอบ',              fx: [add('orbitBlades', 2)], weight: 0.5 },
-  { tier: 3, icon: '🧱', name: 'เด้งสะท้อนมหาศาล',          fx: [add('ricochet', 3), mul('damage', 0.88)], weight: 0.35 },
-  { tier: 3, icon: '👻', name: 'ภูตผีไร้ร่าง',                fx: [add('dodge', 0.04), mul('speed', 1.03)] },
-  { tier: 3, icon: '🥊', name: 'กำแพงคลื่นกระแทก',          fx: [add('knockback', 80), mul('maxHp', 1.04)] },
-  { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.03)] },
-  { tier: 3, icon: '👑', name: 'ราชามิดาส',                fx: [mul('goldMulti', 1.15)] },
-  { tier: 3, icon: '🔭', name: 'กล้องสังหาร', fx: [add('crit', 0.05), add('executionThreshold', 0.015)] },
-  { tier: 3, icon: '📡', name: 'เลนส์นักล่าระยะไกล',             fx: [mul('attackRange', 1.75)] },
-  { tier: 3, icon: '🛡️', name: 'เกราะดูดซับ', fx: [add('armor', 0.04), add('knockback', 40)] },
-  { tier: 3, icon: '🧲', name: 'สนามแม่เหล็กลึก', fx: [mul('pickup', 1.25), mul('xpMulti', 1.06)] },
+  { tier: 3, icon: '🧱', name: 'เด้งสะท้อนมหาศาล',          fx: [add('ricochet', 2), mul('damage', 0.91)], weight: 0.35 },
+  { tier: 3, icon: '👻', name: 'ภูตผีไร้ร่าง',                fx: [add('dodge', 0.03), mul('speed', 1.02)] },
+  { tier: 3, icon: '🥊', name: 'กำแพงคลื่นกระแทก',          fx: [add('knockback', 65), mul('maxHp', 1.03)] },
+  { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.025)] },
+  { tier: 3, icon: '👑', name: 'ราชามิดาส',                fx: [mul('goldMulti', 1.12)] },
+  { tier: 3, icon: '🔭', name: 'กล้องสังหาร', fx: [add('crit', 0.04), add('executionThreshold', 0.012)] },
+  { tier: 3, icon: '📡', name: 'เลนส์นักล่าระยะไกล',             fx: [mul('attackRange', 1.55)] },
+  { tier: 3, icon: '🛡️', name: 'เกราะดูดซับ', fx: [add('armor', 0.035), add('knockback', 32)] },
+  { tier: 3, icon: '🧲', name: 'สนามแม่เหล็กลึก', fx: [mul('pickup', 1.18), mul('xpMulti', 1.05)] },
 
   // ───────── T4 ตำนาน ─────────
 { tier: 4, icon: '🏆', name: 'ดาบเทพพิพากษา',
-  fx: [mul('damage', 1.20)] },
+  fx: [mul('damage', 1.15)] },
 
 { tier: 4, icon: '🌪', name: 'จังหวะเทพเจ้า',
-  fx: [mul('fireRate', 0.86), add('crit', 0.03)] },
+  fx: [mul('fireRate', 0.92), add('crit', 0.025)] },
 
 { tier: 4, icon: '🐉', name: 'หัวใจมังกรโบราณ',
-  fx: [mul('maxHp', 1.25)] },
+  fx: [mul('maxHp', 1.18)] },
 
 { tier: 4, icon: '🛡️', name: 'เกราะนิรันดร์',
-  fx: [add('armor', 0.07), mul('maxHp', 1.05)] },
+  fx: [add('armor', 0.055), mul('maxHp', 1.04)] },
 
 { tier: 4, icon: '☀️', name: 'วงแหวนชีวิตนิรันดร์',
-  fx: [add('regen', 10)] },
+  fx: [add('regen', 7)] },
 
 { tier: 4, icon: '🔱', name: 'ตรีศูลกระสุน',
-  fx: [add('projectiles', 2), mul('damage', 0.75)],
+  fx: [add('projectiles', 2), mul('damage', 0.80)],
   weight: 0.20 },
 
 { tier: 4, icon: '🌠', name: 'ลำแสงไร้ขีดจำกัด',
-  fx: [add('pierce', 3), mul('bulletSpeed', 1.1)] },
+  fx: [add('pierce', 2), mul('bulletSpeed', 1.08)] },
 
 { tier: 4, icon: '🔭', name: 'สายตาเทพเจ้าระยะไกล',
-  fx: [mul('attackRange', 2.00)] },
+  fx: [mul('attackRange', 1.75)] },
 
 { tier: 4, icon: '☣️', name: 'โรคระบาดแห่งหายนะ',
-  fx: [add('poisonDmg', 250)] },
+  fx: [add('poisonDmg', 190)] },
 
 { tier: 4, icon: '🌩', name: 'เทพเจ้าสายฟ้า',
-  fx: [add('lightningChain', 150)] },
+  fx: [add('lightningChain', 110)] },
 
 { tier: 4, icon: '🌋', name: 'ระเบิดสุริยะ',
-  fx: [add('explosiveRadius', 30), mul('damage', 1.08)] },
+  fx: [add('explosiveRadius', 30), mul('damage', 1.06)] },
 
 { tier: 4, icon: '☠️', name: 'ปลิดวิญญาณ',
-  fx: [add('executionThreshold', 0.05), add('crit', 0.04)] },
+  fx: [add('executionThreshold', 0.05), add('crit', 0.03)] },
 
 { tier: 4, icon: '⚔️', name: 'ดาบสวรรค์ล้อมกาย',
-  fx: [add('orbitBlades', 3)],
+  fx: [add('orbitBlades', 2)],
   weight: 0.45 },
 
 { tier: 4, icon: '🌟', name: 'พรแห่งดวงดาว',
   fx: [
-    mul('damage', 1.08),
-    mul('maxHp', 1.10),
-    mul('speed', 1.04)
+    mul('damage', 1.06),
+    mul('maxHp', 1.08),
+    mul('speed', 1.03)
   ] },
 
 { tier: 4, icon: '⌛', name: 'หยุดกาลเวลา',
   fx: [
-    add('timeSlow', 0.05),
-    mul('fireRate', 0.92)
+    add('timeSlow', 0.04),
+    mul('fireRate', 0.95)
   ] },
 
 { tier: 4, icon: '♻️', name: 'ชีวิตที่สอง',
@@ -897,61 +897,61 @@ const SHOP_ITEMS = [
   { id: 's_pot1', tier: 1, icon: '🧪', name: 'ยาฟื้นฟูพลังชีวิตเล็ก',    cost: 18,  fx: [healPct(0.30)] },
   { id: 's_pot2', tier: 1, icon: '🍷', name: 'ยาฟื้นฟูพลังชีวิตใหญ่',    cost: 40,  fx: [healPct(0.65)] },
   { id: 's_pot3', tier: 1, icon: '💖', name: 'น้ำยาฟื้นฟูเต็มสูบ',       cost: 75,  fx: [healFull()] },
-  { id: 's_pot4', tier: 1, icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 95,  fx: [add('maxHp', 30), healFull()], scale: 0.40 },
+  { id: 's_pot4', tier: 1, icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 95,  fx: [add('maxHp', 24), healFull()], scale: 0.40 },
 
   { id: 's_wpn1', tier: 1, icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 300, fx: [addBulletType('laser')],    desc: BULLET_TYPES.laser.desc },
   { id: 's_wpn2', tier: 1, icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 340, fx: [addBulletType('fireball')], desc: BULLET_TYPES.fireball.desc },
   { id: 's_wpn3', tier: 1, icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 380, fx: [addBulletType('plasma')],   desc: BULLET_TYPES.plasma.desc },
   { id: 's_wpn4', tier: 1, icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 320, fx: [addBulletType('arcane')],   desc: BULLET_TYPES.arcane.desc },
 
-  { id: 's_a1', tier: 1, icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.06)], scale: 0.40 },
-  { id: 's_a2', tier: 1, icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.15)] },
+  { id: 's_a1', tier: 1, icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.05)], scale: 0.40 },
+  { id: 's_a2', tier: 1, icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.10)] },
   { id: 's_a3', tier: 1, icon: '🎯', name: 'หัวกระสุนทังสเตน',         cost: 130, fx: [add('pierce', 1)], scale: 0.60 },
-  { id: 's_a4', tier: 1, icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 190, fx: [mul('fireRate', 0.95)], scale: 0.50 },
-  { id: 's_a5', tier: 1, icon: '🏹', name: 'ธนูสามทิศทาง',             cost: 450, fx: [add('projectiles', 1), mul('damage', 0.85)], scale: 1.30 },
-  { id: 's_a6', tier: 1, icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 150, fx: [add('crit', 0.04)], scale: 0.50 },
+  { id: 's_a4', tier: 1, icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 190, fx: [mul('fireRate', 0.97)], scale: 0.50 },
+  { id: 's_a5', tier: 1, icon: '🏹', name: 'ธนูสามทิศทาง',             cost: 450, fx: [add('projectiles', 1), mul('damage', 0.88)], scale: 1.30 },
+  { id: 's_a6', tier: 1, icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 150, fx: [add('crit', 0.03)], scale: 0.50 },
 
-  { id: 's_d1', tier: 1, icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 120, fx: [add('maxHp', 30), add('armor', 0.03)], scale: 0.45 },
-  { id: 's_d2', tier: 1, icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 1.5)], scale: 0.50 },
-  { id: 's_d3', tier: 1, icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.03)], scale: 0.55 },
-  { id: 's_d4', tier: 1, icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.05)], scale: 0.50 },
-  { id: 's_d5', tier: 1, icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 100, fx: [add('pickup', 80)], scale: 0.50 },
-  { id: 's_d6', tier: 1, icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 260, fx: [mul('goldMulti', 1.10)], scale: 0.70 },
+  { id: 's_d1', tier: 1, icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 120, fx: [add('maxHp', 24), add('armor', 0.025)], scale: 0.45 },
+  { id: 's_d2', tier: 1, icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 1.2)], scale: 0.50 },
+  { id: 's_d3', tier: 1, icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.025)], scale: 0.55 },
+  { id: 's_d4', tier: 1, icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.04)], scale: 0.50 },
+  { id: 's_d5', tier: 1, icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 100, fx: [add('pickup', 65)], scale: 0.50 },
+  { id: 's_d6', tier: 1, icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 260, fx: [mul('goldMulti', 1.08)], scale: 0.70 },
 
   // ───────── S2 ดี ─────────
-  { id: 's_b1',  tier: 2, icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ',        cost: 420, fx: [mul('damage', 1.10)], scale: 0.45 },
-  { id: 's_b2',  tier: 2, icon: '🔰', name: 'เกราะไทเทเนียม',          cost: 340, fx: [add('armor', 0.04)], scale: 0.50 },
-  { id: 's_b3',  tier: 2, icon: '🏰', name: 'ป้อมปราการศิลา',          cost: 520, fx: [mul('maxHp', 1.12)], scale: 0.45 },
-  { id: 's_b4',  tier: 2, icon: '🩸', name: 'จี้หยดเลือดอสูร',          cost: 600, fx: [add('lifesteal', 0.015)], scale: 0.60 },
-  { id: 's_b5', tier: 2, icon: '🧿', name: 'เลนส์นักล่า', cost: 430, fx: [add('crit', 0.05), add('bulletSpeed', 90)] },
-  { id: 's_b6', tier: 2, icon: '🥾', name: 'รองเท้าจู่โจม', cost: 330, fx: [mul('speed', 1.06), add('knockback', 25)] },
-  { id: 's_b7', tier: 2, icon: '💰', name: 'เหรียญนักสำรวจ', cost: 350, fx: [mul('goldMulti', 1.12), add('pickup', 50)] },
+  { id: 's_b1',  tier: 2, icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ',        cost: 420, fx: [mul('damage', 1.08)], scale: 0.45 },
+  { id: 's_b2',  tier: 2, icon: '🔰', name: 'เกราะไทเทเนียม',          cost: 340, fx: [add('armor', 0.035)], scale: 0.50 },
+  { id: 's_b3',  tier: 2, icon: '🏰', name: 'ป้อมปราการศิลา',          cost: 520, fx: [mul('maxHp', 1.09)], scale: 0.45 },
+  { id: 's_b4',  tier: 2, icon: '🩸', name: 'จี้หยดเลือดอสูร',          cost: 600, fx: [add('lifesteal', 0.012)], scale: 0.60 },
+  { id: 's_b5', tier: 2, icon: '🧿', name: 'เลนส์นักล่า', cost: 430, fx: [add('crit', 0.04), add('bulletSpeed', 70)] },
+  { id: 's_b6', tier: 2, icon: '🥾', name: 'รองเท้าจู่โจม', cost: 330, fx: [mul('speed', 1.05), add('knockback', 20)] },
+  { id: 's_b7', tier: 2, icon: '💰', name: 'เหรียญนักสำรวจ', cost: 350, fx: [mul('goldMulti', 1.09), add('pickup', 40)] },
 
   // ───────── S3 หายาก ─────────
-  { id: 's_c1', tier: 3, icon: '🔱', name: 'ตรีศูลนักล่า',                  cost: 900,  fx: [mul('damage', 1.14), add('crit', 0.03)] },
-  { id: 's_c2', tier: 3, icon: '🌪️', name: 'แกนพายุหมุน',                  cost: 850,  fx: [mul('fireRate', 0.91), mul('bulletSpeed', 1.10)] },
-  { id: 's_c3', tier: 3, icon: '🦾', name: 'แกนพลังยักษ์',                  cost: 950,  fx: [mul('maxHp', 1.16), add('armor', 0.05)] },
-  { id: 's_c4', tier: 3, icon: '🧿', name: 'ดวงตาอสูร',                    cost: 1000, fx: [add('crit', 0.07), add('executionThreshold', 0.02)] },
-  { id: 's_c5', tier: 3, icon: '🗡️', name: 'คมดาบเงา',                    cost: 1100, fx: [add('orbitBlades', 1), mul('damage', 1.06)] },
-  { id: 's_c6', tier: 3, icon: '🧲', name: 'แกนแม่เหล็กอาร์ค', cost: 750, fx: [mul('pickup', 1.35), mul('xpMulti', 1.08)] },
-  { id: 's_c7', tier: 3, icon: '🌀', name: 'เสื้อคลุมเฟส', cost: 800, fx: [add('dodge', 0.05), mul('speed', 1.05)] },
-  { id: 's_c8', tier: 3, icon: '🥊', name: 'หมัดแรงโน้มถ่วง', cost: 1050, fx: [add('knockback', 100), mul('damage', 1.05)] },
+  { id: 's_c1', tier: 3, icon: '🔱', name: 'ตรีศูลนักล่า',                  cost: 900,  fx: [mul('damage', 1.11), add('crit', 0.025)] },
+  { id: 's_c2', tier: 3, icon: '🌪️', name: 'แกนพายุหมุน',                  cost: 850,  fx: [mul('fireRate', 0.94), mul('bulletSpeed', 1.07)] },
+  { id: 's_c3', tier: 3, icon: '🦾', name: 'แกนพลังยักษ์',                  cost: 950,  fx: [mul('maxHp', 1.12), add('armor', 0.04)] },
+  { id: 's_c4', tier: 3, icon: '🧿', name: 'ดวงตาอสูร',                    cost: 1000, fx: [add('crit', 0.055), add('executionThreshold', 0.016)] },
+  { id: 's_c5', tier: 3, icon: '🗡️', name: 'คมดาบเงา',                    cost: 1100, fx: [add('orbitBlades', 1), mul('damage', 1.05)] },
+  { id: 's_c6', tier: 3, icon: '🧲', name: 'แกนแม่เหล็กอาร์ค', cost: 750, fx: [mul('pickup', 1.25), mul('xpMulti', 1.06)] },
+  { id: 's_c7', tier: 3, icon: '🌀', name: 'เสื้อคลุมเฟส', cost: 800, fx: [add('dodge', 0.05), mul('speed', 1.04)] },
+  { id: 's_c8', tier: 3, icon: '🥊', name: 'หมัดแรงโน้มถ่วง', cost: 1050, fx: [add('knockback', 80), mul('damage', 1.04)] },
 
   // ───────── S4 ตำนาน ─────────
-  { id: 's_f1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.20), add('explosiveRadius', 18)] },
-  { id: 's_f2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.86), add('timeSlow', 0.03)] },
-  { id: 's_f3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.25), add('armor', 0.07), add('regen', 2)] },
-  { id: 's_f4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 80), add('crit', 0.05)] },
-  { id: 's_f5', tier: 4, icon: '🔄', name: 'ตราสะท้อนจักรวาล',             cost: 1500, fx: [add('ricochet', 2), mul('bulletSpeed', 1.18)] },
+  { id: 's_f1', tier: 4, icon: '☄️', name: 'แกนดาวตก',                    cost: 1800, fx: [mul('damage', 1.15), add('explosiveRadius', 15)] },
+  { id: 's_f2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.92), add('timeSlow', 0.025)] },
+  { id: 's_f3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.18), add('armor', 0.055), add('regen', 1.5)] },
+  { id: 's_f4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 60), add('crit', 0.04)] },
+  { id: 's_f5', tier: 4, icon: '🔄', name: 'ตราสะท้อนจักรวาล',             cost: 1500, fx: [add('ricochet', 1), mul('bulletSpeed', 1.12)] },
 
   // ───────── S5 เทพนิยาย ─────────
-  { id: 's_e1', tier: 5, icon: '🌌', name: 'แก่นจักรวาล',                  cost: 3800, fx: [mul('damage', 1.30), mul('maxHp', 1.20), mul('speed', 1.08)] },
-  { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3900, fx: [mul('fireRate', 0.80), add('crit', 0.08), add('timeSlow', 0.04)] },
-  { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.18), mul('goldMulti', 1.25), mul('xpMulti', 1.20)] },
-  { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 35), add('lightningChain', 150), mul('damage', 1.15)] },
-  { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 5200, fx: [mul('maxHp', 1.30), add('regen', 4), add('lifesteal', 0.03), add('revives', 1)] },
-  { id: 's_e6', tier: 5, icon: '🕳️', name: 'หลุมดำจิ๋ว', cost: 3500, fx: [add('executionThreshold', 0.05), add('knockback', 180), add('explosiveRadius', 25)] },
-  { id: 's_e7', tier: 5, icon: '🪽', name: 'ปีกแห่งโชคชะตา', cost: 3400, fx: [mul('speed', 1.12), add('dodge', 0.08), mul('xpMulti', 1.12)] }
+  { id: 's_e1', tier: 5, icon: '🌌', name: 'แก่นจักรวาล',                  cost: 3800, fx: [mul('damage', 1.22), mul('maxHp', 1.15), mul('speed', 1.06)] },
+  { id: 's_e2', tier: 5, icon: '👁️', name: 'ดวงตาเหนือกาล',                cost: 3900, fx: [mul('fireRate', 0.88), add('crit', 0.06), add('timeSlow', 0.03)] },
+  { id: 's_e3', tier: 5, icon: '👑', name: 'มงกุฎราชันย์',                  cost: 4000, fx: [mul('damage', 1.14), mul('goldMulti', 1.18), mul('xpMulti', 1.15)] },
+  { id: 's_e4', tier: 5, icon: '🔥', name: 'หัวใจมหาวิบัติ',                cost: 4200, fx: [add('explosiveRadius', 28), add('lightningChain', 110), mul('damage', 1.12)] },
+  { id: 's_e5', tier: 5, icon: '✨', name: 'พรนิรันดร์',                   cost: 5200, fx: [mul('maxHp', 1.22), add('regen', 3), add('lifesteal', 0.02), add('revives', 1)] },
+  { id: 's_e6', tier: 5, icon: '🕳️', name: 'หลุมดำจิ๋ว', cost: 3500, fx: [add('executionThreshold', 0.04), add('knockback', 140), add('explosiveRadius', 20)] },
+  { id: 's_e7', tier: 5, icon: '🪽', name: 'ปีกแห่งโชคชะตา', cost: 3400, fx: [mul('speed', 1.08), add('dodge', 0.06), mul('xpMulti', 1.08)] }
 ];
   
 /* ---------- ส่งออกให้ index.html ---------- */
