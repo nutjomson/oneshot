@@ -3172,8 +3172,12 @@ function applyHeroChoice(h){
   // with exactly the same rarity rates as Level Up and Shop.
   function getMapItemRarity(){
     const weights=getRarityWeights(wave);
+    // เลือกเฉพาะ Rarity ที่ยังมีไอเทมใน Map Pool และยังรับได้จริง
+    // เพื่อไม่ให้สุ่ม Rare/Legend ที่หมดสิทธิ์แล้ว แล้วกล่องเปิดไม่ได้
     const available=[...new Set(
       mapItemPool
+        .filter(item=>item && !isItemMaxed(item) &&
+          !(item.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(item.bt)))
         .map(item=>String(item.rarity||'normal'))
         .filter(isRarityAvailable)
     )];
