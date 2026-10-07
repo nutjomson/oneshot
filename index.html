@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.99</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.100</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -797,7 +797,7 @@ const PICKUPS = { xpLife: 25, goldLife: 25, xpFlySpeed: 340, goldFlySpeed: 360, 
 const LEVEL = { xpNeedStart: 90, xpNeedGrowth: 1.12, xpNeedFlat: 12, choices: 3 };
 
 /* ===== 12. SHOP ===== */
-const SHOP = { everyWaves: 3, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 10, rerollStep: 0, rerollGoldPct: 0.03, freeRerollEveryWaves: 3 };
+const SHOP = { everyWaves: 10, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 10, rerollStep: 0, rerollGoldPct: 0.03, freeRerollEveryWaves: 10 };
 
 /* ===== 13. MISC ===== */
 const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 40, bossBonusGold: 40, bossBonusDrops: 3, gameSpeed: 1 };
@@ -1284,7 +1284,7 @@ let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0;
-  let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
+  let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, pendingShopWave=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
   try{bests=JSON.parse(localStorage.getItem('sa_best'))||bests}catch(e){}
   const SAVE_KEY='oneshot_saves_v2';
   const SAVE_VERSION=2;
@@ -1299,7 +1299,7 @@ let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,en
   }
   function makeSaveData(){
     return {version:SAVE_VERSION,savedAt:Date.now(),selectedHeroId:selectedHero?.id||null,player:{...player},
-      wave,level,xp,xpNeed,kills,elapsed,lastShopWave,bossWave,shownWave,pendingLevels,freeShopRerolls,
+      wave,level,xp,xpNeed,kills,elapsed,lastShopWave,pendingShopWave,bossWave,shownWave,pendingLevels,freeShopRerolls,
       devOverride,dev:JSON.parse(JSON.stringify(dev)),settings:{...settings}};
   }
   function writeSaveStore(store){
@@ -1342,7 +1342,7 @@ let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,en
       if(data.dev)Object.assign(dev,JSON.parse(JSON.stringify(data.dev)));
       devOverride=!!data.devOverride;Object.assign(player,data.player);Object.assign(settings,data.settings||{});
       wave=Math.max(1,Number(data.wave)||1);level=Math.max(1,Number(data.level)||1);xp=Math.max(0,Number(data.xp)||0);xpNeed=Math.max(1,Number(data.xpNeed)||10);
-      kills=Math.max(0,Number(data.kills)||0);elapsed=Math.max(0,Number(data.elapsed)||0);lastShopWave=Math.max(0,Number(data.lastShopWave)||0);bossWave=Math.max(0,Number(data.bossWave)||0);shownWave=Math.max(1,Number(data.shownWave)||wave);pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
+      kills=Math.max(0,Number(data.kills)||0);elapsed=Math.max(0,Number(data.elapsed)||0);lastShopWave=Math.max(0,Number(data.lastShopWave)||0);pendingShopWave=Math.max(0,Number(data.pendingShopWave)||0);bossWave=Math.max(0,Number(data.bossWave)||0);shownWave=Math.max(1,Number(data.shownWave)||wave);pendingLevels=Math.max(0,Number(data.pendingLevels)||0);
       bullets=[];enemyBullets=[];enemies=[];xpOrbs=[];goldCoins=[];sparks=[];floaters=[];spawnTimer=0; treasureChests=[];skillCd=0;screenShake=0;rerollN=0;
       levelOpen=false;shopOpen=false;pauseOpen=false;over=false;running=true;paused=false;resetInput();
       ['startOverlay','gameOver','pauseOverlay','levelOverlay','shopOverlay','settingsOverlay','devOverlay','saveManagerOverlay'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
@@ -3344,7 +3344,7 @@ function applyHeroChoice(h){
     pendingItemReward=null;
     if(pendingLevels>0){
       openLevelUp();
-    }else{
+    }else if(!maybeOpenScheduledShop()){
       syncPause();
       setStatus('ต่อสู้ต่อ!');
     }
@@ -3495,7 +3495,7 @@ function openLevelUp(forceHigherRarity=false){
         levelOpen=false;
         document.getElementById('levelOverlay').classList.add('hidden');
         if(pendingLevels>0)openLevelUp();
-        else{syncPause();setStatus('ต่อสู้ต่อ!');}
+        else if(!maybeOpenScheduledShop()){syncPause();setStatus('ต่อสู้ต่อ!');}
       }catch(e){
         console.error('LEVEL UP APPLY ERROR',e);
         setStatus('เกิดข้อผิดพลาดในการใช้ไอเทม');
@@ -3685,8 +3685,33 @@ function openLevelUp(forceHigherRarity=false){
     });
   }
 
-  function openShop(){
-    if(!running || over || levelOpen) return;
+  function shopReadyForCurrentWave(){
+    const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
+    return wave>=every && wave%every===0 && lastShopWave!==wave;
+  }
+
+  function maybeOpenScheduledShop(){
+    const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
+    if(!running || over || shopOpen || rewardOpen || pauseOpen || levelOpen) return false;
+    if(pendingShopWave>0){
+      const target=pendingShopWave;
+      pendingShopWave=0;
+      return openShop(true,target);
+    }
+    if(wave>=every && wave%every===0 && lastShopWave!==wave){
+      return openShop(true,wave);
+    }
+    return false;
+  }
+
+  function openShop(force=false, shopWaveOverride=null){
+    if(!running || over || levelOpen || rewardOpen) return false;
+    const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
+    const targetWave=Math.max(1,Number(shopWaveOverride)||wave);
+    if(!force && (targetWave<every || targetWave%every!==0 || lastShopWave===targetWave)){
+      setStatus('🏪 ร้านค้าจะเปิดทุก '+every+' Wave');
+      return false;
+    }
 
     const overlay=document.getElementById('shopOverlay');
     const waveText=document.getElementById('shopWaveNum');
@@ -3694,10 +3719,12 @@ function openLevelUp(forceHigherRarity=false){
     // แสดง Overlay ก่อน เพื่อไม่ให้เกมดูเหมือน "ค้าง" หากขั้นตอนเตรียมสินค้าเกิดข้อผิดพลาด
     if(overlay) overlay.classList.remove('hidden');
     shopOpen=true;
+    lastShopWave=targetWave;
+    activeShopItems=[];
     syncPause();
 
     try{
-      if(waveText) waveText.textContent=wave;
+      if(waveText) waveText.textContent=targetWave;
 
       // Keep the current shop inventory while reopening it.
       // A new roll happens only after a purchase or an explicit reroll.
@@ -3716,6 +3743,9 @@ function openLevelUp(forceHigherRarity=false){
       }
       setStatus('ร้านค้ามีข้อผิดพลาด — เกมยังทำงานต่อได้');
     }
+  }
+
+    return true;
   }
 
   document.getElementById('rerollBtn').onclick = () => {
@@ -3779,7 +3809,7 @@ function openLevelUp(forceHigherRarity=false){
 
   document.getElementById('closeShopBtn').onclick = () => {
     document.getElementById('shopOverlay').classList.add('hidden');
-    shopOpen=false; syncPause(); setStatus('ปิดร้านค้าแล้ว');
+    shopOpen=false; activeShopItems=[]; syncPause(); setStatus('ปิดร้านค้าแล้ว • ร้านค้ารอบถัดไปทุก '+Math.max(1,Math.floor(dev.shop.everyWaves||10))+' Wave');
   };
 
   function formatRunTime(sec){
@@ -3951,7 +3981,7 @@ function openLevelUp(forceHigherRarity=false){
     document.getElementById('startOverlay').classList.remove('hidden');
     syncPause(); applyHeroChoice(selectedHero);
   }
-  document.getElementById('shopHudBtn').onclick=()=>{if(!running||over||levelOpen)return;openShop();};
+  document.getElementById('shopHudBtn').onclick=()=>{if(!running||over||levelOpen||rewardOpen)return;if(!shopReadyForCurrentWave()){setStatus('🏪 ร้านค้าจะเปิดทุก '+Math.max(1,Math.floor(dev.shop.everyWaves||10))+' Wave');return;}openShop(false,wave);};
     document.getElementById('pauseHudBtn').onclick=openPause;
   document.getElementById('pauseHistoryBtn').onclick=openItemHistory;
   document.getElementById('pauseStatsBtn').onclick=openRunStats;
@@ -4005,11 +4035,14 @@ function openLevelUp(forceHigherRarity=false){
       const prevWave=shownWave;
       shownWave=wave;
       spawnTreasureChest(wave);
-      const every=Math.max(1,Math.floor(dev.shop.freeRerollEveryWaves||3));
+      const every=Math.max(1,Math.floor(dev.shop.freeRerollEveryWaves||10));
       const gained=Math.max(0,Math.floor(wave/every)-Math.floor(prevWave/every));
       if(gained>0) freeShopRerolls+=gained;
+      const shopEvery=Math.max(1,Math.floor(dev.shop.everyWaves||10));
+      if(prevWave>=shopEvery && prevWave%shopEvery===0 && lastShopWave!==prevWave) pendingShopWave=prevWave;
       if(wave>1)setStatus('🌊 เวฟ '+wave+(wave%Math.max(1,Math.floor(dev.wave.bossEvery))===0?' — บอส!':'')+(gained>0?' • 🎁 รีโรลฟรี +'+gained:''));
     }
+    maybeOpenScheduledShop();
 
     if(screenShake > 0) screenShake = Math.max(0, screenShake - dt * 25);
 
@@ -4564,7 +4597,7 @@ function openLevelUp(forceHigherRarity=false){
     }
     // Audio is optional; this build has no initAudio() dependency.
     running=true; paused=false; over=false;
-    elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0; freeShopRerolls=0; rerollN=0; levelRerollN=0;
+    elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0; pendingShopWave=0; freeShopRerolls=0; rerollN=0; levelRerollN=0;
     itemHistory=[];
     runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
