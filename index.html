@@ -3098,6 +3098,18 @@ function applyHeroChoice(h){
     return pool.length ? weightedPick(pool) : null;
   }
 
+  // เลือก Rarity สำหรับหีบสมบัติ โดยใช้ตาราง Rarity เดียวกับ Shop
+  // แต่สุ่มเพียง Rarity ก่อน แล้วจึงสุ่มไอเทมจาก luxuryShopPool ตาม Weight
+  function getShopRarityForChest(){
+    const weights=getRarityWeights(wave);
+    const available=[...new Set(
+      luxuryShopPool
+        .map(item=>String(item.rarity||'normal'))
+        .filter(isRarityAvailable)
+    )];
+    return weightedPickRarity(weights, available);
+  }
+
   function spawnTreasureChest(w){
     if((w-1)%5!==0) return;
     if(treasureChests.some(c=>c.wave===w)) return;
