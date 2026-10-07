@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.84</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.85</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -289,7 +289,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.84</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.85</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3952,9 +3952,11 @@ function openLevelUp(forceHigherTier=false){
     const legend=2+(6-2)*progress;
     const weights=forceHigherTier
       ? (() => {
+          // 1 Rare ถูกการันตีแยก 1 ช่อง
+          // ช่องที่เหลือ: Legend x3 และส่วนที่เพิ่มหักจาก Normal
           const boostedLegend=Math.min(100,legend*3);
           const extra=Math.max(0,boostedLegend-legend);
-          return {1:Math.max(0,100-rare-legend-extra),2:rare,3:boostedLegend};
+          return {1:Math.max(0,100-rare-legend-extra),2:0,3:boostedLegend};
         })()
       : {1:100-rare-legend,2:rare,3:legend};
     const unlocked=[1,2,3];
