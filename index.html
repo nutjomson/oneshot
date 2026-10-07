@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.88</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.89</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -281,7 +281,6 @@ body.gameplay-actions .hud-controls{display:flex}
 <button id="skillBtn" class="skill-btn">⚡</button>
 <div id="rangeBtns" class="range-btns">
   <button id="attackRangeBtn" class="range-btn" type="button" aria-label="แสดงระยะโจมตี">🎯</button>
-  <button id="pickupRangeBtn" class="range-btn" type="button" aria-label="แสดงระยะเก็บของ">🧲</button>
 </div>
 <div id="status">ยินดีต้อนรับสู่สนามรบ!</div>
 
@@ -289,7 +288,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.88</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.89</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -387,7 +386,6 @@ body.gameplay-actions .hud-controls{display:flex}
         <label>Dodge %<input class="dev-num dev-percent" data-path="player.dodge" type="number" step="1"></label>
         <label>Regen HP/s<input class="dev-num" data-path="player.regen" type="number" step="0.1"></label>
         <label>Lifesteal %<input class="dev-num dev-percent" data-path="player.lifesteal" type="number" step="1"></label>
-        <label>Pickup Radius<input class="dev-num" data-path="player.pickup" type="number" step="1"></label>
         <label>Gold Multiplier<input class="dev-num" data-path="player.goldMulti" type="number" step="0.1"></label>
         <label>Revives<input class="dev-num" data-path="player.revives" type="number" step="1"></label>
         <label>XP Multiplier<input class="dev-num" data-path="player.xpMulti" type="number" step="0.1"></label>
@@ -614,7 +612,7 @@ const HEROES = [
 
 /* ===== 3. PLAYER_BASE ===== */
 const PLAYER_BASE = {
-  bulletSpeed: 800, projectiles: 1, pierce: 1, pickup: 315, attackRange: 150, regen: 1.0, goldMulti: 1, xpMulti: 1,
+  bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 150, regen: 1.0, goldMulti: 1, xpMulti: 1,
   dodge: 0, lifesteal: 0, revives: 0, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
   explosiveRadius: 0, knockback: 0, executionThreshold: 0, orbitBlades: 0, timeSlow: 0
 };
@@ -645,7 +643,7 @@ dodge: 0.50,
   knockback: 600,
   explosiveRadius: 220,
   bulletSpeed: 3000,
-  pickup: 2500,
+  
 
   speedMultOfHero: 2.0,
   damageMultOfHero: 200
@@ -757,7 +755,7 @@ const LEVEL_UPGRADES = [
   { rarity: 'normal', icon: '⚡', name: 'เพิ่มความเร็วการยิง',        fx: [mul('fireRate', 0.9775)] },
   { rarity: 'normal', icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.0125)] },
   { rarity: 'normal', icon: '❤️', name: 'ขยายพลังชีวิตสูงสุด',        fx: [add('maxHp', 13.5)] },
-  { rarity: 'normal', icon: '🧲', name: 'ขยายรัศมีแม่เหล็ก',          fx: [add('pickup', 24)] },
+  { rarity: 'normal', icon: '⭐', name: 'ประสบการณ์เข้มข้น', fx: [mul('xpMulti', 1.015)] },
   { rarity: 'normal', icon: '🛡️', name: 'เสริมเกราะป้องกัน',          fx: [add('armor', 0.0135)] },
   { rarity: 'normal', icon: '💥', name: 'เพิ่มโอกาสคริติคอล',          fx: [add('crit', 0.0135)] },
   { rarity: 'normal', icon: '💚', name: 'ฟื้นฟูพลังชีวิตต่อเนื่อง',      fx: [add('regen', 0.3)] },
@@ -774,15 +772,15 @@ const LEVEL_UPGRADES = [
   { rarity: 'normal', icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 0.75)], weight: 0.3 },
   { rarity: 'normal', icon: '⚔️️', name: 'นักรบสมดุล',                fx: [mul('damage', 1.015), add('maxHp', 7.5)] },
   { rarity: 'normal', icon: '🏰', name: 'ปราการเล็ก',                fx: [add('armor', 0.009), add('maxHp', 12)] },
-  { rarity: 'normal', icon: '🧭', name: 'เข็มทิศนักเก็บของ', fx: [add('pickup', 22.5), mul('goldMulti', 1.02)], weight: 0.75 },
+  { rarity: 'normal', icon: '🧠', name: 'นักวางแผนทรัพยากร', fx: [mul('xpMulti', 1.02), mul('goldMulti', 1.015)], weight: 0.75 },
   { rarity: 'normal', icon: '🩹', name: 'ผ้าพันแผลสนาม', fx: [add('maxHp', 10), add('regen', 0.3)] },
   { rarity: 'normal', icon: '🔩', name: 'กระสุนเสถียรภาพ', fx: [mul('bulletSpeed', 1.0375), add('knockback', 7.5)] },
 
   { id: 'u_n25', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งมั่นคง',             fx: [add('crit', 0.009), mul('attackRange', 1.08)], weight: 0.85 },
   { id: 'u_n26', rarity: 'normal', icon: '🔋', name: 'แกนพลังงาน',                 fx: [mul('damage', 1.015), mul('fireRate', 0.99)] },
-  { id: 'u_n27', rarity: 'normal', icon: '🩹', name: 'ชุดปฐมพยาบาล',                fx: [add('maxHp', 12), add('regen', 0.25)] },
-  { id: 'u_n28', rarity: 'normal', icon: '💨', name: 'แรงส่งกระสุน',                fx: [mul('bulletSpeed', 1.04), add('knockback', 7.5)] },
-  { id: 'u_n29', rarity: 'normal', icon: '🧲', name: 'แม่เหล็กสนาม',                fx: [add('pickup', 24), mul('xpMulti', 1.015)] },
+  { id: 'u_n27', rarity: 'normal', icon: '🩸', name: 'เส้นเลือดนักสู้', fx: [add('maxHp', 8), add('lifesteal', 0.0045)] },
+  { id: 'u_n28', rarity: 'normal', icon: '🎯', name: 'กระสุนเจาะเกราะ', fx: [mul('bulletSpeed', 1.03), add('crit', 0.005)] },
+  { id: 'u_n29', rarity: 'normal', icon: '🧠', name: 'แกนประสิทธิภาพ', fx: [mul('damage', 1.01), mul('xpMulti', 1.015)] },
   { id: 'u_n30', rarity: 'normal', icon: '🍀', name: 'โชคเล็กน้อย',                 fx: [mul('goldMulti', 1.025), add('crit', 0.0075)] },
 
   // ───────── RARE (15) ─────────
@@ -797,7 +795,7 @@ const LEVEL_UPGRADES = [
   { rarity: 'rare', icon: '💀', name: 'เคียวเก็บวิญญาณ', fx: [add('executionThreshold', 0.01)], weight: 0.90 },
   { rarity: 'rare', icon: '🗡️', name: 'ดาบหมุนคู่อมตะ', fx: [add('orbitBlades', 0.75), mul('damage', 1.01125)], weight: 0.35 },
   { rarity: 'rare', icon: '🌀', name: 'ร่างเงาหลบหลีก', fx: [add('dodge', 0.01875), mul('speed', 1.01125)], weight: 0.90 },
-  { rarity: 'rare', icon: '💰', name: 'ขุมทรัพย์นักล่า', fx: [mul('goldMulti', 1.06), add('pickup', 36)], weight: 0.85 },
+  { rarity: 'rare', icon: '💰', name: 'ขุมทรัพย์นักล่า', fx: [mul('goldMulti', 1.05), mul('xpMulti', 1.025)], weight: 0.85 },
   { rarity: 'rare', icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด', fx: [mul('bulletSpeed', 1.09), mul('damage', 1.0225)], weight: 0.80 },
   { rarity: 'rare', icon: '🔭', name: 'กล้องเล็งระยะไกล', fx: [mul('attackRange', 1.25)], weight: 0.80 },
   { rarity: 'rare', icon: '⏱️', name: 'จังหวะยิงสังหาร', fx: [mul('fireRate', 0.9675), add('crit', 0.0135)], weight: 0.75 },
@@ -825,9 +823,8 @@ const LEVEL_UPGRADES = [
 { id: 'u_l11', rarity: 'legend', icon: '🌩️', name: 'พายุไร้ขอบเขต',
   fx: [add('lightningChain', 25), add('explosiveRadius', 8)],
   weight: 0.45 },
-
-{ id: 'u_l12', rarity: 'legend', icon: '🌀', name: 'ตราประทับสูญญากาศ',
-  fx: [add('orbitBlades', 0.75), add('pickup', 30), mul('speed', 1.015)],
+  { id: 'u_l12', rarity: 'legend', icon: '🌀', name: 'ตราประทับสูญญากาศ', fx: [add('orbitBlades', 0.75), mul('speed', 1.02)], weight: 0.40 },
+  fx: [add('orbitBlades', 0.75), mul('speed', 1.015)],
   weight: 0.40 },
 
 
@@ -886,14 +883,14 @@ const SHOP_ITEMS = [
   { id: 's_d2', rarity: 'normal', icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 0.9)], scale: 0.50, weight: 0.9},
   { id: 's_d3', rarity: 'normal', icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.01875)], scale: 0.55, weight: 0.9},
   { id: 's_d4', rarity: 'normal', icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.03)], scale: 0.50, weight: 0.95},
-  { id: 's_d5', rarity: 'normal', icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 125, fx: [add('pickup', 48.75)], scale: 0.50, weight: 0.75},
+  { id: 's_d5', rarity: 'normal', icon: '⭐', name: 'เครื่องเร่งประสบการณ์', cost: 125, fx: [mul('xpMulti', 1.025)], scale: 0.50, weight: 0.75},
   { id: 's_d6', rarity: 'normal', icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 210, fx: [mul('goldMulti', 1.06)], scale: 0.70, weight: 1},
 
   { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [add('crit', 0.01)], weight: 0.95 },
   { id: 's_n20', rarity: 'normal', icon: '🔋', name: 'แบตเตอรี่พลังยิง',             cost: 145, fx: [mul('damage', 1.025)], weight: 0.9 },
   { id: 's_n21', rarity: 'normal', icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 125, fx: [mul('bulletSpeed', 1.045)], weight: 0.9 },
-  { id: 's_n22', rarity: 'normal', icon: '🩹', name: 'ชุดปฐมพยาบาลสนาม',             cost: 115, fx: [add('maxHp', 15), healPct(0.15)], weight: 0.9 },
-  { id: 's_n23', rarity: 'normal', icon: '🧲', name: 'ตลับแม่เหล็ก',                 cost: 125, fx: [add('pickup', 30)], weight: 0.95 },
+  { id: 's_n22', rarity: 'normal', icon: '🧱', name: 'เกราะฉุกเฉิน', cost: 125, fx: [add('armor', 0.01), add('maxHp', 10)], weight: 0.9 },
+  { id: 's_n23', rarity: 'normal', icon: '🧪', name: 'ตัวเร่งฟื้นฟูฉุกเฉิน', cost: 135, fx: [add('regen', 0.55), healPct(0.10)], weight: 0.90 },
   { id: 's_n24', rarity: 'normal', icon: '🪙', name: 'เหรียญนำโชค',                  cost: 140, fx: [mul('goldMulti', 1.03)], weight: 1 },
   { id: 's_n25', rarity: 'normal', icon: '🛡️', name: 'แผ่นเกราะเสริม',               cost: 125, fx: [add('armor', 0.0125)], weight: 0.95 },
   { id: 's_n26', rarity: 'normal', icon: '🥾', name: 'พื้นรองเท้าคล่องตัว',           cost: 125, fx: [mul('speed', 1.0225)], weight: 1 },
@@ -909,14 +906,14 @@ const SHOP_ITEMS = [
   { id: 's_b4', rarity: 'rare', icon: '🩸', name: 'จี้หยดเลือดอสูร', cost: 550, fx: [add('lifesteal', 0.009)], weight: 1.10 },
   { id: 's_b5', rarity: 'rare', icon: '🧿', name: 'เลนส์นักล่า', cost: 480, fx: [add('crit', 0.03), add('bulletSpeed', 52.5)], weight: 0.80 },
   { id: 's_b6', rarity: 'rare', icon: '🥾', name: 'รองเท้าจู่โจม', cost: 330, fx: [mul('speed', 1.0375), add('knockback', 15)], weight: 1.05 },
-  { id: 's_b7', rarity: 'rare', icon: '💰', name: 'เหรียญนักสำรวจ', cost: 350, fx: [mul('goldMulti', 1.0675), add('pickup', 30)], weight: 1.00 },
+  { id: 's_b7', rarity: 'rare', icon: '💰', name: 'เหรียญนักสำรวจ', cost: 350, fx: [mul('goldMulti', 1.05), mul('xpMulti', 1.02)], weight: 1.00 },
   { id: 's_b8', rarity: 'rare', icon: '⚙️', name: 'แกนยุทธวิธี', cost: 400, fx: [mul('damage', 1.03), mul('bulletSpeed', 1.03)], weight: 1.00 },
   { id: 's_b9', rarity: 'rare', icon: '🔩', name: 'ห้องกระสุนเร่งรัว', cost: 450, fx: [mul('fireRate', 0.965), add('crit', 0.009)], weight: 1.00 },
   { id: 's_b10', rarity: 'rare', icon: '❤️', name: 'หัวใจผู้พิทักษ์', cost: 460, fx: [add('maxHp', 30), add('regen', 0.45)], weight: 0.95 },
   { id: 's_b11', rarity: 'rare', icon: '🩸', name: 'พันธสัญญาโลหิต', cost: 500, fx: [add('lifesteal', 0.0075), mul('damage', 1.015)], weight: 1.00 },
   { id: 's_b12', rarity: 'rare', icon: '🌀', name: 'รองเท้าเฟส', cost: 420, fx: [add('dodge', 0.012), mul('speed', 1.02)], weight: 1.00 },
   { id: 's_b13', rarity: 'rare', icon: '🎯', name: 'เลนส์นักล่าเงียบ', cost: 460, fx: [add('crit', 0.01875), mul('attackRange', 1.12)], weight: 0.90 },
-  { id: 's_b14', rarity: 'rare', icon: '🧲', name: 'แกนแม่เหล็กประสบการณ์', cost: 380, fx: [add('pickup', 45), mul('xpMulti', 1.025)], weight: 1.05 },
+  { id: 's_b14', rarity: 'rare', icon: '🧠', name: 'แกนประสบการณ์', cost: 380, fx: [mul('xpMulti', 1.04), mul('damage', 1.01)], weight: 1.00 },
   { id: 's_b15', rarity: 'rare', icon: '⚡', name: 'ถุงมือช็อกกระแทก', cost: 520, fx: [add('lightningChain', 7.5), add('knockback', 18)], weight: 0.90 },
 
   // ───────── SHOP LEGEND ─────────
@@ -983,7 +980,7 @@ window.GAME_CONFIG = {
     player:{
       maxHp:280,hp:280,damage:35,speed:240,fireRate:.30,bulletSpeed:800,attackRange:150,
       projectiles:1,pierce:1,armor:.35,crit:.12,dodge:0,regen:1,lifesteal:0,
-      pickup:450,goldMulti:1,xpMulti:1,knockback:0,explosiveRadius:0,revives:0,
+      goldMulti:1,xpMulti:1,knockback:0,explosiveRadius:0,revives:0,
       ricochet:0,orbitBlades:0,timeSlow:0,lightningChain:0,poisonDmg:0,executionThreshold:0,
       ...CFG.playerBase
     },
@@ -1024,7 +1021,7 @@ window.GAME_CONFIG = {
       damage:dev.player.damage,speed:dev.player.speed,fireRate:dev.player.fireRate,
       bulletSpeed:dev.player.bulletSpeed,attackRange:dev.player.attackRange,projectiles:Math.max(1,Math.floor(dev.player.projectiles)),
       armor:dev.player.armor,crit:dev.player.crit,dodge:dev.player.dodge,regen:dev.player.regen,
-      lifesteal:dev.player.lifesteal,pickup:dev.player.pickup,goldMulti:dev.player.goldMulti,
+      lifesteal:dev.player.lifesteal,goldMulti:dev.player.goldMulti,
       xpMulti:dev.player.xpMulti,knockback:dev.player.knockback,explosiveRadius:dev.player.explosiveRadius,
       revives:Math.max(0,Math.floor(dev.player.revives)),ricochet:dev.player.ricochet,
       orbitBlades:dev.player.orbitBlades,timeSlow:dev.player.timeSlow,
@@ -1230,7 +1227,7 @@ window.GAME_CONFIG = {
 
   const player = {
     x:CFG.world.w/2, y:CFG.world.h/2, r:CFG.combat.playerRadius, hp:280, maxHp:280, speed:240, damage:35, fireRate:.30, fireTimer:0,
-    bulletSpeed:800, projectiles:1, pickup:450, armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1, xpMulti:1, timeSlow:0,
+    bulletSpeed:800, projectiles:1,  armor:.35, crit:.12, regen:1.0, dodge:0.0, lifesteal:0.0, pierce:1, xpMulti:1, timeSlow:0,
     angle:0, hit:0, animFrame:0, animTimer:0, facing:'right', gold:0, bulletType:'arcane', bulletTypes:['arcane'], goldMulti:1, revives:0,
     // Unique Mechanics
     ricochet: 0,
@@ -1243,9 +1240,11 @@ window.GAME_CONFIG = {
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[];
+  // Fixed core mechanic: XP and gold auto-pick up within this radius. No Pickup stat/upgrades.
+  const AUTO_PICKUP_RADIUS = 315;
   let treasureChests=[];
   let running=false, paused=false, over=false, lsUsed=0, rewardOpen=false;
-  let showAttackRange=false, showPickupRange=false;
+  let showAttackRange=false;
 let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
@@ -1619,13 +1618,6 @@ const PLAYER_STAT_DEFS = [
     key:'speed',
     icon:'🏃',
     name:'ความเร็วเคลื่อนที่',
-    group:'utility'
-  },
-
-  {
-    key:'pickup',
-    icon:'🧲',
-    name:'ระยะดูด XP / ทอง',
     group:'utility'
   },
 
@@ -2750,12 +2742,6 @@ function clampStats(){
     Math.min(
       player.bulletSpeed,
       C.bulletSpeed
-    );
-
-  player.pickup=
-    Math.min(
-      player.pickup,
-      C.pickup
     );
 
   player.xpMulti=
@@ -4292,10 +4278,10 @@ function openLevelUp(forceHigherRarity=false){
     for(let i=xpOrbs.length-1;i>=0;i--){
       const o=xpOrbs[i];o.life-=dt;o.animTimer+=dt*4;
       const d=dist(o.x,o.y,player.x,player.y);
-      if(d<player.pickup){
+      if(d<AUTO_PICKUP_RADIUS){
         const a=Math.atan2(player.y-o.y,player.x-o.x);
-        o.x+=Math.cos(a)*(CFG.pickups.xpFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
-        o.y+=Math.sin(a)*(CFG.pickups.xpFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
+        o.x+=Math.cos(a)*CFG.pickups.xpFlySpeed*dt;
+        o.y+=Math.sin(a)*CFG.pickups.xpFlySpeed*dt;
       }
       if(d<player.r+o.r){runStats.xpCollected+=Math.max(0,o.value||0);gainXP(o.value);xpOrbs.splice(i,1);continue}
       if(o.life<=0)xpOrbs.splice(i,1);
@@ -4304,10 +4290,10 @@ function openLevelUp(forceHigherRarity=false){
     for(let i=goldCoins.length-1;i>=0;i--){
       const g=goldCoins[i];g.life-=dt;g.animTimer+=dt*4;
       const d=dist(g.x,g.y,player.x,player.y);
-      if(d<player.pickup){
+      if(d<AUTO_PICKUP_RADIUS){
         const a=Math.atan2(player.y-g.y,player.x-g.x);
-        g.x+=Math.cos(a)*(CFG.pickups.goldFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
-        g.y+=Math.sin(a)*(CFG.pickups.goldFlySpeed+player.pickup*CFG.pickups.flyPickupFactor)*dt;
+        g.x+=Math.cos(a)*CFG.pickups.goldFlySpeed*dt;
+        g.y+=Math.sin(a)*CFG.pickups.goldFlySpeed*dt;
       }
       if(d<player.r+g.r){
         player.gold += g.value; 
@@ -4440,28 +4426,6 @@ function openLevelUp(forceHigherRarity=false){
       ctx.shadowColor='#facc15';
       ctx.shadowBlur=18;
       ctx.beginPath(); ctx.arc(px,py,r*pulse,0,Math.PI*2); ctx.stroke();
-
-      ctx.globalAlpha=.55;
-      ctx.lineWidth=7;
-      ctx.shadowBlur=28;
-      ctx.beginPath(); ctx.arc(px,py,r*pulse,0,Math.PI*2); ctx.stroke();
-    }
-
-    if(showPickupRange){
-      const r=Math.max(8,player.pickup*cam.scale);
-      const pulse=1+0.04*Math.sin(t+1.7);
-      ctx.globalAlpha=.08;
-      ctx.fillStyle='#38bdf8';
-      ctx.beginPath(); ctx.arc(px,py,r*pulse,0,Math.PI*2); ctx.fill();
-
-      ctx.globalAlpha=.95;
-      ctx.strokeStyle='#38bdf8';
-      ctx.lineWidth=3;
-      ctx.shadowColor='#38bdf8';
-      ctx.shadowBlur=18;
-      ctx.setLineDash([10,6]);
-      ctx.beginPath(); ctx.arc(px,py,r*pulse,0,Math.PI*2); ctx.stroke();
-      ctx.setLineDash([]);
 
       ctx.globalAlpha=.55;
       ctx.lineWidth=7;
@@ -4792,7 +4756,6 @@ function openLevelUp(forceHigherRarity=false){
     },{passive:true});
   }
   bindRangeHoldButton('attackRangeBtn','attack');
-  bindRangeHoldButton('pickupRangeBtn','pickup');
 
 
 
