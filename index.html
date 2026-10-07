@@ -2243,7 +2243,7 @@ const luxuryShopPool =
 const mapItemPool = [
   ...levelUpgrades,
   ...luxuryShopPool
-];
+].filter(item=>item&&typeof item==='object');
 
 let activeShopItems=[];
 
@@ -3161,7 +3161,7 @@ function applyHeroChoice(h){
     const rarity=weightedPickRarity(weights, available);
     if(!rarity) return null;
     const pool=mapItemPool.filter(i=>
-      String(i.rarity||'normal')===String(rarity) &&
+      i&&String(i.rarity||'normal')===String(rarity) &&
       !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
       !isItemMaxed(i)
     );
@@ -3194,7 +3194,7 @@ function applyHeroChoice(h){
 
   function openTreasureChest(chest){
     const pool=mapItemPool.filter(i=>
-      String(i.rarity)===String(chest.rarity) &&
+      i&&String(i.rarity)===String(chest.rarity) &&
       !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
       !isItemMaxed(i)
     );
