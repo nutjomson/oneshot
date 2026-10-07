@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.94</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.95</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -154,6 +154,34 @@ body.gameplay-actions .hud-controls{display:flex}
 #upgrades, #shopItems, #heroSelect{
   display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;
 }
+/* ===== SHOP QUICK DECISION UI ===== */
+.shop-modal{max-width:680px;padding:12px 12px 14px}
+.shop-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.shop-head .title{margin:0;text-align:left}.shop-wave{font-size:11px;font-weight:800;color:#94a3b8;text-align:left}
+.shop-wallet{font-size:15px;font-weight:900;color:#facc15;background:#111827;border:2px solid #ca8a04;padding:7px 10px;white-space:nowrap}
+.shop-guide{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0b1220;border:1px solid #334155;padding:7px 9px;margin-bottom:10px;color:#cbd5e1;font-size:10px;font-weight:700}
+.shop-guide-main{min-width:0}.shop-guide-time{color:#4ade80;white-space:nowrap;font-weight:900}
+#shopItems{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+.shop-item{min-width:0;min-height:185px;border-radius:7px;display:flex;flex-direction:column}
+.shop-item.recommended{border-color:#facc15!important;box-shadow:0 0 0 1px #facc15 inset,0 0 18px rgba(250,204,21,.28)!important;background:#1b2535}
+.shop-item.alternative{border-color:#475569;box-shadow:none}
+.shop-choice-label{font-size:9px;font-weight:900;letter-spacing:.5px;margin-bottom:5px;color:#94a3b8}.shop-item.recommended .shop-choice-label{color:#facc15}
+.shop-quick-desc{font-size:11px;line-height:1.35;color:#e2e8f0;min-height:31px;margin-top:2px}
+.shop-reason{margin-top:auto;padding-top:7px;font-size:10px;line-height:1.3;color:#4ade80;font-weight:800}
+.shop-buy-row{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}
+.shop-buy-btn{border:2px solid #fff;background:#22c55e;color:#052e16;font:900 11px Prompt,sans-serif;padding:7px 9px;min-height:38px;flex:1;touch-action:manipulation}
+.shop-item.recommended .shop-buy-btn{background:#eab308;color:#422006}.shop-buy-btn:active{transform:translate(1px,1px)}.shop-buy-btn:disabled{opacity:.45;cursor:not-allowed}
+.shop-cost{font-size:11px;color:#facc15;font-weight:900;white-space:nowrap}
+.shop-actions{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:7px;margin-top:10px}
+.shop-actions button{min-height:44px;border:2px solid #fff;font:900 11px Prompt,sans-serif;cursor:pointer;touch-action:manipulation}
+.shop-reroll{background:#eab308;color:#422006}.shop-premium{background:#7c3aed;color:#fff}.shop-close{background:#22c55e;color:#052e16}
+.shop-actions button:active{transform:translate(1px,1px)}.shop-detail-hint{font-size:9px;color:#64748b;margin-top:7px;text-align:center}
+.shop-stats{margin:7px 0 0;max-height:150px;overflow:auto;display:none}.shop-modal:focus-within .shop-stats{display:grid}
+@media(max-width:640px){
+  #shopItems{grid-template-columns:1.45fr 1fr 1fr;gap:6px}.shop-item{padding:7px;min-height:170px}.shop-item .icon{font-size:28px}.shop-item .uName{font-size:11px}.shop-item .tier-badge{font-size:8px}
+  .shop-quick-desc{font-size:9px}.shop-reason{font-size:9px}.shop-buy-btn{font-size:10px;padding:6px 5px}.shop-cost{font-size:9px}.shop-guide-main{font-size:9px}
+  .shop-actions{grid-template-columns:1.2fr .9fr .7fr}.shop-actions button{font-size:9px;padding:6px 4px}.shop-wallet{font-size:13px;padding:6px 8px}
+}
 .upgrade, .shop-item, .hero-card{
   border:2px solid #334155;background:#1e293b;padding:10px;text-align:left;color:#fff;cursor:pointer;
   font-family:'Prompt', sans-serif;position:relative;transition:all 0.15s ease;
@@ -288,7 +316,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.94</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.95</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -463,19 +491,26 @@ body.gameplay-actions .hud-controls{display:flex}
 
 <!-- Wave Shop Overlay -->
 <div id="shopOverlay" class="overlay hidden">
-  <div class="modal">
-    <div class="title">🏪 ร้านค้าลึกลับ (ร้านค้าเวฟ <span id="shopWaveNum">3</span>)</div>
-    <div class="sub">ทองคงเหลือของคุณ: <span id="shopGoldText" class="gold-text">0</span> ทอง</div>
-    
-    <div id="shopItems"></div>
-
-    <div class="btn-group">
-      <button class="btn btn-gold" id="rerollBtn">🎲 รีโรลร้านค้า (<span id="rerollCostText">10</span> ทอง)</button>
-      <button class="btn" id="premiumRerollBtn">✨ รีโรลขั้นสูง ×6 (<span id="premiumRerollCostText">60</span> ทอง)</button>
-      <button class="btn" id="closeShopBtn">✕ ปิดร้านค้า</button>
+  <div class="modal shop-modal">
+    <div class="shop-head">
+      <div>
+        <div class="title">🏪 ร้านค้าลึกลับ</div>
+        <div class="shop-wave">เวฟ <span id="shopWaveNum">3</span></div>
+      </div>
+      <div class="shop-wallet">💰 <span id="shopGoldText" class="gold-text">0</span></div>
     </div>
-
-    <div class="stats-box" id="shopHeroStats"></div>
+    <div class="shop-guide">
+      <span class="shop-guide-main">⚡ เลือกให้ไว — ตัวแรกคือไอเทมที่เหมาะกับ Build ตอนนี้</span>
+      <span class="shop-guide-time">3–8 วิ</span>
+    </div>
+    <div id="shopItems"></div>
+    <div class="shop-actions">
+      <button class="shop-reroll" id="rerollBtn" type="button">🔄 Reroll <span id="rerollCostText">10</span> 🪙</button>
+      <button class="shop-premium" id="premiumRerollBtn" type="button">✨ Premium ×6 · <span id="premiumRerollCostText">60</span> 🪙</button>
+      <button class="shop-close" id="closeShopBtn" type="button">เล่นต่อ</button>
+    </div>
+    <div class="shop-detail-hint">💡 ซื้อทันทีเมื่อแตะ • รายละเอียดสถิติอยู่ด้านล่างเมื่ออยากเช็ก</div>
+    <div class="stats-box shop-stats" id="shopHeroStats"></div>
   </div>
 </div>
 
@@ -3709,68 +3744,108 @@ function openLevelUp(forceHigherRarity=false){
     activeShopItems=chosen.map(i=>({...i,cost:Math.round(Number(i.cost||0)*0.80*(1+(wave-1)*pricePerWave))}));
     renderShopItems();
   }
-  function renderShopItems() {
-    const shopWrap = document.getElementById('shopItems');
-    if(!shopWrap) return;
-    shopWrap.innerHTML = '';
+  function getShopRecommendationScore(item){
+    if(!item) return -Infinity;
+    let score=0;
+    const fx=Array.isArray(item.fx)?item.fx:[];
+    const hero=selectedHero?.id||'';
+    const has=stat=>fx.some(f=>f&&f.stat===stat);
+    const add=(stat,v)=>{if(has(stat))score+=v;};
+    score += item.rarity==='legend'?12:item.rarity==='rare'?7:3;
+    const hpRatio=Number(player.hp||0)/Math.max(1,Number(player.maxHp||1));
+    if(Number(player.armor||0)<0.20)add('armor',9);
+    if(hpRatio<0.55)add('maxHp',8);
+    if(Number(player.regen||0)<2)add('regen',6);
+    if(Number(player.attackRange||0)<320)add('attackRange',6);
+    if(Number(player.projectiles||1)<=2)add('projectiles',6);
+    if(Number(player.pierce||1)<=2)add('pierce',5);
+    if(Number(player.crit||0)<0.25)add('crit',4);
+    if(Number(player.dodge||0)<0.12)add('dodge',3);
+    if(hero==='prism'&&(has('armor')||has('maxHp')||has('regen')||has('knockback')))score+=5;
+    if(hero==='neon'&&(has('fireRate')||has('attackRange')||has('bulletSpeed')||has('projectiles')))score+=5;
+    if(hero==='psycho'&&(has('damage')||has('crit')||has('explosiveRadius')||has('lightningChain')))score+=5;
+    if(hero==='cyber'&&(has('speed')||has('crit')||has('ricochet')||has('projectiles')))score+=5;
+    if(has('crit'))score+=Math.min(7,Number(player.crit||0)*12);
+    if(has('projectiles'))score+=Math.min(6,Number(player.projectiles||1)*1.5);
+    if(has('ricochet'))score+=Math.min(5,Number(player.ricochet||0)*1.5);
+    if(has('lightningChain'))score+=Math.min(5,Number(player.lightningChain||0)*0.12);
+    if(has('explosiveRadius'))score+=Math.min(5,Number(player.explosiveRadius||0)*0.08);
+    const cost=Math.max(1,Number(item.cost)||1);
+    score+=Math.max(0,Math.min(4,12/cost));
+    if(Number(player.gold||0)<cost)score-=10;
+    return score;
+  }
+
+  function getShopReason(item){
+    const fx=Array.isArray(item?.fx)?item.fx:[];
+    const has=stat=>fx.some(f=>f&&f.stat===stat);
+    if(Number(player.armor||0)<0.20&&has('armor'))return '🛡️ เติมจุดอ่อนด้านป้องกัน';
+    if(Number(player.attackRange||0)<320&&has('attackRange'))return '🎯 เติมระยะที่ขาด';
+    if(Number(player.crit||0)<0.25&&has('crit'))return '💥 เสริมโอกาสคริติคอล';
+    if(Number(player.projectiles||1)<=2&&has('projectiles'))return '🔫 เพิ่มพลังยิงต่อเนื่อง';
+    if(Number(player.pierce||1)<=2&&has('pierce'))return '🪃 ช่วยเคลียร์ศัตรูหลายตัว';
+    if(has('fireRate'))return '⚡ เพิ่มความถี่การโจมตี';
+    if(has('damage'))return '⚔️ เพิ่มความแรงโดยตรง';
+    if(has('maxHp')||has('regen'))return '❤️ เพิ่มความอยู่รอด';
+    if(has('goldMulti')||has('xpMulti'))return '💰 ช่วยการเติบโตระยะยาว';
+    return '⭐ เข้ากับ Build ปัจจุบัน';
+  }
+
+  function renderShopItems(){
+    const shopWrap=document.getElementById('shopItems');
+    if(!shopWrap)return;
+    shopWrap.innerHTML='';
     const goldText=document.getElementById('shopGoldText');
     const rerollText=document.getElementById('rerollCostText');
-    if(goldText) goldText.textContent=Number.isFinite(Number(player.gold))?Math.floor(player.gold):0;
-    if(rerollText) rerollText.textContent=freeShopRerolls > 0 ? 'ฟรี ×'+freeShopRerolls : getRerollCost();
+    if(goldText)goldText.textContent=Number.isFinite(Number(player.gold))?Math.floor(player.gold):0;
+    if(rerollText)rerollText.textContent=freeShopRerolls>0?'ฟรี ×'+freeShopRerolls:getRerollCost();
     const premiumRerollText=document.getElementById('premiumRerollCostText');
-    if(premiumRerollText) premiumRerollText.textContent=getPremiumRerollCost();
-
-    // ร้านค้าต้องเปิดได้แม้ระบบแสดงค่าสถานะ/Preview จะมีข้อผิดพลาด
+    if(premiumRerollText)premiumRerollText.textContent=getPremiumRerollCost();
     const heroStats=document.getElementById('shopHeroStats');
     if(heroStats){
-      try{ heroStats.innerHTML=renderCharacterStatsHtml(player); }
-      catch(e){ console.warn('SHOP HERO STATS ERROR',e); heroStats.innerHTML=''; }
+      try{heroStats.innerHTML=renderCharacterStatsHtml(player);}
+      catch(e){console.warn('SHOP HERO STATS ERROR',e);heroStats.innerHTML='';}
     }
 
-    const items=Array.isArray(activeShopItems)?activeShopItems:[];
-    items.forEach(item => {
+    const items=(Array.isArray(activeShopItems)?activeShopItems:[]).filter(Boolean);
+    const ranked=items.map(item=>({...item,_shopScore:getShopRecommendationScore(item)})).sort((a,b)=>b._shopScore-a._shopScore);
+    ranked.forEach((item,index)=>{
       try{
-        const b=document.createElement('button');
-        b.type='button';
-        b.className='shop-item item-'+(item.rarity||'normal');
-        if(item.purchased) b.classList.add('disabled');
-
-        // แสดงค่าสถานะที่จะเปลี่ยนหลังซื้อ โดย Preview จะจำลองแล้วคืนค่าเดิมให้ผู้เล่น
-        const desc=typeof item.desc==='string' ? item.desc : '';
-        const previewHtml=renderItemPreview(item);
-        b.innerHTML=`
-          <div class="icon">${item.icon||'📦'}</div>
-          <div>
-            <div class="uName"><span class="tier-badge tier-${item.rarity||'normal'}">${item.rarity||'normal'}</span>${item.name||'ไอเทม'}</div>
-            <div class="uDesc">${desc}</div>
-            ${previewHtml}
-            <div class="cost">${item.purchased ? '<span style="color:#4ade80">ซื้อแล้ว!</span>' : '💰 ' + Math.max(0,Math.floor(Number(item.cost)||0)) + ' ทอง'}</div>
-          </div>`;
-
-        b.onclick=()=>{
+        const b=document.createElement('div');
+        b.className='shop-item item-'+(item.rarity||'normal')+(index===0?' recommended':' alternative')+(item.purchased?' disabled':'');
+        const desc=typeof item.desc==='string'?item.desc:'';
+        const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
+        const label=index===0?'⭐ แนะนำ':'ทางเลือก '+index;
+        const reason=index===0?getShopReason(item):'เลือกเองได้ตามสไตล์';
+        const cost=Math.max(0,Math.floor(Number(item.cost)||0));
+        const canBuy=!item.purchased&&Number(player.gold||0)>=cost;
+        b.innerHTML=
+          '<div class="shop-choice-label">'+label+'</div>'+
+          '<div class="icon">'+(item.icon||'📦')+'</div>'+
+          '<div class="uName"><span class="tier-badge tier-'+(item.rarity||'normal')+'">'+(item.rarity||'normal')+'</span>'+(item.name||'ไอเทม')+'</div>'+
+          '<div class="shop-quick-desc">'+quickDesc+'</div>'+
+          '<div class="shop-reason">'+(item.purchased?'✅ ซื้อแล้ว':reason)+'</div>'+
+          '<div class="shop-buy-row"><span class="shop-cost">'+(item.purchased?'':cost+' 🪙')+'</span><button class="shop-buy-btn" type="button" '+(canBuy?'':'disabled')+'>'+(item.purchased?'ซื้อแล้ว':canBuy?'ซื้อ':'ทองไม่พอ')+'</button></div>';
+        const buyBtn=b.querySelector('.shop-buy-btn');
+        buyBtn?.addEventListener('click',e=>{
+          e.preventDefault();e.stopPropagation();
           try{
-            if(item.purchased) return;
-            const cost=Math.max(0,Number(item.cost)||0);
+            if(item.purchased)return;
             if(player.gold>=cost){
               player.gold-=cost;
-              if(typeof item.apply==='function') item.apply();
+              if(typeof item.apply==='function')item.apply();
               clampStats();
               item.purchased=true;
+              const original=activeShopItems.find(x=>x.id===item.id||x.name===item.name);
+              if(original)original.purchased=true;
               playSound('coin');
               renderShopItems();
               refreshHUD();
-            }else{
-              setStatus('ทองไม่เพียงพอ!');
-            }
-          }catch(e){
-            console.error('SHOP PURCHASE ERROR',e);
-            setStatus('เกิดข้อผิดพลาดในการซื้อไอเทม');
-          }
-        };
+            }else setStatus('ทองไม่เพียงพอ!');
+          }catch(e){console.error('SHOP PURCHASE ERROR',e);setStatus('เกิดข้อผิดพลาดในการซื้อไอเทม');}
+        });
         shopWrap.appendChild(b);
-      }catch(e){
-        console.error('SHOP ITEM RENDER ERROR',e,item);
-      }
+      }catch(e){console.error('SHOP ITEM RENDER ERROR',e,item);}
     });
   }
 
