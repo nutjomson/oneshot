@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.139</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.140</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5050,7 +5050,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillStyle='#facc15'; ctx.fillRect(px-13,py-2,26,4);
       ctx.fillStyle='#fde68a'; ctx.fillRect(px-5,py-8,10,5);
       ctx.fillStyle='#78350f'; ctx.fillRect(px-3,py-3,6,6);
-      ctx.font='bold 9px 'Maitree',sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff';
+      ctx.font="bold 9px 'Maitree',sans-serif"; ctx.textAlign='center'; ctx.fillStyle='#fff';
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
@@ -5082,7 +5082,7 @@ function openLevelUp(forceHigherRarity=false){
     drawPlayer(cam);
     drawBullets(cam);
     // ดาเมจต้องวาดใน transform เดียวกับสนาม เพื่อให้ตำแหน่งติดกับศัตรูหลังซูม
-    ctx.font='900 16px 'Maitree',sans-serif';ctx.textAlign='center';
+    ctx.font="900 16px 'Maitree',sans-serif";ctx.textAlign='center';
     ctx.lineJoin='round';ctx.lineWidth=3;
     for(const f of floaters){
       ctx.fillStyle=f.c?'#ffe45c':'#ffffff';
