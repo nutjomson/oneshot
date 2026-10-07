@@ -2267,11 +2267,11 @@ function normalizeItemRarities(){
     list.forEach(item=>{
       if(!item || typeof item!=='object') return;
       if(!item.rarity){
-        const oldTier=Number(item.rarity||1);
+        const oldTier=Number(item.tier||1);
         item.rarity=oldTier<=1 ? 'normal' : oldTier===2 ? 'rare' : 'legend';
       }
       if(!['normal','rare','legend'].includes(item.rarity)) item.rarity='normal';
-      delete item.rarity;
+      delete item.tier;
       if(Array.isArray(item.fx)){
         item.fx=item.fx.map(f=>
           f&&f.op==='fragment'&&(f.stat==='projectiles'||f.stat==='ricochet')
@@ -3158,8 +3158,8 @@ function applyHeroChoice(h){
     const margin=90;
     const x=rand(margin,Math.max(margin,world.w-margin));
     const y=rand(margin,Math.max(margin,world.h-margin));
-    const tier=getShopTierForChest();
-    if(tier==null) return;
+    const rarity=getShopRarityForChest();
+    if(!rarity) return;
     treasureChests.push({x,y,r:18,rarity,wave:w,animTimer:0});
     setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • ${rarity}`);
   }
@@ -3603,14 +3603,10 @@ function openLevelUp(forceHigherRarity=false){
 
     b.className = 'upgrade item-'+(u.rarity||'normal');
 
-    /*
-     * แสดง Tier บนการ์ดด้วย
-     * ทำให้เห็นว่าไอเทมนี้เป็น T1/T2/T3/T4
-     */
-    const tierName =
+    const rarityName =
       (CFG.rarities && CFG.rarities[u.rarity])
         ? CFG.rarities[u.rarity].name
-        : `Tier ${u.rarity || 1}`;
+        : (u.rarity || 'normal');
 
     b.innerHTML = `
       <div class="icon">${u.icon}</div>
@@ -3624,11 +3620,11 @@ function openLevelUp(forceHigherRarity=false){
             margin-bottom:2px;
           "
         >
-          ${forceHigherRarity && Number(u.rarity||1) === Number(premiumTargetRarity) ? '✨ PREMIUM • ' : ''}T${u.rarity || 1} • ${tierName}
+          ${forceHigherRarity && u.rarity===premiumTargetRarity ? '✨ PREMIUM • ' : ''}${rarityName}
         </div>
 
         <div class="uName">
-          ${forceHigherRarity && Number(u.rarity||1) === Number(premiumTargetRarity) ? '✨ ' : ''}${u.name}
+          ${forceHigherRarity && u.rarity===premiumTargetRarity ? '✨ ' : ''}${u.name}
         </div>
 
         <div class="uDesc">
