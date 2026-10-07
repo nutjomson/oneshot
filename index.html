@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.98</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.99</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -293,8 +293,12 @@ body.gameplay-actions .hud-controls{display:flex}
 .dev-step:active{transform:scale(.94)}
 .dev-actions{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:7px;padding-top:10px;background:linear-gradient(#0f172a00,#0f172a 25%)}
 @media(max-width:620px){.dev-tabs{grid-template-columns:repeat(3,1fr)}.dev-grid{grid-template-columns:1fr}.dev-grid label{min-height:54px}.dev-modal{padding:10px}.dev-actions{grid-template-columns:1fr 1fr 1fr}}
-/* Keep Level Up and Shop compact 3-choice layout on phones. */
-@media(max-width:640px){#upgrades,#shopItems{grid-template-columns:1.45fr 1fr 1fr!important}.level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}}
+/* v1.0.99: Restore stacked mobile item layout; later overrides must not re-enable 3-column cards. */
+@media(max-width:640px){
+  #upgrades,#shopItems{grid-template-columns:1fr!important}
+  #upgrades .upgrade,#shopItems .shop-item{display:flex!important;grid-template-columns:none!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important}
+  .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
+}
 </style>
 </head>
 <body>
