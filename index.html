@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.124</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.125</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.124 COMPACT ITEM CHOICES =====
+/* ===== v1.0.125 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -229,7 +229,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-reason{display:none!important}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
 }
-.item-preview{display:block}\n/* ===== v1.0.124 ITEM STAT PREVIEW FIX =====
+.item-preview{display:block}\n/* ===== v1.0.125 ITEM STAT PREVIEW FIX =====
    แสดงสถานะก่อน/หลังให้เห็นจริงทั้ง Level Up และ Shop
    ใช้ grid 2 คอลัมน์ + ไม่ตัดข้อความ เพื่อไม่ให้ค่าตกขอบ */
 .item-preview{
@@ -425,7 +425,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
 }
 
-/* ===== v1.0.124 READABLE COMPACT LAYOUT =====
+/* ===== v1.0.125 READABLE COMPACT LAYOUT =====
    ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
    ป้องกันข้อความตกขอบบน iPhone/iPad */
 .level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
@@ -468,7 +468,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 
-/* ===== v1.0.124 RESPONSIVE GAME-UI LAYOUT =====
+/* ===== v1.0.125 RESPONSIVE GAME-UI LAYOUT =====
    แนวทางจาก survivor-like: choice cards อ่านเร็ว, rarity เด่น,
    และใช้ responsive layout แทนการบีบตัวอักษรให้เล็ก
    อ้างอิงแนวคิด 3-4 cards ของ Vampire Survivors/Brotato
@@ -714,7 +714,7 @@ body.gameplay-actions .hud-controls{display:flex}
   max-width:100%;
   overflow-wrap:anywhere;
 }
-/* ===== v1.0.124 ITEM PREVIEW READABILITY ===== */
+/* ===== v1.0.125 ITEM PREVIEW READABILITY ===== */
 .item-preview-title{display:none!important}
 .item-preview-grid{display:grid!important;grid-template-columns:1fr!important;gap:3px!important}
 .item-preview-stat{font-size:10px!important;line-height:1.3!important;padding:3px 4px!important;white-space:normal!important}
@@ -726,7 +726,7 @@ body.gameplay-actions .hud-controls{display:flex}
 }
 
 
-/* ===== v1.0.124 QUICK PICK / INLINE SHOP PRICE ===== */
+/* ===== v1.0.125 QUICK PICK / INLINE SHOP PRICE ===== */
 .level-modal .upgrade-choice-label,.shop-modal .shop-choice-label{display:none!important}
 .level-modal .upgrade .icon{grid-row:1 / span 2!important}
 .level-modal .upgrade .upgrade-reason,.shop-modal .shop-reason{display:none!important}
@@ -5220,110 +5220,75 @@ function openLevelUp(forceHigherRarity=false){
 .shop-modal .shop-item{cursor:pointer;}
 </style>
 
-<style id="v1-0-124-shop-layout">
-/* Shop: 3 กล่องต้องเห็นพร้อมกันบนมือถือ และตัดพื้นที่สถานะปัจจุบันด้านล่าง */
-.shop-modal .shop-stats{
-  display:none!important;
+<style id="v1-0-125-shop-layout">
+/* Shop: ใช้พื้นที่หน้าจอเต็มขึ้น แต่ยังให้ 3 การ์ดเห็นพร้อมกัน */
+.shop-modal .shop-stats,
+.shop-modal .shop-detail-hint{display:none!important}
+.shop-modal{
+  width:min(680px,calc(100vw - 16px))!important;
+  max-width:680px!important;
+  max-height:calc(100dvh - 10px)!important;
+  overflow:hidden!important;
 }
 .shop-modal #shopItems{
   max-height:none!important;
   overflow:visible!important;
-  overflow-y:visible!important;
   padding:0!important;
-  gap:5px!important;
+  gap:4px!important;
 }
 .shop-modal .shop-item{
   min-height:0!important;
   height:auto!important;
-  padding:5px 6px!important;
+  padding:4px 6px!important;
   overflow:visible!important;
   align-content:start;
 }
 .shop-modal .shop-quick-desc{
-  font-size:8.2px!important;
+  font-size:8.5px!important;
   line-height:1.15!important;
   margin:1px 0!important;
 }
 .shop-modal .item-preview{
   margin-top:2px!important;
   padding:3px 5px!important;
-  font-size:7.6px!important;
+  font-size:7.7px!important;
   line-height:1.15!important;
 }
 .shop-modal .item-preview-title{
   font-size:7.8px!important;
   margin-bottom:2px!important;
 }
-.shop-modal .item-preview-grid{
-  gap:2px 4px!important;
-}
+.shop-modal .item-preview-grid{gap:2px 4px!important}
 .shop-modal .item-preview-stat{
   font-size:7.1px!important;
   line-height:1.15!important;
   padding:1px 2px!important;
 }
-.shop-modal .item-preview-values{
-  font-size:6.9px!important;
-}
+.shop-modal .item-preview-values{font-size:6.9px!important}
 .shop-modal .shop-actions{
-  margin-top:8px!important;
+  margin-top:7px!important;
   flex-shrink:0;
-}
-.shop-modal .shop-detail-hint{
-  display:none!important;
 }
 @media(max-width:640px){
   .shop-modal{
+    width:calc(100vw - 10px)!important;
+    max-width:none!important;
     padding:7px!important;
-    max-height:calc(100dvh - 10px)!important;
   }
-  .shop-modal .shop-head{
-    margin-bottom:4px!important;
-  }
-  .shop-modal .shop-wallet{
-    font-size:11px!important;
-    padding:4px 6px!important;
-  }
-  .shop-modal .shop-wave{
-    font-size:9px!important;
-  }
-  .shop-modal .shop-item{
-    padding:4px 5px!important;
-  }
-  .shop-modal .shop-choice-label{
-    font-size:7.5px!important;
-    margin-bottom:2px!important;
-  }
-  .shop-modal .shop-topline .icon{
-    font-size:19px!important;
-  }
-  .shop-modal .shop-topline .uName{
-    font-size:9px!important;
-  }
-  .shop-modal .shop-quick-desc{
-    font-size:7.4px!important;
-  }
-  .shop-modal .item-preview{
-    font-size:6.9px!important;
-    padding:2px 4px!important;
-  }
-  .shop-modal .item-preview-title{
-    font-size:7.1px!important;
-  }
-  .shop-modal .item-preview-stat{
-    font-size:6.5px!important;
-  }
-  .shop-modal .item-preview-values{
-    font-size:6.3px!important;
-  }
-  .shop-modal .shop-actions{
-    margin-top:7px!important;
-    gap:5px!important;
-  }
-  .shop-modal .shop-actions button{
-    min-height:38px!important;
-    font-size:8px!important;
-    padding:5px 3px!important;
-  }
+  .shop-modal .shop-head{margin-bottom:4px!important}
+  .shop-modal .shop-wallet{font-size:12px!important;padding:4px 7px!important}
+  .shop-modal .shop-wave{font-size:9px!important}
+  .shop-modal .shop-guide{margin-bottom:5px!important;padding:5px 7px!important;font-size:8px!important}
+  .shop-modal .shop-item{padding:4px 5px!important}
+  .shop-modal .shop-choice-label{font-size:7.5px!important;margin-bottom:1px!important}
+  .shop-modal .shop-topline .icon{font-size:20px!important}
+  .shop-modal .shop-topline .uName{font-size:9.5px!important}
+  .shop-modal .shop-quick-desc{font-size:7.6px!important}
+  .shop-modal .item-preview{font-size:7px!important;padding:2px 4px!important}
+  .shop-modal .item-preview-title{font-size:7.2px!important}
+  .shop-modal .item-preview-stat{font-size:6.6px!important}
+  .shop-modal .item-preview-values{font-size:6.4px!important}
+  .shop-modal .shop-actions{margin-top:6px!important;gap:5px!important}
+  .shop-modal .shop-actions button{min-height:38px!important;font-size:8px!important;padding:5px 3px!important}
 }
 </style>
