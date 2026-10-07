@@ -3687,7 +3687,8 @@ function openLevelUp(forceHigherRarity=false){
 
   function shopReadyForCurrentWave(){
     const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
-    return wave>=every && wave%every===0 && lastShopWave!==wave;
+    // ร้านค้าจะพร้อมเมื่อถึงช่วงท้ายของ Wave ที่กำหนดเท่านั้น
+    return pendingShopWave>0 || (wave>=1 && ((wave-1)%every===0) && lastShopWave!==wave);
   }
 
   function maybeOpenScheduledShop(){
@@ -3698,10 +3699,9 @@ function openLevelUp(forceHigherRarity=false){
       pendingShopWave=0;
       return openShop(true,target);
     }
-    // ร้านค้านับรอบจาก Wave 1: 1, 11, 21, 31, ...
-    if(wave>=1 && ((wave-1)%every===0) && lastShopWave!==wave){
-      return openShop(true,wave);
-    }
+    // ร้านค้าจะบังคับเปิดตอน "จบ Wave" ที่กำหนด
+    // รอบแรกคือจบ Wave 1 จากนั้นจบ Wave 11, 21, 31, ...
+    // ไม่เปิดทันทีเมื่อเริ่ม Wave
     return false;
   }
 
@@ -3835,7 +3835,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.104');
+    lines.push('Game Version: v1.0.105');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -4038,7 +4038,8 @@ function openLevelUp(forceHigherRarity=false){
       const gained=Math.max(0,Math.floor(wave/every)-Math.floor(prevWave/every));
       if(gained>0) freeShopRerolls+=gained;
       const shopEvery=Math.max(1,Math.floor(dev.shop.everyWaves||10));
-      if(prevWave>=shopEvery && prevWave%shopEvery===0 && lastShopWave!==prevWave) pendingShopWave=prevWave;
+      // นับรอบจาก Wave 1 และบังคับเปิดเมื่อ Wave นั้นจบแล้ว
+      if(prevWave>=1 && ((prevWave-1)%shopEvery)===0 && lastShopWave!==prevWave) pendingShopWave=prevWave;
       if(wave>1)setStatus('🌊 เวฟ '+wave+(wave%Math.max(1,Math.floor(dev.wave.bossEvery))===0?' — บอส!':'')+(gained>0?' • 🎁 รีโรลฟรี +'+gained:''));
     }
     maybeOpenScheduledShop();
