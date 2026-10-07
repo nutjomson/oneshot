@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.140</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.141</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -736,6 +736,42 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-modal .shop-topline .shop-inline-cost{grid-column:3!important;font-size:10px;font-weight:900;color:#facc15;white-space:nowrap;text-align:right}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 </style>
+<style id="shop-alchemy-backdrop-v1-0-141">
+/* ===== v1.0.141 SHOP ALCHEMY BACKDROP =====
+   CSS-only dark fantasy shop ambience. Keeps the center quiet for cards. */
+#shopOverlay{
+  background:
+    radial-gradient(circle at 18% 30%,rgba(108,151,91,.20) 0 2%,transparent 13%),
+    radial-gradient(circle at 82% 30%,rgba(173,112,57,.20) 0 2%,transparent 13%),
+    radial-gradient(circle at 72% 34%,rgba(255,181,61,.14),transparent 19%),
+    linear-gradient(90deg,rgba(8,6,12,.97) 0%,rgba(15,10,19,.82) 21%,rgba(10,8,15,.74) 50%,rgba(15,10,19,.82) 79%,rgba(8,6,12,.97) 100%),
+    linear-gradient(180deg,#100a16 0%,#17101a 65%,#25160f 65%,#160d0a 100%)!important;
+}
+#shopOverlay::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.9;
+  background:
+    linear-gradient(90deg,transparent 0 20%,rgba(91,57,40,.45) 20% 20.7%,transparent 20.7% 79.3%,rgba(91,57,40,.45) 79.3% 80%,transparent 80%),
+    repeating-linear-gradient(0deg,transparent 0 54px,rgba(111,70,47,.18) 55px,transparent 58px),
+    radial-gradient(circle at 14% 28%,rgba(112,154,90,.42) 0 7px,transparent 8px),
+    radial-gradient(circle at 18% 37%,rgba(112,154,90,.30) 0 9px,transparent 10px),
+    radial-gradient(circle at 86% 28%,rgba(172,111,67,.38) 0 8px,transparent 9px),
+    radial-gradient(circle at 91% 39%,rgba(172,111,67,.28) 0 7px,transparent 8px);
+}
+#shopOverlay::after{
+  content:"";position:absolute;left:9%;right:9%;bottom:0;height:28%;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(27,15,10,.82) 0 4px,rgba(103,62,37,.28) 5px 30px),linear-gradient(180deg,rgba(83,49,29,.70),rgba(23,12,8,.96));
+  border-top:4px solid rgba(121,73,42,.65);
+  box-shadow:0 -12px 30px rgba(0,0,0,.55) inset;
+}
+#shopOverlay>.shop-modal{
+  position:relative;z-index:2;
+  background:rgba(7,11,20,.80)!important;
+  backdrop-filter:blur(2px);
+  box-shadow:0 16px 50px rgba(0,0,0,.78),0 0 0 2px rgba(117,83,52,.45);
+}
+#shopOverlay .shop-item{background:rgba(13,20,32,.95)!important;backdrop-filter:blur(3px)}
+</style>
+
 
 <script id="responsive-ui-scale-v1-0-135">
 (function(){
