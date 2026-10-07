@@ -2267,6 +2267,19 @@ function isRarityAvailable(rarity){
 
 // Shared rarity helpers. These must be global because Level Up, Shop,
 // and Treasure Chests all use them.
+function weightedPick(items){
+  if(!Array.isArray(items)||!items.length) return null;
+  const valid=items.filter(x=>x&&Number(x.weight??1)>0);
+  if(!valid.length) return items[Math.floor(Math.random()*items.length)]||null;
+  const total=valid.reduce((sum,x)=>sum+Number(x.weight??1),0);
+  let r=Math.random()*total;
+  for(const item of valid){
+    r-=Number(item.weight??1);
+    if(r<=0) return item;
+  }
+  return valid[valid.length-1];
+}
+
 function weightedPickRarity(weights, availableRarities){
   const list=[];
   for(const rarity of availableRarities){
