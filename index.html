@@ -987,7 +987,7 @@ window.GAME_CONFIG = {
     wave:{...CFG.waves}, drop:{...CFG.drops}, level:{...CFG.level}, shop:{...CFG.shop}, misc:{...CFG.misc}
   };
   const dev = JSON.parse(JSON.stringify(DEV_DEFAULTS));
-  const DEV_PLAYER_KEYS = ['maxHp','hp','damage','speed','fireRate','bulletSpeed','attackRange','projectiles','pierce','armor','crit','dodge','regen','lifesteal','pickup','goldMulti','xpMulti','knockback','explosiveRadius','revives','ricochet','orbitBlades','timeSlow','lightningChain','poisonDmg','executionThreshold'];
+  const DEV_PLAYER_KEYS = ['maxHp','hp','damage','speed','fireRate','bulletSpeed','attackRange','projectiles','pierce','armor','crit','dodge','regen','lifesteal' ,'goldMulti','xpMulti','knockback','explosiveRadius','revives','ricochet','orbitBlades','timeSlow','lightningChain','poisonDmg','executionThreshold'];
   let devOverride = false; // true เมื่อผู้เล่นกด "ใช้ค่า" ใน dev panel → ค่านั้นทับสถานะฮีโร่
   function cloneDevDefaults(){ return JSON.parse(JSON.stringify(DEV_DEFAULTS)); }
   function setNested(obj,path,value){const p=path.split('.');let o=obj;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=value;}
@@ -1406,9 +1406,6 @@ function formatStatValue(stat, value){
 
     case 'lifesteal':
       return `${(v*100).toFixed(1)}%`;
-
-    case 'pickup':
-      return `${Math.round(v)} px`;
 
     case 'goldMulti':
       return `${v.toFixed(2)}x`;
@@ -2026,8 +2023,6 @@ const INT_LABEL = {
   projectiles:['กระสุน','นัด'],
 
   pierce:['เจาะทะลุ','ตัว'],
-
-  pickup:['ระยะดูดไอเทม','px'],
 
   regen:['ฟื้นฟู HP','/วิ'],
 
@@ -4735,7 +4730,6 @@ function openLevelUp(forceHigherRarity=false){
     if(!btn) return;
     const set=(on)=>{
       if(key==='attack') showAttackRange=on;
-      else showPickupRange=on;
       btn.classList.toggle('active',on);
     };
     const release=e=>{
