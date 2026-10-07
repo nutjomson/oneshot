@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.120</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.121</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -2464,7 +2464,8 @@ const MUL_LABEL = {
 
   maxHp:'Max HP',
 
-  goldMulti:'ทองที่ได้รับ'
+  goldMulti:'ทองที่ได้รับ',
+  attackRange:'ระยะโจมตี'
 };
 
 
@@ -2597,13 +2598,19 @@ function renderItemPreview(item){
         '</div>'
       );
     });
-    if(!rows.length) return '';
-    return '<div class="item-preview">'+
+    const desc=typeof item?.desc==='string'&&item.desc.trim()
+      ? item.desc.trim()
+      : ((Array.isArray(item?.fx)?item.fx:[]).map(descEffect).filter(Boolean).join(' และ ')||'ไม่มีคำอธิบายเพิ่มเติม');
+    if(!rows.length){
+      return '<div class="item-preview"><div class="item-preview-title">📋 ผลของไอเทม</div>'+
+        '<div class="item-preview-stat positive"><span class="item-preview-name">'+desc+'</span></div></div>';
+    }
+    return '<div class="item-preview"><div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
       '<div class="item-preview-grid">'+rows.join('')+'</div>'+
-    '</div>';
+      '<div style="margin-top:4px;color:#cbd5e1;font-size:8px;line-height:1.3">ผล: '+desc+'</div></div>';
   }catch(e){
     console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
-    return '';
+    return '<div class="item-preview"><div class="item-preview-title">📋 ผลของไอเทม</div><div style="font-size:8px;color:#cbd5e1">ตรวจสอบผลของไอเทมเมื่อซื้อ</div></div>';
   }
 }
 
@@ -2624,7 +2631,8 @@ function buildItem(def,i){
       fx
         .map(descEffect)
         .filter(Boolean)
-        .join(' และ '),
+        .join(' และ ') ||
+      'ไม่มีคำอธิบายเพิ่มเติม',
 
     /*
      * จุดสำคัญ:
@@ -3683,7 +3691,9 @@ function applyHeroChoice(h){
     return '<b>📊 สถานะที่เพิ่มขึ้น</b>'+rows.join('');
   }
 
-  function showItemReward(item,source){
+  let activeRewardFinisher=null;
+
+function showItemReward(item,source){
     if(!item || rewardOpen) return false;
     pendingItemReward={item,source};
     rewardOpen=true;
@@ -3737,7 +3747,7 @@ function applyHeroChoice(h){
         clampStats();
       }catch(e){
         console.error('ITEM REWARD APPLY ERROR',e);
-        rewardOpen=false; pendingItemReward=null; overlay.classList.add('hidden'); syncPause();
+        rewardOpen=false; pendingItemReward=null; activeRewardFinisher=null; overlay.classList.add('hidden'); syncPause();
         setStatus('รับไอเทมไม่สำเร็จ: '+(e?.message||String(e)));
         return;
       }
@@ -3773,6 +3783,7 @@ function applyHeroChoice(h){
       playSound('coin');
       refreshHUD();
     };
+    activeRewardFinisher=finishReward;
     itemRewardTimer=setTimeout(finishReward,2000);
     return true;
   }
@@ -3784,6 +3795,7 @@ function applyHeroChoice(h){
     if(overlay) overlay.classList.add('hidden');
     rewardOpen=false;
     pendingItemReward=null;
+    activeRewardFinisher=null;
     if(pendingLevels>0){
       openLevelUp();
     }else if(!maybeOpenScheduledShop()){
@@ -3801,7 +3813,9 @@ function applyHeroChoice(h){
     if(itemRewardSpinTimer) clearInterval(itemRewardSpinTimer);
     itemRewardSpinTimer=null;
     if(itemRewardTimer) clearTimeout(itemRewardTimer);
-    itemRewardTimer=setTimeout(finishReward,0);
+    if(typeof activeRewardFinisher==='function'){
+      itemRewardTimer=setTimeout(activeRewardFinisher,0);
+    }
   },{passive:false});
 
 
@@ -4123,14 +4137,17 @@ function openLevelUp(forceHigherRarity=false){
           try{
             if(item.purchased)return;
             if(player.gold>=cost){
+              const before=snapshotPlayerStats();
               player.gold-=cost;
               if(typeof item.apply==='function')item.apply();
               clampStats();
+              const after=snapshotPlayerStats();
               item.purchased=true;
               shopCyclePurchased=true;
               const original=activeShopItems.find(x=>x.id===item.id||x.name===item.name);
               if(original)original.purchased=true;
               playSound('coin');
+              showStatDelta(before,after,'🛒 ซื้อไอเทมจากร้านทอง');
               renderShopItems();
               refreshHUD();
             }else setStatus('ทองไม่เพียงพอ!');
@@ -5104,7 +5121,7 @@ function openLevelUp(forceHigherRarity=false){
     itemHistory=[];
     runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
-    rewardOpen=false; pendingItemReward=null;
+    rewardOpen=false; pendingItemReward=null; activeRewardFinisher=null;
     if(itemRewardTimer) clearTimeout(itemRewardTimer);
     if(itemRewardSpinTimer) clearInterval(itemRewardSpinTimer);
     document.getElementById('itemRewardOverlay')?.classList.add('hidden');
