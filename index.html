@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.138</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.139</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -392,11 +392,11 @@ body.gameplay-actions .hud-controls{display:flex}
 
 .dev-modal{width:min(920px,100%);text-align:left}
 .dev-tabs{display:flex;gap:6px;overflow-x:auto;margin:10px 0;padding-bottom:4px}
-.dev-tab{flex:1;min-width:105px;border:2px solid #334155;background:#1e293b;color:#cbd5e1;padding:8px 6px;font-family:'Noto Sans Thai',sans-serif;font-weight:800;cursor:pointer}
+.dev-tab{flex:1;min-width:105px;border:2px solid #334155;background:#1e293b;color:#cbd5e1;padding:8px 6px;font-family:'Maitree',sans-serif;font-weight:800;cursor:pointer}
 .dev-tab.active{border-color:#facc15;color:#facc15;background:#334155}
 .dev-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .dev-grid label{display:flex;flex-direction:column;gap:4px;background:#111827;border:2px solid #334155;padding:8px;font-size:11px;font-weight:800;color:#cbd5e1}
-.dev-num,.dev-enemy-num{width:100%;background:#020617;color:#38bdf8;border:1px solid #475569;padding:7px;font-family:'Noto Sans Thai',sans-serif;font-weight:800;font-size:12px}
+.dev-num,.dev-enemy-num{width:100%;background:#020617;color:#38bdf8;border:1px solid #475569;padding:7px;font-family:'Maitree',sans-serif;font-weight:800;font-size:12px}
 .dev-num:focus,.dev-enemy-num:focus{outline:none;border-color:#38bdf8}
 .dev-preview{margin-top:10px;background:#020617;border:2px solid #334155;padding:8px;color:#94a3b8;font-size:10px;line-height:1.5}
 .dev-danger{margin-top:10px;border:2px solid #7f1d1d;background:#450a0a;color:#fca5a5;padding:9px;font-size:10px;font-weight:800}
@@ -760,7 +760,7 @@ body.gameplay-actions .hud-controls{display:flex}
 </script>
 
 <style id="v1-0-138-maitree-fantasy-ui">
-/* ===== Maitree Fantasy UI v1.0.138 =====
+/* ===== Maitree Fantasy UI v1.0.139 =====
    ใช้ Maitree เป็นฟอนต์หลักของเกม เพื่อให้ภาพรวมมีเอกลักษณ์แฟนตาซี
    และคงน้ำหนักตัวอักษรระดับกลางสำหรับข้อความยาวเพื่อให้อ่านง่าย */
 html,body{
@@ -2287,7 +2287,7 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
         0 12px 35px rgba(0,0,0,.75);
       padding:12px;
       pointer-events:none;
-      font-family:'Noto Sans Thai',sans-serif;
+      font-family:'Maitree',sans-serif;
       opacity:0;
       transition:
         opacity .18s ease,
@@ -5050,7 +5050,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillStyle='#facc15'; ctx.fillRect(px-13,py-2,26,4);
       ctx.fillStyle='#fde68a'; ctx.fillRect(px-5,py-8,10,5);
       ctx.fillStyle='#78350f'; ctx.fillRect(px-3,py-3,6,6);
-      ctx.font='bold 9px Prompt,sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff';
+      ctx.font='bold 9px 'Maitree',sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#fff';
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
@@ -5082,7 +5082,7 @@ function openLevelUp(forceHigherRarity=false){
     drawPlayer(cam);
     drawBullets(cam);
     // ดาเมจต้องวาดใน transform เดียวกับสนาม เพื่อให้ตำแหน่งติดกับศัตรูหลังซูม
-    ctx.font='900 16px Prompt,sans-serif';ctx.textAlign='center';
+    ctx.font='900 16px 'Maitree',sans-serif';ctx.textAlign='center';
     ctx.lineJoin='round';ctx.lineWidth=3;
     for(const f of floaters){
       ctx.fillStyle=f.c?'#ffe45c':'#ffffff';
