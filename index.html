@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.155</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.156</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1398,7 +1398,7 @@ const PICKUPS = { xpLife: 25, goldLife: 25, xpFlySpeed: 340, goldFlySpeed: 360, 
 const LEVEL = { xpNeedStart: 90, xpNeedGrowth: 1.12, xpNeedFlat: 12, choices: 3 };
 
 /* ===== 12. SHOP ===== */
-const SHOP = { everyWaves: 10, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 10, rerollStep: 0, rerollGoldPct: 0.03, freeRerollEveryWaves: 10 };
+const SHOP = { everyWaves: 10, itemsShown: 3, pricePerWave: 0.08, priceCompound: 0.01, rerollBase: 10, rerollStep: 10, rerollGoldPct: 0, freeRerollEveryWaves: 10 };
 
 /* ===== 13. MISC ===== */
 const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7, hardEnemy: 1.4, bossBonusXp: 40, bossBonusGold: 40, bossBonusDrops: 3, gameSpeed: 1 };
@@ -1575,7 +1575,7 @@ const SHOP_ITEMS = [
 window.GAME_CONFIG = {
   world: WORLD, heroes: HEROES, playerBase: PLAYER_BASE, caps: CAPS,
   combat: COMBAT, bulletTypes: BULLET_TYPES, skills: SKILLS,
-  enemies: ENEMIES, enemyAI: ENEMY_AI, waves: WAVES,
+  enemies: ENEMIES, enemyAI: ENEMY_AI, elite: ELITE, waves: WAVES,
   drops: DROPS, pickups: PICKUPS, level: LEVEL, shop: SHOP, misc: MISC,
   levelUpgrades: LEVEL_UPGRADES, shopItems: SHOP_ITEMS, rarities: RARITIES
 };
@@ -1722,6 +1722,7 @@ window.GAME_CONFIG = {
     dev.player.lightningChain=Math.max(0,dev.player.lightningChain);
     dev.player.poisonDmg=Math.max(0,dev.player.poisonDmg);
     dev.player.executionThreshold=clamp(dev.player.executionThreshold,0,CFG.caps.executionThreshold);
+    dev.player.attackRange=clamp(Number(dev.player.attackRange)||0,0,CFG.caps.attackRange);
     updateDevPreview();
   }
   function refreshDevEnemyUI(){
@@ -2025,7 +2026,7 @@ function formatStatValue(stat, value){
       return `${Math.floor(v)} นัด`;
 
     case 'pierce':
-      return `${Math.floor(v)} ตัว`;
+      return `${v.toFixed(2)} ตัว`;
 
     case 'armor':
       return `${(v*100).toFixed(1)}%`;
@@ -2052,13 +2053,13 @@ function formatStatValue(stat, value){
       return `${Math.floor(v)} ครั้ง`;
 
     case 'ricochet':
-      return `${Math.floor(v)} ครั้ง`;
+      return `${v.toFixed(2)} ครั้ง`;
 
     case 'poisonDmg':
-      return `${Math.round(v)} Dmg`;
+      return `${(3 + v*0.3).toFixed(1)}% Dmg/วิ`;
 
     case 'lightningChain':
-      return `${Math.round(v)} Dmg`;
+      return `${(8 + v*0.2).toFixed(1)}% Dmg`;
 
     case 'explosiveRadius':
       return `${Math.round(v)} px`;
@@ -2070,7 +2071,7 @@ function formatStatValue(stat, value){
       return `${(v*100).toFixed(1)}% HP`;
 
     case 'orbitBlades':
-      return `${Math.floor(v)} เล่ม`;
+      return `${v.toFixed(2)} เล่ม`;
 
     case 'timeSlow':
       return `${(v*100).toFixed(1)}%`;
@@ -2681,9 +2682,10 @@ const INT_LABEL = {
 
 
 function descEffect(f){
-
   const s=f.stat;
   const v=f.v;
+  if(s==='poisonDmg') return `พิษ ${(3+Number(v)*0.3).toFixed(1)}% ของ Damage/วิ`;
+  if(s==='lightningChain') return `สายฟ้า ${(8+Number(v)*0.2).toFixed(1)}% ของ Damage`;
 
   if(f.op==='heal')
     return `ฟื้นฟู ${numN(v)} HP ทันที`;
@@ -2734,10 +2736,11 @@ function descEffect(f){
    ========================================================= */
 
 function previewItemStats(item){
-  const saved={...player, bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
+  const saved={...player,bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
   const before=snapshotPlayerStats();
   try{
-    (Array.isArray(item?.fx)?item.fx:[]).forEach(applyEffect);
+    if(typeof item?.apply==='function')item.apply();
+    else(Array.isArray(item?.fx)?item.fx:[]).forEach(applyEffect);
     try{ clampStats(); }catch(e){}
     return {before, after:snapshotPlayerStats()};
   }catch(e){
@@ -2788,6 +2791,8 @@ function buildItem(def,i){
   const fx=def.fx||[];
 
   const setBt=fx.find(f=>(f.op==='set'||f.op==='addBulletType')&&f.stat==='bulletType');
+  const itemScale=Math.max(0,Number(def.scale)||0);
+  const scaledEffects=()=>{if(itemScale<=0)return fx;const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99),factor=1+itemScale*progress;return fx.map(f=>{if(!f||!Number.isFinite(Number(f.v)))return f;if(f.op==='add'||f.op==='heal'||f.op==='healPct')return {...f,v:Number(f.v)*factor};if(f.op==='mul')return {...f,v:1+(Number(f.v)-1)*factor};return f;});};
 
   const o={
 
@@ -2814,8 +2819,7 @@ function buildItem(def,i){
 
       const before=snapshotPlayerStats();
 
-      fx.forEach(applyEffect);
-
+      scaledEffects().forEach(applyEffect);
       const after=snapshotPlayerStats();
 
       /*
@@ -3303,11 +3307,8 @@ function clampStats(){
       player.executionThreshold
     );
 
-  player.fireRate=
-    Math.max(
-      C.fireRateMin,
-      player.fireRate
-    );
+  player.fireRate=Math.max(C.fireRateMin,player.fireRate);
+  player.attackRange=clamp(Number.isFinite(Number(player.attackRange))?Number(player.attackRange):0,0,C.attackRange);
 
   player.lifesteal=
     Math.min(
@@ -3710,21 +3711,16 @@ function renderStartPerks(){
     const lateHpMult=Math.pow(1+(Number(dev.wave.enemyHpCompound)||0),hpLateWaves);
     const waveHp=waveHpBase*lateHpMult;
     const waveSpeed = 1 + (wave-1) * dev.wave.enemySpeedPerWave;
-    const waveDmg = 1 + (wave-1) * dev.wave.enemyDamagePerWave;
-    const isBoss = type === 'boss';
-    const bossMult = isBoss ? dev.wave.bossHpMultiplier : 1;
-    const baseXp = t.xpBase ?? 5;
-    const gMin = t.goldMin ?? dev.drop.goldMin;
-    const gMax = t.goldMax ?? dev.drop.goldMax;
-    const enemyGold = Math.floor(rand(gMin,gMax+1) * (1+(wave-1)*dev.wave.goldPerWave) * dev.drop.goldMultiplier);
-    enemies.push({
-      x, y, r:t.r,
-      hp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier, maxHp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier,
-      speed:t.speed*waveSpeed, damage:t.damage*waveDmg*diffMult*dev.wave.enemyStartDamageMultiplier,
-      xp:baseXp*(1+(wave-1)*dev.wave.xpPerWave),
-      gold:enemyGold, type:t.type, ai:t.ai, shootInterval:t.shootInterval, eBulletSpeed:t.bulletSpeed, eBulletMult:t.bulletDamageMult, color:t.color, hit:0,
-      animFrame:0, animTimer:0, shootTimer: t.shootTimer || 0, poisonTimer: 0, bladeCd:0, contactCd:0, dead:false
-    });
+    const dmgLateStart=Math.max(1,Math.floor(Number(dev.wave.lateWaveHpStart)||10)),dmgLateWaves=Math.max(0,wave-dmgLateStart+1),lateDmgMult=Math.pow(1+(Number(dev.wave.enemyDamageCompound)||0),dmgLateWaves);
+    const waveDmg=(1+(wave-1)*dev.wave.enemyDamagePerWave)*lateDmgMult;
+    const isBoss=type==='boss',isMegaBoss=isBoss&&Number(dev.wave.megaBossEvery)>0&&wave%Math.max(1,Math.floor(dev.wave.megaBossEvery))===0;
+    const eliteStart=Math.max(1,Math.floor(Number(CFG.elite?.startWave)||12)),eliteChance=clamp((Number(CFG.elite?.chance)||0)+Math.max(0,wave-eliteStart)*(Number(CFG.elite?.chancePerWave)||0),0,Number(CFG.elite?.maxChance)||0),isElite=!isBoss&&wave>=eliteStart&&Math.random()<eliteChance;
+    const bossMult=isBoss?dev.wave.bossHpMultiplier:1,baseXp=t.xpBase??5,gMin=t.goldMin??dev.drop.goldMin,gMax=t.goldMax??dev.drop.goldMax;
+    let enemyGold=Math.floor(rand(gMin,gMax+1)*(1+(wave-1)*dev.wave.goldPerWave)*dev.drop.goldMultiplier);
+    if(isElite)enemyGold+=Number(CFG.elite?.gold)||0;
+    if(isMegaBoss)enemyGold=Math.floor(enemyGold*(Number(dev.wave.megaRewardMult)||1));
+    const hpMult=(isMegaBoss?Number(dev.wave.megaHp)||1:1)*(isElite?Number(CFG.elite?.hp)||1:1),dmgMult=(isMegaBoss?Number(dev.wave.megaDamage)||1:1)*(isElite?Number(CFG.elite?.damage)||1:1),radiusMult=(isMegaBoss?Number(dev.wave.megaRadius)||1:1)*(isElite?Number(CFG.elite?.radius)||1:1),xpMult=(isMegaBoss?Number(dev.wave.megaRewardMult)||1:1)*(isElite?Number(CFG.elite?.xp)||1:1);
+    enemies.push({x,y,r:t.r*radiusMult,hp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*hpMult,maxHp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*hpMult,speed:t.speed*waveSpeed,damage:t.damage*waveDmg*diffMult*dev.wave.enemyStartDamageMultiplier*dmgMult,xp:baseXp*(1+(wave-1)*dev.wave.xpPerWave)*xpMult,gold:enemyGold,type:t.type,ai:t.ai,boss:isBoss,megaBoss:isMegaBoss,elite:isElite,shootInterval:t.shootInterval,eBulletSpeed:t.bulletSpeed,eBulletMult:t.bulletDamageMult,color:t.color,hit:0,animFrame:0,animTimer:0,shootTimer:t.shootTimer||0,poisonTimer:0,bladeCd:0,contactCd:0,dead:false});
   }
 
   function shoot(){
@@ -3803,13 +3799,13 @@ function renderStartPerks(){
       const a=Math.atan2(e.y-player.y,e.x-player.x), k=player.knockback*(blade?CFG.combat.knockbackScaleBlade:CFG.combat.knockbackScale)*(e.type==='boss'?CFG.combat.knockbackBossResist:1);
       e.x=clamp(e.x+Math.cos(a)*k,40,world.w-40); e.y=clamp(e.y+Math.sin(a)*k,40,world.h-40);
     }
-    if(player.poisonDmg>0) e.poisonTimer=CFG.combat.poisonDuration;
-    if(player.lightningChain>0){
+    if(!blade&&player.poisonDmg>0)e.poisonTimer=CFG.combat.poisonDuration;
+    if(!blade&&player.lightningChain>0){
       enemies.filter(o=>o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<CFG.combat.lightningRange)
         .sort((p,q)=>dist(e.x,e.y,p.x,p.y)-dist(e.x,e.y,q.x,q.y)).slice(0,CFG.combat.lightningTargets)
-        .forEach(o=>dealRaw(o,player.lightningChain,'#00f0ff'));
+        .forEach(o=>dealRaw(o,player.damage*clamp(0.08+player.lightningChain*0.002,0.08,0.20),'#00f0ff'));
     }
-    const expR=player.explosiveRadius+(bullet&&bullet.type==='fireball'?(CFG.bulletTypes.fireball.explosionRadius||0):0);
+    const expR=!blade?player.explosiveRadius+(bullet&&bullet.type==='fireball'?(CFG.bulletTypes.fireball.explosionRadius||0):0):0;
     if(expR>0){
       makeSparks(e.x,e.y,'#f97316',15);
       for(const o of enemies) if(o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<expR) dealRaw(o,heal*CFG.combat.explosionDamageMult,'#f97316');
@@ -4212,21 +4208,10 @@ function openLevelUp(forceHigherRarity=false){
   refreshHUD();
 }
 
-  function getRerollCost() {
-    return Math.max(10, Math.floor(player.gold * 0.03));
-  }
-
-  function getPremiumRerollCost() {
-    return getRerollCost() * 6;
-  }
-
-  function getLevelRerollCost() {
-    return Math.max(10, Math.floor(player.gold * 0.03));
-  }
-
-  function getPremiumLevelRerollCost() {
-    return getLevelRerollCost() * 6;
-  }
+  function getRerollCost(){const base=Math.max(1,Math.floor(Number(dev.shop.rerollBase)||1)),step=Math.max(0,Math.floor(Number(dev.shop.rerollStep)||0));return base+step*Math.max(0,rerollN);}
+  function getPremiumRerollCost(){return getRerollCost()*6;}
+  function getLevelRerollCost(){const base=Math.max(1,Math.floor(Number(dev.shop.rerollBase)||1)),step=Math.max(0,Math.floor(Number(dev.shop.rerollStep)||0));return base+step*Math.max(0,levelRerollN);}
+  function getPremiumLevelRerollCost(){return getLevelRerollCost()*6;}
 
   function generateShopList(forceHigherRarity=false) {
     const shopCfg=(dev&&dev.shop&&typeof dev.shop==='object')?dev.shop:{};
@@ -4573,7 +4558,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.110');
+    lines.push('Game Version: v1.0.156');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -4824,12 +4809,11 @@ function openLevelUp(forceHigherRarity=false){
 
     if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
 
-    // Orbit Blades Mechanics
-    if(player.orbitBlades > 0){
-      const orbitSpeed = elapsed * CFG.combat.orbitSpeed;
-      const radius = CFG.combat.orbitRadius;
-      for(let i=0; i<player.orbitBlades; i++){
-        const angle = orbitSpeed + (i * (Math.PI*2 / player.orbitBlades));
+    // Orbit Blades Mechanics — fractional blade values use a stable rounded count.
+    if(player.orbitBlades>0){
+      const orbitSpeed=elapsed*CFG.combat.orbitSpeed,radius=CFG.combat.orbitRadius,wholeBlades=Math.floor(player.orbitBlades),fracBlade=Math.max(0,player.orbitBlades-wholeBlades),bladeCount=wholeBlades+(fracBlade>=0.5?1:0);
+      if(bladeCount>0)for(let i=0;i<bladeCount;i++){
+        const angle=orbitSpeed+(i*(Math.PI*2/bladeCount));
         const bx = player.x + Math.cos(angle)*radius;
         const by = player.y + Math.sin(angle)*radius;
 
@@ -4869,7 +4853,7 @@ function openLevelUp(forceHigherRarity=false){
       // Handle Poison Damage Over Time
       if(e.poisonTimer > 0){
         e.poisonTimer -= dt;
-        e.hp -= player.poisonDmg * dt;
+        e.hp-=player.damage*clamp(0.03+player.poisonDmg*0.003,0.03,0.12)*dt;
         if(Math.random()<0.3) makeSparks(e.x, e.y, '#22c55e', 2);
         if(e.hp <= 0) e.dead=true;
       }
@@ -4901,20 +4885,18 @@ function openLevelUp(forceHigherRarity=false){
       let remove=b.life<=0;
 
       // Handle Ricochet Wall Bounces
-      if(b.x < 40 || b.x > world.w - 40){
-        if(b.bounce > 0){ b.vx *= -1; b.bounce--; } else remove = true;
-      }
-      if(b.y < 40 || b.y > world.h - 40){
-        if(b.bounce > 0){ b.vy *= -1; b.bounce--; } else remove = true;
-      }
+      const consumeBounce=()=>{b.bounceUsed=(b.bounceUsed||0)+1;const whole=Math.floor(Math.max(0,b.bounce)),frac=Math.max(0,b.bounce-whole);return b.bounceUsed<whole||(b.bounceUsed===whole&&frac>0&&Math.random()<frac);};
+      if(b.x<40||b.x>world.w-40){if(b.bounce>0&&consumeBounce())b.vx*=-1;else remove=true;}
+      if(b.y<40||b.y>world.h-40){if(b.bounce>0&&consumeBounce())b.vy*=-1;else remove=true;}
 
       if(!remove){
         for(const e of enemies){
           if(!e.dead && !b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
             b.hitList.push(e);
             hitEnemy(e,b.damage,b.crit,b);
-            b.pierce--;
-            if(b.pierce <= 0){ remove=true; break; }
+            b.pierceHits=(b.pierceHits||0)+1;
+            const pierceWhole=Math.floor(Math.max(0,b.pierce)),pierceFrac=Math.max(0,b.pierce-pierceWhole),canContinue=b.pierceHits<pierceWhole||(b.pierceHits===pierceWhole&&pierceFrac>0&&Math.random()<pierceFrac);
+            if(!canContinue){remove=true;break;}
           }
         }
       }
@@ -5077,7 +5059,7 @@ function openLevelUp(forceHigherRarity=false){
     ctx.globalCompositeOperation='lighter';
 
     if(showAttackRange){
-      const r=Math.max(8,player.attackRange*cam.scale);
+      const r=Math.max(8,Number(player.attackRange)||0);
       const pulse=1+0.035*Math.sin(t);
       ctx.globalAlpha=.10;
       ctx.fillStyle='#ef4444';
@@ -5130,15 +5112,14 @@ function openLevelUp(forceHigherRarity=false){
 
   function drawEnemy(e,cam){
     const px=sx(e.x,cam), py=sy(e.y,cam), r=e.r, ty=e.type, t=performance.now()/1000+e.x*.01;
-    const sc=Math.max(2,Math.round(r*2.9/16)), S=sc*16, flip=player.x<e.x, fly=ty==='ghost'||ty==='shooter';
-    const ex={a:e.color,A:tone(e.color,.55),l:lite(e.color,.5)};
-    const cv=sprite('e_'+ty,EG[ty],ex,false), fl=sprite('e_'+ty,EG[ty],ex,true);
+    const sc=Math.max(2,Math.round(r*2.9/16)),S=sc*16,flip=player.x<e.x,spriteTy=enemyTypes[ty]?.sprite||ty,fly=spriteTy==='ghost'||spriteTy==='shooter',grid=EG[spriteTy]||EG.stalker,ex={a:e.color,A:tone(e.color,.55),l:lite(e.color,.5)},cv=sprite('e_'+spriteTy+'_'+ty,grid,ex,false),fl=sprite('e_'+spriteTy+'_'+ty,grid,ex,true);
     let bob=Math.round(Math.sin(t*(ty==='runner'?16:5))*(fly?4:2)/sc)*sc, xo=0;
     if(ty==='stalker') xo=Math.round(Math.sin(t*6)*.8)*sc;
     if(ty==='runner') xo=sc;
     if(ty==='brute') bob+=Math.sin(t*3)>.5?sc:0;
     ctx.fillStyle='rgba(0,0,0,'+(fly?.25:.45)+')'; ctx.beginPath(); ctx.ellipse(px,py+S*(fly?.42:.34),r*(fly?.6:.9),r*.3,0,0,7); ctx.fill();
-    if(ty==='boss'){ctx.strokeStyle='rgba(255,40,40,'+(.35+Math.sin(t*4)*.15)+')';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r+16+Math.sin(t*4)*4,0,7);ctx.stroke();}
+    if(ty==='boss'){ctx.strokeStyle=e.megaBoss?'rgba(250,204,21,'+(.55+Math.sin(t*5)*.2)+')':'rgba(255,40,40,'+(.35+Math.sin(t*4)*.15)+')';ctx.lineWidth=e.megaBoss?5:3;ctx.beginPath();ctx.arc(px,py,r+(e.megaBoss?24:16)+Math.sin(t*4)*4,0,7);ctx.stroke();}
+    if(e.elite&&!e.boss){ctx.save();ctx.strokeStyle='rgba(250,204,21,.85)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,r+6+Math.sin(t*5)*2,0,7);ctx.stroke();ctx.restore();}
     ctx.save(); ctx.translate(px+xo,py+bob); if(flip)ctx.scale(-1,1);
     if(ty==='ghost') ctx.globalAlpha=.7+Math.sin(t*4)*.15;
     ctx.drawImage(cv,-S/2,-S/2,S,S);
