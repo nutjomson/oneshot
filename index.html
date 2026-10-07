@@ -3698,7 +3698,8 @@ function openLevelUp(forceHigherRarity=false){
       pendingShopWave=0;
       return openShop(true,target);
     }
-    if(wave>=every && wave%every===0 && lastShopWave!==wave){
+    // ร้านค้านับรอบจาก Wave 1: 1, 11, 21, 31, ...
+    if(wave>=1 && ((wave-1)%every===0) && lastShopWave!==wave){
       return openShop(true,wave);
     }
     return false;
@@ -3708,8 +3709,9 @@ function openLevelUp(forceHigherRarity=false){
     if(!running || over || levelOpen || rewardOpen) return false;
     const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
     const targetWave=Math.max(1,Number(shopWaveOverride)||wave);
-    if(!force && (targetWave<every || targetWave%every!==0 || lastShopWave===targetWave)){
-      setStatus('🏪 ร้านค้าจะเปิดทุก '+every+' Wave');
+    // รอบร้านค้านับจาก Wave 1: 1, 11, 21, 31, ...
+    if(!force && (targetWave<1 || ((targetWave-1)%every)!==0 || lastShopWave===targetWave)){
+      setStatus('🏪 ร้านค้าเปิดทุก '+every+' Wave โดยเริ่มนับจาก Wave 1');
       return false;
     }
 
@@ -3833,7 +3835,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.103');
+    lines.push('Game Version: v1.0.104');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
