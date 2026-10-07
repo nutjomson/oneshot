@@ -123,7 +123,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .range-btn:active,.range-btn.active{transform:scale(.94);background:#a16207;box-shadow:0 0 14px rgba(250,204,21,.8)}
 
 #saveManagerOverlay{z-index:125}.save-list{display:grid;gap:8px;margin:12px 0;text-align:left}.save-card{border:2px solid #334155;background:#111827;border-radius:8px;padding:10px}.save-card.auto{border-color:#facc15}.save-card.empty{opacity:.7}.save-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.save-meta{font-size:11px;color:#94a3b8;line-height:1.5}.save-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.save-actions .btn{padding:7px 10px;font-size:11px}.hidden{display:none!important}
-#itemRewardOverlay{z-index:230}
+#itemRewardOverlay{z-index:230;touch-action:none!important;-ms-touch-action:none!important;overscroll-behavior:none!important;}
+#itemRewardOverlay *{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
 .item-reward-modal{width:min(560px,100%);max-width:560px}
 .item-reward-stage{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#020617;border:3px solid #facc15;box-shadow:inset 0 0 30px rgba(250,204,21,.12),0 0 30px rgba(250,204,21,.2);padding:18px;margin:12px 0}
 .item-reward-icon{font-size:64px;line-height:1;margin-bottom:10px;text-shadow:0 0 18px rgba(250,204,21,.55)}
@@ -3806,7 +3807,13 @@ function showItemReward(item,source){
     }
   });
   // แตะตรงไหนก็ได้ในหน้าสุ่มสมบัติ = ข้ามแอนิเมชันและรับผลสุ่มทันที
-  document.getElementById('itemRewardOverlay')?.addEventListener('pointerdown',e=>{
+  const itemRewardOverlayEl=document.getElementById('itemRewardOverlay');
+  itemRewardOverlayEl?.addEventListener('dblclick',e=>{e.preventDefault();e.stopPropagation();},{passive:false});
+  ['gesturestart','gesturechange','gestureend'].forEach(type=>{
+    itemRewardOverlayEl?.addEventListener(type,e=>{e.preventDefault();e.stopPropagation();},{passive:false});
+  });
+  itemRewardOverlayEl?.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();},{passive:false});
+  itemRewardOverlayEl?.addEventListener('pointerdown',e=>{
     if(!rewardOpen) return;
     const ok=document.getElementById('itemRewardOkBtn');
     if(ok && !ok.classList.contains('hidden')) return;
