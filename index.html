@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.91</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.92</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -288,7 +288,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.91</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.92</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -779,7 +779,7 @@ const LEVEL_UPGRADES = [
   { id: 'u_n25', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งมั่นคง',             fx: [mul('attackRange', 1.08), mul('bulletSpeed', 1.025)], weight: 0.85 },
   { id: 'u_n26', rarity: 'normal', icon: '🔋', name: 'แกนพลังงาน',                 fx: [mul('damage', 1.015), mul('fireRate', 0.99)] },
   { id: 'u_n27', rarity: 'normal', icon: '🩸', name: 'เส้นเลือดนักสู้', fx: [add('maxHp', 8), add('lifesteal', 0.0045)] },
-  { id: 'u_n28', rarity: 'normal', icon: '🎯', name: 'กระสุนเจาะเกราะ', fx: [mul('bulletSpeed', 1.03), add('crit', 0.005)] },
+  { id: 'u_n28', rarity: 'normal', icon: '🎯', name: 'กระสุนเจาะเกราะ', fx: [mul('bulletSpeed', 1.025), add('pierce', 0.25)] },
   { id: 'u_n29', rarity: 'normal', icon: '🧠', name: 'แกนประสิทธิภาพ', fx: [mul('damage', 1.01), mul('xpMulti', 1.015)] },
   { id: 'u_n30', rarity: 'normal', icon: '🍀', name: 'โชคเล็กน้อย',                 fx: [mul('goldMulti', 1.025), mul('xpMulti', 1.01)] },
 
@@ -874,9 +874,9 @@ const SHOP_ITEMS = [
   { id: 's_wpn3', rarity: 'normal', icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 350, fx: [addBulletType('plasma')], desc: BULLET_TYPES.plasma.desc, weight: 0.8},
   { id: 's_wpn4', rarity: 'normal', icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 300, fx: [addBulletType('arcane')], desc: BULLET_TYPES.arcane.desc, weight: 0.9},
 
-  { id: 's_a1', rarity: 'normal', icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.025)], scale: 0.40, weight: 0.9},
+  { id: 's_a1', rarity: 'normal', icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.015), add('crit', 0.0075)], scale: 0.40, weight: 0.9},
   { id: 's_a2', rarity: 'normal', icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.06)], weight: 0.8 },
-  { id: 's_a4', rarity: 'normal', icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 165, fx: [mul('fireRate', 0.9775)], scale: 0.50, weight: 0.9},
+  { id: 's_a4', rarity: 'normal', icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 165, fx: [mul('fireRate', 0.985), mul('bulletSpeed', 1.03)], scale: 0.50, weight: 0.9},
   { id: 's_a6', rarity: 'normal', icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 145, fx: [add('crit', 0.015)], scale: 0.50, weight: 0.85},
 
   { id: 's_d1', rarity: 'normal', icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 135, fx: [add('maxHp', 15), add('armor', 0.015)], scale: 0.45, weight: 0.8},
@@ -886,9 +886,9 @@ const SHOP_ITEMS = [
   { id: 's_d5', rarity: 'normal', icon: '⭐', name: 'เครื่องเร่งประสบการณ์', cost: 125, fx: [mul('xpMulti', 1.02)], scale: 0.50, weight: 0.75},
   { id: 's_d6', rarity: 'normal', icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 210, fx: [mul('goldMulti', 1.04)], scale: 0.70, weight: 1},
 
-  { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [add('crit', 0.01)], weight: 0.95 },
+  { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [mul('attackRange', 1.05), add('crit', 0.005)], weight: 0.95 },
   { id: 's_n20', rarity: 'normal', icon: '🔋', name: 'แบตเตอรี่พลังยิง',             cost: 145, fx: [mul('fireRate', 0.99), mul('bulletSpeed', 1.03)], weight: 0.9 },
-  { id: 's_n21', rarity: 'normal', icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 125, fx: [mul('bulletSpeed', 1.045)], weight: 0.9 },
+  { id: 's_n21', rarity: 'normal', icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 125, fx: [mul('bulletSpeed', 1.035), mul('attackRange', 1.03)], weight: 0.9 },
   { id: 's_n22', rarity: 'normal', icon: '🧱', name: 'เกราะฉุกเฉิน', cost: 125, fx: [add('armor', 0.01), add('maxHp', 10)], weight: 0.9 },
   { id: 's_n23', rarity: 'normal', icon: '🧪', name: 'ตัวเร่งฟื้นฟูฉุกเฉิน', cost: 135, fx: [add('regen', 0.55), healPct(0.10)], weight: 0.90 },
   { id: 's_n24', rarity: 'normal', icon: '🪙', name: 'เหรียญนำโชค',                  cost: 140, fx: [mul('goldMulti', 1.03)], weight: 1 },
