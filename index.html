@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.130</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.131</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.130 COMPACT ITEM CHOICES =====
+/* ===== v1.0.131 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -229,7 +229,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-reason{display:none!important}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
 }
-.item-preview{display:block}\n/* ===== v1.0.130 ITEM STAT PREVIEW FIX =====
+.item-preview{display:block}\n/* ===== v1.0.131 ITEM STAT PREVIEW FIX =====
    แสดงสถานะก่อน/หลังให้เห็นจริงทั้ง Level Up และ Shop
    ใช้ grid 2 คอลัมน์ + ไม่ตัดข้อความ เพื่อไม่ให้ค่าตกขอบ */
 .item-preview{
@@ -425,7 +425,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
 }
 
-/* ===== v1.0.130 READABLE COMPACT LAYOUT =====
+/* ===== v1.0.131 READABLE COMPACT LAYOUT =====
    ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
    ป้องกันข้อความตกขอบบน iPhone/iPad */
 .level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
@@ -468,7 +468,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 
-/* ===== v1.0.130 RESPONSIVE GAME-UI LAYOUT =====
+/* ===== v1.0.131 RESPONSIVE GAME-UI LAYOUT =====
    แนวทางจาก survivor-like: choice cards อ่านเร็ว, rarity เด่น,
    และใช้ responsive layout แทนการบีบตัวอักษรให้เล็ก
    อ้างอิงแนวคิด 3-4 cards ของ Vampire Survivors/Brotato
@@ -714,7 +714,7 @@ body.gameplay-actions .hud-controls{display:flex}
   max-width:100%;
   overflow-wrap:anywhere;
 }
-/* ===== v1.0.130 ITEM PREVIEW READABILITY ===== */
+/* ===== v1.0.131 ITEM PREVIEW READABILITY ===== */
 .item-preview-title{display:none!important}
 .item-preview-grid{display:grid!important;grid-template-columns:1fr!important;gap:3px!important}
 .item-preview-stat{font-size:10px!important;line-height:1.3!important;padding:3px 4px!important;white-space:normal!important}
@@ -726,7 +726,7 @@ body.gameplay-actions .hud-controls{display:flex}
 }
 
 
-/* ===== v1.0.130 QUICK PICK / INLINE SHOP PRICE ===== */
+/* ===== v1.0.131 QUICK PICK / INLINE SHOP PRICE ===== */
 .level-modal .upgrade-choice-label,.shop-modal .shop-choice-label{display:none!important}
 .level-modal .upgrade .icon{grid-row:1 / span 2!important}
 .level-modal .upgrade .upgrade-reason,.shop-modal .shop-reason{display:none!important}
@@ -5220,101 +5220,116 @@ function openLevelUp(forceHigherRarity=false){
 .shop-modal .shop-item{cursor:pointer;}
 </style>
 
-<style id="v1-0-130-shop-layout">
-/* Shop v1.0.130 — taller cards, larger type, clearer spacing */
+<style id="v1-0-131-shop-layout">
+/* Shop v1.0.131 — translucent battlefield, large type, unified action bar */
 .shop-modal .shop-stats,.shop-modal .shop-detail-hint{display:none!important}
 .shop-modal{
   box-sizing:border-box!important;width:100vw!important;min-width:100vw!important;max-width:100vw!important;
   height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
   margin:0!important;border-radius:0!important;padding:10px 12px 12px!important;overflow:hidden!important;
-  background:linear-gradient(180deg,#070b14 0%,#0b1220 58%,#070a11 100%)!important;
+  background:rgba(7,11,20,.72)!important;
+  backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important;
 }
-.shop-modal .shop-head{margin-bottom:8px!important;padding:0 2px 7px!important;border-bottom:1px solid #29364d!important}
-.shop-modal .shop-head .title{font-size:21px!important;letter-spacing:1.2px!important;font-weight:1000!important}
-.shop-modal .shop-wave{font-size:11px!important;letter-spacing:.8px!important}
-.shop-modal .shop-wallet{font-size:15px!important;padding:6px 10px!important;border-radius:7px!important}
+.shop-modal:before{
+  content:""!important;position:absolute!important;inset:0!important;pointer-events:none!important;
+  background:linear-gradient(180deg,rgba(2,6,23,.30),rgba(2,6,23,.58))!important;
+}
+.shop-modal>*{position:relative!important;z-index:1!important}
+.shop-modal .shop-head{
+  margin-bottom:9px!important;padding:0 2px 8px!important;border-bottom:1px solid rgba(148,163,184,.25)!important;
+}
+.shop-modal .shop-head .title{font-size:23px!important;letter-spacing:1.5px!important;font-weight:1000!important}
+.shop-modal .shop-wave{font-size:12px!important;letter-spacing:.9px!important}
+.shop-modal .shop-wallet{
+  font-size:16px!important;padding:6px 11px!important;border-radius:7px!important;
+  background:rgba(15,23,42,.72)!important;box-shadow:0 0 14px rgba(250,204,21,.14)!important;
+}
 .shop-modal .shop-guide{display:none!important}
 .shop-modal #shopItems{
-  display:grid!important;grid-template-columns:1fr!important;gap:9px!important;
+  display:grid!important;grid-template-columns:1fr!important;gap:10px!important;
   max-height:none!important;overflow:visible!important;padding:0!important;
 }
 .shop-modal .shop-item{
-  box-sizing:border-box!important;min-height:0!important;height:auto!important;padding:11px 12px!important;
-  display:grid!important;grid-template-columns:50px minmax(0,1fr) auto!important;
-  grid-template-rows:auto auto auto!important;column-gap:10px!important;row-gap:4px!important;
-  align-items:center!important;overflow:visible!important;border-radius:11px!important;
-  background:linear-gradient(135deg,rgba(20,29,46,.99),rgba(11,18,32,.99))!important;
-  border:1px solid #3b4b65!important;box-shadow:0 6px 16px rgba(0,0,0,.28)!important;
+  box-sizing:border-box!important;min-height:0!important;height:auto!important;padding:12px 13px!important;
+  display:grid!important;grid-template-columns:52px minmax(0,1fr) auto!important;
+  grid-template-rows:auto auto auto!important;column-gap:11px!important;row-gap:5px!important;
+  align-items:center!important;overflow:visible!important;border-radius:12px!important;
+  background:rgba(10,18,32,.82)!important;border:1px solid rgba(148,163,184,.30)!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.04)!important;
 }
 .shop-modal .shop-item.recommended{
-  border-color:#eab308!important;box-shadow:0 0 18px rgba(234,179,8,.18),0 6px 16px rgba(0,0,0,.28)!important;
+  border-color:rgba(250,204,21,.82)!important;
+  box-shadow:0 0 20px rgba(234,179,8,.20),0 7px 18px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.05)!important;
 }
 .shop-modal .shop-choice-label{
   grid-column:1/-1!important;font-size:8px!important;line-height:1!important;
-  letter-spacing:1.2px!important;color:#94a3b8!important;margin:0!important;text-transform:uppercase!important;
+  letter-spacing:1.4px!important;color:#94a3b8!important;margin:0!important;text-transform:uppercase!important;
 }
 .shop-modal .shop-topline{
-  grid-column:1/-1!important;display:grid!important;grid-template-columns:50px minmax(0,1fr) auto!important;
-  column-gap:10px!important;align-items:center!important;
+  grid-column:1/-1!important;display:grid!important;grid-template-columns:52px minmax(0,1fr) auto!important;
+  column-gap:11px!important;align-items:center!important;
 }
 .shop-modal .shop-topline .icon{
-  grid-column:1!important;font-size:34px!important;line-height:1!important;text-align:center!important;
-  filter:drop-shadow(0 0 8px rgba(255,255,255,.15))!important;
+  grid-column:1!important;font-size:37px!important;line-height:1!important;text-align:center!important;
+  filter:drop-shadow(0 0 9px rgba(255,255,255,.17))!important;
 }
 .shop-modal .shop-topline .uName{
-  grid-column:2!important;font-size:16px!important;line-height:1.1!important;
-  font-weight:1000!important;letter-spacing:.7px!important;color:#f8fafc!important;text-transform:uppercase!important;
+  grid-column:2!important;font-size:18px!important;line-height:1.08!important;
+  font-weight:1000!important;letter-spacing:.8px!important;color:#f8fafc!important;text-transform:uppercase!important;
 }
 .shop-modal .shop-topline .tier-badge{
-  font-size:8px!important;padding:4px 7px!important;border-radius:5px!important;letter-spacing:.7px!important;
+  font-size:8px!important;padding:4px 8px!important;border-radius:5px!important;letter-spacing:.8px!important;
 }
 .shop-modal .shop-quick-desc{
-  grid-column:2/-1!important;font-size:10px!important;line-height:1.2!important;
-  color:#cbd5e1!important;margin:0!important;white-space:normal!important;overflow:visible!important;
+  display:none!important;
 }
 .shop-modal .item-preview{
-  grid-column:1/-1!important;margin-top:4px!important;padding:7px 8px!important;
-  border-radius:7px!important;background:rgba(2,6,23,.7)!important;border-color:#334155!important;
-  font-size:9px!important;line-height:1.25!important;overflow:visible!important;max-height:none!important;
+  grid-column:1/-1!important;margin-top:4px!important;padding:8px 9px!important;
+  border-radius:8px!important;background:rgba(2,6,23,.62)!important;border-color:rgba(71,85,105,.65)!important;
+  font-size:10px!important;line-height:1.25!important;overflow:visible!important;max-height:none!important;
 }
-.shop-modal .item-preview-title{font-size:10px!important;margin-bottom:4px!important;color:#facc15!important}
-.shop-modal .item-preview-grid{gap:4px 6px!important}
+.shop-modal .item-preview-title{
+  font-size:11px!important;margin-bottom:5px!important;color:#facc15!important;font-weight:1000!important;
+}
+.shop-modal .item-preview-grid{gap:4px 7px!important}
 .shop-modal .item-preview-stat{
-  font-size:8.8px!important;line-height:1.25!important;padding:3px 4px!important;
-  background:rgba(15,23,42,.82)!important;
+  font-size:9.4px!important;line-height:1.25!important;padding:4px 5px!important;
+  background:rgba(15,23,42,.72)!important;border-radius:4px!important;
 }
-.shop-modal .item-preview-values{font-size:8.6px!important;font-weight:900!important}
+.shop-modal .item-preview-values{font-size:9.2px!important;font-weight:1000!important}
 .shop-modal .shop-reason,.shop-modal .shop-buy-row{display:none!important}
 .shop-modal .shop-actions{
-  margin-top:11px!important;display:grid!important;grid-template-columns:1fr 1fr .7fr!important;gap:8px!important;
+  margin-top:12px!important;display:grid!important;grid-template-columns:1fr 1fr .7fr!important;gap:8px!important;
 }
 .shop-modal .shop-actions button{
-  min-height:45px!important;border-radius:8px!important;font-size:10px!important;font-weight:1000!important;
-  letter-spacing:.4px!important;text-transform:uppercase!important;
+  min-height:48px!important;border-radius:9px!important;font-size:11px!important;font-weight:1000!important;
+  letter-spacing:.5px!important;text-transform:uppercase!important;
+  background:rgba(15,23,42,.76)!important;border-color:rgba(100,116,139,.55)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.05),0 4px 10px rgba(0,0,0,.22)!important;
 }
+.shop-modal .shop-actions button:active{transform:translateY(1px) scale(.985)!important}
 @media(max-width:640px){
-  .shop-modal{padding:8px 7px 10px!important}
-  .shop-modal .shop-head{margin-bottom:6px!important;padding-bottom:6px!important}
-  .shop-modal .shop-head .title{font-size:19px!important}
-  .shop-modal .shop-wave{font-size:9px!important}
-  .shop-modal .shop-wallet{font-size:13px!important;padding:5px 8px!important}
-  .shop-modal #shopItems{gap:8px!important}
+  .shop-modal{padding:8px 7px 10px!important;background:rgba(7,11,20,.68)!important}
+  .shop-modal .shop-head{margin-bottom:7px!important;padding-bottom:6px!important}
+  .shop-modal .shop-head .title{font-size:21px!important}
+  .shop-modal .shop-wave{font-size:10px!important}
+  .shop-modal .shop-wallet{font-size:14px!important;padding:5px 9px!important}
+  .shop-modal #shopItems{gap:9px!important}
   .shop-modal .shop-item{
-    padding:10px 10px!important;grid-template-columns:42px minmax(0,1fr) auto!important;
-    column-gap:8px!important;row-gap:4px!important;
+    padding:11px 11px!important;grid-template-columns:46px minmax(0,1fr) auto!important;
+    column-gap:9px!important;row-gap:5px!important;
   }
   .shop-modal .shop-choice-label{font-size:7px!important}
-  .shop-modal .shop-topline{grid-template-columns:42px minmax(0,1fr) auto!important;column-gap:8px!important}
-  .shop-modal .shop-topline .icon{font-size:29px!important}
-  .shop-modal .shop-topline .uName{font-size:13.5px!important}
+  .shop-modal .shop-topline{grid-template-columns:46px minmax(0,1fr) auto!important;column-gap:9px!important}
+  .shop-modal .shop-topline .icon{font-size:33px!important}
+  .shop-modal .shop-topline .uName{font-size:16px!important}
   .shop-modal .shop-topline .tier-badge{font-size:7px!important;padding:3px 6px!important}
-  .shop-modal .shop-quick-desc{font-size:9px!important;line-height:1.2!important}
-  .shop-modal .item-preview{font-size:8.6px!important;padding:6px 7px!important}
-  .shop-modal .item-preview-title{font-size:9px!important}
-  .shop-modal .item-preview-grid{gap:3px 5px!important}
-  .shop-modal .item-preview-stat{font-size:8px!important;padding:3px!important}
-  .shop-modal .item-preview-values{font-size:7.8px!important}
-  .shop-modal .shop-actions{margin-top:8px!important;gap:6px!important}
-  .shop-modal .shop-actions button{min-height:41px!important;font-size:8.8px!important}
+  .shop-modal .item-preview{font-size:9.5px!important;padding:7px 8px!important}
+  .shop-modal .item-preview-title{font-size:10px!important;margin-bottom:4px!important}
+  .shop-modal .item-preview-grid{gap:4px 6px!important}
+  .shop-modal .item-preview-stat{font-size:8.8px!important;padding:4px!important}
+  .shop-modal .item-preview-values{font-size:8.6px!important}
+  .shop-modal .shop-actions{margin-top:9px!important;gap:6px!important}
+  .shop-modal .shop-actions button{min-height:44px!important;font-size:9.5px!important}
 }
 </style>
