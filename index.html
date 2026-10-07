@@ -3303,13 +3303,10 @@ function applyHeroChoice(h){
       tier.textContent=(item.rarity||'normal')+' • ได้รับแล้ว';
       name.textContent=item.name||'ไอเทม';
       desc.textContent=item.desc||'ได้รับไอเทมฟรี';
-      const fp=fragmentProgressHtml(item);
-      if(fp){
-        const holder=document.createElement('div');
-        holder.innerHTML=fp;
-        desc.textContent += ' • '+holder.textContent.trim();
-      }
-      status.textContent='✨ สุ่มเสร็จแล้ว!';
+      // แสดงผลการเปลี่ยนสถานะทันทีหลังได้รับไอเทม
+      // ไม่เรียก helper ที่อาจไม่มีใน build นี้ เพราะจะทำให้ callback หยุด
+      // ก่อนปุ่ม "ตกลง" ถูกเปิดใช้งาน
+      status.textContent='✨ สุ่มเสร็จแล้ว! สถานะของฮีโร่เปลี่ยนตามไอเทมแล้ว';
       changes.classList.remove('hidden');
       changes.innerHTML=itemRewardChangesHtml(before,after);
       ok.classList.remove('hidden');
