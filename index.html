@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.131</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.132</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.131 COMPACT ITEM CHOICES =====
+/* ===== v1.0.132 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -229,7 +229,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-reason{display:none!important}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
 }
-.item-preview{display:block}\n/* ===== v1.0.131 ITEM STAT PREVIEW FIX =====
+.item-preview{display:block}\n/* ===== v1.0.132 ITEM STAT PREVIEW FIX =====
    แสดงสถานะก่อน/หลังให้เห็นจริงทั้ง Level Up และ Shop
    ใช้ grid 2 คอลัมน์ + ไม่ตัดข้อความ เพื่อไม่ให้ค่าตกขอบ */
 .item-preview{
@@ -425,7 +425,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
 }
 
-/* ===== v1.0.131 READABLE COMPACT LAYOUT =====
+/* ===== v1.0.132 READABLE COMPACT LAYOUT =====
    ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
    ป้องกันข้อความตกขอบบน iPhone/iPad */
 .level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
@@ -468,7 +468,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 
-/* ===== v1.0.131 RESPONSIVE GAME-UI LAYOUT =====
+/* ===== v1.0.132 RESPONSIVE GAME-UI LAYOUT =====
    แนวทางจาก survivor-like: choice cards อ่านเร็ว, rarity เด่น,
    และใช้ responsive layout แทนการบีบตัวอักษรให้เล็ก
    อ้างอิงแนวคิด 3-4 cards ของ Vampire Survivors/Brotato
@@ -714,7 +714,7 @@ body.gameplay-actions .hud-controls{display:flex}
   max-width:100%;
   overflow-wrap:anywhere;
 }
-/* ===== v1.0.131 ITEM PREVIEW READABILITY ===== */
+/* ===== v1.0.132 ITEM PREVIEW READABILITY ===== */
 .item-preview-title{display:none!important}
 .item-preview-grid{display:grid!important;grid-template-columns:1fr!important;gap:3px!important}
 .item-preview-stat{font-size:10px!important;line-height:1.3!important;padding:3px 4px!important;white-space:normal!important}
@@ -726,7 +726,7 @@ body.gameplay-actions .hud-controls{display:flex}
 }
 
 
-/* ===== v1.0.131 QUICK PICK / INLINE SHOP PRICE ===== */
+/* ===== v1.0.132 QUICK PICK / INLINE SHOP PRICE ===== */
 .level-modal .upgrade-choice-label,.shop-modal .shop-choice-label{display:none!important}
 .level-modal .upgrade .icon{grid-row:1 / span 2!important}
 .level-modal .upgrade .upgrade-reason,.shop-modal .shop-reason{display:none!important}
@@ -5221,7 +5221,7 @@ function openLevelUp(forceHigherRarity=false){
 </style>
 
 <style id="v1-0-131-shop-layout">
-/* Shop v1.0.131 — translucent battlefield, large type, unified action bar */
+/* Shop v1.0.132 — translucent battlefield, large type, unified action bar */
 .shop-modal .shop-stats,.shop-modal .shop-detail-hint{display:none!important}
 .shop-modal{
   box-sizing:border-box!important;width:100vw!important;min-width:100vw!important;max-width:100vw!important;
@@ -5274,8 +5274,7 @@ function openLevelUp(forceHigherRarity=false){
   filter:drop-shadow(0 0 9px rgba(255,255,255,.17))!important;
 }
 .shop-modal .shop-topline .uName{
-  grid-column:2!important;font-size:18px!important;line-height:1.08!important;
-  font-weight:1000!important;letter-spacing:.8px!important;color:#f8fafc!important;text-transform:uppercase!important;
+  grid-column:2!important;font-size:14px!important;line-height:1.12!important;font-weight:1000!important;letter-spacing:.55px!important;color:#f8fafc!important;text-transform:uppercase!important;
 }
 .shop-modal .shop-topline .tier-badge{
   font-size:8px!important;padding:4px 8px!important;border-radius:5px!important;letter-spacing:.8px!important;
@@ -5322,7 +5321,7 @@ function openLevelUp(forceHigherRarity=false){
   .shop-modal .shop-choice-label{font-size:7px!important}
   .shop-modal .shop-topline{grid-template-columns:46px minmax(0,1fr) auto!important;column-gap:9px!important}
   .shop-modal .shop-topline .icon{font-size:33px!important}
-  .shop-modal .shop-topline .uName{font-size:16px!important}
+  .shop-modal .shop-topline .uName{font-size:13px!important}
   .shop-modal .shop-topline .tier-badge{font-size:7px!important;padding:3px 6px!important}
   .shop-modal .item-preview{font-size:9.5px!important;padding:7px 8px!important}
   .shop-modal .item-preview-title{font-size:10px!important;margin-bottom:4px!important}
