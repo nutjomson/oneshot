@@ -2209,7 +2209,7 @@ function renderItemPreview(item){
       const positive=def.key==='fireRate' ? nb<na : nb>na;
       rows.push('<span style="color:'+(positive?'#4ade80':'#f87171')+'">'+def.icon+' '+def.name+': '+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>');
     });
-    return rows.length ? '<div style="margin-top:6px;padding:6px 7px;border-top:1px solid #334155;background:rgba(15,23,42,.55);border-radius:6px;font-size:11px;line-height:1.65"><b style="color:#e2e8f0">📊 เลือกแล้วจะเป็น</b><br>'+rows.join('<br>')+'</div>' : '';
+    return rows.length ? '<div style="margin-top:6px;padding:6px 7px;border-top:1px solid #334155;background:rgba(15,23,42,.55);border-radius:6px;font-size:11px;line-height:1.65" class="item-preview"><b style="color:#e2e8f0">📊 เลือกแล้วจะเป็น</b><br>'+rows.join('<br>')+'</div>' : '';
   }catch(e){
     console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
     return '';
