@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.83</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.84</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -159,6 +159,12 @@ body.gameplay-actions .hud-controls{display:flex}
   font-family:'Prompt', sans-serif;position:relative;transition:all 0.15s ease;
   touch-action:manipulation;
 }
+.upgrade.item-normal,.shop-item.item-normal{border-color:#9ca3af;box-shadow:0 0 10px rgba(156,163,175,.25)}
+.upgrade.item-rare,.shop-item.item-rare{border-color:#f97316;box-shadow:0 0 12px rgba(249,115,22,.38)}
+.upgrade.item-legend,.shop-item.item-legend{border-color:#a855f7;box-shadow:0 0 15px rgba(168,85,247,.48)}
+.tier-badge.tier-normal{border-color:#9ca3af;color:#d1d5db;background:#374151}
+.tier-badge.tier-rare{border-color:#f97316;color:#fdba74;background:#431407}
+.tier-badge.tier-legend{border-color:#a855f7;color:#d8b4fe;background:#3b0764}
 .hero-card{text-align:center;border-color:#475569;background:#0f172a}
 .hero-card:active{border-color:#38bdf8;background:#1e293b}
 .hero-card.selected{border-color:#facc15;background:#1e293b;box-shadow:0 0 15px rgba(250, 204, 21, 0.4)}
@@ -283,7 +289,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.83</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.84</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -734,20 +740,17 @@ const MISC = { defaultDifficulty: 'normal', difficultyDamage: 1, easyEnemy: 0.7,
 
 /* ===== 14. TIERS ===== */
 const TIERS = {
-  1: { name: 'ทั่วไป',  minWave: 1,  maxWave: 60 },
-  2: { name: 'ดี',      minWave: 15, maxWave: 100 },
-  3: { name: 'หายาก',   minWave: 35, maxWave: 9999 },
-  4: { name: 'ตำนาน',   minWave: 70, maxWave: 9999 }
+  1: { name: 'Normal', minWave: 1, maxWave: 9999 },
+  2: { name: 'Rare', minWave: 1, maxWave: 9999 },
+  3: { name: 'Legend', minWave: 1, maxWave: 9999 }
 };
 const SHOP_TIERS = {
-  1: { name: 'พื้นฐาน',    minWave: 1,  maxWave: 50 },
-  2: { name: 'ดี',         minWave: 15, maxWave: 9999 },
-  3: { name: 'หายาก',      minWave: 30, maxWave: 9999 },
-  4: { name: 'ตำนาน',      minWave: 50, maxWave: 9999 },
-  5: { name: 'เทพนิยาย',   minWave: 80, maxWave: 9999 }
+  1: { name: 'Normal', minWave: 1, maxWave: 9999 },
+  2: { name: 'Rare', minWave: 1, maxWave: 9999 },
+  3: { name: 'Legend', minWave: 1, maxWave: 9999 }
 };
 
-/* ===== 15. LEVEL_UPGRADES ===== */
+/* ===== 15. LEVEL_UPGRADES =====/* ===== 15. LEVEL_UPGRADES ===== */
 const LEVEL_UPGRADES = [
   // ───────── T1 ทั่วไป ─────────
   { tier: 1, icon: '⚔️', name: 'เพิ่มพลังโจมตี',             fx: [mul('damage', 1.035)] },
@@ -762,10 +765,10 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '🩸', name: 'ดูดพลังชีวิต',                fx: [add('lifesteal', 0.008)] },
   { tier: 1, icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.012)] },
   { tier: 1, icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.04)] },
-  { tier: 1, icon: '🔫', name: 'ชิ้นส่วนกระสุนกระจาย I',        fx: [fragment('projectiles', 1)], weight: 0.15 },
+  { tier: 1, icon: '🔫', name: 'กระสุนกระจาย I',        fx: [add('projectiles', 1)], weight: 0.15 },
   { tier: 1, icon: '💨', name: 'กระสุนความเร็วสูง',          fx: [mul('bulletSpeed', 1.06), mul('damage', 1.015)] },
   { tier: 1, icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.20)] },
-  { tier: 1, icon: '🧱', name: 'ชิ้นส่วนสะท้อน I',          fx: [fragment('ricochet', 1)], weight: 0.20 },
+  { tier: 1, icon: '🧱', name: 'กระสุนสะท้อน I',          fx: [add('ricochet', 1)], weight: 0.20 },
   { tier: 1, icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 4)], weight: 0.8 },
   { tier: 1, icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 4)], weight: 0.8 },
   { tier: 1, icon: '💣', name: 'กระสุนระเบิดวงกว้าง',        fx: [add('explosiveRadius', 8)], weight: 0.8 },
@@ -791,8 +794,8 @@ const LEVEL_UPGRADES = [
   fx: [add('pierce', 1), mul('fireRate', 1.05)],
   weight: 0.30 },
 
-{ tier: 2, icon: '🔫', name: 'ชิ้นส่วนกระสุนกระจาย II',
-  fx: [fragment('projectiles', 2)],
+{ tier: 2, icon: '🔫', name: 'กระสุนกระจาย II',
+  fx: [add('projectiles', 1)],
   weight: 0.20 },
   { tier: 2, icon: '🧪', name: 'พิษร้ายสะสม',                fx: [add('poisonDmg', 12)] },
   { tier: 2, icon: '⚡', name: 'สายฟ้าแรงสูง',              fx: [add('lightningChain', 16)] },
@@ -800,7 +803,7 @@ const LEVEL_UPGRADES = [
   { tier: 2, icon: '🥊', name: 'คลื่นกระแทกหนักหน่วง',        fx: [add('knockback', 50), add('maxHp', 18)] },
   { tier: 2, icon: '💀', name: 'เคียวเก็บวิญญาณ',            fx: [add('executionThreshold', 0.016)] },
   { tier: 2, icon: '🗡️', name: 'ดาบหมุนคู่อมตะ',            fx: [add('orbitBlades', 1), mul('damage', 1.015)], weight: 0.4 },
-  { tier: 2, icon: '🧱', name: 'ชิ้นส่วนสะท้อน II',        fx: [fragment('ricochet', 2)], weight: 0.35 },
+  { tier: 2, icon: '🧱', name: 'กระสุนสะท้อน II',        fx: [add('ricochet', 1)], weight: 0.35 },
   { tier: 2, icon: '🌀', name: 'ร่างเงาหลบหลีก',              fx: [add('dodge', 0.025), mul('speed', 1.015)] },
   { tier: 2, icon: '💰', name: 'ขุมทรัพย์นักล่า',            fx: [mul('goldMulti', 1.08), add('pickup', 48)] },
   { tier: 2, icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด',          fx: [mul('bulletSpeed', 1.12), mul('damage', 1.035)] },
@@ -815,14 +818,14 @@ const LEVEL_UPGRADES = [
   { tier: 3, icon: '🛡️', name: 'โล่แก้วปริซึม',              fx: [add('armor', 0.05), add('regen', 1.2)] },
   { tier: 3, icon: '💚', name: 'พายุกายาฟื้นฟู',              fx: [add('regen', 3)] },
   { tier: 3, icon: '🩸', name: 'ราชันย์โลหิต',                fx: [add('lifesteal', 0.025), add('crit', 0.018)] },
-  { tier: 3, icon: '🔫', name: 'ชิ้นส่วนกระสุนกระจาย III',                  fx: [fragment('projectiles', 3)], weight: 0.25 },
+  { tier: 3, icon: '🔫', name: 'กระสุนกระจาย III',                  fx: [add('projectiles', 1)], weight: 0.25 },
   { tier: 3, icon: '🎯', name: 'ลำแสงทะลวงเกราะ',            fx: [add('pierce', 2), mul('fireRate', 1.03)], weight: 0.30 },
   { tier: 3, icon: '🧪', name: 'กรดมรณะ',                  fx: [add('poisonDmg', 45)] },
   { tier: 3, icon: '⚡', name: 'พายุสายฟ้า',                fx: [add('lightningChain', 45)] },
   { tier: 3, icon: '💣', name: 'หัวกระสุนนิวเคลียร์',          fx: [add('explosiveRadius', 16), mul('damage', 1.04)] },
   { tier: 3, icon: '💀', name: 'ผู้พิพากษาแห่งความตาย',       fx: [add('executionThreshold', 0.025)] },
   { tier: 3, icon: '🗡️', name: 'พายุดาบวนรอบ',              fx: [add('orbitBlades', 2)], weight: 0.5 },
-  { tier: 3, icon: '🧱', name: 'ชิ้นส่วนสะท้อน III',          fx: [fragment('ricochet', 3)], weight: 0.35 },
+  { tier: 3, icon: '🧱', name: 'กระสุนสะท้อน III',          fx: [add('ricochet', 1)], weight: 0.35 },
   { tier: 3, icon: '👻', name: 'ภูตผีไร้ร่าง',                fx: [add('dodge', 0.03), mul('speed', 1.02)] },
   { tier: 3, icon: '🥊', name: 'กำแพงคลื่นกระแทก',          fx: [add('knockback', 65), mul('maxHp', 1.03)] },
   { tier: 3, icon: '⏳', name: 'นาฬิกาหน่วงเวลา',            fx: [add('timeSlow', 0.025)] },
@@ -848,8 +851,8 @@ const LEVEL_UPGRADES = [
 { tier: 4, icon: '☀️', name: 'วงแหวนชีวิตนิรันดร์',
   fx: [add('regen', 7)] },
 
-{ tier: 4, icon: '🔱', name: 'ชิ้นส่วนกระสุนกระจาย IV',
-  fx: [fragment('projectiles', 4)],
+{ tier: 4, icon: '🔱', name: 'กระสุนกระจาย IV',
+  fx: [add('projectiles', 1)],
   weight: 0.20 },
 
 { tier: 4, icon: '🌠', name: 'ลำแสงไร้ขีดจำกัด',
@@ -909,7 +912,7 @@ const SHOP_ITEMS = [
   { id: 's_a2', tier: 1, icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.10)] },
   { id: 's_a3', tier: 1, icon: '🎯', name: 'หัวกระสุนทังสเตน',         cost: 130, fx: [add('pierce', 1)], scale: 0.60 },
   { id: 's_a4', tier: 1, icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 190, fx: [mul('fireRate', 0.97)], scale: 0.50 },
-  { id: 's_a5', tier: 1, icon: '🏹', name: 'ธนูสามทิศทาง',             cost: 450, fx: [fragment('projectiles', 1)], scale: 1.30 },
+  { id: 's_a5', tier: 1, icon: '🏹', name: 'ธนูสามทิศทาง',             cost: 450, fx: [add('projectiles', 1)], scale: 1.30 },
   { id: 's_a6', tier: 1, icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 150, fx: [add('crit', 0.03)], scale: 0.50 },
 
   { id: 's_d1', tier: 1, icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 120, fx: [add('maxHp', 24), add('armor', 0.025)], scale: 0.45 },
@@ -943,7 +946,7 @@ const SHOP_ITEMS = [
   { id: 's_f2', tier: 4, icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา',            cost: 1700, fx: [mul('fireRate', 0.92), add('timeSlow', 0.025)] },
   { id: 's_f3', tier: 4, icon: '🛡️', name: 'เกราะอมตะ',                  cost: 1900, fx: [mul('maxHp', 1.18), add('armor', 0.055), add('regen', 1.5)] },
   { id: 's_f4', tier: 4, icon: '⚡', name: 'หัวใจสายฟ้า',                 cost: 2000, fx: [add('lightningChain', 60), add('crit', 0.04)] },
-  { id: 's_f5', tier: 4, icon: '🔄', name: 'ชิ้นส่วนสะท้อน IV',             cost: 1500, fx: [fragment('ricochet', 4)] },
+  { id: 's_f5', tier: 4, icon: '🔄', name: 'กระสุนสะท้อน IV',             cost: 1500, fx: [add('ricochet', 1)] },
 
   // ───────── S5 เทพนิยาย ─────────
   { id: 's_e1', tier: 5, icon: '🌌', name: 'แก่นจักรวาล',                  cost: 3800, fx: [mul('damage', 1.22), mul('maxHp', 1.15), mul('speed', 1.06)] },
@@ -1925,55 +1928,6 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
 
 function applyEffect(f){
 
-  if(f.op==='fragment'){
-    const kind=f.stat==='projectiles'?'projectile':'ricochet';
-    const key=kind==='projectile'?'projectileFragments':'ricochetFragments';
-    const count=Number(player[key]||0);
-    const piece=count%7;
-    const tier=Math.max(1,Math.min(5,Number(f.tier)||1));
-    const values={
-      1:[['damage',1.007],['fireRate',0.994],['speed',1.003],['maxHp',3.6],['crit',0.0036],['bulletSpeed',1.012],['regen',0.08]],
-      2:[['damage',1.012],['fireRate',0.99],['speed',1.006],['maxHp',4.8],['crit',0.006],['bulletSpeed',1.024],['regen',0.24]],
-      3:[['damage',1.022],['fireRate',0.988],['speed',1.004],['maxHp',13],['crit',0.008],['bulletSpeed',1.016],['regen',0.6]],
-      4:[['damage',1.03],['fireRate',0.984],['speed',1.004],['maxHp',16],['crit',0.006],['bulletSpeed',1.016],['regen',1.4]],
-      5:[['damage',1.044],['fireRate',0.976],['speed',1.012],['maxHp',24.4],['crit',0.012],['bulletSpeed',1.02],['regen',0.6]]
-    };
-    const [stat,v]=values[tier][piece];
-    const beforeMaxHp=player.maxHp;
-
-    // Fragment bonus ต้องใช้ชนิดการคำนวณให้ตรงกับ Stat
-    // เพื่อไม่ให้เก็บ Projectile แล้วทำให้ระบบยิงเพี้ยน
-    const cur=Number(player[stat]||0);
-
-    if(stat==='damage' || stat==='speed' || stat==='bulletSpeed'){
-      // ค่ากลุ่มนี้เป็นโบนัสแบบคูณ เช่น 1.007 = +0.7%
-      player[stat]=cur*v;
-    }else if(stat==='fireRate'){
-      // fireRate ยิ่งต่ำยิ่งยิงเร็ว — ใช้การคูณเช่นกัน
-      player[stat]=cur*v;
-    }else{
-      // maxHp / crit / regen เป็นโบนัสแบบบวก
-      player[stat]=cur+v;
-    }
-
-    if(stat==='maxHp'){
-      const d=player.maxHp-beforeMaxHp;
-      if(d>0) player.hp+=d;
-    }
-
-    player[key]=count+1;
-
-    if(player[key]%7===0){
-      const cap=Number(CAPS?.[f.stat]);
-      player[f.stat]=Math.min(
-        Number.isFinite(cap)?cap:Infinity,
-        Math.max(0,Number(player[f.stat]||0)+1)
-      );
-    }
-
-    return;
-  }
-
   if(f.op==='addBulletType' || (f.op==='set' && f.stat==='bulletType')){
     const bt=String(f.v||'arcane');
     if(!Array.isArray(player.bulletTypes)) player.bulletTypes=[player.bulletType||'arcane'];
@@ -2127,11 +2081,6 @@ function descEffect(f){
   const s=f.stat;
   const v=f.v;
 
-  if(f.op==='fragment'){
-    const label=f.stat==='projectiles'?'Projectile':'Ricochet';
-    return `ชิ้นส่วน ${label} — เก็บครบ 7 ชิ้น = +1 ${label} และชิ้นนี้เพิ่ม Stat อื่น 20% ของมูลค่า Tier เดียวกัน`;
-  }
-
   if(f.op==='heal')
     return `ฟื้นฟู ${numN(v)} HP ทันที`;
 
@@ -2179,20 +2128,6 @@ function descEffect(f){
 /* =========================================================
    BUILD ITEM
    ========================================================= */
-
-function fragmentProgressHtml(item){
-  const fx=Array.isArray(item?.fx)?item.fx:[];
-  const f=fx.find(x=>x&&x.op==='fragment'&&(x.stat==='projectiles'||x.stat==='ricochet'));
-  if(!f) return '';
-  const isProjectile=f.stat==='projectiles';
-  const key=isProjectile?'projectileFragments':'ricochetFragments';
-  const label=isProjectile?'Projectile':'Ricochet';
-  const raw=Number(player[key]||0);
-  const count=((raw%7)+7)%7;
-  const shown=count===0 && raw>0 ? 7 : count;
-  const complete=shown===7;
-  return '<div style="margin-top:5px;padding:4px 7px;border:1px solid '+(complete?'#facc15':'#475569')+';border-radius:5px;background:rgba(2,6,23,.7);color:'+(complete?'#facc15':'#cbd5e1')+';font-size:10px;font-weight:800;text-align:center">🧩 '+label+' • ชิ้นส่วน '+shown+'/7'+(complete?' • ครบแล้ว! +1':'')+'</div>';
-}
 
 function previewItemStats(item){
   const saved={...player, bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
@@ -2290,6 +2225,26 @@ function buildItem(def,i){
 /* =========================================================
    ITEM DATA
    ========================================================= */
+
+function normalizeItemTiers(){
+  const normalizeList=(list)=>{
+    if(!Array.isArray(list)) return;
+    list.forEach(item=>{
+      const oldTier=Number(item.tier||1);
+      item.tier=oldTier<=1 ? 1 : oldTier===2 ? 2 : 3;
+      if(Array.isArray(item.fx)){
+        item.fx=item.fx.map(f=>
+          f&&f.op==='fragment'&&(f.stat==='projectiles'||f.stat==='ricochet')
+            ? {op:'add',stat:f.stat,v:1}
+            : f
+        );
+      }
+    });
+  };
+  normalizeList(CFG.levelUpgrades);
+  normalizeList(CFG.shopItems);
+}
+normalizeItemTiers();
 
 const levelUpgrades =
   CFG.levelUpgrades.map(buildItem);
@@ -3491,59 +3446,10 @@ function openLevelUp(forceHigherTier=false){
    */
 
   function getTierWeights(w){
-    if(w >= 100){
-      return {
-        1: 15,
-        2: 30,
-        3: 38,
-        4: 17
-      };
-    }
-
-    if(w >= 70){
-      return {
-        1: 20,
-        2: 35,
-        3: 35,
-        4: 10
-      };
-    }
-
-    if(w >= 50){
-      return {
-        1: 30,
-        2: 40,
-        3: 27,
-        4: 3
-      };
-    }
-
-    if(w >= 35){
-      return {
-        1: 50,
-        2: 35,
-        3: 15
-      };
-    }
-
-    if(w >= 30){
-      return {
-        1: 65,
-        2: 30,
-        3: 5
-      };
-    }
-
-    if(w >= 15){
-      return {
-        1: 75,
-        2: 25
-      };
-    }
-
-    return {
-      1: 100
-    };
+    const progress=Math.max(0,Math.min(1,(Number(w)||1)-1)/99);
+    const rare=8+(24-8)*progress;
+    const legend=2+(6-2)*progress;
+    return {1:100-rare-legend,2:rare,3:legend};
   }
 
   /*
@@ -3701,14 +3607,8 @@ function openLevelUp(forceHigherTier=false){
     tier => isTierAvailable(tier)
   );
 
-  // Premium อิง Tier สูงสุดที่ปลดล็อกตาม Wave ปกติจริง ๆ แล้วบังคับ +1 Tier
-  // โดยไม่ให้กฎ Wave ของ Tier เป้าหมายมาขวาง Premium
-  const premiumBaseTier = availableTiers.length
-    ? Math.max(...availableTiers)
-    : 1;
-  const premiumTargetTier = forceHigherTier
-    ? premiumBaseTier + 1
-    : null;
+  // Premium: การันตี Rare 1 ชิ้น + Legend 3 เท่า
+  const premiumTargetTier = forceHigherTier ? 2 : null;
 
   /*
    * ถ้า config ไม่มี Tier ที่ใช้ได้
@@ -3723,14 +3623,13 @@ function openLevelUp(forceHigherTier=false){
 
       const b = document.createElement('button');
 
-      b.className = 'upgrade';
+      b.className = 'upgrade item-'+(Number(u.tier)===1?'normal':Number(u.tier)===2?'rare':'legend');
 
       b.innerHTML = `
         <div class="icon">${u.icon}</div>
         <div>
           <div class="uName">${u.name}</div>
           <div class="uDesc">${u.desc}</div>
-         ${fragmentProgressHtml(u)}
          ${renderItemPreview(u)}
        ${renderItemPreview(u)}
         </div>
@@ -3799,14 +3698,14 @@ function openLevelUp(forceHigherTier=false){
 
   const usedIds = new Set();
   const selected = [];
-  if(forceHigherTier && Number.isFinite(premiumTargetTier)){
-    const premiumPool=levelUpgrades.filter(item =>
-      Number(item.tier||1)===premiumTargetTier &&
-      !isItemMaxed(item)
+  if(forceHigherTier){
+    const premiumRarePool=levelUpgrades.filter(item =>
+      Number(item.tier||1)===2 && !isItemMaxed(item)
     );
-    if(premiumPool.length){
-      const guaranteed=premiumPool[Math.floor(Math.random()*premiumPool.length)];
-      selected.push(guaranteed); usedIds.add(guaranteed.id);
+    if(premiumRarePool.length){
+      const guaranteed=premiumRarePool[Math.floor(Math.random()*premiumRarePool.length)];
+      selected.push(guaranteed);
+      usedIds.add(guaranteed.id);
     }
   }
 
@@ -3831,10 +3730,14 @@ function openLevelUp(forceHigherTier=false){
 
     if(usableTiers.length){
 
-      tier = weightedPickTier(
-        tierWeights,
-        usableTiers
-      );
+      const premiumWeights = forceHigherTier
+        ? (() => {
+            const boostedLegend=Math.min(100,tierWeights[3]*3);
+            const extra=Math.max(0,boostedLegend-tierWeights[3]);
+            return {1:Math.max(0,tierWeights[1]-extra),2:tierWeights[2],3:boostedLegend};
+          })()
+        : tierWeights;
+      tier = weightedPickTier(premiumWeights,usableTiers);
 
     }else{
 
@@ -3937,7 +3840,7 @@ function openLevelUp(forceHigherTier=false){
 
     const b = document.createElement('button');
 
-    b.className = 'upgrade';
+    b.className = 'upgrade item-'+(Number(u.tier)===1?'normal':Number(u.tier)===2?'rare':'legend');
 
     /*
      * แสดง Tier บนการ์ดด้วย
@@ -3970,7 +3873,6 @@ function openLevelUp(forceHigherTier=false){
         <div class="uDesc">
           ${u.desc}
         </div>
-        ${fragmentProgressHtml(u)}
         ${renderItemPreview(u)}
       </div>
     `;
@@ -4045,25 +3947,27 @@ function openLevelUp(forceHigherTier=false){
     // ร้านค้าต้องทนต่อค่า Developer ที่อาจยังไม่มี/ไม่สมบูรณ์
     const shopCfg=(dev&&dev.shop&&typeof dev.shop==='object')?dev.shop:{};
     const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
-    const tierRules=[
-      {tier:1,min:1,max:14},
-      {tier:2,min:15,max:29},
-      {tier:3,min:30,max:49},
-      {tier:4,min:50,max:79},
-      {tier:5,min:80,max:9999}
-    ];
-    // ใช้ tierRules โดยตรง ไม่อ้างอิงตัวแปร SHOP_TIERS เพื่อป้องกัน Safari "Can't find variable"
-    const unlocked=tierRules.filter(r=>wave>=r.min).map(r=>r.tier);
-    const weights={1:70,2:30,3:0,4:0,5:0};
-    if(wave>=15){weights[1]=60;weights[2]=40;}
-    if(wave>=30){weights[1]=35;weights[2]=35;weights[3]=30;}
-    if(wave>=50){weights[1]=0;weights[2]=30;weights[3]=35;weights[4]=35;}
-    if(wave>=80){weights[1]=0;weights[2]=0;weights[3]=35;weights[4]=40;weights[5]=25;}
-    const normalPool=luxuryShopPool.filter(i=>unlocked.includes(i.tier)&&!(i.bt&&ownedBulletTypes.includes(i.bt))&&!isItemMaxed(i));
-    const currentTier=Math.max(...unlocked);
-    const higherTier=currentTier+1;
-    const guaranteedPool=forceHigherTier ? luxuryShopPool.filter(i=>Number(i.tier)===higherTier&&!(i.bt&&ownedBulletTypes.includes(i.bt))&&!isItemMaxed(i)) : [];
-    const pool=forceHigherTier && guaranteedPool.length ? normalPool.filter(i=>Number(i.tier)!==higherTier) : normalPool;
+    const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
+    const rare=8+(24-8)*progress;
+    const legend=2+(6-2)*progress;
+    const weights=forceHigherTier
+      ? (() => {
+          const boostedLegend=Math.min(100,legend*3);
+          const extra=Math.max(0,boostedLegend-legend);
+          return {1:Math.max(0,100-rare-legend-extra),2:rare,3:boostedLegend};
+        })()
+      : {1:100-rare-legend,2:rare,3:legend};
+    const unlocked=[1,2,3];
+    const normalPool=luxuryShopPool.filter(i=>
+      unlocked.includes(Number(i.tier)) &&
+      !(i.bt&&ownedBulletTypes.includes(i.bt)) &&
+      !isItemMaxed(i)
+    );
+    const guaranteedPool=forceHigherTier
+      ? luxuryShopPool.filter(i=>Number(i.tier)===2 && !(i.bt&&ownedBulletTypes.includes(i.bt)) && !isItemMaxed(i))
+      : [];
+    const pool=forceHigherTier ? normalPool.filter(i=>Number(i.tier)!==2) : normalPool;
+
     const chosen=[];
     const available=[...pool];
     if(forceHigherTier && guaranteedPool.length){
@@ -4115,7 +4019,7 @@ function openLevelUp(forceHigherTier=false){
       try{
         const b=document.createElement('button');
         b.type='button';
-        b.className='shop-item';
+        b.className='shop-item item-'+(Number(item.tier)===1?'normal':Number(item.tier)===2?'rare':'legend');
         if(item.purchased) b.classList.add('disabled');
 
         // แสดงค่าสถานะที่จะเปลี่ยนหลังซื้อ โดย Preview จะจำลองแล้วคืนค่าเดิมให้ผู้เล่น
@@ -4124,9 +4028,8 @@ function openLevelUp(forceHigherTier=false){
         b.innerHTML=`
           <div class="icon">${item.icon||'📦'}</div>
           <div>
-            <div class="uName"><span class="tier-badge">S${item.tier||1}</span>${item.name||'ไอเทม'}</div>
+            <div class="uName"><span class="tier-badge tier-${Number(item.tier)===1?'normal':Number(item.tier)===2?'rare':'legend'}">${Number(item.tier)===1?'Normal':Number(item.tier)===2?'Rare':'Legend'}</span>${item.name||'ไอเทม'}</div>
             <div class="uDesc">${desc}</div>
-            ${fragmentProgressHtml(item)}
             ${previewHtml}
             <div class="cost">${item.purchased ? '<span style="color:#4ade80">ซื้อแล้ว!</span>' : '💰 ' + Math.max(0,Math.floor(Number(item.cost)||0)) + ' ทอง'}</div>
           </div>`;
@@ -4219,7 +4122,7 @@ function openLevelUp(forceHigherTier=false){
     if(player.gold>=cost){
       player.gold-=cost; rerollN=0; playSound('coin');
       generateShopList(true);
-      setStatus('✨ รีโรลขั้นสูง: การันตีไอเทม Tier สูงขึ้น 1 ระดับ');
+      setStatus('✨ รีโรลขั้นสูง: การันตี Rare 1 ชิ้น + Legend 3 เท่า');
       refreshHUD();
     }else setStatus(`ต้องการทอง ${cost} ในการรีโรลขั้นสูง`);
   };
@@ -4245,7 +4148,7 @@ function openLevelUp(forceHigherTier=false){
     if(player.gold>=cost){
       player.gold-=cost; levelRerollN=0; playSound('coin');
       pendingLevels++; openLevelUp(true);
-      setStatus('✨ รีโรลขั้นสูง: การันตีไอเทม Tier สูงขึ้น 1 ระดับ');
+      setStatus('✨ รีโรลขั้นสูง: การันตี Rare 1 ชิ้น + Legend 3 เท่า');
       refreshHUD();
     }else setStatus(`ต้องการทอง ${cost} ในการรีโรลขั้นสูง`);
   };
