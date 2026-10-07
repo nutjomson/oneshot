@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.153</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.154</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.153</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.154</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -2901,8 +2901,10 @@ function clamp(v,a,b){
 // Shared rarity table for Level Up, Shop, and Treasure Chests.
 function getRarityWeights(w){
   const progress=Math.max(0,Math.min(1,(Number(w)||1)-1)/99);
-  const rare=8+(24-8)*progress;
-  const legend=2+(6-2)*progress;
+  // Rarity curve: Wave 1 = 97 / 2.9 / 0.1
+  // Wave 100 = 85 / 14 / 1
+  const rare=2.9+(14-2.9)*progress;
+  const legend=0.1+(1-0.1)*progress;
   return {normal:100-rare-legend,rare,legend};
 }
 
@@ -4122,7 +4124,7 @@ function openLevelUp(forceHigherRarity=false){
   const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
   const rarityWeights=forceHigherRarity
     ? {normal:0,rare:Math.max(1,25+(35-25)*progress),legend:Math.min(30,3+(10-3)*progress)}
-    : {normal:100-(8+(24-8)*progress)-(2+(6-2)*progress),rare:8+(24-8)*progress,legend:2+(6-2)*progress};
+    : {normal:100-(2.9+(14-2.9)*progress)-(0.1+(1-0.1)*progress),rare:2.9+(14-2.9)*progress,legend:0.1+(1-0.1)*progress};
 
   const availableRarities=[...new Set(levelUpgrades.map(i=>String(i.rarity||'normal')))].filter(isRarityAvailable);
   const used=new Set();
@@ -4209,8 +4211,8 @@ function openLevelUp(forceHigherRarity=false){
     const shopCfg=(dev&&dev.shop&&typeof dev.shop==='object')?dev.shop:{};
     const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
     const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
-    const rare=8+(24-8)*progress;
-    const legend=2+(6-2)*progress;
+    const rare=2.9+(14-2.9)*progress;
+    const legend=0.1+(1-0.1)*progress;
     const rarityWeights=forceHigherRarity
       ? (() => {
           const boostedLegend=Math.min(100,legend*3);
