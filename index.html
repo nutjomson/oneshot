@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.156</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.157</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4558,7 +4558,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.156');
+    lines.push('Game Version: v1.0.157');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -4809,17 +4809,18 @@ function openLevelUp(forceHigherRarity=false){
 
     if(player.fireTimer<=0){shoot();player.fireTimer=player.fireRate;}
 
-    // Orbit Blades Mechanics — fractional blade values use a stable rounded count.
+    // Orbit Blades Mechanics — fractional blades deal proportional damage.
     if(player.orbitBlades>0){
-      const orbitSpeed=elapsed*CFG.combat.orbitSpeed,radius=CFG.combat.orbitRadius,wholeBlades=Math.floor(player.orbitBlades),fracBlade=Math.max(0,player.orbitBlades-wholeBlades),bladeCount=wholeBlades+(fracBlade>=0.5?1:0);
+      const orbitSpeed=elapsed*CFG.combat.orbitSpeed,radius=CFG.combat.orbitRadius,wholeBlades=Math.floor(player.orbitBlades),fracBlade=Math.max(0,player.orbitBlades-wholeBlades),bladeCount=wholeBlades+(fracBlade>0?1:0);
       if(bladeCount>0)for(let i=0;i<bladeCount;i++){
+        const bladeStrength=i<wholeBlades?1:fracBlade;
         const angle=orbitSpeed+(i*(Math.PI*2/bladeCount));
         const bx = player.x + Math.cos(angle)*radius;
         const by = player.y + Math.sin(angle)*radius;
 
         for(const e of enemies){
           if(dist(bx, by, e.x, e.y) < e.r + CFG.combat.orbitHitRadius){
-            if(e.bladeCd<=0&&!e.dead){hitEnemy(e, player.damage*CFG.combat.orbitDamageMult, false, null, true); e.bladeCd=CFG.combat.orbitHitCooldown;}
+            if(e.bladeCd<=0&&!e.dead){hitEnemy(e,player.damage*CFG.combat.orbitDamageMult*bladeStrength,false,null,true); e.bladeCd=CFG.combat.orbitHitCooldown;}
           }
         }
       }
@@ -5086,8 +5087,10 @@ function openLevelUp(forceHigherRarity=false){
     const mv=player.animFrame>0, w=Math.sin(t*14);
     const bob=mv?(w>0?-3:0):(Math.sin(t*3)>.6?-3:0);
     if(player.orbitBlades>0){
-      for(let i=0;i<player.orbitBlades;i++){
-        const an=elapsed*3+i*(Math.PI*2/player.orbitBlades), bx=px+Math.cos(an)*65, by=py+Math.sin(an)*65;
+      const wholeBlades=Math.floor(player.orbitBlades),fracBlade=Math.max(0,player.orbitBlades-wholeBlades),bladeCount=wholeBlades+(fracBlade>0?1:0);
+      for(let i=0;i<bladeCount;i++){
+        const bladeStrength=i<wholeBlades?1:fracBlade;
+        const an=elapsed*3+i*(Math.PI*2/bladeCount), bx=px+Math.cos(an)*65, by=py+Math.sin(an)*65;
         ctx.save(); ctx.translate(bx,by); ctx.rotate(elapsed*12);
         ctx.fillStyle='rgba(56,189,248,.3)'; ctx.fillRect(-10,-10,20,20);
         ctx.fillStyle='#e0f2fe'; ctx.beginPath(); ctx.moveTo(0,-12); ctx.lineTo(5,0); ctx.lineTo(0,12); ctx.lineTo(-5,0); ctx.fill();
