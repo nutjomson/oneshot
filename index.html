@@ -6,10 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.137</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.138</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
 
@@ -25,7 +25,7 @@ html,body{
   height:100%;
   height:100dvh;
   overflow:hidden;background:#030712;
-  color:#fff;font-family:'Noto Sans Thai', 'Noto Sans Thai', monospace, sans-serif;
+  color:#fff;font-family:'Maitree', sans-serif;
   touch-action:none;position:fixed;
   inset:0;
 }
@@ -67,7 +67,7 @@ body.gameplay-actions .hud-controls{display:flex}
 
 .hud-btn{
   pointer-events:auto;background:#2563eb;border:2px solid #fff;color:#fff;
-  font-family:'Noto Sans Thai', sans-serif;font-size:9px;font-weight:800;padding:3px 5px;cursor:pointer;white-space:nowrap;margin-top:4px;
+  font-family:'Maitree', sans-serif;font-size:9px;font-weight:800;padding:3px 5px;cursor:pointer;white-space:nowrap;margin-top:4px;
   box-shadow:inset -2px -2px 0 #1d4ed8, 0 2px 6px rgba(0,0,0,0.5);
   touch-action:manipulation;
 }
@@ -320,11 +320,11 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-quick-desc{font-size:11px;line-height:1.35;color:#e2e8f0;min-height:31px;margin-top:2px;overflow-wrap:anywhere;word-break:break-word}
 .shop-reason{margin-top:auto;padding-top:7px;font-size:10px;line-height:1.3;color:#4ade80;font-weight:800;overflow-wrap:anywhere;word-break:break-word}
 .shop-buy-row{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}
-.shop-buy-btn{border:2px solid #fff;background:#22c55e;color:#052e16;font:900 11px Prompt,sans-serif;padding:7px 9px;min-height:38px;flex:1;touch-action:manipulation}
+.shop-buy-btn{border:2px solid #fff;background:#22c55e;color:#052e16;font:700 11px 'Maitree',sans-serif;padding:7px 9px;min-height:38px;flex:1;touch-action:manipulation}
 .shop-item.recommended .shop-buy-btn{background:#eab308;color:#422006}.shop-buy-btn:active{transform:translate(1px,1px)}.shop-buy-btn:disabled{opacity:.45;cursor:not-allowed}
 .shop-cost{font-size:11px;color:#facc15;font-weight:900;white-space:nowrap}
 .shop-actions{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:7px;margin-top:18px}
-.shop-actions button{min-height:44px;border:2px solid #fff;font:900 11px Prompt,sans-serif;cursor:pointer;touch-action:manipulation}
+.shop-actions button{min-height:44px;border:2px solid #fff;font:700 11px 'Maitree',sans-serif;cursor:pointer;touch-action:manipulation}
 .shop-reroll{background:#eab308;color:#422006}.shop-premium{background:#7c3aed;color:#fff}.shop-close{background:#22c55e;color:#052e16}
 .shop-actions button:active{transform:translate(1px,1px)}.shop-detail-hint{font-size:9px;color:#64748b;margin-top:7px;text-align:center}
 .shop-stats{margin:7px 0 0;max-height:150px;overflow:auto;display:none}.shop-modal:focus-within .shop-stats{display:grid}
@@ -335,7 +335,7 @@ body.gameplay-actions .hud-controls{display:flex}
 }
 .upgrade, .shop-item, .hero-card{
   border:2px solid #334155;background:#1e293b;padding:10px;text-align:left;color:#fff;cursor:pointer;
-  font-family:'Noto Sans Thai', sans-serif;position:relative;transition:all 0.15s ease;
+  font-family:'Maitree', sans-serif;position:relative;transition:all 0.15s ease;
   touch-action:manipulation;
 }
 .upgrade.item-normal,.shop-item.item-normal{border-color:#9ca3af;box-shadow:0 0 10px rgba(156,163,175,.25)}
@@ -367,12 +367,12 @@ body.gameplay-actions .hud-controls{display:flex}
 /* Controls & Buttons */
 .setting-row{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:10px;border:2px solid #334155;margin-bottom:8px;font-size:12px;font-weight:600}
 .setting-row input[type="checkbox"]{width:22px;height:22px;cursor:pointer;accent-color:#38bdf8}
-.setting-row select{background:#0f172a;color:#38bdf8;border:1px solid #38bdf8;padding:4px 8px;font-family:'Noto Sans Thai', sans-serif;border-radius:4px;font-weight:bold}
+.setting-row select{background:#0f172a;color:#38bdf8;border:1px solid #38bdf8;padding:4px 8px;font-family:'Maitree', sans-serif;border-radius:4px;font-weight:bold}
 
 .btn-group{display:flex;gap:8px;justify-content:center;margin-top:14px;padding-bottom:4px;flex-wrap:wrap}
 .btn{
   border:2px solid #fff;background:#22c55e;color:#052e16;
-  font-family:'Noto Sans Thai', sans-serif;font-size:13px;font-weight:800;padding:12px 18px;cursor:pointer;
+  font-family:'Maitree', sans-serif;font-size:13px;font-weight:800;padding:12px 18px;cursor:pointer;
   box-shadow:inset -2px -2px 0 #15803d, 0 4px 10px rgba(0,0,0,0.4);flex:1;min-width:130px;
   touch-action:manipulation;
 }
@@ -758,6 +758,52 @@ body.gameplay-actions .hud-controls{display:flex}
   if(window.visualViewport) window.visualViewport.addEventListener('resize',updateResponsiveUIScale,{passive:true});
 })();
 </script>
+
+<style id="v1-0-138-maitree-fantasy-ui">
+/* ===== Maitree Fantasy UI v1.0.138 =====
+   ใช้ Maitree เป็นฟอนต์หลักของเกม เพื่อให้ภาพรวมมีเอกลักษณ์แฟนตาซี
+   และคงน้ำหนักตัวอักษรระดับกลางสำหรับข้อความยาวเพื่อให้อ่านง่าย */
+html,body{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:500;
+  letter-spacing:.05px;
+}
+button,input,select,textarea{
+  font-family:'Maitree',sans-serif!important;
+}
+.title,.shop-head .title{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:.35px!important;
+}
+.sub,.label,.num,.small,.shop-wave,.shop-guide,
+.item-reward-desc,.item-reward-status,.item-reward-changes{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:500!important;
+}
+.uName,.item-preview-title,.item-preview-values,.tier-badge,
+.shop-wallet,.shop-actions button,.shop-buy-btn,.hud-btn{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:700!important;
+}
+.item-preview,.item-preview-stat,.shop-quick-desc,.shop-reason,.shop-cost{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:500!important;
+}
+.shop-modal .shop-topline .uName{
+  font-weight:700!important;
+  letter-spacing:.15px!important;
+}
+.shop-modal .item-preview-title{
+  font-weight:700!important;
+}
+.item-reward-name,.item-reward-tier{
+  font-family:'Maitree',sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:.2px!important;
+}
+</style>
+
 </head>
 <body>
 <div id="game">
