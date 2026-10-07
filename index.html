@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.111</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.112</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.111 COMPACT ITEM CHOICES =====
+/* ===== v1.0.112 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -349,6 +349,49 @@ body.gameplay-actions .hud-controls{display:flex}
   #upgrades,#shopItems{grid-template-columns:1fr!important}
   #upgrades .upgrade,#shopItems .shop-item{display:flex!important;grid-template-columns:none!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
+}
+
+/* ===== v1.0.112 READABLE COMPACT LAYOUT =====
+   ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
+   ป้องกันข้อความตกขอบบน iPhone/iPad */
+.level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
+.level-modal .title,.shop-modal .title{font-size:18px;line-height:1.15}
+.level-modal .sub,.shop-modal .sub{font-size:11px;line-height:1.25;margin-bottom:7px}
+.level-modal #upgrades,.shop-modal #shopItems{width:100%;max-height:calc(100dvh - 205px);overflow-y:auto;overflow-x:hidden;gap:6px;padding-right:3px}
+.level-modal .upgrade,.shop-modal .shop-item{width:100%;min-height:0;height:auto;padding:7px 8px;overflow:hidden}
+/* Level Up: ชื่อ + tier + ไอคอนอยู่แถวเดียวกัน */
+.level-modal .upgrade{display:grid;grid-template-columns:30px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:7px;row-gap:2px}
+.level-modal .upgrade-choice-label{grid-column:1/-1;font-size:10px;line-height:1.1;margin:0 0 1px}
+.level-modal .upgrade .icon{grid-column:1;grid-row:2 / span 3;font-size:25px;align-self:start;margin:0;padding-top:1px}
+.level-modal .upgrade .uName{grid-column:2;font-size:12px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.level-modal .upgrade .uDesc{grid-column:2;font-size:10px;line-height:1.2;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.level-modal .upgrade .item-preview{grid-column:2;font-size:9.5px;line-height:1.2;margin:1px 0 0!important;padding:3px 5px!important;max-height:34px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.level-modal .upgrade .upgrade-reason{grid-column:2;font-size:9.5px;line-height:1.15;padding:1px 0 0;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Shop: ไอคอน + ชื่อ + ราคา/ซื้อ ใช้พื้นที่ร่วมกัน */
+.shop-modal .shop-item{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:7px;row-gap:2px}
+.shop-modal .shop-choice-label{grid-column:1/-1;font-size:10px;line-height:1.1;margin:0}
+.shop-modal .shop-topline{grid-column:1/-1;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:7px;align-items:center}
+.shop-modal .shop-topline .icon{grid-column:1;font-size:25px;margin:0}
+.shop-modal .shop-topline .uName{grid-column:2;font-size:12px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-modal .shop-quick-desc{grid-column:1/-1;font-size:10px;line-height:1.2;margin:1px 0;min-height:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-modal .shop-item .item-preview{grid-column:1/-1;font-size:9.5px;line-height:1.2;margin:1px 0 0!important;padding:3px 5px!important;max-height:34px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.shop-modal .shop-reason{grid-column:1/-1;font-size:9.5px;line-height:1.15;padding:1px 0 0;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-modal .shop-buy-row{grid-column:1/-1;display:flex;align-items:center;gap:7px;margin-top:4px}
+.shop-modal .shop-cost{font-size:11px;flex:0 0 auto}
+.shop-modal .shop-buy-btn{min-height:34px;font-size:10px;padding:5px 8px;white-space:nowrap}
+.shop-actions button{min-height:40px;font-size:10px}
+@media(max-width:640px){
+  .level-modal,.shop-modal{width:calc(100vw - 12px);padding:7px}
+  .level-modal .title,.shop-modal .title{font-size:16px}
+  .level-modal .sub,.shop-modal .sub{font-size:10px}
+  .level-modal #upgrades,.shop-modal #shopItems{max-height:calc(100dvh - 190px);gap:5px}
+  .level-modal .upgrade,.shop-modal .shop-item{padding:6px 7px}
+  .level-modal .upgrade .uName,.shop-modal .shop-topline .uName{font-size:11px}
+  .level-modal .upgrade .uDesc,.shop-modal .shop-quick-desc{font-size:9.5px}
+  .level-modal .upgrade .item-preview,.shop-modal .shop-item .item-preview{font-size:9px}
+  .level-modal .upgrade .upgrade-reason,.shop-modal .shop-reason{font-size:9px}
+  .shop-modal .shop-buy-btn{font-size:9.5px;min-height:32px}
+  .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 </style>
 </head>
