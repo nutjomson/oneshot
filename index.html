@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.146</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.147</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -737,7 +737,7 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 </style>
 <style id="shop-alchemy-backdrop-v1-0-141">
-/* ===== v1.0.146 VISIBLE ALCHEMY SHOP ===== */
+/* ===== v1.0.147 VISIBLE ALCHEMY SHOP ===== */
 #shopOverlay{
   background:
     radial-gradient(circle at 13% 25%,rgba(245,190,76,.55) 0 18px,rgba(245,190,76,.16) 19px,transparent 95px),
@@ -843,7 +843,7 @@ button,input,select,textarea{
 </style>
 
 <style id="shop-alchemy-visible-v1-0-143">
-/* ===== v1.0.146 SHOP BACKDROP — put the art on the visible modal itself ===== */
+/* ===== v1.0.147 SHOP BACKDROP — put the art on the visible modal itself ===== */
 #shopOverlay.overlay{
   background:rgba(3,3,8,.90)!important;
 }
@@ -876,7 +876,7 @@ button,input,select,textarea{
 }
 #shopOverlay .shop-modal > *{position:relative;z-index:2}
 </style><style id="shop-wood-background-v1-0-144">
-/* ===== v1.0.146 SHOP WOOD BACKGROUND ===== */
+/* ===== v1.0.147 SHOP WOOD BACKGROUND ===== */
 #shopOverlay .shop-modal{
   background:#4b2b1d!important;
   background-image:
@@ -887,7 +887,7 @@ button,input,select,textarea{
 }
 #shopOverlay .shop-modal::before,#shopOverlay .shop-modal::after{display:none!important}
 </style><style id="level-wood-background-v1-0-145">
-/* ===== v1.0.146 LEVEL UP WOODEN SHOP CONCEPT =====
+/* ===== v1.0.147 LEVEL UP WOODEN SHOP CONCEPT =====
    ใช้คอนเซ็ปต์พื้นไม้เดียวกับ Shop เพื่อให้หน้าต่าง Level Up เป็นชุดเดียวกัน */
 #levelOverlay .level-modal{
   background:#4b2b1d!important;
@@ -901,19 +901,6 @@ button,input,select,textarea{
   background:rgba(15,18,25,.92)!important;
   border-color:rgba(139,90,53,.72)!important;
 }
-</style><style id="perk-selection-v1-0-146">
-/* ===== v1.0.146 START PERK SELECTION ===== */
-.perk-modal{max-width:900px!important;width:min(96vw,900px);max-height:calc(100dvh - 18px);overflow:hidden;background:#4b2b1d!important;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 34px),repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0 3px,transparent 3px 58px),linear-gradient(180deg,#68402a 0%,#4b2b1d 48%,#382017 100%)!important;border-color:#8b5a35!important}
-.perk-items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;max-height:calc(100dvh - 180px);overflow-y:auto;padding:3px}
-.perk-card{padding:8px;border:2px solid #475569;border-radius:8px;background:rgba(9,15,26,.94);cursor:pointer;min-height:92px;text-align:center;transition:.12s}
-.perk-card:active{transform:scale(.98)}
-.perk-card.selected{border-color:#facc15;background:#1e293b;box-shadow:0 0 12px rgba(250,204,21,.28)}
-.perk-card .icon{font-size:24px;margin-bottom:3px}.perk-card .uName{font-size:11px;color:#facc15}.perk-card .uDesc{font-size:8px;color:#cbd5e1;line-height:1.2;margin-top:3px}
-.perk-card .perk-source{font-size:7px;color:#94a3b8;margin-top:4px}
-.perk-selection-info{font-size:11px;font-weight:800;color:#facc15;text-align:center;margin:4px 0}
-.perk-modal .btn:disabled{opacity:.38;cursor:not-allowed}
-@media(max-width:700px){.perk-items{grid-template-columns:repeat(2,minmax(0,1fr));max-height:calc(100dvh - 175px)}.perk-card{min-height:84px;padding:6px}.perk-card .uName{font-size:10px}.perk-card .uDesc{font-size:7.5px}.perk-card .icon{font-size:21px}}
-@media(min-width:701px) and (max-height:620px){.perk-items{grid-template-columns:repeat(5,minmax(0,1fr));max-height:calc(100dvh - 145px)}}
 </style>
 </head>
 <body>
@@ -962,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.146</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.147</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -974,19 +961,6 @@ button,input,select,textarea{
     </div>
 
     <div class="stats-box" id="startHeroStats"></div>
-  </div>
-</div>
-
-<!-- Start Perk Selection -->
-<div id="perkOverlay" class="overlay hidden">
-  <div class="modal perk-modal">
-    <div class="title">✨ เลือก Perk เริ่มเกม</div>
-    <div id="perkStageText" class="sub">Normal — เลือก 4 ชิ้น</div>
-    <div id="perkSelectionInfo" class="perk-selection-info">เลือกแล้ว 0 / 4</div>
-    <div id="perkItems" class="perk-items"></div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-gold" id="perkConfirmBtn" disabled>ตกลง</button>
-    </div>
   </div>
 </div>
 
@@ -3599,7 +3573,7 @@ function applyHeroChoice(h){
 }
 
 
-/* ===== v1.0.146 START PERK LOGIC ===== */
+/* ===== v1.0.147 START PERK LOGIC ===== */
 let startPerkStage='normal';
 let startPerkSelected=[];
 const startPerkCounts={normal:4,rare:2,legend:1};
@@ -5357,7 +5331,7 @@ function openLevelUp(forceHigherRarity=false){
     clearTimeout(toastT); toastT=setTimeout(()=>{el.style.opacity=0},2200);
   }
 
-  function startGame(startPerks){document.body.classList.add('gameplay-actions');
+  function startGame(){document.body.classList.add('gameplay-actions');
   
     if(!selectedHero && heroes && heroes.length) selectedHero=heroes[0];
     if(!selectedHero){
@@ -5383,13 +5357,6 @@ function openLevelUp(forceHigherRarity=false){
     
     applyHeroChoice(selectedHero);
     clampStats();
-    // Apply the selected start perks after the hero is initialized.
-    if(Array.isArray(startPerks)&&startPerks.length){
-      startPerks.forEach(item=>{try{item.apply();}catch(e){console.warn('START PERK APPLY ERROR',item?.name,e);}});
-      itemHistory=startPerks.map(item=>({name:item.name,rarity:item.rarity,source:'Perk เริ่มเกม',wave:1,icon:item.icon||'✨'}));
-      runStats.itemsReceived=startPerks.length;
-      try{clampStats();}catch(e){}
-    }
     clampStats();
     spawnTreasureChest(wave);
 
@@ -5449,7 +5416,7 @@ function openLevelUp(forceHigherRarity=false){
       e.preventDefault();
       e.stopPropagation();
       try{
-        openStartPerks();
+        startGame();
       }catch(err){
         console.error('START GAME ERROR',err);
         setStatus('เริ่มเกมไม่สำเร็จ: '+(err?.message||String(err)));
@@ -5458,7 +5425,7 @@ function openLevelUp(forceHigherRarity=false){
   }
 
 
-  document.getElementById('perkConfirmBtn')?.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();confirmStartPerks();});
+  e.stopPropagation();confirmStartPerks();});
 
   document.getElementById('restart')?.addEventListener('click',(e)=>{
     e.preventDefault();
