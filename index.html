@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.147</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.148</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -737,7 +737,7 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 </style>
 <style id="shop-alchemy-backdrop-v1-0-141">
-/* ===== v1.0.147 VISIBLE ALCHEMY SHOP ===== */
+/* ===== v1.0.148 VISIBLE ALCHEMY SHOP ===== */
 #shopOverlay{
   background:
     radial-gradient(circle at 13% 25%,rgba(245,190,76,.55) 0 18px,rgba(245,190,76,.16) 19px,transparent 95px),
@@ -843,7 +843,7 @@ button,input,select,textarea{
 </style>
 
 <style id="shop-alchemy-visible-v1-0-143">
-/* ===== v1.0.147 SHOP BACKDROP — put the art on the visible modal itself ===== */
+/* ===== v1.0.148 SHOP BACKDROP — put the art on the visible modal itself ===== */
 #shopOverlay.overlay{
   background:rgba(3,3,8,.90)!important;
 }
@@ -876,7 +876,7 @@ button,input,select,textarea{
 }
 #shopOverlay .shop-modal > *{position:relative;z-index:2}
 </style><style id="shop-wood-background-v1-0-144">
-/* ===== v1.0.147 SHOP WOOD BACKGROUND ===== */
+/* ===== v1.0.148 SHOP WOOD BACKGROUND ===== */
 #shopOverlay .shop-modal{
   background:#4b2b1d!important;
   background-image:
@@ -887,7 +887,7 @@ button,input,select,textarea{
 }
 #shopOverlay .shop-modal::before,#shopOverlay .shop-modal::after{display:none!important}
 </style><style id="level-wood-background-v1-0-145">
-/* ===== v1.0.147 LEVEL UP WOODEN SHOP CONCEPT =====
+/* ===== v1.0.148 LEVEL UP WOODEN SHOP CONCEPT =====
    ใช้คอนเซ็ปต์พื้นไม้เดียวกับ Shop เพื่อให้หน้าต่าง Level Up เป็นชุดเดียวกัน */
 #levelOverlay .level-modal{
   background:#4b2b1d!important;
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.147</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.148</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1420,23 +1420,23 @@ const LEVEL_UPGRADES = [
   // ───────── NORMAL ─────────
   { rarity: 'normal', icon: '⚔️', name: 'เพิ่มพลังโจมตี',             fx: [mul('damage', 1.02625)] },
   { rarity: 'normal', icon: '⚡', name: 'เพิ่มความเร็วการยิง',        fx: [mul('fireRate', 0.9775)] },
-  { rarity: 'normal', icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.0125)] },
+  { rarity: 'normal', icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.015)] },
   { rarity: 'normal', icon: '❤️', name: 'ขยายพลังชีวิตสูงสุด',        fx: [add('maxHp', 13.5)] },
   { rarity: 'normal', icon: '⭐', name: 'ประสบการณ์เข้มข้น', fx: [mul('xpMulti', 1.015)] },
   { rarity: 'normal', icon: '🛡️', name: 'เสริมเกราะป้องกัน',          fx: [add('armor', 0.0135)] },
   { rarity: 'normal', icon: '💥', name: 'เพิ่มโอกาสคริติคอล',          fx: [add('crit', 0.0135)] },
   { rarity: 'normal', icon: '💚', name: 'ฟื้นฟูพลังชีวิตต่อเนื่อง',      fx: [add('regen', 0.3)] },
   { rarity: 'normal', icon: '🩸', name: 'ดูดพลังชีวิต',                fx: [add('lifesteal', 0.007)] },
-  { rarity: 'normal', icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.009)] },
-  { rarity: 'normal', icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.03)] },
-  { rarity: 'normal', icon: '🪃', name: 'แกนสะท้อนวิถี',             fx: [add('ricochet', 0.30), mul('damage', 1.005)] },
+  { rarity: 'normal', icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.01)] },
+  { rarity: 'normal', icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.025)] },
+  { rarity: 'normal', icon: '🪃', name: 'แกนสะท้อนวิถี',             fx: [add('ricochet', 0.25)] },
   { rarity: 'normal', icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.10)] },
   { rarity: 'normal', icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 3)], weight: 0.8 },
   { rarity: 'normal', icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 3)], weight: 0.8 },
   { rarity: 'normal', icon: '💣', name: 'กระสุนระเบิดวงกว้าง',        fx: [add('explosiveRadius', 6)], weight: 0.8 },
-  { rarity: 'normal', icon: '🥊', name: 'พลังผลักกระแทก',            fx: [add('knockback', 18.75)], weight: 0.7 },
-  { rarity: 'normal', icon: '💀', name: 'รังสีสังหารทันที',            fx: [add('executionThreshold', 0.006)], weight: 0.5 },
-  { rarity: 'normal', icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 0.75)], weight: 0.3 },
+  { rarity: 'normal', icon: '🥊', name: 'พลังผลักกระแทก',            fx: [add('knockback', 17.5)], weight: 0.7 },
+  { rarity: 'normal', icon: '💀', name: 'รังสีสังหารทันที',            fx: [add('executionThreshold', 0.0035)], weight: 0.5 },
+  { rarity: 'normal', icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 0.5)], weight: 0.3 },
   { rarity: 'normal', icon: '⚔️️', name: 'นักรบสมดุล',                fx: [mul('damage', 1.015), add('maxHp', 7.5)] },
   { rarity: 'normal', icon: '🏰', name: 'ปราการเล็ก',                fx: [add('maxHp', 12), add('knockback', 7.5)] },
   { rarity: 'normal', icon: '🧠', name: 'นักวางแผนทรัพยากร', fx: [mul('xpMulti', 1.02), mul('goldMulti', 1.015)], weight: 0.75 },
@@ -3573,7 +3573,7 @@ function applyHeroChoice(h){
 }
 
 
-/* ===== v1.0.147 START PERK LOGIC ===== */
+/* ===== v1.0.148 START PERK LOGIC ===== */
 let startPerkStage='normal';
 let startPerkSelected=[];
 const startPerkCounts={normal:4,rare:2,legend:1};
