@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.106</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.107</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -293,7 +293,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .dev-step:active{transform:scale(.94)}
 .dev-actions{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:7px;padding-top:10px;background:linear-gradient(#0f172a00,#0f172a 25%)}
 @media(max-width:620px){.dev-tabs{grid-template-columns:repeat(3,1fr)}.dev-grid{grid-template-columns:1fr}.dev-grid label{min-height:54px}.dev-modal{padding:10px}.dev-actions{grid-template-columns:1fr 1fr 1fr}}
-/* v1.0.106: Restore stacked mobile item layout; later overrides must not re-enable 3-column cards. */
+/* v1.0.107: Restore stacked mobile item layout; later overrides must not re-enable 3-column cards. */
 @media(max-width:640px){
   #upgrades,#shopItems{grid-template-columns:1fr!important}
   #upgrades .upgrade,#shopItems .shop-item{display:flex!important;grid-template-columns:none!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important}
@@ -347,7 +347,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.106</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.107</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3835,7 +3835,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.106');
+    lines.push('Game Version: v1.0.107');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -4039,7 +4039,7 @@ function openLevelUp(forceHigherRarity=false){
       if(gained>0) freeShopRerolls+=gained;
       const shopEvery=Math.max(1,Math.floor(dev.shop.everyWaves||10));
       // นับรอบจาก Wave 1 และบังคับเปิดเมื่อ Wave นั้นจบแล้ว
-      if(prevWave>=1 && ((prevWave-1)%shopEvery)===0 && lastShopWave!==prevWave){
+      if(prevWave>=shopEvery && (prevWave%shopEvery)===0 && lastShopWave!==prevWave){
         pendingShopWave=prevWave;
         shopCyclePurchased=false;
         activeShopItems=[];
