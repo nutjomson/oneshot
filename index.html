@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.110</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.111</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,57 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== SHOP QUICK DECISION UI ===== */
+/* ===== v1.0.111 COMPACT ITEM CHOICES =====
+   ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
+.level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
+.level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.level-modal .upgrade{min-height:0;height:auto;padding:7px 8px;display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:8px;row-gap:2px}
+.level-modal .upgrade-choice-label{grid-column:1/-1;margin:0}
+.level-modal .upgrade .icon{grid-column:1;grid-row:2 / span 3;font-size:25px;margin:0;padding-top:2px}
+.level-modal .upgrade>div:not(.icon):not(.upgrade-choice-label){grid-column:2}
+.level-modal .upgrade .uName{font-size:11px;margin:0}
+.level-modal .upgrade .uDesc{font-size:9px;line-height:1.2;margin:1px 0}
+.level-modal .upgrade .upgrade-reason{font-size:8.5px;line-height:1.2;padding-top:3px;margin:0}
+.level-modal .upgrade .item-preview{font-size:8.5px;line-height:1.25;margin-top:3px;padding:3px 5px!important;max-height:58px;overflow:hidden}
+.level-modal .upgrade .item-preview b{font-size:8.5px}
+.shop-modal{max-height:calc(100dvh - 18px);overflow:hidden}
+.shop-modal #shopItems{max-height:calc(100dvh - 280px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.shop-modal .shop-item{min-height:0;height:auto;padding:7px 8px;display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:8px;row-gap:2px}
+.shop-modal .shop-choice-label{grid-column:1/-1;margin:0}
+.shop-modal .shop-topline{grid-column:1/-1;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;column-gap:8px}
+.shop-modal .shop-topline .icon{grid-column:1;font-size:25px;margin:0}
+.shop-modal .shop-topline .uName{grid-column:2;font-size:11px;margin:0}
+.shop-modal .shop-quick-desc{grid-column:1/-1;font-size:8.8px;line-height:1.2;min-height:0;margin:1px 0}
+.shop-modal .shop-item .item-preview{grid-column:1/-1;font-size:8.5px;line-height:1.25;margin-top:2px!important;padding:3px 5px!important;max-height:58px;overflow:hidden}
+.shop-modal .shop-reason{grid-column:1/-1;font-size:8.5px;line-height:1.2;padding-top:3px;margin:0}
+.shop-modal .shop-buy-row{grid-column:1/-1;margin-top:4px}
+.shop-modal .shop-buy-btn{min-height:32px;padding:5px 7px;font-size:9px}
+.shop-modal .shop-cost{font-size:9px}
+@media(max-width:640px){
+  .level-modal{padding:8px}
+  .level-modal .title{font-size:15px}
+  .level-modal .sub{font-size:9px;margin-bottom:6px}
+  .level-modal #upgrades{gap:5px;max-height:calc(100dvh - 210px)}
+  .level-modal .upgrade{padding:5px 6px;grid-template-columns:30px minmax(0,1fr);column-gap:6px}
+  .level-modal .upgrade .icon{font-size:21px}
+  .level-modal .upgrade .uName{font-size:10px}
+  .level-modal .upgrade .uDesc{font-size:8px}
+  .level-modal .upgrade .item-preview{font-size:7.5px;max-height:48px}
+  .level-modal .upgrade .upgrade-reason{font-size:7.5px}
+  .shop-modal{padding:8px}
+  .shop-modal .title{font-size:15px}
+  .shop-modal .sub{font-size:9px;margin-bottom:6px}
+  .shop-modal #shopItems{gap:5px;max-height:calc(100dvh - 245px)}
+  .shop-modal .shop-item{padding:5px 6px}
+  .shop-modal .shop-topline .icon{font-size:21px}
+  .shop-modal .shop-topline .uName{font-size:10px}
+  .shop-modal .shop-quick-desc{font-size:7.8px}
+  .shop-modal .shop-item .item-preview{font-size:7.5px;max-height:48px}
+  .shop-modal .shop-reason{font-size:7.5px}
+  .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
+}
+.item-preview{display:block}
+\n/* ===== SHOP QUICK DECISION UI ===== */
 .shop-modal{max-width:680px;padding:12px 12px 14px}
 .shop-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .shop-head .title{margin:0;text-align:left}.shop-wave{font-size:11px;font-weight:800;color:#94a3b8;text-align:left}
@@ -3657,9 +3707,10 @@ function openLevelUp(forceHigherRarity=false){
         const canBuy=!item.purchased&&Number(player.gold||0)>=cost;
         b.innerHTML=
           '<div class="shop-choice-label">'+label+'</div>'+
-          '<div class="icon">'+(item.icon||'📦')+'</div>'+
-          '<div class="uName"><span class="tier-badge tier-'+(item.rarity||'normal')+'">'+(item.rarity||'normal')+'</span>'+(item.name||'ไอเทม')+'</div>'+
+          '<div class="shop-topline"><div class="icon">'+(item.icon||'📦')+'</div>'+
+          '<div class="uName"><span class="tier-badge tier-'+(item.rarity||'normal')+'">'+(item.rarity||'normal')+'</span>'+(item.name||'ไอเทม')+'</div></div>'+
           '<div class="shop-quick-desc">'+quickDesc+'</div>'+
+          (typeof renderItemPreview==='function'?renderItemPreview(item):'')+
           '<div class="shop-reason">'+(item.purchased?'✅ ซื้อแล้ว':reason)+'</div>'+
           '<div class="shop-buy-row"><span class="shop-cost">'+(item.purchased?'':cost+' 🪙')+'</span><button class="shop-buy-btn" type="button" '+(canBuy?'':'disabled')+'>'+(item.purchased?'ซื้อแล้ว':canBuy?'ซื้อ':'ทองไม่พอ')+'</button></div>';
         const buyBtn=b.querySelector('.shop-buy-btn');
