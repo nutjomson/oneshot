@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.157</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.158</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4558,7 +4558,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.157');
+    lines.push('Game Version: v1.0.158');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -5082,6 +5082,13 @@ function openLevelUp(forceHigherRarity=false){
     ctx.restore();
   }
 
+  const prismKnightImg=new Image();
+  prismKnightImg.decoding='async';
+  prismKnightImg.src='assets/heroes/prism_knight.png';
+  let prismKnightImgReady=false;
+  prismKnightImg.onload=()=>{prismKnightImgReady=true;};
+  prismKnightImg.onerror=()=>{prismKnightImgReady=false;};
+
   function drawPlayer(cam){
     const px=sx(player.x,cam), py=sy(player.y,cam), h=selectedHero, t=performance.now()/1000;
     const mv=player.animFrame>0, w=Math.sin(t*14);
@@ -5107,9 +5114,16 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     ctx.save(); ctx.translate(px,py+bob); ctx.scale(sd,1);
-    if(flash)ctx.globalAlpha=.55;
-    ctx.drawImage(cv,-24,-30,48,48);
-    if(flash){ctx.globalAlpha=.7;ctx.drawImage(fl,-24,-30,48,48);}
+    if(h.id==='prism'&&prismKnightImgReady){
+      if(flash)ctx.globalAlpha=.55;
+      ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(prismKnightImg,-28,-34,56,56);
+      if(flash){ctx.globalAlpha=.72;ctx.drawImage(prismKnightImg,-28,-34,56,56);}
+    }else{
+      if(flash)ctx.globalAlpha=.55;
+      ctx.drawImage(cv,-24,-30,48,48);
+      if(flash){ctx.globalAlpha=.7;ctx.drawImage(fl,-24,-30,48,48);}
+    }
     ctx.restore();
   }
 
