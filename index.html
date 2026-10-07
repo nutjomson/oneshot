@@ -2260,6 +2260,11 @@ function getRarityWeights(w){
   return {normal:100-rare-legend,rare,legend};
 }
 
+// Shared rarity availability helper used by Level Up, Shop, and Chests.
+function isRarityAvailable(rarity){
+  return ['normal','rare','legend'].includes(String(rarity));
+}
+
 // Shared rarity helpers. These must be global because Level Up, Shop,
 // and Treasure Chests all use them.
 function weightedPickRarity(weights, availableRarities){
@@ -3390,19 +3395,6 @@ function openLevelUp(forceHigherRarity=false){
       if(isItemMaxed(item)) return false;
       return isRarityAvailable(item.rarity);
     });
-  }
-
-  function weightedPickRarity(weights, availableRarities){
-    const list=[];
-    for(const rarity of availableRarities){
-      const weight=Number(weights[rarity]||0);
-      if(weight>0) list.push({rarity,weight});
-    }
-    if(!list.length) return null;
-    const total=list.reduce((s,x)=>s+x.weight,0);
-    let r=Math.random()*total;
-    for(const x of list){r-=x.weight;if(r<=0)return x.rarity;}
-    return list[list.length-1].rarity;
   }
 
   const existingRarities=[...new Set(levelUpgrades.map(item=>String(item.rarity||'normal')))]
