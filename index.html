@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.141</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.142</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -737,39 +737,41 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 </style>
 <style id="shop-alchemy-backdrop-v1-0-141">
-/* ===== v1.0.141 SHOP ALCHEMY BACKDROP =====
-   CSS-only dark fantasy shop ambience. Keeps the center quiet for cards. */
+/* ===== v1.0.142 VISIBLE ALCHEMY SHOP ===== */
 #shopOverlay{
   background:
-    radial-gradient(circle at 18% 30%,rgba(108,151,91,.20) 0 2%,transparent 13%),
-    radial-gradient(circle at 82% 30%,rgba(173,112,57,.20) 0 2%,transparent 13%),
-    radial-gradient(circle at 72% 34%,rgba(255,181,61,.14),transparent 19%),
-    linear-gradient(90deg,rgba(8,6,12,.97) 0%,rgba(15,10,19,.82) 21%,rgba(10,8,15,.74) 50%,rgba(15,10,19,.82) 79%,rgba(8,6,12,.97) 100%),
-    linear-gradient(180deg,#100a16 0%,#17101a 65%,#25160f 65%,#160d0a 100%)!important;
+    radial-gradient(circle at 13% 25%,rgba(245,190,76,.55) 0 18px,rgba(245,190,76,.16) 19px,transparent 95px),
+    radial-gradient(circle at 87% 25%,rgba(245,190,76,.55) 0 18px,rgba(245,190,76,.16) 19px,transparent 95px),
+    linear-gradient(90deg,#160c12 0%,#3a211d 9%,#1a1018 17%,#0d0b13 25%,#11101a 50%,#0d0b13 75%,#1a1018 83%,#3a211d 91%,#160c12 100%) !important;
 }
 #shopOverlay::before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.9;
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
   background:
-    linear-gradient(90deg,transparent 0 20%,rgba(91,57,40,.45) 20% 20.7%,transparent 20.7% 79.3%,rgba(91,57,40,.45) 79.3% 80%,transparent 80%),
-    repeating-linear-gradient(0deg,transparent 0 54px,rgba(111,70,47,.18) 55px,transparent 58px),
-    radial-gradient(circle at 14% 28%,rgba(112,154,90,.42) 0 7px,transparent 8px),
-    radial-gradient(circle at 18% 37%,rgba(112,154,90,.30) 0 9px,transparent 10px),
-    radial-gradient(circle at 86% 28%,rgba(172,111,67,.38) 0 8px,transparent 9px),
-    radial-gradient(circle at 91% 39%,rgba(172,111,67,.28) 0 7px,transparent 8px);
+    linear-gradient(90deg,rgba(74,43,28,.9) 0 7%,transparent 7% 12%,rgba(58,35,27,.85) 12% 18%,transparent 18% 82%,rgba(58,35,27,.85) 82% 88%,transparent 88% 93%,rgba(74,43,28,.9) 93%),
+    repeating-linear-gradient(0deg,transparent 0 48px,rgba(128,77,45,.24) 49px 53px),
+    radial-gradient(circle at 8% 20%,rgba(93,159,103,.8) 0 8px,transparent 10px),
+    radial-gradient(circle at 11% 32%,rgba(190,126,67,.8) 0 10px,transparent 12px),
+    radial-gradient(circle at 92% 21%,rgba(190,126,67,.8) 0 9px,transparent 11px),
+    radial-gradient(circle at 89% 34%,rgba(93,159,103,.7) 0 8px,transparent 10px);
+  box-shadow:inset 0 0 120px rgba(0,0,0,.72);
 }
 #shopOverlay::after{
-  content:"";position:absolute;left:9%;right:9%;bottom:0;height:28%;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(27,15,10,.82) 0 4px,rgba(103,62,37,.28) 5px 30px),linear-gradient(180deg,rgba(83,49,29,.70),rgba(23,12,8,.96));
-  border-top:4px solid rgba(121,73,42,.65);
-  box-shadow:0 -12px 30px rgba(0,0,0,.55) inset;
+  content:"";position:absolute;left:0;right:0;bottom:0;height:22%;pointer-events:none;z-index:1;
+  background:
+    repeating-linear-gradient(0deg,rgba(39,20,13,.98) 0 7px,rgba(111,65,35,.7) 8px 11px,rgba(49,26,16,.98) 12px 38px);
+  border-top:5px solid rgba(188,117,54,.8);
+  box-shadow:0 -16px 35px rgba(0,0,0,.75);
 }
 #shopOverlay>.shop-modal{
-  position:relative;z-index:2;
-  background:rgba(7,11,20,.80)!important;
-  backdrop-filter:blur(2px);
-  box-shadow:0 16px 50px rgba(0,0,0,.78),0 0 0 2px rgba(117,83,52,.45);
+  position:relative;z-index:3;
+  background:rgba(8,10,18,.72)!important;
+  border:2px solid rgba(187,126,65,.65)!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.9),0 0 35px rgba(244,174,68,.12);
 }
-#shopOverlay .shop-item{background:rgba(13,20,32,.95)!important;backdrop-filter:blur(3px)}
+#shopOverlay .shop-item{
+  background:rgba(9,15,26,.96)!important;
+  border-color:rgba(178,119,61,.42)!important;
+}
 </style>
 
 
