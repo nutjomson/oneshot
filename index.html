@@ -3605,20 +3605,7 @@ function renderStartPerks(){
     renderStartPerks();
   });
 }
-function openStartPerks(){
-  startPerkStage='normal';startPerkSelected=[];window._pendingStartPerks=[];
-  document.getElementById('perkOverlay')?.classList.remove('hidden');renderStartPerks();
-}
-function confirmStartPerks(){
-  const need=startPerkCounts[startPerkStage];
-  if(startPerkSelected.length!==need)return;
-  window._pendingStartPerks=(window._pendingStartPerks||[]).concat(startPerkSelected);
-  if(startPerkStage!=='legend'){
-    startPerkStage=startPerkStage==='normal'?'rare':'legend';startPerkSelected=[];renderStartPerks();return;
-  }
-  const chosen=window._pendingStartPerks.slice();window._pendingStartPerks=[];startPerkSelected=[];
-  document.getElementById('perkOverlay')?.classList.add('hidden');startGame(chosen);
-}
+
 
   const heroSelectWrap = document.getElementById('heroSelect');
   heroes.forEach(h => {
