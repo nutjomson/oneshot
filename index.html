@@ -849,6 +849,22 @@ const LEVEL_UPGRADES = [
 { id: 'u_l8', rarity: 'legend', icon: '🪽', name: 'ม่านอมตะ',
   fx: [add('dodge', 0.025), add('armor', 0.02), add('regen', 0.6)],
   weight: 0.50 },
+{ id: 'u_l9', rarity: 'legend', icon: '☠️', name: 'แกนสังหาร',
+  fx: [mul('fireRate', 0.95), add('crit', 0.025), add('executionThreshold', 0.006)],
+  weight: 0.55 },
+
+{ id: 'u_l10', rarity: 'legend', icon: '☀️', name: 'แกนสุริยะ',
+  fx: [mul('damage', 1.05), mul('bulletSpeed', 1.08), add('crit', 0.015)],
+  weight: 0.50 },
+
+{ id: 'u_l11', rarity: 'legend', icon: '🌩️', name: 'พายุไร้ขอบเขต',
+  fx: [add('lightningChain', 25), add('explosiveRadius', 8)],
+  weight: 0.45 },
+
+{ id: 'u_l12', rarity: 'legend', icon: '🌀', name: 'ตราประทับสูญญากาศ',
+  fx: [add('orbitBlades', 0.75), add('pickup', 30), mul('speed', 1.015)],
+  weight: 0.40 },
+
 
 ,
 
@@ -886,42 +902,42 @@ const LEVEL_UPGRADES = [
 /* ===== 16. SHOP_ITEMS ===== */
 const SHOP_ITEMS = [
   // ───────── SHOP NORMAL ─────────
-  { id: 's_pot1', rarity: 'normal', icon: '🧪', name: 'ยาฟื้นฟูพลังชีวิตเล็ก',    cost: 18, fx: [healPct(0.24)], weight: 1] },
-  { id: 's_pot2', rarity: 'normal', icon: '🍷', name: 'ยาฟื้นฟูพลังชีวิตใหญ่',    cost: 40, fx: [healPct(0.52)], weight: 1] },
-  { id: 's_pot3', rarity: 'normal', icon: '💖', name: 'น้ำยาฟื้นฟูเต็มสูบ',       cost: 95, fx: [healPct(0.80)], weight: 0.75] },
-  { id: 's_pot4', rarity: 'normal', icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 130, fx: [add('maxHp', 18), healPct(0.80)], scale: 0.40, weight: 0.65]},
+  { id: 's_pot1', rarity: 'normal', icon: '🧪', name: 'ยาฟื้นฟูพลังชีวิตเล็ก',    cost: 18, fx: [healPct(0.24)], weight: 1 },
+  { id: 's_pot2', rarity: 'normal', icon: '🍷', name: 'ยาฟื้นฟูพลังชีวิตใหญ่',    cost: 40, fx: [healPct(0.52)], weight: 1 },
+  { id: 's_pot3', rarity: 'normal', icon: '💖', name: 'น้ำยาฟื้นฟูเต็มสูบ',       cost: 95, fx: [healPct(0.80)], weight: 0.75 },
+  { id: 's_pot4', rarity: 'normal', icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 130, fx: [add('maxHp', 18), healPct(0.80)], scale: 0.40, weight: 0.65},
 
-  { id: 's_wpn1', rarity: 'normal', icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 300, fx: [addBulletType('laser')], desc: BULLET_TYPES.laser.desc, weight: 0.9]},
-  { id: 's_wpn2', rarity: 'normal', icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 330, fx: [addBulletType('fireball')], desc: BULLET_TYPES.fireball.desc, weight: 0.85]},
-  { id: 's_wpn3', rarity: 'normal', icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 350, fx: [addBulletType('plasma')], desc: BULLET_TYPES.plasma.desc, weight: 0.8]},
-  { id: 's_wpn4', rarity: 'normal', icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 300, fx: [addBulletType('arcane')], desc: BULLET_TYPES.arcane.desc, weight: 0.9]},
+  { id: 's_wpn1', rarity: 'normal', icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 300, fx: [addBulletType('laser')], desc: BULLET_TYPES.laser.desc, weight: 0.9},
+  { id: 's_wpn2', rarity: 'normal', icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 330, fx: [addBulletType('fireball')], desc: BULLET_TYPES.fireball.desc, weight: 0.85},
+  { id: 's_wpn3', rarity: 'normal', icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 350, fx: [addBulletType('plasma')], desc: BULLET_TYPES.plasma.desc, weight: 0.8},
+  { id: 's_wpn4', rarity: 'normal', icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 300, fx: [addBulletType('arcane')], desc: BULLET_TYPES.arcane.desc, weight: 0.9},
 
-  { id: 's_a1', rarity: 'normal', icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.0325)], scale: 0.40, weight: 0.9]},
-  { id: 's_a2', rarity: 'normal', icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.06)], weight: 0.8] },
+  { id: 's_a1', rarity: 'normal', icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.0325)], scale: 0.40, weight: 0.9},
+  { id: 's_a2', rarity: 'normal', icon: '🚀', name: 'ตัวเร่งความเร็วกระสุน',     cost: 110, fx: [mul('bulletSpeed', 1.06)], weight: 0.8 },
   { id: 's_a3', rarity: 'rare', icon: '🎯', name: 'หัวกระสุนทังสเตน',         cost: 130, fx: [add('pierce', 1)], scale: 0.60 },
-  { id: 's_a4', rarity: 'normal', icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 165, fx: [mul('fireRate', 0.9775)], scale: 0.50, weight: 0.9]},
+  { id: 's_a4', rarity: 'normal', icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 165, fx: [mul('fireRate', 0.9775)], scale: 0.50, weight: 0.9},
   { id: 's_a5', rarity: 'rare', icon: '🏹', name: 'ธนูสามทิศทาง',             cost: 450, fx: [add('projectiles', 1)], scale: 1.30 },
-  { id: 's_a6', rarity: 'normal', icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 145, fx: [add('crit', 0.02)], scale: 0.50, weight: 0.85]},
+  { id: 's_a6', rarity: 'normal', icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 145, fx: [add('crit', 0.02)], scale: 0.50, weight: 0.85},
 
-  { id: 's_d1', rarity: 'normal', icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 135, fx: [add('maxHp', 15), add('armor', 0.015)], scale: 0.45, weight: 0.8]},
-  { id: 's_d2', rarity: 'normal', icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 0.9)], scale: 0.50, weight: 0.9]},
-  { id: 's_d3', rarity: 'normal', icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.01875)], scale: 0.55, weight: 0.9]},
-  { id: 's_d4', rarity: 'normal', icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.03)], scale: 0.50, weight: 0.95]},
-  { id: 's_d5', rarity: 'normal', icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 125, fx: [add('pickup', 48.75)], scale: 0.50, weight: 0.75]},
-  { id: 's_d6', rarity: 'normal', icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 210, fx: [mul('goldMulti', 1.06)], scale: 0.70, weight: 1]},
+  { id: 's_d1', rarity: 'normal', icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 135, fx: [add('maxHp', 15), add('armor', 0.015)], scale: 0.45, weight: 0.8},
+  { id: 's_d2', rarity: 'normal', icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 0.9)], scale: 0.50, weight: 0.9},
+  { id: 's_d3', rarity: 'normal', icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.01875)], scale: 0.55, weight: 0.9},
+  { id: 's_d4', rarity: 'normal', icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.03)], scale: 0.50, weight: 0.95},
+  { id: 's_d5', rarity: 'normal', icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 125, fx: [add('pickup', 48.75)], scale: 0.50, weight: 0.75},
+  { id: 's_d6', rarity: 'normal', icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 210, fx: [mul('goldMulti', 1.06)], scale: 0.70, weight: 1},
 
-  { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [add('crit', 0.01)], weight: 0.95] },
-  { id: 's_n20', rarity: 'normal', icon: '🔋', name: 'แบตเตอรี่พลังยิง',             cost: 145, fx: [mul('damage', 1.025)], weight: 0.9] },
-  { id: 's_n21', rarity: 'normal', icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 125, fx: [mul('bulletSpeed', 1.045)], weight: 0.9] },
-  { id: 's_n22', rarity: 'normal', icon: '🩹', name: 'ชุดปฐมพยาบาลสนาม',             cost: 115, fx: [add('maxHp', 15), healPct(0.15)], weight: 0.9] },
-  { id: 's_n23', rarity: 'normal', icon: '🧲', name: 'ตลับแม่เหล็ก',                 cost: 125, fx: [add('pickup', 30)], weight: 0.95] },
-  { id: 's_n24', rarity: 'normal', icon: '🪙', name: 'เหรียญนำโชค',                  cost: 140, fx: [mul('goldMulti', 1.03)], weight: 1] },
-  { id: 's_n25', rarity: 'normal', icon: '🛡️', name: 'แผ่นเกราะเสริม',               cost: 125, fx: [add('armor', 0.0125)], weight: 0.95] },
-  { id: 's_n26', rarity: 'normal', icon: '🥾', name: 'พื้นรองเท้าคล่องตัว',           cost: 125, fx: [mul('speed', 1.0225)], weight: 1] },
-  { id: 's_n27', rarity: 'normal', icon: '⚡', name: 'ตัวนำไฟฟ้า',                   cost: 165, fx: [add('lightningChain', 4.5)], weight: 0.8] },
-  { id: 's_n28', rarity: 'normal', icon: '☣️', name: 'หลอดพิษเข้มข้น',                cost: 145, fx: [add('poisonDmg', 4)], weight: 0.85] },
-  { id: 's_n29', rarity: 'normal', icon: '💣', name: 'ดินระเบิดแรงดัน',               cost: 155, fx: [add('explosiveRadius', 5)], weight: 0.85] },
-  { id: 's_n30', rarity: 'normal', icon: '🥊', name: 'ถุงมือผลักศัตรู',               cost: 140, fx: [add('knockback', 15)], weight: 0.9] },
+  { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [add('crit', 0.01)], weight: 0.95 },
+  { id: 's_n20', rarity: 'normal', icon: '🔋', name: 'แบตเตอรี่พลังยิง',             cost: 145, fx: [mul('damage', 1.025)], weight: 0.9 },
+  { id: 's_n21', rarity: 'normal', icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 125, fx: [mul('bulletSpeed', 1.045)], weight: 0.9 },
+  { id: 's_n22', rarity: 'normal', icon: '🩹', name: 'ชุดปฐมพยาบาลสนาม',             cost: 115, fx: [add('maxHp', 15), healPct(0.15)], weight: 0.9 },
+  { id: 's_n23', rarity: 'normal', icon: '🧲', name: 'ตลับแม่เหล็ก',                 cost: 125, fx: [add('pickup', 30)], weight: 0.95 },
+  { id: 's_n24', rarity: 'normal', icon: '🪙', name: 'เหรียญนำโชค',                  cost: 140, fx: [mul('goldMulti', 1.03)], weight: 1 },
+  { id: 's_n25', rarity: 'normal', icon: '🛡️', name: 'แผ่นเกราะเสริม',               cost: 125, fx: [add('armor', 0.0125)], weight: 0.95 },
+  { id: 's_n26', rarity: 'normal', icon: '🥾', name: 'พื้นรองเท้าคล่องตัว',           cost: 125, fx: [mul('speed', 1.0225)], weight: 1 },
+  { id: 's_n27', rarity: 'normal', icon: '⚡', name: 'ตัวนำไฟฟ้า',                   cost: 165, fx: [add('lightningChain', 4.5)], weight: 0.8 },
+  { id: 's_n28', rarity: 'normal', icon: '☣️', name: 'หลอดพิษเข้มข้น',                cost: 145, fx: [add('poisonDmg', 4)], weight: 0.85 },
+  { id: 's_n29', rarity: 'normal', icon: '💣', name: 'ดินระเบิดแรงดัน',               cost: 155, fx: [add('explosiveRadius', 5)], weight: 0.85 },
+  { id: 's_n30', rarity: 'normal', icon: '🥊', name: 'ถุงมือผลักศัตรู',               cost: 140, fx: [add('knockback', 15)], weight: 0.9 },
 
   // ───────── S2 ดี ─────────
   { id: 's_b1',  rarity: 'rare', icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ',        cost: 450, fx: [mul('damage', 1.06)], scale: 0.45, weight: 0.95 },
@@ -3144,8 +3160,8 @@ function applyHeroChoice(h){
     const y=rand(margin,Math.max(margin,world.h-margin));
     const tier=getShopTierForChest();
     if(tier==null) return;
-    treasureChests.push({x,y,r:18,tier,wave:w,animTimer:0});
-    setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • S${tier}`);
+    treasureChests.push({x,y,r:18,rarity,wave:w,animTimer:0});
+    setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • ${rarity}`);
   }
 
   function openTreasureChest(chest){
@@ -3244,7 +3260,7 @@ function applyHeroChoice(h){
         wave,
         level,
         source:source||'ไม่ทราบที่มา',
-        tier:Number(item.rarity)||1,
+        rarity:item.rarity,
         id:item.id||'',
         name:item.name||'ไอเทม',
         icon:item.icon||'📦',
@@ -3333,11 +3349,11 @@ function openLevelUp(forceHigherRarity=false){
   /* =========================================================
      LEVEL UP RANDOMIZER
      ระบบ:
-     1. ตรวจ Tier ที่เปิดใช้ได้ตาม Wave
-     2. สุ่ม Tier ตามน้ำหนักของช่วง Wave
-     3. สุ่ม Item ภายใน Tier ด้วย weight
+     1. ตรวจ Rarity ที่เปิดใช้ได้ตาม Wave
+     2. สุ่ม Rarity ตามน้ำหนักของช่วง Wave
+     3. สุ่ม Item ภายใน Rarity ด้วย weight
      4. ป้องกัน Item ซ้ำในหน้าต่างเดียวกัน
-     5. ถ้า Tier ที่สุ่มไม่มีของพอ → fallback
+     5. ถ้า Rarity ที่สุ่มไม่มีของพอ → fallback
      ========================================================= */
 
   const choiceCount = Math.max(
@@ -3423,7 +3439,7 @@ function openLevelUp(forceHigherRarity=false){
   const premiumTargetRarity=forceHigherRarity ? 'rare' : null;
 
   /*
-   * ถ้า config ไม่มี Tier ที่ใช้ได้
+   * ถ้า config ไม่มี Rarity ที่ใช้ได้
    * fallback เป็น Item ทั้งหมด
    */
   if(!availableRarities.length){
@@ -3479,40 +3495,27 @@ function openLevelUp(forceHigherRarity=false){
   }
 
   /*
-   * ตารางโอกาส Tier
+   * ตารางโอกาส Rarity
    */
   const rarityWeights = getRarityWeights(wave);
 
-  /*
-   * เอาเฉพาะ Tier ที่:
-   * - มีอยู่จริง
-   * - เปิดใน Wave นี้
-   * - มี Item อยู่
-   */
-  const usableRarities = availableRarities.filter(tier => {
+  const usableRarities = availableRarities.filter(rarity =>
+    rarityWeights[rarity] > 0 &&
+    getItemsByRarity(rarity, new Set()).length > 0
+  );
 
-    if(!(rarityWeights[tier] > 0)){
-      return false;
-    }
-
-    return getItemsByRarity(tier, new Set()).length > 0;
-  });
-
-  /*
-   * ถ้า Tier ที่ตรงกับ Wave ไม่มีของ
-   * fallback เป็น Tier ที่มีของจริง
-   */
   const rarityPool = usableRarities.length
     ? usableRarities
     : availableRarities.filter(
-        tier => getItemsByRarity(tier, new Set()).length > 0
+        rarity => getItemsByRarity(rarity, new Set()).length > 0
       );
 
   const usedIds = new Set();
   const selected = [];
+
   if(forceHigherRarity){
     const premiumRarePool=levelUpgrades.filter(item =>
-      Number(item.rarity||1)===2 && !isItemMaxed(item)
+      item.rarity==='rare' && !isItemMaxed(item)
     );
     if(premiumRarePool.length){
       const guaranteed=weightedPick(premiumRarePool);
@@ -3521,98 +3524,44 @@ function openLevelUp(forceHigherRarity=false){
     }
   }
 
-  /*
-   * ---------------------------------------------------------
-   * สุ่มตัวเลือกทีละช่อง
-   * ---------------------------------------------------------
-   */
   let safety = 0;
-
-  while(
-    selected.length < choiceCount &&
-    safety < 100
-  ){
-
+  while(selected.length < choiceCount && safety < 100){
     safety++;
 
-    /*
-     * 1. สุ่ม Tier
-     */
-    let tier;
+    const premiumWeights = forceHigherRarity
+      ? (() => {
+          const boostedLegend=Math.min(100,rarityWeights.legend*3);
+          const extra=Math.max(0,boostedLegend-rarityWeights.legend);
+          return {
+            normal:Math.max(0,rarityWeights.normal-extra),
+            rare:rarityWeights.rare,
+            legend:boostedLegend
+          };
+        })()
+      : rarityWeights;
 
-    if(usableRarities.length){
-
-      const premiumWeights = forceHigherRarity
-        ? (() => {
-            const boostedLegend=Math.min(100,rarityWeights[3]*3);
-            const extra=Math.max(0,boostedLegend-rarityWeights[3]);
-            return {1:Math.max(0,rarityWeights[1]-extra),2:rarityWeights[2],3:boostedLegend};
-          })()
-        : rarityWeights;
-      tier = weightedPickRarity(premiumWeights,usableRarities);
-
-    }else{
-
-      tier =
-        rarityPool[
-          Math.floor(
-            Math.random() * rarityPool.length
-          )
-        ];
-    }
-
-    /*
-     * 2. หา Item ใน Tier
-     */
-    let candidates = getItemsByRarity(
-      tier,
-      usedIds
+    let rarity=weightedPickRarity(
+      premiumWeights,
+      usableRarities.length ? usableRarities : rarityPool
     );
 
-    /*
-     * ถ้า Tier นี้ไม่มี Item เหลือ
-     * ลอง Tier อื่นที่ยังมี Item
-     */
+    if(!rarity){
+      rarity=rarityPool[Math.floor(Math.random()*rarityPool.length)];
+    }
+
+    let candidates=getItemsByRarity(rarity,usedIds);
+
     if(!candidates.length){
-
-      const fallbackRarities = rarityPool.filter(
-        t =>
-          getItemsByRarity(t, usedIds).length > 0
+      const fallbackRarities=rarityPool.filter(
+        r=>getItemsByRarity(r,usedIds).length>0
       );
-
-      if(!fallbackRarities.length){
-        break;
-      }
-
-      tier =
-        fallbackRarities[
-          Math.floor(
-            Math.random() * fallbackRarities.length
-          )
-        ];
-
-      candidates = getItemsByRarity(
-        tier,
-        usedIds
-      );
+      if(!fallbackRarities.length) break;
+      rarity=fallbackRarities[Math.floor(Math.random()*fallbackRarities.length)];
+      candidates=getItemsByRarity(rarity,usedIds);
     }
 
-    /*
-     * 3. Weighted Random Item
-     */
-    const picked = weightedPick(candidates);
-
-    if(!picked){
-      continue;
-    }
-
-    /*
-     * 4. กันซ้ำ
-     */
-    if(usedIds.has(picked.id)){
-      continue;
-    }
-
+    const picked=weightedPick(candidates);
+    if(!picked) continue;
     usedIds.add(picked.id);
     selected.push(picked);
   }
@@ -4046,7 +3995,7 @@ function openLevelUp(forceHigherRarity=false){
     lines.push('[ITEM HISTORY]');
     if(!itemHistory.length) lines.push('None');
     itemHistory.forEach(x=>{
-      lines.push('#'+x.index+' | time='+x.time+'s | wave='+x.wave+' | level='+x.level+' | source='+x.source+' | tier=S'+x.rarity+' | id='+x.id+' | name='+x.name);
+      lines.push('#'+x.index+' | time='+x.time+'s | wave='+x.wave+' | level='+x.level+' | source='+x.source+' | rarity='+x.rarity+' | id='+x.id+' | name='+x.name);
     });
     lines.push('');
     lines.push('[BALANCE CONFIG]');
