@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.96</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.97</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -159,8 +159,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .level-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .level-head .title{margin:0;text-align:left}
 .level-speed{font-size:11px;color:#4ade80;font-weight:900;background:#0b1220;border:1px solid #334155;padding:5px 8px}
-#upgrades{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
-.upgrade{min-height:205px;display:flex;flex-direction:column}
+#upgrades{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+.upgrade{min-width:0;min-height:205px;display:flex;flex-direction:column;overflow:hidden}
 .upgrade.recommended{border-color:#facc15!important;box-shadow:0 0 0 1px #facc15 inset,0 0 18px rgba(250,204,21,.28)!important;background:#1b2535}
 .upgrade.alternative{border-color:#475569;box-shadow:none}
 .upgrade-choice-label{font-size:9px;font-weight:900;letter-spacing:.5px;color:#94a3b8;margin-bottom:5px}
@@ -169,11 +169,11 @@ body.gameplay-actions .hud-controls{display:flex}
 .level-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .level-actions .btn{min-height:44px}
 @media(max-width:640px){
-  #upgrades{grid-template-columns:1.45fr 1fr 1fr;gap:6px}
+  #upgrades{grid-template-columns:1.25fr 1fr 1fr;gap:6px}
   .upgrade{padding:7px;min-height:190px}
   .upgrade .icon{font-size:28px}
-  .upgrade .uName{font-size:11px}
-  .upgrade .uDesc{font-size:9px}
+  .upgrade .uName{font-size:10.5px;line-height:1.2}
+  .upgrade .uDesc{font-size:9px;line-height:1.3}
   .upgrade-reason{font-size:9px}
   .level-actions{flex-direction:row}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
@@ -187,12 +187,12 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-guide{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0b1220;border:1px solid #334155;padding:7px 9px;margin-bottom:10px;color:#cbd5e1;font-size:10px;font-weight:700}
 .shop-guide-main{min-width:0}.shop-guide-time{color:#4ade80;white-space:nowrap;font-weight:900}
 #shopItems{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
-.shop-item{min-width:0;min-height:185px;border-radius:7px;display:flex;flex-direction:column}
+.shop-item{min-width:0;min-height:185px;border-radius:7px;display:flex;flex-direction:column;overflow:hidden}
 .shop-item.recommended{border-color:#facc15!important;box-shadow:0 0 0 1px #facc15 inset,0 0 18px rgba(250,204,21,.28)!important;background:#1b2535}
 .shop-item.alternative{border-color:#475569;box-shadow:none}
 .shop-choice-label{font-size:9px;font-weight:900;letter-spacing:.5px;margin-bottom:5px;color:#94a3b8}.shop-item.recommended .shop-choice-label{color:#facc15}
-.shop-quick-desc{font-size:11px;line-height:1.35;color:#e2e8f0;min-height:31px;margin-top:2px}
-.shop-reason{margin-top:auto;padding-top:7px;font-size:10px;line-height:1.3;color:#4ade80;font-weight:800}
+.shop-quick-desc{font-size:11px;line-height:1.35;color:#e2e8f0;min-height:31px;margin-top:2px;overflow-wrap:anywhere;word-break:break-word}
+.shop-reason{margin-top:auto;padding-top:7px;font-size:10px;line-height:1.3;color:#4ade80;font-weight:800;overflow-wrap:anywhere;word-break:break-word}
 .shop-buy-row{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}
 .shop-buy-btn{border:2px solid #fff;background:#22c55e;color:#052e16;font:900 11px Prompt,sans-serif;padding:7px 9px;min-height:38px;flex:1;touch-action:manipulation}
 .shop-item.recommended .shop-buy-btn{background:#eab308;color:#422006}.shop-buy-btn:active{transform:translate(1px,1px)}.shop-buy-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -203,8 +203,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-actions button:active{transform:translate(1px,1px)}.shop-detail-hint{font-size:9px;color:#64748b;margin-top:7px;text-align:center}
 .shop-stats{margin:7px 0 0;max-height:150px;overflow:auto;display:none}.shop-modal:focus-within .shop-stats{display:grid}
 @media(max-width:640px){
-  #shopItems{grid-template-columns:1.45fr 1fr 1fr;gap:6px}.shop-item{padding:7px;min-height:170px}.shop-item .icon{font-size:28px}.shop-item .uName{font-size:11px}.shop-item .tier-badge{font-size:8px}
-  .shop-quick-desc{font-size:9px}.shop-reason{font-size:9px}.shop-buy-btn{font-size:10px;padding:6px 5px}.shop-cost{font-size:9px}.shop-guide-main{font-size:9px}
+  #shopItems{grid-template-columns:1.25fr 1fr 1fr;gap:6px}.shop-item{padding:7px;min-height:170px}.shop-item .icon{font-size:28px}.shop-item .uName{font-size:11px}.shop-item .tier-badge{font-size:8px}
+  .shop-quick-desc{font-size:9px;line-height:1.3}.shop-reason{font-size:9px}.shop-buy-btn{font-size:10px;padding:6px 5px}.shop-cost{font-size:9px}.shop-guide-main{font-size:9px}
   .shop-actions{grid-template-columns:1.2fr .9fr .7fr}.shop-actions button{font-size:9px;padding:6px 4px}.shop-wallet{font-size:13px;padding:6px 8px}
 }
 .upgrade, .shop-item, .hero-card{
@@ -225,8 +225,8 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-item.disabled{opacity:0.4;cursor:not-allowed;border-color:#475569;transform:none!important}
 
 .icon{font-size:24px;margin-bottom:4px;text-align:center;line-height:1}
-.uName{font-size:13px;font-weight:800;color:#facc15;margin-bottom:2px;line-height:1.2}.tier-badge{display:inline-block;margin-right:5px;padding:1px 5px;border:1px solid #facc15;border-radius:3px;font-size:10px;line-height:1.1;color:#facc15;background:#422006;text-shadow:1px 1px #000;vertical-align:1px}
-.uDesc{font-size:11px;font-weight:600;line-height:1.4;color:#cbd5e1}
+.uName{font-size:13px;font-weight:800;color:#facc15;margin-bottom:2px;line-height:1.2;overflow-wrap:anywhere;word-break:break-word}.tier-badge{display:inline-block;margin-right:5px;padding:1px 5px;border:1px solid #facc15;border-radius:3px;font-size:10px;line-height:1.1;color:#facc15;background:#422006;text-shadow:1px 1px #000;vertical-align:1px}
+.uDesc{font-size:11px;font-weight:600;line-height:1.4;color:#cbd5e1;overflow-wrap:anywhere;word-break:break-word}
 .cost{font-size:12px;color:#facc15;margin-top:6px;font-weight:800;text-shadow:1px 1px #000}
 
 /* Stats Display Grid */
