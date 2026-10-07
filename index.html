@@ -3598,6 +3598,54 @@ function applyHeroChoice(h){
       renderCharacterStatsHtml(player);
 }
 
+
+/* ===== v1.0.146 START PERK LOGIC ===== */
+let startPerkStage='normal';
+let startPerkSelected=[];
+const startPerkCounts={normal:4,rare:2,legend:1};
+function getStartPerkPool(rarity){
+  const seen=new Set();
+  return [...levelUpgrades,...luxuryShopPool].filter(item=>{
+    if(!item||item.rarity!==rarity)return false;
+    const key=(item.id||'')+'|'+item.name;
+    if(seen.has(key))return false;
+    seen.add(key); return true;
+  });
+}
+function renderStartPerks(){
+  const box=document.getElementById('perkItems'),info=document.getElementById('perkSelectionInfo'),confirm=document.getElementById('perkConfirmBtn');
+  if(!box||!info||!confirm)return;
+  const need=startPerkCounts[startPerkStage],pool=getStartPerkPool(startPerkStage);
+  document.getElementById('perkStageText').textContent=startPerkStage==='normal'?'Normal — เลือก 4 ชิ้น':startPerkStage==='rare'?'Rare — เลือก 2 ชิ้น':'Legend — เลือก 1 ชิ้น';
+  info.textContent='เลือกแล้ว '+startPerkSelected.length+' / '+need;
+  confirm.disabled=startPerkSelected.length!==need;
+  confirm.textContent=startPerkStage==='legend'?'เริ่มเกม':'ตกลง';
+  box.innerHTML=pool.map((item,i)=>{
+    const selected=startPerkSelected.includes(item);
+    return '<div class="perk-card '+(selected?'selected':'')+'" data-perk-index="'+i+'"><div class="icon">'+(item.icon||'✨')+'</div><div class="uName">'+item.name+'</div><div class="uDesc">'+(item.desc||'')+'</div><div class="perk-source">'+item.rarity.toUpperCase()+'</div></div>';
+  }).join('');
+  box.querySelectorAll('.perk-card').forEach(card=>card.onclick=()=>{
+    const item=pool[Number(card.dataset.perkIndex)],at=startPerkSelected.indexOf(item);
+    if(at>=0)startPerkSelected.splice(at,1);
+    else if(startPerkSelected.length<need)startPerkSelected.push(item);
+    renderStartPerks();
+  });
+}
+function openStartPerks(){
+  startPerkStage='normal';startPerkSelected=[];window._pendingStartPerks=[];
+  document.getElementById('perkOverlay')?.classList.remove('hidden');renderStartPerks();
+}
+function confirmStartPerks(){
+  const need=startPerkCounts[startPerkStage];
+  if(startPerkSelected.length!==need)return;
+  window._pendingStartPerks=(window._pendingStartPerks||[]).concat(startPerkSelected);
+  if(startPerkStage!=='legend'){
+    startPerkStage=startPerkStage==='normal'?'rare':'legend';startPerkSelected=[];renderStartPerks();return;
+  }
+  const chosen=window._pendingStartPerks.slice();window._pendingStartPerks=[];startPerkSelected=[];
+  document.getElementById('perkOverlay')?.classList.add('hidden');startGame(chosen);
+}
+
   const heroSelectWrap = document.getElementById('heroSelect');
   heroes.forEach(h => {
     const card = document.createElement('div');
