@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.149</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.150</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2783,9 +2783,52 @@ function renderItemPreview(item){
   }
 }
 
+/*
+ * FREE BUILD BALANCE v1.0.150
+ * Items remain fully independent/random: no Build Bias.
+ * Power is reduced by rarity so builds grow through combinations,
+ * not through oversized individual item rolls.
+ */
+function scaleFreeBuildEffect(f,rarity){
+  if(!f || typeof f!=='object') return f;
+  const r=String(rarity||'normal');
+  const scale=r==='normal'?0.75:r==='rare'?0.82:r==='legend'?0.88:1;
+  const out={...f};
+
+  if(f.op==='mul' && Number.isFinite(Number(f.v))){
+    // Scale the distance from 1: +10% becomes +7.5%, -10% becomes -7.5%.
+    out.v=1+(Number(f.v)-1)*scale;
+    return out;
+  }
+
+  if(f.op==='add' && Number.isFinite(Number(f.v))){
+    const stat=String(f.stat||'');
+    // Integer projectile/pierce-style upgrades cannot be fractional in gameplay.
+    if(['projectiles','pierce','ricochet','orbitBlades','revives'].includes(stat) &&
+       Math.abs(Number(f.v))>=1){
+      out.v=Number(f.v)>0?Math.max(1,Math.round(Number(f.v)*scale)):Math.min(-1,Math.round(Number(f.v)*scale));
+    }else{
+      out.v=Number(f.v)*scale;
+    }
+    return out;
+  }
+
+  if(f.op==='healPct' && Number.isFinite(Number(f.v))){
+    out.v=Number(f.v)*scale;
+    return out;
+  }
+
+  if(f.op==='heal' && Number.isFinite(Number(f.v))){
+    out.v=Number(f.v)*scale;
+    return out;
+  }
+
+  return out;
+}
+
 function buildItem(def,i){
 
-  const fx=def.fx||[];
+  const fx=(def.fx||[]).map(f=>scaleFreeBuildEffect(f,def.rarity));
 
   const setBt=fx.find(f=>(f.op==='set'||f.op==='addBulletType')&&f.stat==='bulletType');
 
@@ -4151,7 +4194,9 @@ function openLevelUp(forceHigherRarity=false){
     choices.push(...fallback.slice(0,choiceCount-choices.length));
   }
 
-  const ranked=choices.map(item=>({...item,_levelScore:getLevelRecommendationScore(item)})).sort((a,b)=>b._levelScore-a._levelScore);
+  // FREE BUILD: keep the three valid RNG results in their original random order.
+  // No Build Bias and no recommendation ranking.
+  const ranked=choices;
 
   ranked.forEach((u,index)=>{
     const b=document.createElement('button');
@@ -4159,7 +4204,7 @@ function openLevelUp(forceHigherRarity=false){
     b.className='upgrade item-'+(u.rarity||'normal')+(index===0?' recommended':' alternative');
     const desc=typeof u.desc==='string'?u.desc:'';
     const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
-    const label=index===0?'⭐ แนะนำ · ':'';
+    const label='';
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
       '<div class="icon">'+(u.icon||'📦')+'</div>'+
@@ -4323,14 +4368,15 @@ function openLevelUp(forceHigherRarity=false){
     }
 
     const items=(Array.isArray(activeShopItems)?activeShopItems:[]).filter(Boolean);
-    const ranked=items.map(item=>({...item,_shopScore:getShopRecommendationScore(item)})).sort((a,b)=>b._shopScore-a._shopScore);
+    // FREE BUILD: shop choices are displayed in RNG order; no Build Bias/recommendation.
+    const ranked=items;
     ranked.forEach((item,index)=>{
       try{
         const b=document.createElement('div');
         b.className='shop-item item-'+(item.rarity||'normal')+(index===0?' recommended':' alternative')+(item.purchased?' disabled':'');
         const desc=typeof item.desc==='string'?item.desc:'';
         const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
-        const label=index===0?'⭐ แนะนำ · ':'';
+        const label='';
         const reason='';
         const cost=Math.max(0,Math.floor(Number(item.cost)||0));
         const canBuy=!item.purchased&&Number(player.gold||0)>=cost;
