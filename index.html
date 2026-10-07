@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.108</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.109</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -293,7 +293,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .dev-step:active{transform:scale(.94)}
 .dev-actions{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:7px;padding-top:10px;background:linear-gradient(#0f172a00,#0f172a 25%)}
 @media(max-width:620px){.dev-tabs{grid-template-columns:repeat(3,1fr)}.dev-grid{grid-template-columns:1fr}.dev-grid label{min-height:54px}.dev-modal{padding:10px}.dev-actions{grid-template-columns:1fr 1fr 1fr}}
-/* v1.0.108: Restore stacked mobile item layout; later overrides must not re-enable 3-column cards. */
+/* v1.0.109: Restore stacked mobile item layout; later overrides must not re-enable 3-column cards. */
 @media(max-width:640px){
   #upgrades,#shopItems{grid-template-columns:1fr!important}
   #upgrades .upgrade,#shopItems .shop-item{display:flex!important;grid-template-columns:none!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important}
@@ -347,7 +347,7 @@ body.gameplay-actions .hud-controls{display:flex}
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.108</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.109</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -3687,7 +3687,7 @@ function openLevelUp(forceHigherRarity=false){
   }
 
   function shopReadyForCurrentWave(){
-    // เปิดได้เมื่อจบรอบที่กำหนดแล้ว หรือเป็นร้านค้ารอบล่าสุดที่ยังไม่เคยซื้อ
+    // ร้านค้ารอบปัจจุบันเปิดได้ตลอดตั้งแต่ Wave แรกของรอบ
     return pendingShopWave>0 || (lastShopWave>0 && !shopCyclePurchased);
   }
 
@@ -3700,8 +3700,8 @@ function openLevelUp(forceHigherRarity=false){
       return openShop(true,target);
     }
     // ร้านค้าจะบังคับเปิดตอน "จบ Wave" ที่กำหนด
-    // รอบแรกคือจบ Wave 10 จากนั้นจบ Wave 20, 30, 40, ...
-    // หลังเปิดแล้ว ผู้เล่นสามารถปิดและเปิดร้านเดิมได้ตลอดระหว่างรอบ
+    // รอบแรกคือ Wave 1-10 จากนั้น Wave 11-20, 21-30, ...
+    // ผู้เล่นเปิด/ปิดร้านได้ตลอดตั้งแต่ Wave แรกของแต่ละรอบ
     // จนกว่าจะซื้อไอเทมอย่างน้อย 1 ชิ้น
     return false;
   }
@@ -3709,8 +3709,8 @@ function openLevelUp(forceHigherRarity=false){
   function openShop(force=false, shopWaveOverride=null){
     if(!running || over || levelOpen || rewardOpen) return false;
     const every=Math.max(1,Math.floor(dev.shop.everyWaves||10));
-    const targetWave=Math.max(1,Number(shopWaveOverride)||wave);
-    // ร้านค้ารอบปัจจุบันใช้ได้ตลอดช่วงระหว่างรอบ จนกว่าจะซื้อ 1 ชิ้น
+    const targetWave=Math.max(1,Number(shopWaveOverride)||lastShopWave||1);
+    // ร้านค้ารอบปัจจุบันใช้ได้ตั้งแต่ Wave แรกของรอบจนกว่าจะซื้อ 1 ชิ้น
     if(!force && (targetWave!==lastShopWave || shopCyclePurchased)){
       setStatus('🏪 ร้านค้าเปิดทุก '+every+' Wave โดยเริ่มนับจาก Wave 1');
       return false;
@@ -3835,7 +3835,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.108');
+    lines.push('Game Version: v1.0.109');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
@@ -4039,8 +4039,12 @@ function openLevelUp(forceHigherRarity=false){
       if(gained>0) freeShopRerolls+=gained;
       const shopEvery=Math.max(1,Math.floor(dev.shop.everyWaves||10));
       // นับรอบจาก Wave 1 และบังคับเปิดเมื่อ Wave นั้นจบแล้ว
-      if(prevWave>=shopEvery && (prevWave%shopEvery)===0 && lastShopWave!==prevWave){
-        pendingShopWave=prevWave;
+      if(prevWave>=shopEvery && (prevWave%shopEvery)===0){
+        // ร้านรอบ 1-10, 11-20, 21-30, ...
+        // เมื่อจบรอบให้บังคับเปิดร้านของรอบนั้น แต่ผู้เล่นเปิดเองได้ตั้งแต่ Wave แรก
+        const cycleStart=prevWave-shopEvery+1;
+        lastShopWave=cycleStart;
+        pendingShopWave=cycleStart;
         shopCyclePurchased=false;
         activeShopItems=[];
       }
@@ -4601,7 +4605,7 @@ function openLevelUp(forceHigherRarity=false){
     }
     // Audio is optional; this build has no initAudio() dependency.
     running=true; paused=false; over=false;
-    elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=0; pendingShopWave=0; shopCyclePurchased=false; freeShopRerolls=0; rerollN=0; levelRerollN=0;
+    elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=1; pendingShopWave=0; shopCyclePurchased=false; freeShopRerolls=0; rerollN=0; levelRerollN=0;
     itemHistory=[];
     runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
     bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
