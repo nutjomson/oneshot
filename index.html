@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.113</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.114</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.113 COMPACT ITEM CHOICES =====
+/* ===== v1.0.114 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -228,7 +228,80 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-reason{font-size:7.5px}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
 }
-.item-preview{display:block}
+.item-preview{display:block}\n/* ===== v1.0.114 ITEM STAT PREVIEW FIX =====
+   แสดงสถานะก่อน/หลังให้เห็นจริงทั้ง Level Up และ Shop
+   ใช้ grid 2 คอลัมน์ + ไม่ตัดข้อความ เพื่อไม่ให้ค่าตกขอบ */
+.item-preview{
+  display:block!important;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  margin-top:4px!important;
+  padding:5px 6px!important;
+  border:1px solid #334155;
+  border-top:1px solid #475569;
+  border-radius:6px;
+  background:rgba(15,23,42,.72);
+  color:#e2e8f0;
+  overflow:visible!important;
+  max-height:none!important;
+  line-height:1.2;
+}
+.item-preview-title{
+  font-size:9px;
+  line-height:1.2;
+  font-weight:900;
+  color:#facc15;
+  margin-bottom:4px;
+}
+.item-preview-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:3px 6px;
+  width:100%;
+  min-width:0;
+}
+.item-preview-stat{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:4px;
+  padding:2px 3px;
+  border-radius:3px;
+  background:rgba(2,6,23,.55);
+  font-size:8.5px;
+  line-height:1.25;
+  overflow:hidden;
+}
+.item-preview-stat.positive{color:#4ade80}
+.item-preview-stat.negative{color:#f87171}
+.item-preview-name{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.item-preview-values{
+  flex:0 0 auto;
+  white-space:nowrap;
+  font-weight:700;
+}
+.item-preview-values b{font-weight:900}
+@media(max-width:640px){
+  .level-modal .upgrade .item-preview,
+  .shop-modal .shop-item .item-preview{
+    font-size:8px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:4px 5px!important;
+  }
+  .item-preview-title{font-size:8px}
+  .item-preview-grid{gap:2px 4px}
+  .item-preview-stat{font-size:7.6px;padding:2px}
+  .item-preview-values{font-size:7.4px}
+}
+
 
 /* ===== SHOP QUICK DECISION UI ===== */
 .shop-modal{max-width:680px;padding:12px 12px 14px}
@@ -351,7 +424,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
 }
 
-/* ===== v1.0.113 READABLE COMPACT LAYOUT =====
+/* ===== v1.0.114 READABLE COMPACT LAYOUT =====
    ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
    ป้องกันข้อความตกขอบบน iPhone/iPad */
 .level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
@@ -394,7 +467,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 
-/* ===== v1.0.113 RESPONSIVE GAME-UI LAYOUT =====
+/* ===== v1.0.114 RESPONSIVE GAME-UI LAYOUT =====
    แนวทางจาก survivor-like: choice cards อ่านเร็ว, rarity เด่น,
    และใช้ responsive layout แทนการบีบตัวอักษรให้เล็ก
    อ้างอิงแนวคิด 3-4 cards ของ Vampire Survivors/Brotato
@@ -2493,14 +2566,22 @@ function renderItemPreview(item){
     const preview=previewItemStats(item), rows=[];
     PLAYER_STAT_DEFS.forEach(def=>{
       const a=preview.before[def.key], b=preview.after[def.key];
-      if(a===undefined || b===undefined) return;
-      if(def.key==='bulletType') return;
+      if(a===undefined || b===undefined || def.key==='bulletType') return;
       const na=Number(a), nb=Number(b);
       if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
       const positive=def.key==='fireRate' ? nb<na : nb>na;
-      rows.push('<span style="color:'+(positive?'#4ade80':'#f87171')+'">'+def.icon+' '+def.name+': '+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>');
+      rows.push(
+        '<div class="item-preview-stat '+(positive?'positive':'negative')+'">'+
+        '<span class="item-preview-name">'+def.icon+' '+def.name+'</span>'+
+        '<span class="item-preview-values">'+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>'+
+        '</div>'
+      );
     });
-    return rows.length ? '<div style="margin-top:6px;padding:6px 7px;border-top:1px solid #334155;background:rgba(15,23,42,.55);border-radius:6px;font-size:11px;line-height:1.65" class="item-preview"><b style="color:#e2e8f0">📊 เลือกแล้วจะเป็น</b><br>'+rows.join('<br>')+'</div>' : '';
+    if(!rows.length) return '';
+    return '<div class="item-preview">'+
+      '<div class="item-preview-title">📊 ผลที่จะเปลี่ยน</div>'+
+      '<div class="item-preview-grid">'+rows.join('')+'</div>'+
+    '</div>';
   }catch(e){
     console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
     return '';
