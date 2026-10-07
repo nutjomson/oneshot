@@ -2238,6 +2238,13 @@ const levelUpgrades =
 const luxuryShopPool =
   CFG.shopItems.map(buildItem);
 
+// Item pool for map rewards: Level Up + Shop use the same item table.
+// Each item keeps its own weight and rarity.
+const mapItemPool = [
+  ...levelUpgrades,
+  ...luxuryShopPool
+];
+
 let activeShopItems=[];
 
 
@@ -2294,6 +2301,16 @@ function weightedPickRarity(weights, availableRarities){
     if(r<=0) return x.rarity;
   }
   return list[list.length-1].rarity;
+}
+
+// Boss uses the normal wave rarity table, but shifts probability upward:
+// Rare x2, Legend x1.5, and the exact extra probability is taken from Normal.
+function getBossRarityWeights(w){
+  const base=getRarityWeights(w);
+  const rare=base.rare*2;
+  const legend=base.legend*1.5;
+  const normal=Math.max(0,base.normal-(rare-base.rare)-(legend-base.legend));
+  return {normal,rare,legend};
 }
 
 function isItemMaxed(item){
@@ -3130,24 +3147,33 @@ function applyHeroChoice(h){
     if(player.lifesteal>0){const lsCap=player.maxHp*(CFG.combat.lifestealMaxPerSec||0.08);const g=Math.min(heal*player.lifesteal,Math.max(0,lsCap-lsUsed));lsUsed+=g;player.hp=Math.min(player.maxHp,player.hp+g);}
     if(e.hp<=0) e.dead=true;
   }
-  // Boss Item Drop: uses the current shop tier rates, shifted up by +1 tier.
+  // Boss Item Drop: uses the combined Level Up + Shop item pool,
+  // with Rare x2 and Legend x1.5 at the boss wave. The extra probability
+  // is removed from Normal so the total remains exactly 100%.
   function dropBossItem(){
-    if(!Array.isArray(luxuryShopPool) || !luxuryShopPool.length) return null;
-    const rarity=wave>=50?'legend':'rare';
-    const pool=luxuryShopPool.filter(i=>
-      i.rarity===rarity &&
+    if(!Array.isArray(mapItemPool) || !mapItemPool.length) return null;
+    const weights=getBossRarityWeights(wave);
+    const available=[...new Set(
+      mapItemPool
+        .map(item=>String(item.rarity||'normal'))
+        .filter(isRarityAvailable)
+    )];
+    const rarity=weightedPickRarity(weights, available);
+    if(!rarity) return null;
+    const pool=mapItemPool.filter(i=>
+      String(i.rarity||'normal')===String(rarity) &&
       !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
       !isItemMaxed(i)
     );
     return pool.length ? weightedPick(pool) : null;
   }
 
-  // เลือก Rarity สำหรับหีบสมบัติ โดยใช้ตาราง Rarity เดียวกับ Shop
-  // แต่สุ่มเพียง Rarity ก่อน แล้วจึงสุ่มไอเทมจาก luxuryShopPool ตาม Weight
-  function getShopRarityForChest(){
+  // Item collected from the map/chest uses the combined Level Up + Shop pool
+  // with exactly the same rarity rates as Level Up and Shop.
+  function getMapItemRarity(){
     const weights=getRarityWeights(wave);
     const available=[...new Set(
-      luxuryShopPool
+      mapItemPool
         .map(item=>String(item.rarity||'normal'))
         .filter(isRarityAvailable)
     )];
@@ -3160,14 +3186,14 @@ function applyHeroChoice(h){
     const margin=90;
     const x=rand(margin,Math.max(margin,world.w-margin));
     const y=rand(margin,Math.max(margin,world.h-margin));
-    const rarity=getShopRarityForChest();
+    const rarity=getMapItemRarity();
     if(!rarity) return;
     treasureChests.push({x,y,r:18,rarity,wave:w,animTimer:0});
     setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • ${rarity}`);
   }
 
   function openTreasureChest(chest){
-    const pool=luxuryShopPool.filter(i=>
+    const pool=mapItemPool.filter(i=>
       String(i.rarity)===String(chest.rarity) &&
       !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
       !isItemMaxed(i)
