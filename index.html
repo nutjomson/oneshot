@@ -2252,6 +2252,14 @@ function clamp(v,a,b){
   );
 }
 
+// Shared rarity table for Level Up, Shop, and Treasure Chests.
+function getRarityWeights(w){
+  const progress=Math.max(0,Math.min(1,(Number(w)||1)-1)/99);
+  const rare=8+(24-8)*progress;
+  const legend=2+(6-2)*progress;
+  return {normal:100-rare-legend,rare,legend};
+}
+
 function isItemMaxed(item){
   const C=CFG.caps, fx=item.fx||[];
   const useful=fx.filter(f=>!(f.op==='mul'&&((f.stat==='damage'&&f.v<1)||(f.stat==='fireRate'&&f.v>1))));
@@ -3357,13 +3365,6 @@ function openLevelUp(forceHigherRarity=false){
    *   T3 30%
    *   T4 10%
    */
-
-  function getRarityWeights(w){
-    const progress=Math.max(0,Math.min(1,(Number(w)||1)-1)/99);
-    const rare=8+(24-8)*progress;
-    const legend=2+(6-2)*progress;
-    return {normal:100-rare-legend,rare,legend};
-  }
 
   function isRarityAvailable(rarity){
     return ['normal','rare','legend'].includes(String(rarity));
