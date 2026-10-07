@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.154</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.155</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4122,13 +4122,38 @@ function openLevelUp(forceHigherRarity=false){
 
   const choiceCount=Math.max(1,Math.floor(Number(dev.level.choices)||3));
   const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
+  const baseRarityWeights={
+    normal:100-(2.9+(14-2.9)*progress)-(0.1+(1-0.1)*progress),
+    rare:2.9+(14-2.9)*progress,
+    legend:0.1+(1-0.1)*progress
+  };
+  // Premium reroll: exactly one guaranteed Rare, then the remaining
+  // slots use Normal/Legend only with Legend x3. This is intentionally
+  // identical to Shop Premium so Premium never becomes Rare 3/3.
+  const premiumLegend=baseRarityWeights.legend*3;
+  const premiumNormal=Math.max(0,baseRarityWeights.normal-(premiumLegend-baseRarityWeights.legend));
   const rarityWeights=forceHigherRarity
-    ? {normal:0,rare:Math.max(1,25+(35-25)*progress),legend:Math.min(30,3+(10-3)*progress)}
-    : {normal:100-(2.9+(14-2.9)*progress)-(0.1+(1-0.1)*progress),rare:2.9+(14-2.9)*progress,legend:0.1+(1-0.1)*progress};
+    ? {normal:premiumNormal,rare:0,legend:premiumLegend}
+    : baseRarityWeights;
 
   const availableRarities=[...new Set(levelUpgrades.map(i=>String(i.rarity||'normal')))].filter(isRarityAvailable);
   const used=new Set();
   const choices=[];
+
+  if(forceHigherRarity){
+    const guaranteedRarePool=levelUpgrades.filter(i=>
+      String(i.rarity||'normal')==='rare' &&
+      !used.has(i.id) &&
+      !isItemMaxed(i)
+    );
+    if(guaranteedRarePool.length && choiceCount>0){
+      const guaranteed=weightedPick(guaranteedRarePool);
+      if(guaranteed){
+        used.add(guaranteed.id);
+        choices.push(guaranteed);
+      }
+    }
+  }
 
   while(choices.length<choiceCount){
     const eligible=availableRarities.filter(r=>{
@@ -4136,11 +4161,7 @@ function openLevelUp(forceHigherRarity=false){
       return levelUpgrades.some(i=>String(i.rarity||'normal')===r&&!used.has(i.id)&&!isItemMaxed(i));
     });
     if(!eligible.length)break;
-    let rarity;
-    if(forceHigherRarity&&choices.length===0){
-      const high=eligible.filter(r=>r==='rare'||r==='legend');
-      rarity=high.length?weightedPickRarity(rarityWeights,high):weightedPickRarity(rarityWeights,eligible);
-    }else rarity=weightedPickRarity(rarityWeights,eligible);
+    const rarity=weightedPickRarity(rarityWeights,eligible);
     const pool=levelUpgrades.filter(i=>String(i.rarity||'normal')===String(rarity)&&!used.has(i.id)&&!isItemMaxed(i));
     const pick=weightedPick(pool);
     if(!pick)break;
