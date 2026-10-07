@@ -781,6 +781,13 @@ const LEVEL_UPGRADES = [
   { tier: 1, icon: '🩹', name: 'ผ้าพันแผลสนาม', fx: [add('maxHp', 9), add('regen', 0.2625)] },
   { tier: 1, icon: '🔩', name: 'กระสุนเสถียรภาพ', fx: [mul('bulletSpeed', 1.0375), add('knockback', 7.5)] },
 
+  { id: 'u_n25', tier: 1, icon: '🎯', name: 'ศูนย์เล็งมั่นคง',             fx: [add('crit', 0.009), mul('attackRange', 1.08)] },
+  { id: 'u_n26', tier: 1, icon: '🔋', name: 'แกนพลังงาน',                 fx: [mul('damage', 1.015), mul('fireRate', 0.99)] },
+  { id: 'u_n27', tier: 1, icon: '🩹', name: 'ชุดปฐมพยาบาล',                fx: [add('maxHp', 15), add('regen', 0.3)] },
+  { id: 'u_n28', tier: 1, icon: '💨', name: 'แรงส่งกระสุน',                fx: [mul('bulletSpeed', 1.045), add('knockback', 8)] },
+  { id: 'u_n29', tier: 1, icon: '🧲', name: 'แม่เหล็กสนาม',                fx: [add('pickup', 24), mul('xpMulti', 1.015)] },
+  { id: 'u_n30', tier: 1, icon: '🍀', name: 'โชคเล็กน้อย',                 fx: [mul('goldMulti', 1.02), add('crit', 0.006)] },
+
   // ───────── T2 ดี ─────────
   { tier: 2, icon: '🏃', name: 'ก้าวพริบตา',                fx: [mul('speed', 1.0225), add('dodge', 0.006)] },
   { tier: 2, icon: '❤', name: 'หัวใจเหล็ก',                fx: [mul('maxHp', 1.03), add('maxHp', 18)] },
@@ -895,6 +902,19 @@ const SHOP_ITEMS = [
   { id: 's_d4', tier: 1, icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.03)], scale: 0.50 },
   { id: 's_d5', tier: 1, icon: '🧲', name: 'แม่เหล็กยักษ์',            cost: 100, fx: [add('pickup', 48.75)], scale: 0.50 },
   { id: 's_d6', tier: 1, icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 260, fx: [mul('goldMulti', 1.06)], scale: 0.70 },
+
+  { id: 's_n19', tier: 1, icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 120, fx: [add('crit', 0.012)] },
+  { id: 's_n20', tier: 1, icon: '🔋', name: 'แบตเตอรี่พลังยิง',             cost: 145, fx: [mul('damage', 1.025)] },
+  { id: 's_n21', tier: 1, icon: '💨', name: 'หัวฉีดกระสุน',                 cost: 135, fx: [mul('bulletSpeed', 1.05)] },
+  { id: 's_n22', tier: 1, icon: '🩹', name: 'ชุดปฐมพยาบาลสนาม',             cost: 110, fx: [add('maxHp', 20), healPct(0.18)] },
+  { id: 's_n23', tier: 1, icon: '🧲', name: 'ตลับแม่เหล็ก',                 cost: 125, fx: [add('pickup', 30)] },
+  { id: 's_n24', tier: 1, icon: '🪙', name: 'เหรียญนำโชค',                  cost: 150, fx: [mul('goldMulti', 1.035)] },
+  { id: 's_n25', tier: 1, icon: '🛡️', name: 'แผ่นเกราะเสริม',               cost: 140, fx: [add('armor', 0.012)] },
+  { id: 's_n26', tier: 1, icon: '🥾', name: 'พื้นรองเท้าคล่องตัว',           cost: 130, fx: [mul('speed', 1.02)] },
+  { id: 's_n27', tier: 1, icon: '⚡', name: 'ตัวนำไฟฟ้า',                   cost: 165, fx: [add('lightningChain', 4.5)] },
+  { id: 's_n28', tier: 1, icon: '☣️', name: 'หลอดพิษเข้มข้น',                cost: 155, fx: [add('poisonDmg', 3.75)] },
+  { id: 's_n29', tier: 1, icon: '💣', name: 'ดินระเบิดแรงดัน',               cost: 170, fx: [add('explosiveRadius', 5)] },
+  { id: 's_n30', tier: 1, icon: '🥊', name: 'ถุงมือผลักศัตรู',               cost: 145, fx: [add('knockback', 15)] },
 
   // ───────── S2 ดี ─────────
   { id: 's_b1',  tier: 2, icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ',        cost: 420, fx: [mul('damage', 1.06)], scale: 0.45 },
