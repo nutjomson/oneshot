@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.121</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.122</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions .btn{min-width:0;font-size:9px;padding:7px 5px}
 }
 
-/* ===== v1.0.121 COMPACT ITEM CHOICES =====
+/* ===== v1.0.122 COMPACT ITEM CHOICES =====
    ทำให้ Level Up / Shop ใช้พื้นที่แนวตั้งน้อยลง และเห็นสถานะก่อนเลือก */
 .level-modal{max-height:calc(100dvh - 18px);overflow:hidden}
 .level-modal #upgrades{max-height:calc(100dvh - 245px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
@@ -193,7 +193,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .level-modal .upgrade .item-preview{font-size:8.5px;line-height:1.25;margin-top:3px;padding:3px 5px!important;max-height:58px;overflow:hidden}
 .level-modal .upgrade .item-preview b{font-size:8.5px}
 .shop-modal{max-height:calc(100dvh - 18px);overflow:hidden}
-.shop-modal #shopItems{max-height:calc(100dvh - 280px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.shop-modal #shopItems{max-height:calc(100dvh - 248px);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
 .shop-modal .shop-item{min-height:0;height:auto;padding:7px 8px;display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:8px;row-gap:2px}
 .shop-modal .shop-choice-label{grid-column:1/-1;margin:0}
 .shop-modal .shop-topline{grid-column:1/-1;display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;column-gap:8px}
@@ -219,7 +219,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal{padding:8px}
   .shop-modal .title{font-size:15px}
   .shop-modal .sub{font-size:9px;margin-bottom:6px}
-  .shop-modal #shopItems{gap:5px;max-height:calc(100dvh - 245px)}
+  .shop-modal #shopItems{gap:5px;max-height:calc(100dvh - 213px)}
   .shop-modal .shop-item{padding:5px 6px}
   .shop-modal .shop-topline .icon{font-size:21px}
   .shop-modal .shop-topline .uName{font-size:10px}
@@ -229,7 +229,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-reason{display:none!important}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
 }
-.item-preview{display:block}\n/* ===== v1.0.121 ITEM STAT PREVIEW FIX =====
+.item-preview{display:block}\n/* ===== v1.0.122 ITEM STAT PREVIEW FIX =====
    แสดงสถานะก่อน/หลังให้เห็นจริงทั้ง Level Up และ Shop
    ใช้ grid 2 คอลัมน์ + ไม่ตัดข้อความ เพื่อไม่ให้ค่าตกขอบ */
 .item-preview{
@@ -322,7 +322,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-buy-btn{border:2px solid #fff;background:#22c55e;color:#052e16;font:900 11px Prompt,sans-serif;padding:7px 9px;min-height:38px;flex:1;touch-action:manipulation}
 .shop-item.recommended .shop-buy-btn{background:#eab308;color:#422006}.shop-buy-btn:active{transform:translate(1px,1px)}.shop-buy-btn:disabled{opacity:.45;cursor:not-allowed}
 .shop-cost{font-size:11px;color:#facc15;font-weight:900;white-space:nowrap}
-.shop-actions{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:7px;margin-top:10px}
+.shop-actions{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:7px;margin-top:18px}
 .shop-actions button{min-height:44px;border:2px solid #fff;font:900 11px Prompt,sans-serif;cursor:pointer;touch-action:manipulation}
 .shop-reroll{background:#eab308;color:#422006}.shop-premium{background:#7c3aed;color:#fff}.shop-close{background:#22c55e;color:#052e16}
 .shop-actions button:active{transform:translate(1px,1px)}.shop-detail-hint{font-size:9px;color:#64748b;margin-top:7px;text-align:center}
@@ -425,7 +425,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .level-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
 }
 
-/* ===== v1.0.121 READABLE COMPACT LAYOUT =====
+/* ===== v1.0.122 READABLE COMPACT LAYOUT =====
    ขยายตัวอักษร แต่จัดข้อมูลสำคัญให้อยู่บรรทัดเดียวเมื่อทำได้
    ป้องกันข้อความตกขอบบน iPhone/iPad */
 .level-modal,.shop-modal{width:min(760px,calc(100vw - 16px));padding:10px;overflow:hidden}
@@ -468,7 +468,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-actions{gap:5px}.shop-actions button{font-size:9.5px;min-height:38px;padding:5px 3px}
 }
 
-/* ===== v1.0.121 RESPONSIVE GAME-UI LAYOUT =====
+/* ===== v1.0.122 RESPONSIVE GAME-UI LAYOUT =====
    แนวทางจาก survivor-like: choice cards อ่านเร็ว, rarity เด่น,
    และใช้ responsive layout แทนการบีบตัวอักษรให้เล็ก
    อ้างอิงแนวคิด 3-4 cards ของ Vampire Survivors/Brotato
@@ -714,7 +714,7 @@ body.gameplay-actions .hud-controls{display:flex}
   max-width:100%;
   overflow-wrap:anywhere;
 }
-/* ===== v1.0.121 ITEM PREVIEW READABILITY ===== */
+/* ===== v1.0.122 ITEM PREVIEW READABILITY ===== */
 .item-preview-title{display:none!important}
 .item-preview-grid{display:grid!important;grid-template-columns:1fr!important;gap:3px!important}
 .item-preview-stat{font-size:10px!important;line-height:1.3!important;padding:3px 4px!important;white-space:normal!important}
@@ -726,7 +726,7 @@ body.gameplay-actions .hud-controls{display:flex}
 }
 
 
-/* ===== v1.0.121 QUICK PICK / INLINE SHOP PRICE ===== */
+/* ===== v1.0.122 QUICK PICK / INLINE SHOP PRICE ===== */
 .level-modal .upgrade-choice-label,.shop-modal .shop-choice-label{display:none!important}
 .level-modal .upgrade .icon{grid-row:1 / span 2!important}
 .level-modal .upgrade .upgrade-reason,.shop-modal .shop-reason{display:none!important}
@@ -2602,12 +2602,14 @@ function renderItemPreview(item){
       ? item.desc.trim()
       : ((Array.isArray(item?.fx)?item.fx:[]).map(descEffect).filter(Boolean).join(' และ ')||'ไม่มีคำอธิบายเพิ่มเติม');
     if(!rows.length){
-      return '<div class="item-preview"><div class="item-preview-title">📋 ผลของไอเทม</div>'+
+      return '<div class="item-preview"><div class="item-preview-title">✨ ผลของไอเทม</div>'+
         '<div class="item-preview-stat positive"><span class="item-preview-name">'+desc+'</span></div></div>';
     }
-    return '<div class="item-preview"><div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
-      '<div class="item-preview-grid">'+rows.join('')+'</div>'+
-      '<div style="margin-top:4px;color:#cbd5e1;font-size:8px;line-height:1.3">ผล: '+desc+'</div></div>';
+    return '<div class="item-preview">'+
+      '<div class="item-preview-title">✨ ผลของไอเทม</div>'+
+      '<div style="margin-bottom:5px;color:#cbd5e1;font-size:8px;line-height:1.3">'+desc+'</div>'+
+      '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
+      '<div class="item-preview-grid">'+rows.join('')+'</div></div>';
   }catch(e){
     console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
     return '<div class="item-preview"><div class="item-preview-title">📋 ผลของไอเทม</div><div style="font-size:8px;color:#cbd5e1">ตรวจสอบผลของไอเทมเมื่อซื้อ</div></div>';
@@ -4147,7 +4149,6 @@ function openLevelUp(forceHigherRarity=false){
               const original=activeShopItems.find(x=>x.id===item.id||x.name===item.name);
               if(original)original.purchased=true;
               playSound('coin');
-              showStatDelta(before,after,'🛒 ซื้อไอเทมจากร้านทอง');
               renderShopItems();
               refreshHUD();
             }else setStatus('ทองไม่เพียงพอ!');
@@ -5217,4 +5218,19 @@ function openLevelUp(forceHigherRarity=false){
 .shop-modal .shop-quick-desc{display:block!important;font-size:10px!important;line-height:1.35!important;color:#cbd5e1!important;margin:3px 0!important;white-space:normal!important;}
 .shop-modal .shop-buy-row{display:none!important}
 .shop-modal .shop-item{cursor:pointer;}
+</style>
+
+<style id="v1-0-122-shop-layout">
+.shop-modal .item-preview,
+.shop-modal .item-preview *{
+  overflow:visible!important;
+}
+.shop-modal .item-preview{
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+.shop-modal .item-preview-title{
+  white-space:normal!important;
+}
 </style>
