@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.142</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.143</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -737,7 +737,7 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 </style>
 <style id="shop-alchemy-backdrop-v1-0-141">
-/* ===== v1.0.142 VISIBLE ALCHEMY SHOP ===== */
+/* ===== v1.0.143 VISIBLE ALCHEMY SHOP ===== */
 #shopOverlay{
   background:
     radial-gradient(circle at 13% 25%,rgba(245,190,76,.55) 0 18px,rgba(245,190,76,.16) 19px,transparent 95px),
@@ -842,7 +842,40 @@ button,input,select,textarea{
 }
 </style>
 
-</head>
+<style id="shop-alchemy-visible-v1-0-143">
+/* ===== v1.0.143 SHOP BACKDROP — put the art on the visible modal itself ===== */
+#shopOverlay.overlay{
+  background:rgba(3,3,8,.90)!important;
+}
+#shopOverlay .shop-modal{
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 8% 18%,rgba(255,190,72,.78) 0 10px,rgba(255,190,72,.18) 11px,transparent 90px),
+    radial-gradient(circle at 92% 18%,rgba(255,190,72,.78) 0 10px,rgba(255,190,72,.18) 11px,transparent 90px),
+    radial-gradient(circle at 10% 45%,rgba(77,154,94,.52) 0 14px,transparent 105px),
+    radial-gradient(circle at 90% 45%,rgba(77,154,94,.52) 0 14px,transparent 105px),
+    linear-gradient(90deg,#392218 0%,#17121a 18%,#0c1019 32%,#0c1019 68%,#17121a 82%,#392218 100%)!important;
+  border:2px solid rgba(219,155,73,.82)!important;
+  box-shadow:0 0 0 5px rgba(44,25,18,.82),0 22px 70px rgba(0,0,0,.95)!important;
+}
+#shopOverlay .shop-modal::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(107,62,35,.75) 0 9%,transparent 9% 15%,rgba(75,43,29,.55) 15% 20%,transparent 20% 80%,rgba(75,43,29,.55) 80% 85%,transparent 85% 91%,rgba(107,62,35,.75) 91%),
+    repeating-linear-gradient(0deg,transparent 0 42px,rgba(159,94,48,.20) 43px 47px),
+    radial-gradient(circle at 7% 27%,rgba(224,170,83,.9) 0 6px,transparent 7px),
+    radial-gradient(circle at 93% 27%,rgba(224,170,83,.9) 0 6px,transparent 7px),
+    radial-gradient(circle at 8% 60%,rgba(70,151,84,.8) 0 9px,transparent 10px),
+    radial-gradient(circle at 92% 60%,rgba(70,151,84,.8) 0 9px,transparent 10px);
+  opacity:.95;
+}
+#shopOverlay .shop-modal::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:18%;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,#24130c 0 6px,#754626 7px 10px,#2c180e 11px 34px);
+  border-top:4px solid rgba(211,139,61,.9);
+}
+#shopOverlay .shop-modal > *{position:relative;z-index:2}
+</style></head>
 <body>
 <div id="game">
 <canvas id="scene"></canvas>
