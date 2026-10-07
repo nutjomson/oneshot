@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.97</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.98</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
@@ -159,7 +159,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .level-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .level-head .title{margin:0;text-align:left}
 .level-speed{font-size:11px;color:#4ade80;font-weight:900;background:#0b1220;border:1px solid #334155;padding:5px 8px}
-#upgrades{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+#upgrades{grid-template-columns:1fr;gap:8px;align-items:stretch}
 .upgrade{min-width:0;min-height:205px;display:flex;flex-direction:column;overflow:hidden}
 .upgrade.recommended{border-color:#facc15!important;box-shadow:0 0 0 1px #facc15 inset,0 0 18px rgba(250,204,21,.28)!important;background:#1b2535}
 .upgrade.alternative{border-color:#475569;box-shadow:none}
@@ -169,7 +169,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .level-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .level-actions .btn{min-height:44px}
 @media(max-width:640px){
-  #upgrades{grid-template-columns:1.25fr 1fr 1fr;gap:6px}
+  #upgrades{grid-template-columns:1fr;gap:8px}
   .upgrade{padding:7px;min-height:190px}
   .upgrade .icon{font-size:28px}
   .upgrade .uName{font-size:10.5px;line-height:1.2}
@@ -186,7 +186,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-wallet{font-size:15px;font-weight:900;color:#facc15;background:#111827;border:2px solid #ca8a04;padding:7px 10px;white-space:nowrap}
 .shop-guide{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0b1220;border:1px solid #334155;padding:7px 9px;margin-bottom:10px;color:#cbd5e1;font-size:10px;font-weight:700}
 .shop-guide-main{min-width:0}.shop-guide-time{color:#4ade80;white-space:nowrap;font-weight:900}
-#shopItems{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+#shopItems{display:grid;grid-template-columns:1fr;gap:8px;align-items:stretch}
 .shop-item{min-width:0;min-height:185px;border-radius:7px;display:flex;flex-direction:column;overflow:hidden}
 .shop-item.recommended{border-color:#facc15!important;box-shadow:0 0 0 1px #facc15 inset,0 0 18px rgba(250,204,21,.28)!important;background:#1b2535}
 .shop-item.alternative{border-color:#475569;box-shadow:none}
@@ -203,7 +203,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-actions button:active{transform:translate(1px,1px)}.shop-detail-hint{font-size:9px;color:#64748b;margin-top:7px;text-align:center}
 .shop-stats{margin:7px 0 0;max-height:150px;overflow:auto;display:none}.shop-modal:focus-within .shop-stats{display:grid}
 @media(max-width:640px){
-  #shopItems{grid-template-columns:1.25fr 1fr 1fr;gap:6px}.shop-item{padding:7px;min-height:170px}.shop-item .icon{font-size:28px}.shop-item .uName{font-size:11px}.shop-item .tier-badge{font-size:8px}
+  #shopItems{grid-template-columns:1fr;gap:8px}.shop-item{padding:7px;min-height:170px}.shop-item .icon{font-size:28px}.shop-item .uName{font-size:11px}.shop-item .tier-badge{font-size:8px}
   .shop-quick-desc{font-size:9px;line-height:1.3}.shop-reason{font-size:9px}.shop-buy-btn{font-size:10px;padding:6px 5px}.shop-cost{font-size:9px}.shop-guide-main{font-size:9px}
   .shop-actions{grid-template-columns:1.2fr .9fr .7fr}.shop-actions button{font-size:9px;padding:6px 4px}.shop-wallet{font-size:13px;padding:6px 8px}
 }
@@ -257,8 +257,8 @@ body.gameplay-actions .hud-controls{display:flex}
 
 @media(max-width:640px){
   #upgrades, #shopItems, #heroSelect{grid-template-columns:1fr}
-  .upgrade, .shop-item{display:grid;grid-template-columns:36px 1fr;gap:8px;align-items:center}
-  .icon{margin:0}
+  .upgrade, .shop-item{display:flex;flex-direction:column;align-items:stretch;gap:0}
+  .icon{margin-bottom:4px}
   .stats-box{grid-template-columns:1fr}
   .btn-group{flex-direction:column}
   .title{font-size:16px}
