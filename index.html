@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.212</title>
-<meta name="game-version" content="v1.0.212">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.213</title>
+<meta name="game-version" content="v1.0.213">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5276,7 +5276,7 @@ function openLevelUp(forceHigherRarity=false){
 
       let remove=b.life<=0;
 
-      // v1.0.212: Area-impact attack patterns.
+      // v1.0.213: Area-impact attack patterns.
       if(!remove && (b.patternMode==='bomb' || b.patternMode==='poison' || b.patternMode==='windStorm')){
         const hit=enemies.find(en=>!en.dead&&dist(b.x,b.y,en.x,en.y)<b.r+en.r);
         const arrived=dist(b.x,b.y,b.targetX,b.targetY)<=Math.max(18,b.r+8);
@@ -5315,9 +5315,10 @@ function openLevelUp(forceHigherRarity=false){
       }
       if(remove)bullets.splice(i,1);
     }
+    }
     sweepDead();
 
-    // v1.0.212: poison zones deal repeated area damage while enemies remain inside.
+    // v1.0.213: poison zones deal repeated area damage while enemies remain inside.
     // Wind storm: push only a portion of enemies, with light periodic damage.
     for(let i=windZones.length-1;i>=0;i--){
       const z=windZones[i];z.life-=dt;
