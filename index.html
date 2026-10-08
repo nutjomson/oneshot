@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.199</title>
-<meta name="game-version" content="v1.0.199">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.200</title>
+<meta name="game-version" content="v1.0.200">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2571,8 +2571,14 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
 function applyEffect(f){
 
   if(f.op==='attackPattern'){
-    player.attackPattern=String(f.v||'focused');
-    player.attackPatternLevel=Math.max(1,Number(f.stackLevel)||1);
+    const pattern=String(f.v||'focused');
+    const level=Math.max(1,Number(f.stackLevel)||1);
+    if(!Array.isArray(player.attackPatternsOwned)) player.attackPatternsOwned=[];
+    const existing=player.attackPatternsOwned.find(x=>x&&x.id===pattern);
+    if(existing) existing.level=Math.max(Number(existing.level)||1,level);
+    else player.attackPatternsOwned.push({id:pattern,level});
+    player.attackPattern=pattern;
+    player.attackPatternLevel=level;
     return;
   }
 
@@ -2865,6 +2871,17 @@ function getShortItemDescription(item){
   return parts.length?parts.slice(0,2).join(' และ '):'เพิ่มความสามารถให้ฮีโร่';
 }
 
+function getAttackPatternName(id){
+  const item=[...levelUpgrades,...luxuryShopPool].find(x=>x&&x.fx&&x.fx.some(f=>f&&f.op==='attackPattern'&&String(f.v)===String(id)));
+  return item?.name||String(id||'รูปแบบโจมตี');
+}
+function renderOwnedAttackPatterns(){
+  const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
+  if(!owned.length) return '';
+  return '<div class="owned-attack-patterns"><div class="owned-attack-patterns-title">⚔️ รูปแบบการโจมตีที่มี</div>'+
+    owned.map(x=>'<span class="owned-attack-pattern '+(String(x.id)===String(player.attackPattern)?'active':'')+'">'+getAttackPatternName(x.id)+' ×'+(Number(x.level)||1)+'</span>').join('')+
+    '</div>';
+}
 function renderItemPreview(item){
   try{
     const preview=previewItemStats(item), rows=[];
@@ -2886,9 +2903,9 @@ function renderItemPreview(item){
     });
     const ownership=renderItemOwnership(item);
     if(!rows.length){
-      return '<div class="item-preview">'+ownership+'</div>';
+      return '<div class="item-preview">'+ownership+renderOwnedAttackPatterns()+'</div>';
     }
-    return '<div class="item-preview">'+ownership+
+    return '<div class="item-preview">'+ownership+renderOwnedAttackPatterns()+
       '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
       '<div class="item-preview-grid">'+rows.join('')+'</div></div>';
   }catch(e){
@@ -2930,7 +2947,7 @@ function buildItem(def,i){
     apply:(showDelta=true)=>{
 
       /*
-       * v1.0.199 FIX:
+       * v1.0.200 FIX:
        * nextStack must be calculated from the item's current stack.
        * Previously apply() referenced nextStack without declaring it,
        * causing "Can't find nextStack" when a Treasure Chest/Boss reward
@@ -3690,6 +3707,9 @@ function applyHeroChoice(h){
     {
       bulletType:h.bulletType,
       bulletTypes:Array.isArray(h.bulletTypes)&&h.bulletTypes.length ? [...h.bulletTypes] : [h.bulletType||'arcane'],
+      attackPatternsOwned:[],
+      attackPattern:'focused',
+      attackPatternLevel:1,
       fireTimer:0,
       hit:0
     }
@@ -4145,7 +4165,7 @@ function showItemReward(item,source){
       // ก่อนปุ่ม "ตกลง" ถูกเปิดใช้งาน
       status.textContent='✨ ได้รับไอเทมแล้ว • มีทั้งหมด '+getItemOwnedCount(item)+' / '+getItemStackCap(item)+' ชิ้น';
       changes.classList.remove('hidden');
-      changes.innerHTML=renderItemOwnership(item)+itemRewardChangesHtml(before,after);
+      changes.innerHTML=renderItemOwnership(item)+renderOwnedAttackPatterns()+itemRewardChangesHtml(before,after);
       ok.classList.remove('hidden');
       playSound('coin');
       refreshHUD();
@@ -5700,6 +5720,13 @@ function openLevelUp(forceHigherRarity=false){
 @media(max-width:640px){
   .item-ownership{font-size:8.5px;padding:3px 5px;margin-bottom:4px}
 }
+</style>
+
+<style id="v1-0-200-attack-pattern-list">
+.owned-attack-patterns{margin:5px 0;padding:5px 6px;border:1px solid #334155;border-radius:4px;background:rgba(2,6,23,.72)}
+.owned-attack-patterns-title{font-size:9px;font-weight:900;color:#facc15;margin-bottom:4px}
+.owned-attack-pattern{display:inline-block;margin:2px;padding:3px 5px;border:1px solid #475569;border-radius:4px;color:#cbd5e1;font-size:8px;font-weight:700}
+.owned-attack-pattern.active{border-color:#facc15;color:#fde68a;box-shadow:0 0 5px rgba(250,204,21,.25)}
 </style>
 </body>
 </html>
