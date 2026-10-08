@@ -1246,39 +1246,41 @@ const fragment = (stat, tier) => ({ op:'fragment', stat, tier });
 const WORLD = { w: 960, h: 960 }; // ลดขนาดแผนที่ลง 40%
 
 /* ===== 2. HEROES ===== */
+/* ===== v1.0.169 HERO SPEED BUFF =====
+   เพิ่มความเร็วเคลื่อนที่พื้นฐานของ Hero ทุกตัว x2.5 จาก v1.0.168 */
 const HEROES = [
   {
     id: 'prism', name: 'ปริซึม ไนต์ (PRISM KNIGHT)', icon: '🛡️',
     color: '#00f0ff', secondaryColor: '#ff007f', bulletType: 'arcane',
-    stats: { hp: 120, speed: 78.33333333333333, damage: 21.406666666666666, fireRate: 0.9130434782608696, armor: 0.11666666666666667, crit: 0.04, attackRange: 216 },
+    stats: { hp: 120, speed: 195.83333333333334, damage: 21.406666666666666, fireRate: 0.9130434782608696, armor: 0.11666666666666667, crit: 0.04, attackRange: 216 },
     growth: { maxHp: 8, damagePct: 0.005, regen: 0.05 },
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
   {
     id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
     color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
-    stats: { hp: 68, speed: 96.66666666666667, damage: 10.14, fireRate: 0.6521739130434783, armor: 0.016666666666666666, crit: 0.06666666666666667, attackRange: 290.304 },
+    stats: { hp: 68, speed: 241.66666666666669, damage: 10.14, fireRate: 0.6521739130434783, armor: 0.016666666666666666, crit: 0.06666666666666667, attackRange: 290.304 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
     desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
   },
   {
     id: 'psycho', name: 'ไซโค เมจ (PSYCHO MAGE)', icon: '🔮',
     color: '#ff00ff', secondaryColor: '#7600ff', bulletType: 'fireball',
-    stats: { hp: 64, speed: 78.33333333333333, damage: 30.983333333333334, fireRate: 1.3043478260869565, armor: 0.016666666666666666, crit: 0.09999999999999999, attackRange: 748.8 },
+    stats: { hp: 64, speed: 195.83333333333334, damage: 30.983333333333334, fireRate: 1.3043478260869565, armor: 0.016666666666666666, crit: 0.09999999999999999, attackRange: 748.8 },
     growth: { maxHp: 4, damagePct: 0.010, regen: 0.02 },
     desc: 'จอมเวทพลังสายรุ้งระเบิด คริติคอลรุนแรงมหาศาล โตด้านพลังโจมตีดีที่สุด'
   },
   {
     id: 'cyber', name: 'ไซเบอร์ นินจา (CYBER NINJA)', icon: '🥷',
     color: '#ffe600', secondaryColor: '#ff0055', bulletType: 'plasma',
-    stats: { hp: 72, speed: 106.66666666666667, damage: 16.9, fireRate: 0.7173913043478262, armor: 0.03333333333333333, crit: 0.08333333333333333, attackRange: 432 },
+    stats: { hp: 72, speed: 266.6666666666667, damage: 16.9, fireRate: 0.7173913043478262, armor: 0.03333333333333333, crit: 0.08333333333333333, attackRange: 432 },
     growth: { maxHp: 6, damagePct: 0.007, regen: 0.03 },
     desc: 'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
   }
 ];
 
 /* ===== 3. PLAYER_BASE ===== */
-// v1.0.167: Hero base stats nerfed to 1/3; attack range exception retained
+// v1.0.169: Hero movement speed x2.5; v1.0.167 base stats nerf retained
 const PLAYER_BASE = {
   bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 1, xpMulti: 1,
   dodge: 0, lifesteal: 0, revives: 2, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
