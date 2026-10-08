@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.171</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.172</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1252,28 +1252,28 @@ const HEROES = [
   {
     id: 'prism', name: 'ปริซึม ไนต์ (PRISM KNIGHT)', icon: '🛡️',
     color: '#00f0ff', secondaryColor: '#ff007f', bulletType: 'arcane',
-    stats: { hp: 120, speed: 195.83333333333334, damage: 21.406666666666666, fireRate: 0.9130434782608696, armor: 0.11666666666666667, crit: 0.04, attackRange: 216 },
+    stats: { hp: 120, speed: 195.83333333333334, damage: 21.406666666666666, fireRate: 0.7948204163137996, armor: 0.11666666666666667, crit: 0.04, attackRange: 216 },
     growth: { maxHp: 8, damagePct: 0.005, regen: 0.05 },
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
   {
     id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
     color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
-    stats: { hp: 68, speed: 241.66666666666669, damage: 10.14, fireRate: 0.6521739130434783, armor: 0.016666666666666666, crit: 0.06666666666666667, attackRange: 290.304 },
+    stats: { hp: 68, speed: 241.66666666666669, damage: 10.14, fireRate: 0.5671077682291119, armor: 0.016666666666666666, crit: 0.06666666666666667, attackRange: 290.304 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
     desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
   },
   {
     id: 'psycho', name: 'ไซโค เมจ (PSYCHO MAGE)', icon: '🔮',
     color: '#ff00ff', secondaryColor: '#7600ff', bulletType: 'fireball',
-    stats: { hp: 64, speed: 195.83333333333334, damage: 30.983333333333334, fireRate: 1.3043478260869565, armor: 0.016666666666666666, crit: 0.09999999999999999, attackRange: 748.8 },
+    stats: { hp: 64, speed: 195.83333333333334, damage: 30.983333333333334, fireRate: 1.1342155016364839, armor: 0.016666666666666666, crit: 0.09999999999999999, attackRange: 748.8 },
     growth: { maxHp: 4, damagePct: 0.010, regen: 0.02 },
     desc: 'จอมเวทพลังสายรุ้งระเบิด คริติคอลรุนแรงมหาศาล โตด้านพลังโจมตีดีที่สุด'
   },
   {
     id: 'cyber', name: 'ไซเบอร์ นินจา (CYBER NINJA)', icon: '🥷',
     color: '#ffe600', secondaryColor: '#ff0055', bulletType: 'plasma',
-    stats: { hp: 72, speed: 266.6666666666667, damage: 16.9, fireRate: 0.7173913043478262, armor: 0.03333333333333333, crit: 0.08333333333333333, attackRange: 432 },
+    stats: { hp: 72, speed: 266.6666666666667, damage: 16.9, fireRate: 0.6238189085633275, armor: 0.03333333333333333, crit: 0.08333333333333333, attackRange: 432 },
     growth: { maxHp: 6, damagePct: 0.007, regen: 0.03 },
     desc: 'นินจาสีสะท้อนแสง เคลื่อนที่เร็วที่สุด ว่องไวไร้ร่องรอย'
   }
@@ -1283,7 +1283,7 @@ const HEROES = [
 // v1.0.171: treasure/boss item rewards use the IIFE-local Soft Cap helpers above.
 // v1.0.169: Hero movement speed x2.5; v1.0.167 base stats nerf retained
 const PLAYER_BASE = {
-  bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 1, xpMulti: 1,
+  bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 2.7, xpMulti: 2.2,
   dodge: 0, lifesteal: 0, revives: 2, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
   explosiveRadius: 0, knockback: 0, executionThreshold: 0, orbitBlades: 0, timeSlow: 0
 };
@@ -1306,7 +1306,7 @@ const CAPS = {
   revives: 10,
   regen: 20,
   goldMulti: 3,
-  xpMulti: 2,
+  xpMulti: 3,
   knockback: 600,
   explosiveRadius: 220,
   bulletSpeed: 3000,
@@ -1319,7 +1319,7 @@ const CAPS = {
 */
 const SOFT_CAPS = {
   dodge: 0.60, crit: 0.90, armor: 0.75, attackRange: 1000,
-  lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 2,
+  lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 3,
   projectiles: 15, pierce: 15, ricochet: 12,
   orbitBlades: 15, revives: 10, timeSlow: 0.40,
   executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
@@ -1632,7 +1632,7 @@ window.GAME_CONFIG = {
   // Keep a local, self-contained copy here so every item reward path is safe.
   const SOFT_CAPS = {
     dodge: 0.60, crit: 0.90, armor: 0.75, attackRange: 1000,
-    lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 2,
+    lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 3,
     projectiles: 15, pierce: 15, ricochet: 12,
     orbitBlades: 15, revives: 10, timeSlow: 0.40,
     executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
