@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.164</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.165</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1356,10 +1356,11 @@ const COMBAT = {
 
 /* ===== 6. BULLET_TYPES ===== */
 const BULLET_TYPES = {
-  arcane:   { bounce: 1,                    desc: null },
-  laser:    { speedMult: 1.30, pierceBonus: 1, desc: null },
-  fireball: { radius: 10, explosionRadius: 30, desc: null },
-  plasma:   { critBonus: 0.04, critMult: 2.40, desc: null }
+  // v1.0.165: ลดพลังเฉพาะทางของอาวุธฮีโร่ลงประมาณ 1/3
+  arcane:   { bounce: 0.67, desc: null },
+  laser:    { speedMult: 1.20, pierceBonus: 0.67, desc: null },
+  fireball: { radius: 6.67, explosionRadius: 20, desc: null },
+  plasma:   { critBonus: 0.027, critMult: 1.60, desc: null }
 };
 BULLET_TYPES.arcane.desc   = `อาร์เคน: กระสุนเด้งสะท้อนผนัง +${BULLET_TYPES.arcane.bounce} ครั้ง`;
 BULLET_TYPES.laser.desc    = `เลเซอร์: กระสุนเร็ว +${pct(BULLET_TYPES.laser.speedMult - 1)}% และเจาะทะลุ +${BULLET_TYPES.laser.pierceBonus}`;
@@ -1368,10 +1369,11 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 
 /* ===== 7. SKILLS ===== */
 const SKILLS = {
-  prism:  { icon: '🛡️', cd: 13, invuln: 3, range: 240, push: 140 },
-  neon:   { icon: '🏹', cd: 9,  bullets: 16, damageMult: 1.6, pierce: 4, life: 1.3 },
-  psycho: { icon: '💥', cd: 11, radius: 260, damageMult: 4.5, shake: 8 },
-  cyber:  { icon: '💨', cd: 6,  dashDistance: 240, invuln: 1.2 }
+  // v1.0.165: ลดพลัง Skill ของฮีโร่ลงประมาณ 1/3 โดยคง cooldown เดิม
+  prism:  { icon: '🛡️', cd: 13, invuln: 2, range: 160, push: 93.33 },
+  neon:   { icon: '🏹', cd: 9,  bullets: 11, damageMult: 1.067, pierce: 2.67, life: 0.87 },
+  psycho: { icon: '💥', cd: 11, radius: 173.33, damageMult: 3.0, shake: 8 },
+  cyber:  { icon: '💨', cd: 6,  dashDistance: 160, invuln: 0.8 }
 };
 
 /* ===== 8. ENEMIES ===== */
@@ -1384,15 +1386,16 @@ const ENEMIES = {
   swarmer:    { sprite: 'runner', hp: 14, speed: 105, damage: 5, r: 10, color: '#ff66cc', xpBase: 3, goldMin: 1, goldMax: 2, spawnWeight: 12, weightPerWave: -0.05, minWave: 6 },
   juggernaut: { sprite: 'brute', hp: 650, speed: 36, damage: 38, r: 30, color: '#ff4d00', xpBase: 60, goldMin: 10, goldMax: 16, spawnWeight: 3, weightPerWave: 0.10, minWave: 18 },
   sniper:     { sprite: 'shooter', ai: 'shooter', hp: 95, speed: 42, damage: 22, r: 15, color: '#ffcc00', xpBase: 30, goldMin: 6, goldMax: 10, spawnWeight: 3, weightPerWave: 0.06, minWave: 25,
-                shootTimer: 3, shootInterval: 3.4, bulletSpeed: 560, bulletDamageMult: 1.6 },
+                shootTimer: 3, shootInterval: 3.4, bulletSpeed: 373.33, bulletDamageMult: 1.067 },
   wraith:     { sprite: 'ghost', hp: 120, speed: 100, damage: 26, r: 14, color: '#b266ff', xpBase: 35, goldMin: 6, goldMax: 10, spawnWeight: 3, weightPerWave: 0.08, minWave: 38 },
   boss:       { hp: 1000, speed: 35,  damage: 35, r: 38, color: '#ff0000', xpBase: 100, goldMin: 20, goldMax: 40, spawnWeight: 0, minWave: 1, shootTimer: 1.2 }
 };
 
 const ENEMY_AI = {
-  shootRange: 500, shooterInterval: 2.2, shooterBulletSpeed: 340, shooterBulletDamageMult: 1.0, 
-  shooterKeepDistance: 260, shooterRetreatFactor: 0.6, bossInterval: 1.2, bossBulletSpeed: 300,
-  bossBulletDamageMult: 0.8, bossSpreadAngle: 0.25, bossRingEvery: 4, bossRingCount: 12
+  // v1.0.165: ลดพลังความสามารถโจมตีระยะไกล/บอสลงประมาณ 1/3
+  shootRange: 333.33, shooterInterval: 2.2, shooterBulletSpeed: 226.67, shooterBulletDamageMult: 0.667,
+  shooterKeepDistance: 260, shooterRetreatFactor: 0.4, bossInterval: 1.2, bossBulletSpeed: 200,
+  bossBulletDamageMult: 0.533, bossSpreadAngle: 0.167, bossRingEvery: 6, bossRingCount: 8
 };
 
 const ELITE = {
@@ -1412,7 +1415,7 @@ const WAVES = {
   xpPerWave: 0.02, goldPerWave: 0.035,
 
   bossEvery: 5, bossHpMultiplier: 3, megaBossEvery: 25, 
-  megaHp: 2.2, megaDamage: 1.25, megaRadius: 1.25, megaRewardMult: 3
+  megaHp: 1.47, megaDamage: 0.833, megaRadius: 1.25, megaRewardMult: 3
 };
 
 /* ===== 10. DROPS / PICKUPS ===== */
