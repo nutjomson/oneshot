@@ -1310,6 +1310,30 @@ const CAPS = {
   damageMultOfHero: 200
 };
 
+/* ===== 4.1 SOFT CAP SYSTEM =====
+   Diminishing returns: ยิ่งใกล้เพดาน โบนัสครั้งใหม่ยิ่งลดลง
+*/
+const SOFT_CAPS = {
+  dodge: 0.60, crit: 0.90, armor: 0.75, attackRange: 1000,
+  lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 2,
+  speed: 2.0, projectiles: 15, pierce: 15, ricochet: 12,
+  orbitBlades: 15, revives: 10, timeSlow: 0.40,
+  executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
+  bulletSpeed: 3000
+};
+const SOFT_CAP_STRENGTH = 2;
+function softCapMultiplier(current, cap){
+  if(!Number.isFinite(current)||!Number.isFinite(cap)||cap<=0) return 1;
+  return Math.pow(Math.max(0,1-clamp(current/cap,0,1)),SOFT_CAP_STRENGTH);
+}
+function softCapAdd(current, amount, stat){
+  const cap=SOFT_CAPS[stat];
+  if(!Number.isFinite(amount)||amount<=0||!cap) return amount;
+  const room=Math.max(0,cap-current);
+  if(room<=0) return 0;
+  return Math.min(room,amount*softCapMultiplier(current,cap));
+}
+
 /* ===== 5. COMBAT ===== */
 const COMBAT = {
   playerRadius: 16, hitInvuln: 0.30, dodgeInvuln: 0.30, armorMinTaken: 0.05,
@@ -2558,22 +2582,23 @@ function applyEffect(f){
 
   const beforeMaxHp = player.maxHp;
 
-  const cur =
-    player[f.stat] === undefined
-      ? 0
-      : player[f.stat];
+  const cur = player[f.stat] === undefined ? 0 : Number(player[f.stat]);
+  let nv;
 
-  let nv =
-    f.op==='mul'
-      ? cur*f.v
-      : f.op==='add'
-        ? cur+f.v
-        : f.v;
-
-  if(f.min!==undefined){
-    nv=Math.max(f.min,nv);
+  if(f.op==='mul'){
+    const requested=cur*f.v;
+    nv=f.v>1
+      ? cur+softCapAdd(cur,requested-cur,f.stat)
+      : requested;
+  }else if(f.op==='add'){
+    nv=f.v>0
+      ? cur+softCapAdd(cur,f.v,f.stat)
+      : cur+f.v;
+  }else{
+    nv=f.v;
   }
 
+  if(f.min!==undefined) nv=Math.max(f.min,nv);
   player[f.stat]=nv;
 
   /*
