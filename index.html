@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.187</title>
-<meta name="game-version" content="v1.0.187">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.188</title>
+<meta name="game-version" content="v1.0.188">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -966,7 +966,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.187</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.188</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1093,10 +1093,17 @@ button,input,select,textarea{
     </div>
     <div id="devWave" class="dev-page hidden"><div class="dev-grid">
       <label>Starting Wave<input class="dev-num" data-path="wave.start" type="number"></label><label>Wave Duration (s)<input class="dev-num" data-path="wave.duration" type="number" step="0.5"></label>
-      <label>Spawn Interval<input class="dev-num" data-path="wave.spawnInterval" type="number" step="0.01"></label><label>Interval Reduction/Wave<input class="dev-num" data-path="wave.spawnIntervalPerWave" type="number" step="0.001"></label>
-      <label>Min Spawn Interval<input class="dev-num" data-path="wave.minSpawnInterval" type="number" step="0.01"></label><label>Enemies/Batch<input class="dev-num" data-path="wave.batchBase" type="number"></label>
-      <label>Batch + at Wave 2<input class="dev-num" data-path="wave.batchWave2" type="number"></label><label>Batch + at Wave 6<input class="dev-num" data-path="wave.batchWave6" type="number"></label>
-      <label>Batch + at Wave 12<input class="dev-num" data-path="wave.batchWave12" type="number"></label><label>Max Enemies<input class="dev-num" data-path="wave.maxEnemies" type="number"></label>
+      <label>Batch Base<input class="dev-num" data-path="wave.spawnBatchBase" type="number" step="0.01"></label>
+      <label>Batch +/Wave<input class="dev-num" data-path="wave.spawnBatchPerWave" type="number" step="0.001"></label>
+      <label>Late Batch Start Wave<input class="dev-num" data-path="wave.spawnLateBatchStart" type="number"></label>
+      <label>Late Batch +/Wave<input class="dev-num" data-path="wave.spawnLateBatchPerWave" type="number" step="0.001"></label>
+      <label>Batch Max<input class="dev-num" data-path="wave.spawnBatchMax" type="number" step="1"></label>
+      <label>Spawn Interval Base<input class="dev-num" data-path="wave.spawnIntervalBase" type="number" step="0.01"></label>
+      <label>Interval Reduction/Wave<input class="dev-num" data-path="wave.spawnIntervalPerWave" type="number" step="0.001"></label>
+      <label>Min Spawn Interval<input class="dev-num" data-path="wave.spawnIntervalMin" type="number" step="0.01"></label>
+      <label>Max Enemies Start<input class="dev-num" data-path="wave.maxEnemiesStart" type="number" step="1"></label>
+      <label>Max Enemies +/Wave<input class="dev-num" data-path="wave.maxEnemiesPerWave" type="number" step="0.01"></label>
+      <label>Max Enemies Cap<input class="dev-num" data-path="wave.maxEnemiesCap" type="number" step="1"></label>
       <label>Enemy HP +%/Wave<input class="dev-num dev-percent" data-path="wave.enemyHpPerWave" type="number"></label><label>Enemy Damage +%/Wave<input class="dev-num dev-percent" data-path="wave.enemyDamagePerWave" type="number"></label>
       <label>Enemy Speed +%/Wave<input class="dev-num dev-percent" data-path="wave.enemySpeedPerWave" type="number"></label><label>XP +%/Wave<input class="dev-num dev-percent" data-path="wave.xpPerWave" type="number"></label>
       <label>Gold +%/Wave<input class="dev-num dev-percent" data-path="wave.goldPerWave" type="number"></label><label>Boss Every N Waves<input class="dev-num" data-path="wave.bossEvery" type="number"></label>
@@ -1403,7 +1410,7 @@ const SKILLS = {
 /* ===== v1.0.168 ENEMY BASE HP/DAMAGE NERF =====
    ลด HP และ contact damage ของศัตรูทุกประเภทเหลือ 1/3 จาก v1.0.167
    คง speed / spawn / XP / gold / ranged ability multipliers เดิม */
-/* v1.0.187: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
+/* v1.0.188: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
    Fractional spawn batches are accumulated across spawn ticks.
    XP base values ×2.2 and Gold ranges ×2.7 preserve the previous effective reward level
    while keeping the player-facing multipliers at their original 1x baseline. */
@@ -1435,8 +1442,25 @@ const ELITE = {
 
 /* ===== 9. WAVES ===== */
 const WAVES = {
-  start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005, minSpawnInterval: 0.25,
-  batchBase: 0.9260999999999999, batchBaseMultiplier: 1.311, batchWave2: 0.48999999999999994, batchWave6: 0.7349999999999999, batchWave12: 0.7349999999999999, batchPerWave: 0.05879999999999999, lateWaveStart: 8, maxEnemies: 169.05,
+  start: 1, duration: 7.9967999999999995,
+
+  // ===== v1.0.188: Independent enemy spawn controls =====
+  // Batch = จำนวนศัตรูที่เกิดในแต่ละ spawn tick
+  // Spawn Interval = เวลาระหว่าง spawn tick
+  // Max Enemies = จำนวนศัตรูสูงสุดที่อนุญาตในสนาม
+  spawnBatchBase: 1.00,
+  spawnBatchPerWave: 0.035,
+  spawnLateBatchStart: 25,
+  spawnLateBatchPerWave: 0.015,
+  spawnBatchMax: 4,
+
+  spawnIntervalBase: 0.65,
+  spawnIntervalPerWave: 0.0045,
+  spawnIntervalMin: 0.25,
+
+  maxEnemiesStart: 45,
+  maxEnemiesPerWave: 1.35,
+  maxEnemiesCap: 160,
 
   enemyStartHpMultiplier: 0.37632, enemyStartDamageMultiplier: 0.70,
   enemyGlobalHpMultiplier: 0.70, enemyGlobalCountMultiplier: 1, enemyRewardMultiplier: 1.50,
@@ -1990,7 +2014,7 @@ let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
-  // v1.0.187: Wave 1 spawn diagnostics.
+  // v1.0.188: Wave 1 spawn diagnostics.
   let wave1Spawned=0, wave1LastBatch=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0, shopCyclePurchased=false, shopFinalChance=false;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, pendingShopWave=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
@@ -4965,27 +4989,47 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.187: Guard every spawn interval against missing/invalid Developer values.
+    // v1.0.188: Guard every spawn interval against missing/invalid Developer values.
     // A missing minSpawnInterval made spawnRate = NaN, so only the first spawn could occur.
-    const spawnInterval=Math.max(0.01,Number(dev.wave.spawnInterval)||0.65);
-    const spawnIntervalPerWave=Math.max(0,Number(dev.wave.spawnIntervalPerWave)||0);
-    const minSpawnInterval=Math.max(0.01,Number(dev.wave.minSpawnInterval)||0.25);
-    const spawnRate=Math.max(minSpawnInterval,spawnInterval-(wave-1)*spawnIntervalPerWave);
+    // v1.0.188: Batch, Spawn Interval and Max Enemies are now independent.
+    // This prevents one global count multiplier from unintentionally changing all three systems.
+    const batchBase=Math.max(0,Number(dev.wave.spawnBatchBase)||1);
+    const batchPerWave=Math.max(0,Number(dev.wave.spawnBatchPerWave)||0);
+    const lateBatchStart=Math.max(1,Math.floor(Number(dev.wave.spawnLateBatchStart)||25));
+    const lateBatchPerWave=Math.max(0,Number(dev.wave.spawnLateBatchPerWave)||0);
+    const batchMax=Math.max(1,Number(dev.wave.spawnBatchMax)||4);
+
+    const lateWaves=Math.max(0,wave-lateBatchStart);
+    const batchExact=batchBase+
+      Math.max(0,wave-1)*batchPerWave+
+      lateWaves*lateBatchPerWave;
+    const batchFraction=batchExact-Math.floor(batchExact);
+    const batch=Math.min(
+      batchMax,
+      Math.floor(batchExact)+(Math.random()<batchFraction?1:0)
+    );
+
+    const intervalBase=Math.max(0.01,Number(dev.wave.spawnIntervalBase)||0.65);
+    const intervalPerWave=Math.max(0,Number(dev.wave.spawnIntervalPerWave)||0);
+    const intervalMin=Math.max(0.01,Number(dev.wave.spawnIntervalMin)||0.25);
+    const spawnRate=Math.max(
+      intervalMin,
+      intervalBase-Math.max(0,wave-1)*intervalPerWave
+    );
+
+    const maxStart=Math.max(1,Number(dev.wave.maxEnemiesStart)||45);
+    const maxPerWave=Math.max(0,Number(dev.wave.maxEnemiesPerWave)||1.35);
+    const maxCap=Math.max(maxStart,Number(dev.wave.maxEnemiesCap)||160);
+    const maxEnemies=Math.min(
+      maxCap,
+      Math.floor(maxStart+Math.max(0,wave-1)*maxPerWave)
+    );
+
     if(spawnTimer<=0){
-      const lateStart=Math.max(1,Math.floor(Number(dev.wave.lateWaveStart)||10));
-      const lateWaves=Math.max(0,wave-lateStart+1);
-      const baseBatch=dev.wave.batchBase+
-        (wave>=2?dev.wave.batchWave2:0)+
-        (wave>=6&&Math.random()<.5?dev.wave.batchWave6:0)+
-        (wave>=12&&Math.random()<.5?dev.wave.batchWave12:0);
-      const lateBatchBonus=lateWaves*(Number(dev.wave.batchPerWave)||0);
-      // v1.0.185: Restore the exact pre-50% enemy spawn formula.
-      // Wave 1 returns to the original 1.30x opener and normal probabilistic rounding.
-      // The global count multiplier is intentionally not applied here.
-      const batchExact=(baseBatch+lateBatchBonus)*(Number(dev.wave.batchBaseMultiplier)||1)*(wave===1?1.30:1);
-      const batch=Math.floor(batchExact)+(Math.random()<(batchExact-Math.floor(batchExact))?1:0);
+      const available=Math.max(0,maxEnemies-enemies.length);
+      const spawnCount=Math.min(batch,available);
       let spawnedThisTick=0;
-      for(let i=0;i<batch;i++){ if(spawnEnemy()) spawnedThisTick++; }
+      for(let i=0;i<spawnCount;i++){ if(spawnEnemy()) spawnedThisTick++; }
       if(wave===1){
         wave1LastBatch=spawnedThisTick;
         wave1Spawned+=spawnedThisTick;
