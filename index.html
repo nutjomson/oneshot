@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.186</title>
-<meta name="game-version" content="v1.0.186">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.187</title>
+<meta name="game-version" content="v1.0.187">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -966,7 +966,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.186</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.187</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1403,7 +1403,7 @@ const SKILLS = {
 /* ===== v1.0.168 ENEMY BASE HP/DAMAGE NERF =====
    ลด HP และ contact damage ของศัตรูทุกประเภทเหลือ 1/3 จาก v1.0.167
    คง speed / spawn / XP / gold / ranged ability multipliers เดิม */
-/* v1.0.186: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
+/* v1.0.187: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
    Fractional spawn batches are accumulated across spawn ticks.
    XP base values ×2.2 and Gold ranges ×2.7 preserve the previous effective reward level
    while keeping the player-facing multipliers at their original 1x baseline. */
@@ -1435,7 +1435,7 @@ const ELITE = {
 
 /* ===== 9. WAVES ===== */
 const WAVES = {
-  start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005,
+  start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005, minSpawnInterval: 0.25,
   batchBase: 0.9260999999999999, batchBaseMultiplier: 1.311, batchWave2: 0.48999999999999994, batchWave6: 0.7349999999999999, batchWave12: 0.7349999999999999, batchPerWave: 0.05879999999999999, lateWaveStart: 8, maxEnemies: 169.05,
 
   enemyStartHpMultiplier: 0.37632, enemyStartDamageMultiplier: 0.70,
@@ -1990,7 +1990,7 @@ let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
-  // v1.0.186: Wave 1 spawn diagnostics.
+  // v1.0.187: Wave 1 spawn diagnostics.
   let wave1Spawned=0, wave1LastBatch=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0, shopCyclePurchased=false, shopFinalChance=false;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, pendingShopWave=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
@@ -4965,7 +4965,12 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    const spawnRate=Math.max(dev.wave.minSpawnInterval,dev.wave.spawnInterval-(wave-1)*dev.wave.spawnIntervalPerWave);
+    // v1.0.187: Guard every spawn interval against missing/invalid Developer values.
+    // A missing minSpawnInterval made spawnRate = NaN, so only the first spawn could occur.
+    const spawnInterval=Math.max(0.01,Number(dev.wave.spawnInterval)||0.65);
+    const spawnIntervalPerWave=Math.max(0,Number(dev.wave.spawnIntervalPerWave)||0);
+    const minSpawnInterval=Math.max(0.01,Number(dev.wave.minSpawnInterval)||0.25);
+    const spawnRate=Math.max(minSpawnInterval,spawnInterval-(wave-1)*spawnIntervalPerWave);
     if(spawnTimer<=0){
       const lateStart=Math.max(1,Math.floor(Number(dev.wave.lateWaveStart)||10));
       const lateWaves=Math.max(0,wave-lateStart+1);
