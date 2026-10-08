@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.220">
+<meta name="game-version" content="v1.0.221">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3971,9 +3971,15 @@ function renderStartPerks(){
       p:CFG.attackPatterns?.[String(o?.id||'focused')]||CFG.attackPatterns?.focused||{count:1,damage:1,mode:'bullet'}
     })).filter(o=>o.p);
 
-    const offset=(performance.now()/1000)*0.35;
-
-    for(const patternData of attackPatterns){
+    const nowAttackTime=performance.now()/1000;
+    const patternCount=Math.max(1,attackPatterns.length);
+    const patternPhase=(nowAttackTime*0.35)%1;
+    const patternStagger=0.18;
+    for(let patternIndex=0;patternIndex<attackPatterns.length;patternIndex++){
+      const patternData=attackPatterns[patternIndex];
+      const patternDelay=patternIndex*patternStagger;
+      const patternClock=(nowAttackTime-patternDelay);
+      if(patternClock<0) continue;
       const P=resolveAttackPattern(patternData.p,patternData.level);
       const patternId=patternData.id;
       if(lightningOnly !== (P.mode==='lightning')) continue;
