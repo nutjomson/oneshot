@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.223">
+<meta name="game-version" content="v1.0.224">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3996,16 +3996,24 @@ function renderStartPerks(){
     })).filter(o=>o.p);
 
     const nowAttackTime=performance.now()/1000;
-    const patternCount=Math.max(1,attackPatterns.length);
-    const patternPhase=(nowAttackTime*0.35)%1;
     const patternStagger=0.18;
     for(let patternIndex=0;patternIndex<attackPatterns.length;patternIndex++){
       const patternData=attackPatterns[patternIndex];
-      const patternDelay=patternIndex*patternStagger;
-      const patternClock=(nowAttackTime-patternDelay);
-      if(patternClock<0) continue;
-      const P=resolveAttackPattern(patternData.p,patternData.level);
       const patternId=patternData.id;
+      const P=resolveAttackPattern(patternData.p,patternData.level);
+      // Persistent per-pattern cadence: each owned weapon keeps its own timer,
+      // so the 0.18s offset is applied on every firing cycle, not just at startup.
+      if(P.mode!=='lightning'){
+        const nextKey='pattern:'+patternId;
+        const next=Number(attackPatternNextFire[nextKey]);
+        if(!Number.isFinite(next)){
+          attackPatternNextFire[nextKey]=nowAttackTime+(patternIndex*patternStagger);
+          if(patternIndex>0) continue;
+        }else if(nowAttackTime<next){
+          continue;
+        }
+        attackPatternNextFire[nextKey]=nowAttackTime+Math.max(0.01,Number(player.fireRate)||0.3);
+      }
       if(lightningOnly !== (P.mode==='lightning')) continue;
       const level=patternData.level;
       const levelDmg=1+Math.min(0.38,Math.max(0,level-1)*0.02);
