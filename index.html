@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.202</title>
-<meta name="game-version" content="v1.0.201">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.203</title>
+<meta name="game-version" content="v1.0.203">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2572,10 +2572,10 @@ function applyEffect(f){
 
   if(f.op==='attackPattern'){
     const pattern=String(f.v||'focused');
-    const level=Math.max(1,Number(f.stackLevel)||1);
+    const level=Math.max(1,Math.min(20,Number(f.stackLevel)||1));
     if(!Array.isArray(player.attackPatternsOwned)) player.attackPatternsOwned=[];
-    const existing=player.attackPatternsOwned.find(x=>x&&x.id===pattern);
-    if(existing) existing.level=Math.max(Number(existing.level)||1,level);
+    const existing=player.attackPatternsOwned.find(x=>x&&String(x.id)===pattern);
+    if(existing) existing.level=level;
     else player.attackPatternsOwned.push({id:pattern,level});
     player.attackPattern=pattern;
     player.attackPatternLevel=level;
@@ -2793,7 +2793,10 @@ function descEffect(f){
    ========================================================= */
 
 function previewItemStats(item){
-  const saved={...player,bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
+  const saved={...player,
+    bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes,
+    attackPatternsOwned:Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned.map(x=>({...x})):[]
+  };
   const savedStack=Number(item?.stackCount)||0;
   const before=snapshotPlayerStats();
   try{
@@ -2807,6 +2810,7 @@ function previewItemStats(item){
   }finally{
     Object.assign(player,saved);
     if(Array.isArray(saved.bulletTypes)) player.bulletTypes=[...saved.bulletTypes];
+    player.attackPatternsOwned=Array.isArray(saved.attackPatternsOwned)?saved.attackPatternsOwned.map(x=>({...x})):[];
     if(item) item.stackCount=savedStack;
   }
 }
@@ -2823,11 +2827,24 @@ function getCanonicalItem(item){
   }
   return item;
 }
+function getAttackPatternId(item){
+  const fx=Array.isArray(item?.fx)?item.fx:[];
+  const f=fx.find(x=>x&&x.op==='attackPattern');
+  return f?String(f.v||'focused'):'';
+}
+function getOwnedAttackPatternLevel(id){
+  const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
+  const found=owned.find(x=>x&&String(x.id)===String(id));
+  return found?Math.max(0,Math.floor(Number(found.level)||0)):0;
+}
 function getItemOwnedCount(item){
+  const patternId=getAttackPatternId(item);
+  if(patternId) return getOwnedAttackPatternLevel(patternId);
   const canonical=getCanonicalItem(item);
   return Math.max(0,Math.floor(Number(canonical?.stackCount)||0));
 }
 function getItemStackCap(item){
+  if(getAttackPatternId(item)) return 20;
   const canonical=getCanonicalItem(item);
   const cap=Math.floor(Number(canonical?.stackCap));
   return Number.isFinite(cap)&&cap>0?cap:1;
@@ -2852,7 +2869,8 @@ function getShortItemDescription(item){
         const p=CFG.attackPatterns?.[pid]||CFG.attackPatterns?.focused||{count:1,damage:1};
         const count=Math.max(1,Math.floor(Number(p.count)||1));
         const dmg=Number(p.damage)||1;
-        const level=Math.max(1,Number(item?.stackCount)||0);
+        const pid=String(f.v||'focused');
+        const level=getOwnedAttackPatternLevel(pid);
         const next=Math.min(20,level+1);
         const totalBase=count*dmg;
         const nextBonus=Math.min(0.38,Math.max(0,next-1)*0.02);
@@ -2892,8 +2910,7 @@ function getAttackPatternUpgradeInfo(item){
   if(!f) return '';
   const pid=String(f.v||'focused');
   const p=CFG.attackPatterns?.[pid]||CFG.attackPatterns?.focused||{count:1,damage:1};
-  const canonical=getCanonicalItem(item);
-  const current=Math.max(0,Math.floor(Number(canonical?.stackCount)||0));
+  const current=getOwnedAttackPatternLevel(pid);
   const next=Math.min(20,current+1);
   const levelForDamage=Math.max(1,next);
   const bonus=Math.min(0.38,Math.max(0,(levelForDamage-1)*0.02));
@@ -2911,15 +2928,20 @@ function getAttackPatternUpgradeInfo(item){
   return '<div class="attack-pattern-upgrade-info">'+
     '<div class="attack-pattern-line"><b>⚔️ รูปแบบ:</b> '+mode+shapeText+'</div>'+
     '<div class="attack-pattern-line"><b>💥 พลังพื้นฐาน:</b> '+count+' นัด × x'+damage.toFixed(2)+' = x'+totalBase.toFixed(2)+' ต่อชุด</div>'+
-    '<div class="attack-pattern-line upgrade"><b>⬆️ อัปเกรดครั้งนี้:</b> Lv.'+current+' → Lv.'+next+' • <strong>Damage รูปแบบ +2%</strong> • โบนัสสะสม +'+Math.round(bonus*100)+'%</div>'+
+    '<div class="attack-pattern-line"><b>📦 Stack ระบบ:</b> '+(current>0?'Pattern นี้มี Lv.'+current+' อยู่แล้ว':'ยังไม่มี Pattern นี้ — ครั้งนี้เป็นการปลดล็อก')+'</div>'+
+    '<div class="attack-pattern-line upgrade"><b>⬆️ ผลของ Stack นี้:</b> Lv.'+current+' → Lv.'+next+' • <strong>Damage เฉพาะ '+getAttackPatternName(pid)+' +2%</strong> • โบนัสสะสม +'+Math.round(bonus*100)+'%</div>'+
     '<div class="attack-pattern-line hint">สูงสุด Lv.20 = โบนัส Damage รูปแบบ +38%</div>'+
   '</div>';
 }
 function renderOwnedAttackPatterns(){
   const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
   if(!owned.length) return '';
-  return '<div class="owned-attack-patterns"><div class="owned-attack-patterns-title">⚔️ รูปแบบการโจมตีที่มี</div>'+
-    owned.map(x=>'<span class="owned-attack-pattern '+(String(x.id)===String(player.attackPattern)?'active':'')+'">'+getAttackPatternName(x.id)+' ×'+(Number(x.level)||1)+'</span>').join('')+
+  return '<div class="owned-attack-patterns"><div class="owned-attack-patterns-title">⚔️ รูปแบบการโจมตีที่มี • Stack ซ้ำ = +2% Damage ของ Pattern นั้น</div>'+
+    owned.map(x=>{
+      const lv=Math.max(1,Math.min(20,Number(x.level)||1));
+      const bonus=Math.min(38,(lv-1)*2);
+      return '<span class="owned-attack-pattern '+(String(x.id)===String(player.attackPattern)?'active':'')+'">'+getAttackPatternName(x.id)+' • Lv.'+lv+' • +'+bonus+'% Damage'+(lv>=20?' • MAX':'')+'</span>';
+    }).join('')+
     '</div>';
 }
 function renderItemPreview(item){
@@ -2996,8 +3018,9 @@ function buildItem(def,i){
        */
       console.groupCollapsed('[ITEM APPLY] '+(o.id||'unknown')+' '+(o.name||'ไอเทม'));
       console.log('[ITEM APPLY] context:',{id:o.id,name:o.name,rarity:o.rarity,stackCount:o.stackCount,stackCap:o.stackCap,showDelta,wave,level});
-      const currentStack=Math.max(0,Number(o.stackCount)||0);
-      const rawStackCap=Number(o.stackCap);
+      const patternId=getAttackPatternId(o);
+      const currentStack=patternId ? getOwnedAttackPatternLevel(patternId) : Math.max(0,Number(o.stackCount)||0);
+      const rawStackCap=patternId ? 20 : Number(o.stackCap);
       const safeStackCap=Number.isFinite(rawStackCap)&&rawStackCap>0?rawStackCap:1;
       const nextStack=Math.min(safeStackCap,currentStack+1);
       console.log('[nextStack] calculation:',{rawStackCount:o.stackCount,currentStack,rawStackCap:o.stackCap,safeStackCap,nextStack});
@@ -3156,6 +3179,8 @@ function getBossRarityWeights(w){
 
 function isItemMaxed(item){
   if(!item) return true;
+  const patternId=getAttackPatternId(item);
+  if(patternId) return getOwnedAttackPatternLevel(patternId)>=20;
   const cap=Number(item.stackCap)||20;
   return Number(item.stackCount||0)>=cap;
 }
@@ -3938,7 +3963,7 @@ function renderStartPerks(){
     const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length?player.bulletTypes:[player.bulletType||'arcane'];
     const nT=ownedTypes.length,wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.35)*(nT-1))/nT:1;
     /*
-     * v1.0.202:
+     * v1.0.203:
      * Attack Patterns are cumulative. Buying a new pattern must NOT replace
      * the previous ones. Every owned pattern is fired in the same attack.
      * The latest pattern remains active only as the fallback for old saves.
