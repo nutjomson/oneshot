@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.209</title>
-<meta name="game-version" content="v1.0.209">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.210</title>
+<meta name="game-version" content="v1.0.210">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1389,14 +1389,21 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 
 /* ===== 6.5 LEVEL ATTACK PATTERNS ===== */
 const ATTACK_PATTERNS = {
-  focused:{count:1,spread:0,damage:1}, twin:{count:2,spread:0.16,damage:0.92},
-  triple:{count:3,spread:0.18,damage:0.86}, fan5:{count:5,spread:0.14,damage:0.70},
-  fan7:{count:7,spread:0.12,damage:0.60}, cross:{count:5,cross:true,damage:0.66},
-  sideTwin:{count:2,side:true,damage:0.98}, narrow3:{count:3,spread:0.06,damage:0.98},
-  shotgun:{count:7,spread:0.22,damage:0.55}, ring6:{count:6,ring:true,damage:0.64},
-  diagonal:{count:5,diagonal:true,damage:0.68}, needle5:{count:5,spread:0.035,damage:0.76},
-  split6:{count:6,spread:0.10,damage:0.66}, burst4:{count:4,spread:0.08,damage:0.82},
-  storm8:{count:8,ring:true,damage:0.50}
+  focused:{count:1,spread:0,damage:1,mode:'bullet'},
+  twin:{count:2,spread:0.10,damage:0.84,mode:'bullet'},
+  triple:{count:3,spread:0.16,damage:0.72,mode:'bullet'},
+  sword:{count:1,damage:1.18,mode:'slash',range:145,arc:0.42},
+  shortWave:{count:1,damage:0.92,mode:'wave',range:300,speed:520,radius:10,life:0.58},
+  closeSlash:{count:1,damage:1.35,mode:'slash',range:105,arc:0.78},
+  ringBurst:{count:8,damage:0.48,mode:'ring'},
+  lightning:{count:3,damage:1.05,mode:'lightning',range:520},
+  spear:{count:1,damage:1.12,mode:'pierce',speed:1050,life:0.72},
+  fan5:{count:5,spread:0.18,damage:0.58,mode:'bullet'},
+  cross:{count:4,cross:true,damage:0.55,mode:'bullet'},
+  shotgun:{count:7,spread:0.28,damage:0.43,mode:'bullet'},
+  diagonal:{count:4,diagonal:true,damage:0.52,mode:'bullet'},
+  burst4:{count:4,spread:0.05,damage:0.66,mode:'burst'},
+  storm8:{count:8,ring:true,damage:0.34,mode:'ring',rotate:true}
 };
 
 /* ===== 7. SKILLS ===== */
@@ -3962,23 +3969,15 @@ function renderStartPerks(){
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
     const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length?player.bulletTypes:[player.bulletType||'arcane'];
     const nT=ownedTypes.length,wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.35)*(nT-1))/nT:1;
-    /*
-     * v1.0.203:
-     * Attack Patterns are cumulative. Buying a new pattern must NOT replace
-     * the previous ones. Every owned pattern is fired in the same attack.
-     * The latest pattern remains active only as the fallback for old saves.
-     */
     const ownedPatterns=Array.isArray(player.attackPatternsOwned)&&player.attackPatternsOwned.length
       ? player.attackPatternsOwned
       : [{id:player.attackPattern||'focused',level:Math.max(1,Number(player.attackPatternLevel)||1)}];
 
-    const attackPatterns=ownedPatterns
-      .map(o=>({
-        id:String(o?.id||'focused'),
-        level:Math.max(1,Number(o?.level)||1),
-        p:CFG.attackPatterns?.[String(o?.id||'focused')]||CFG.attackPatterns?.focused||{count:1,damage:1}
-      }))
-      .filter(o=>o.p);
+    const attackPatterns=ownedPatterns.map(o=>({
+      id:String(o?.id||'focused'),
+      level:Math.max(1,Number(o?.level)||1),
+      p:CFG.attackPatterns?.[String(o?.id||'focused')]||CFG.attackPatterns?.focused||{count:1,damage:1,mode:'bullet'}
+    })).filter(o=>o.p);
 
     const offset=(performance.now()/1000)*0.35;
 
@@ -3987,34 +3986,70 @@ function renderStartPerks(){
       const patternId=patternData.id;
       const level=patternData.level;
       const levelDmg=1+Math.min(0.38,Math.max(0,level-1)*0.02);
+      const patternDamage=player.damage*wMult*(Number(P.damage)||1)*levelDmg;
+
+      // ฟันประชิด: โจมตีศัตรูทั้งหมดในกรวยด้านหน้าแบบทันที
+      if(P.mode==='slash'){
+        const range=Number(P.range)||120, arc=Number(P.arc)||0.6;
+        for(const e of enemies){
+          if(e.dead)continue;
+          const d=dist(player.x,player.y,e.x,e.y);
+          if(d>range)continue;
+          const a=Math.atan2(e.y-player.y,e.x-player.x);
+          let da=Math.atan2(Math.sin(a-baseAngle),Math.cos(a-baseAngle));
+          if(Math.abs(da)<=arc) hitEnemy(e,patternDamage,false,null,false);
+        }
+        makeSparks(player.x+Math.cos(baseAngle)*((Number(P.range)||120)*0.55),player.y+Math.sin(baseAngle)*((Number(P.range)||120)*0.55),'#facc15',12);
+        continue;
+      }
+
+      // สายฟ้า: เลือกเป้าหมายแบบสุ่มแล้วฟาดลงทันที
+      if(P.mode==='lightning'){
+        const pool=enemies.filter(e=>!e.dead&&dist(player.x,player.y,e.x,e.y)<=(Number(P.range)||500));
+        for(let n=0;n<Math.min(Number(P.count)||1,pool.length);n++){
+          const idx=Math.floor(Math.random()*pool.length);
+          const e=pool.splice(idx,1)[0];
+          if(!e)continue;
+          hitEnemy(e,patternDamage,false,null,false);
+          e.lightningFlash=0.16;
+          makeSparks(e.x,e.y,'#67e8f9',18);
+        }
+        continue;
+      }
+
       const count=Math.max(1,Math.floor(P.count||1));
       const angles=[];
-
       for(let i=0;i<count;i++){
         let a=baseAngle;
         if(P.ring){
           a=baseAngle+i*Math.PI*2/count;
-          if(patternId==='storm8')a+=offset;
+          if(P.rotate)a+=offset;
+        }else if(P.cross){
+          a=baseAngle+[0,Math.PI/2,Math.PI,-Math.PI/2][i%4];
+        }else if(P.diagonal){
+          a=baseAngle+[Math.PI/4,-Math.PI/4,3*Math.PI/4,-3*Math.PI/4][i%4];
+        }else{
+          a=baseAngle+(i-(count-1)/2)*(Number(P.spread)||0);
         }
-        else if(P.cross)a=baseAngle+[0,Math.PI/2,Math.PI,-Math.PI/2,0][i%5];
-        else if(P.diagonal)a=baseAngle+[-0.7,0.7,-2.44,2.44,0][i%5];
-        else if(P.side)a=baseAngle+(i===0?-0.22:0.22);
-        else a=baseAngle+(i-(count-1)/2)*(Number(P.spread)||0);
         angles.push(a);
       }
 
       for(const bt of ownedTypes){
         for(const a of angles){
           const B=CFG.bulletTypes[bt]||{},K=CFG.combat;
-          const crit=Math.random()<clamp(player.crit+(B.critBonus||0),0,1),sp=player.bulletSpeed*(B.speedMult||1);
-          const dmg=player.damage*wMult*(Number(P.damage)||1)*levelDmg*(crit?(B.critMult||K.critMult):1);
+          const crit=Math.random()<clamp(player.crit+(B.critBonus||0),0,1);
+          const sp=player.bulletSpeed*(B.speedMult||1)*(P.mode==='wave'?((Number(P.speed)||520)/800):1)*(P.mode==='pierce'?((Number(P.speed)||1050)/800):1);
+          const dmg=patternDamage*(crit?(B.critMult||K.critMult):1);
           bullets.push({
-            x:player.x+Math.cos(a)*K.muzzleOffset,
-            y:player.y+Math.sin(a)*K.muzzleOffset,
+            x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,
             vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
-            r:B.radius||K.bulletRadius,life:K.bulletLife,damage:dmg,crit,type:bt,
-            pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),
-            hitList:[],trail:[],attackPatternId:patternId,attackPatternLevel:level
+            r:P.mode==='wave'?(Number(P.radius)||10):(B.radius||K.bulletRadius),
+            life:P.mode==='wave'?(Number(P.life)||0.58):(P.mode==='pierce'?(Number(P.life)||0.72):K.bulletLife),
+            damage:dmg,crit,type:bt,
+            pierce:player.pierce+(B.pierceBonus||0)+(P.mode==='pierce'?5:0),
+            bounce:player.ricochet+(B.bounce||0),
+            hitList:[],trail:[],attackPatternId:patternId,attackPatternLevel:level,
+            patternMode:P.mode,patternRange:Number(P.range)||0
           });
         }
       }
