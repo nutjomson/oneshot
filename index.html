@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.210</title>
-<meta name="game-version" content="v1.0.210">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.211</title>
+<meta name="game-version" content="v1.0.211">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1403,7 +1403,9 @@ const ATTACK_PATTERNS = {
   shotgun:{count:7,spread:0.28,damage:0.43,mode:'bullet'},
   diagonal:{count:4,diagonal:true,damage:0.52,mode:'bullet'},
   burst4:{count:4,spread:0.05,damage:0.66,mode:'burst'},
-  storm8:{count:8,ring:true,damage:0.34,mode:'ring',rotate:true}
+  storm8:{count:8,ring:true,damage:0.34,mode:'ring',rotate:true},
+  bomb:{count:1,damage:0.78,mode:'bomb',range:520,speed:620,radius:150,life:1.10},
+  poisonBottle:{count:1,damage:0.34,mode:'poison',range:480,speed:560,radius:125,life:0.95,zoneLife:3.50,tick:0.45}
 };
 
 /* ===== 7. SKILLS ===== */
@@ -1525,7 +1527,9 @@ const LEVEL_UPGRADES = [
   {id:'atk_needle5',rarity:'rare',icon:'🪡',name:'เข็มกระสุน 5 ชั้น',stackCap:20,fx:[setAttackPattern('needle5')]},
   {id:'atk_split6',rarity:'rare',icon:'🔷',name:'คริสตัลแยก 6 ทาง',stackCap:20,fx:[setAttackPattern('split6')]},
   {id:'atk_burst4',rarity:'legend',icon:'☄️',name:'มหาระเบิด 4 นัด',stackCap:20,fx:[setAttackPattern('burst4')]},
-  {id:'atk_storm8',rarity:'legend',icon:'🌪️',name:'พายุ 8 ทิศ',stackCap:20,fx:[setAttackPattern('storm8')]}
+  {id:'atk_storm8',rarity:'legend',icon:'🌪️',name:'พายุ 8 ทิศ',stackCap:20,fx:[setAttackPattern('storm8')]},
+  {id:'atk_bomb',rarity:'legend',icon:'💣',name:'ระเบิดวงกว้าง',stackCap:20,fx:[setAttackPattern('bomb')]},
+  {id:'atk_poison',rarity:'legend',icon:'☠️',name:'ขวดพิษสนามพิษ',stackCap:20,fx:[setAttackPattern('poisonBottle')]}
 ];
 
 /* ===== 16. SHOP_ITEMS ===== */
@@ -1916,7 +1920,7 @@ window.GAME_CONFIG = {
     orbitBlades: 0
   };
 
-  let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[];
+  let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[], poisonZones=[];
   // Fixed core mechanic: XP and gold auto-pick up within this radius. No Pickup stat/upgrades.
   const AUTO_PICKUP_RADIUS = 409.5; // v1.0.166: +30% pickup range
   let treasureChests=[];
@@ -2881,7 +2885,7 @@ function getShortItemDescription(item){
         const next=Math.min(20,level+1);
         const totalBase=count*dmg;
         const nextBonus=Math.min(0.38,Math.max(0,next-1)*0.02);
-        const mode=p.ring?'ยิงรอบทิศ':p.cross?'กากบาท':p.diagonal?'กากบาททแยง':p.side?'ยิงคู่ด้านข้าง':(count===1?'ยิงตรง':`ยิง ${count} นัด`);
+        const mode=p.mode==='bomb'?'โยนระเบิด • ระเบิดวงกว้าง':p.mode==='poison'?'โยนขวดพิษ • สร้างพื้นที่พิษต่อเนื่อง':p.mode==='slash'?'ฟันประชิดเป็นกรวย':p.mode==='wave'?'คลื่นพลังสั้น':p.mode==='lightning'?'สายฟ้าสุ่มเป้าหมาย':p.mode==='pierce'?'หอกพุ่งตรงเจาะทะลุ':p.ring?'ยิงรอบทิศ':p.cross?'กากบาท':p.diagonal?'กากบาททแยง':p.side?'ยิงคู่ด้านข้าง':(count===1?'ยิงตรง':`ยิง ${count} นัด`);
         return level>0 ? mode+' • Stack ซ้ำ = +2% Damage • ปัจจุบัน Lv.'+level+' (+'+Math.round(Math.min(0.38,Math.max(0,(level-1)*0.02))*100)+'%) → Lv.'+next+' (+'+Math.round(nextBonus*100)+'%)' : mode+' • ปลดล็อก Pattern ใหม่ • จากนั้น Stack ซ้ำแต่ละครั้ง +2% Damage (สูงสุด Lv.20 = +38%)';
       }
       const s=String(f.stat||'');
@@ -2931,6 +2935,8 @@ function getAttackPatternUpgradeInfo(item){
   if(p.side) shape.push('ซ้าย/ขวา');
   if(p.cross) shape.push('4 ทิศ + เป้าหมาย');
   if(p.diagonal) shape.push('ทแยง 4 มุม');
+  if(p.mode==='bomb') shape.push('รัศมี '+(Number(p.radius)||150)+' • ระเบิดเมื่อถึงจุด');
+  if(p.mode==='poison') shape.push('รัศมี '+(Number(p.radius)||125)+' • '+(Number(p.zoneLife)||3.5).toFixed(1)+' วิ • ทุก '+(Number(p.tick)||.45).toFixed(2)+' วิ');
   const shapeText=shape.length?' • '+shape.join(' • '):'';
   return '<div class="attack-pattern-upgrade-info">'+
     '<div class="attack-pattern-line"><b>⚔️ รูปแบบ:</b> '+mode+shapeText+'</div>'+
@@ -4049,7 +4055,9 @@ function renderStartPerks(){
             pierce:player.pierce+(B.pierceBonus||0)+(P.mode==='pierce'?5:0),
             bounce:player.ricochet+(B.bounce||0),
             hitList:[],trail:[],attackPatternId:patternId,attackPatternLevel:level,
-            patternMode:P.mode,patternRange:Number(P.range)||0
+            patternMode:P.mode,patternRange:Number(P.range)||0,
+            targetX:target.x,targetY:target.y,
+            zoneLife:Number(P.zoneLife)||0,zoneTick:Number(P.tick)||0
           });
         }
       }
@@ -5264,7 +5272,34 @@ function openLevelUp(forceHigherRarity=false){
 
       let remove=b.life<=0;
 
-      // Handle Ricochet Wall Bounces
+      // v1.0.211: Area-impact attack patterns.
+      if(!remove && (b.patternMode==='bomb' || b.patternMode==='poison')){
+        const reachedTarget=dist(b.x,b.y,b.targetX,b.targetY)<=Math.max(18,b.r+8);
+        if(reachedTarget || b.life<=0){
+          const impactX=reachedTarget?b.targetX:b.x, impactY=reachedTarget?b.targetY:b.y;
+          if(b.patternMode==='bomb'){
+            const radius=150;
+            for(const e of enemies){
+              if(!e.dead && dist(impactX,impactY,e.x,e.y)<=radius+e.r) hitEnemy(e,b.damage,b.crit,b);
+            }
+            makeSparks(impactX,impactY,'#f97316',28);
+            sparks.push({x:impactX,y:impactY,vx:0,vy:0,life:.28,size:radius*2,color:'#fb923c',ring:true});
+          }else{
+            poisonZones.push({
+              x:impactX,y:impactY,r:125,
+              life:Math.max(.5,Number(b.zoneLife)||3.5),
+              maxLife:Math.max(.5,Number(b.zoneLife)||3.5),
+              tick:0,tickRate:Math.max(.2,Number(b.zoneTick)||.45),
+              damage:Math.max(1,b.damage)
+            });
+            makeSparks(impactX,impactY,'#84cc16',20);
+          }
+          remove=true;
+        }
+      }
+
+      if(!remove){
+        // Handle Ricochet Wall Bounces
       const consumeBounce=()=>{b.bounceUsed=(b.bounceUsed||0)+1;const whole=Math.floor(Math.max(0,b.bounce)),frac=Math.max(0,b.bounce-whole);return b.bounceUsed<whole||(b.bounceUsed===whole&&frac>0&&Math.random()<frac);};
       if(b.x<40||b.x>world.w-40){if(b.bounce>0&&consumeBounce())b.vx*=-1;else remove=true;}
       if(b.y<40||b.y>world.h-40){if(b.bounce>0&&consumeBounce())b.vy*=-1;else remove=true;}
@@ -5283,6 +5318,19 @@ function openLevelUp(forceHigherRarity=false){
       if(remove)bullets.splice(i,1);
     }
     sweepDead();
+
+    // v1.0.211: poison zones deal repeated area damage while enemies remain inside.
+    for(let i=poisonZones.length-1;i>=0;i--){
+      const z=poisonZones[i];
+      z.life-=dt; z.tick-=dt;
+      if(z.tick<=0){
+        z.tick+=z.tickRate;
+        for(const e of enemies){
+          if(!e.dead && dist(z.x,z.y,e.x,e.y)<=z.r+e.r) hitEnemy(e,z.damage,false,null);
+        }
+      }
+      if(z.life<=0)poisonZones.splice(i,1);
+    }
 
     for(let i=enemyBullets.length-1;i>=0;i--){
       const eb=enemyBullets[i]; eb.x+=eb.vx*dt; eb.y+=eb.vy*dt; eb.life-=dt;
@@ -5554,10 +5602,40 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
+    for(const b of bullets){
+      if(b.patternMode==='bomb' || b.patternMode==='poison'){
+        const px=sx(b.x,cam), py=sy(b.y,cam);
+        ctx.save();
+        if(b.patternMode==='bomb'){
+          ctx.fillStyle='#7c2d12'; ctx.fillRect(px-7,py-7,14,14);
+          ctx.fillStyle='#f97316'; ctx.fillRect(px-4,py-5,8,8);
+          ctx.fillStyle='#fde68a'; ctx.fillRect(px-2,py-2,4,4);
+        }else{
+          ctx.fillStyle='#365314'; ctx.fillRect(px-6,py-8,12,14);
+          ctx.fillStyle='#84cc16'; ctx.fillRect(px-4,py-6,8,8);
+          ctx.fillStyle='#d9f99d'; ctx.fillRect(px-2,py-4,4,4);
+        }
+        ctx.restore();
+      }
+    }
+
     for(const eb of enemyBullets){
       const px=sx(eb.x,cam), py=sy(eb.y,cam);
       ctx.fillStyle = '#f43f5e'; ctx.fillRect(px-5, py-5, 10, 10);
       ctx.fillStyle = '#facc15'; ctx.fillRect(px-2, py-2, 4, 4);
+    }
+
+    for(const z of poisonZones){
+      const px=sx(z.x,cam), py=sy(z.y,cam);
+      const pulse=1+Math.sin(performance.now()/120+z.x*.01)*.08;
+      ctx.save();
+      ctx.globalAlpha=.30+.12*(z.life/z.maxLife);
+      ctx.fillStyle='#84cc16'; ctx.beginPath(); ctx.arc(px,py,z.r*pulse,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=.78;
+      ctx.strokeStyle='#bef264'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(px,py,z.r*pulse,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=.35; ctx.fillStyle='#d9f99d';
+      for(let k=0;k<7;k++){const a=performance.now()/500+k*.9;ctx.fillRect(px+Math.cos(a)*z.r*.55-2,py+Math.sin(a)*z.r*.55-2,4,4);}
+      ctx.restore();
     }
   }
 
@@ -5746,7 +5824,7 @@ function openLevelUp(forceHigherRarity=false){
     elapsed=0; wave=Math.max(1,Math.floor(dev.wave.start)); kills=0; wave1Spawned=0; wave1LastBatch=0; level=1; xp=0; xpNeed=Math.max(1,Math.floor(dev.level.xpNeedStart)); lastShopWave=1; pendingShopWave=0; shopCyclePurchased=false; shopFinalChance=false; freeShopRerolls=0; rerollN=0; levelRerollN=0;
     itemHistory=[];
     runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
-    bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[];
+    bullets=[]; enemyBullets=[]; enemies=[]; xpOrbs=[]; goldCoins=[]; sparks=[]; poisonZones=[];
     rewardOpen=false; pendingItemReward=null; activeRewardFinisher=null;
     if(itemRewardTimer) clearTimeout(itemRewardTimer);
     if(itemRewardSpinTimer) clearInterval(itemRewardSpinTimer);
