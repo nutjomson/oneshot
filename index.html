@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.224">
+<meta name="game-version" content="v1.0.225">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3981,7 +3981,7 @@ function renderStartPerks(){
     const attackRange=Math.max(0,Number(player.attackRange)||0);
     for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<=attackRange&&d<bd){bd=d;target=e;}}
     if(!target)return;
-    if(!lightningOnly) playSound('shoot');
+    let firedAny=false;
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
     const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length?player.bulletTypes:[player.bulletType||'arcane'];
     const nT=ownedTypes.length,wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.35)*(nT-1))/nT:1;
@@ -4013,6 +4013,7 @@ function renderStartPerks(){
           continue;
         }
         attackPatternNextFire[nextKey]=nowAttackTime+Math.max(0.01,Number(player.fireRate)||0.3);
+        firedAny=true;
       }
       if(lightningOnly !== (P.mode==='lightning')) continue;
       const level=patternData.level;
@@ -4091,6 +4092,7 @@ function renderStartPerks(){
         }
       }
     }
+    if(firedAny) playSound('shoot');
   }
 
   function enemyShootAt(e,a){enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*CFG.enemyAI.bossBulletSpeed,vy:Math.sin(a)*CFG.enemyAI.bossBulletSpeed,r:6,life:3,damage:e.damage*CFG.enemyAI.bossBulletDamageMult});}
@@ -5190,7 +5192,7 @@ function openLevelUp(forceHigherRarity=false){
       if(player.animTimer>=1){player.animFrame=(player.animFrame+1)%4;player.animTimer=0;}
     } else { player.animFrame=0; }
 
-    if(player.fireTimer<=0){shoot(false);player.fireTimer=player.fireRate;}
+    shoot(false);
     if(Array.isArray(player.attackPatternsOwned)&&player.attackPatternsOwned.some(o=>o&&CFG.attackPatterns?.[o.id]?.mode==='lightning'))shoot(true);
 
     // Orbit Blades Mechanics — fractional blades deal proportional damage.
