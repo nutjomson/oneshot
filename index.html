@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.172</title>
-<meta name="game-version" content="v1.0.174">
+<meta name="game-version" content="v1.0.175">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2901,7 +2901,7 @@ function buildItem(def,i){
      * snapshot หลังใช้ Item
      * แล้วแสดง Delta รวมทีเดียว
      */
-    apply:()=>{
+    apply:(showDelta=true)=>{
 
       const before=snapshotPlayerStats();
 
@@ -5074,8 +5074,8 @@ function openLevelUp(forceHigherRarity=false){
     let shakeY = (Math.random() - 0.5) * screenShake;
     const viewW=W/COMBAT_ZOOM, viewH=H/COMBAT_ZOOM;
     return {
-      x:clamp(player.x-viewW/2 + shakeX, -70, Math.max(-70,world.w-viewW+70)),
-      y:clamp(player.y-viewH/2 + shakeY, -70, Math.max(-70,world.h-viewH+70))
+      x:clamp(player.x-viewW/2 + shakeX, -105, Math.max(-105,world.w-viewW+105)),
+      y:clamp(player.y-viewH/2 + shakeY, -105, Math.max(-105,world.h-viewH+105))
     };
   }
 
