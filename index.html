@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.226</title>
-<meta name="game-version" content="v1.0.226">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.227</title>
+<meta name="game-version" content="v1.0.227">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2992,10 +2992,15 @@ function buildItem(def,i){
       console.log('[ITEM APPLY] context:',{id:o.id,name:o.name,rarity:o.rarity,stackCount:o.stackCount,stackCap:o.stackCap,showDelta,wave,level});
       const patternId=getAttackPatternId(o);
       const currentStack=patternId ? getOwnedAttackPatternLevel(patternId) : Math.max(0,Number(o.stackCount)||0);
-      const rawStackCap=patternId ? 20 : Number(o.stackCap);
+      const rawStackCap=patternId ? 12 : Number(o.stackCap);
       const safeStackCap=Number.isFinite(rawStackCap)&&rawStackCap>0?rawStackCap:1;
-      const nextStack=Math.min(safeStackCap,currentStack+1);
-      console.log('[nextStack] calculation:',{rawStackCount:o.stackCount,currentStack,rawStackCap:o.stackCap,safeStackCap,nextStack});
+      if(currentStack>=safeStackCap){
+        console.warn('[ITEM APPLY] item already at cap:',{id:o.id,currentStack,safeStackCap});
+        console.groupEnd();
+        return false;
+      }
+      const nextStack=currentStack+1;
+      console.log('[nextStack] calculation:',{rawStackCount:o.stackCount,currentStack,rawStackCap, safeStackCap,nextStack});
       const before=snapshotPlayerStats();
       console.log('[ITEM APPLY] stats before:',before);
 
@@ -3152,7 +3157,7 @@ function getBossRarityWeights(w){
 function isItemMaxed(item){
   if(!item) return true;
   const patternId=getAttackPatternId(item);
-  if(patternId) return getOwnedAttackPatternLevel(patternId)>=20;
+  if(patternId) return getOwnedAttackPatternLevel(patternId)>=12;
   const cap=Number(item.stackCap)||20;
   return Number(item.stackCount||0)>=cap;
 }
