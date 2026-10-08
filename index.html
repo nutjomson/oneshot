@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.190</title>
-<meta name="game-version" content="v1.0.192">
+<meta name="game-version" content="v1.0.193">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3862,22 +3862,34 @@ function renderStartPerks(){
   }
 
   function shoot(){
-    let target=null, bd=Infinity;
+    let target=null,bd=Infinity;
     const attackRange=Math.max(0,Number(player.attackRange)||0);
-    for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<=attackRange && d<bd){bd=d;target=e;}}
+    for(const e of enemies){const d=dist(player.x,player.y,e.x,e.y);if(d<=attackRange&&d<bd){bd=d;target=e;}}
     if(!target)return;
-    
     playSound('shoot');
     const baseAngle=Math.atan2(target.y-player.y,target.x-player.x);
-    const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
-    const nT=ownedTypes.length, wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.35)*(nT-1))/nT:1;
+    const ownedTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length?player.bulletTypes:[player.bulletType||'arcane'];
+    const nT=ownedTypes.length,wMult=nT>1?(1+(CFG.combat.extraWeaponValue??0.35)*(nT-1))/nT:1;
+    const P=CFG.attackPatterns?.[player.attackPattern]||CFG.attackPatterns?.focused||{count:1,damage:1};
+    const level=Math.max(1,Number(player.attackPatternLevel)||1);
+    const levelDmg=1+Math.min(0.38,(level-1)*0.02);
+    const count=Math.max(1,Math.floor(P.count||1));
+    const angles=[],offset=(performance.now()/1000)*0.35;
+    for(let i=0;i<count;i++){
+      let a=baseAngle;
+      if(P.ring)a=baseAngle+i*Math.PI*2/count;
+      else if(P.cross)a=baseAngle+[0,Math.PI/2,Math.PI,-Math.PI/2,0][i%5];
+      else if(P.diagonal)a=baseAngle+[-0.7,0.7,-2.44,2.44,0][i%5];
+      else if(P.side)a=baseAngle+(i===0?-0.22:0.22);
+      else{a=baseAngle+(i-(count-1)/2)*(Number(P.spread)||0);if(player.attackPattern==='storm8')a+=offset;}
+      angles.push(a);
+    }
     for(const bt of ownedTypes){
-      for(let i=0;i<player.projectiles;i++){
-        const spread=(i-(player.projectiles-1)/2)*CFG.combat.spreadAngle;
-        const a=baseAngle+spread;
-        const B=CFG.bulletTypes[bt]||{}, K=CFG.combat;
-        const crit=Math.random()<player.crit+(B.critBonus||0), sp=player.bulletSpeed*(B.speedMult||1);
-        bullets.push({x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:B.radius||K.bulletRadius,life:K.bulletLife,damage:player.damage*wMult*(crit?(B.critMult||K.critMult):1),crit,type:bt,pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),hitList:[],trail:[]});
+      for(const a of angles){
+        const B=CFG.bulletTypes[bt]||{},K=CFG.combat;
+        const crit=Math.random()<clamp(player.crit+(B.critBonus||0),0,1),sp=player.bulletSpeed*(B.speedMult||1);
+        const dmg=player.damage*wMult*(Number(P.damage)||1)*levelDmg*(crit?(B.critMult||K.critMult):1);
+        bullets.push({x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:B.radius||K.bulletRadius,life:K.bulletLife,damage:dmg,crit,type:bt,pierce:player.pierce+(B.pierceBonus||0),bounce:player.ricochet+(B.bounce||0),hitList:[],trail:[]});
       }
     }
   }
