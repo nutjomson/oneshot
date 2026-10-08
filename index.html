@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.225">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.226</title>
+<meta name="game-version" content="v1.0.226">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2882,14 +2882,36 @@ function getAttackPatternName(id){
   const item=[...levelUpgrades,...luxuryShopPool].find(x=>x&&x.fx&&x.fx.some(f=>f&&f.op==='attackPattern'&&String(f.v)===String(id)));
   return item?.name||String(id||'รูปแบบโจมตี');
 }
+function getAttackPatternMilestoneDetail(pid,lv){
+  const details={
+    oneDir:{4:'เพิ่มกระสุน +1',8:'Damage เพิ่ม 18%',12:'Pierce +2 และ Damage เพิ่ม 15%'},
+    twoDir:{4:'เพิ่ม Spread เพื่อกระจายทิศยิง',8:'เพิ่มจำนวนเป็น 4 ทิศ',12:'Pierce +1 และ Damage เพิ่ม 12%'},
+    threeDir:{4:'Pierce +1',8:'Damage เพิ่ม 18%',12:'เพิ่มจำนวนเป็น 5 ทิศ และ Pierce +1'},
+    fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
+    powerWave:{4:'Knockback +35',8:'Radius +20% และ Pierce 2',12:'Radius +25%, ระยะ +12%, Knockback รวม +75'},
+    slashCone:{4:'เพิ่ม Bleed DPS',8:'มุมฟัน +18% และ Bleed นานอย่างน้อย 2.5 วิ',12:'Bleed DPS อย่างน้อย 0.095, Bleed 4 วิ และ Damage +12%'},
+    frontSlash:{4:'ระยะฟัน +15%',8:'มุมฟัน +25%',12:'มุมฟัน +0.45 rad และ Damage +15%'},
+    fireballChain:{4:'Chain อย่างน้อย 3 เป้าหมาย',8:'ระยะ Chain +25% และ Chain +1',12:'Chain +2, ระยะ Chain +20% และ Damage +12%'},
+    lightningBolt:{4:'Pierce +1',8:'ความเร็ว +18%',12:'Pierce +2 และ Damage +12%'},
+    bomb:{4:'รัศมีระเบิด +15%',8:'Damage +18%',12:'รัศมี +20% และ Damage +12%'},
+    poisonBottle:{4:'พื้นที่พิษนาน +25%',8:'Tick เร็วขึ้น',12:'รัศมี +18%, พื้นที่พิษนาน +25% และ Tick = 0.25 วิ'},
+    lightningStrike:{4:'สายฟ้า +1',8:'Cooldown -28%',12:'สายฟ้า +2, Cooldown -30% และ Damage +10%'},
+    blackHole:{4:'แรงดูด +25%',8:'พื้นที่ทำงานนาน +25%',12:'รัศมี +20%, แรงดูด +25% และพื้นที่นาน +20%'},
+    mudPool:{4:'Slow +10%',8:'พื้นที่ทำงานนาน +30%',12:'รัศมี +18%, Slow +12% และพื้นที่นาน +20%'},
+    mine:{4:'รัศมี +20%',8:'Damage +20%',12:'รัศมี +22% และ Damage +15%'}
+  };
+  return details[pid]?.[lv]||'';
+}
 function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
   const names={oneDir:'ยิง 1 ทิศ',twoDir:'ยิง 2 ทิศ',threeDir:'ยิง 3 ทิศ',fiveDir:'ยิง 5 ทิศ',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'ขวดพิษ',lightningStrike:'สายฟ้าสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
-  const m=next>=12?'👑 Lv.12: ขั้นสมบูรณ์':next>=8?'⭐ Lv.8: อัปเกรดขั้นสูง':next>=4?'🔓 Lv.4: ปลดล็อกพิเศษ':'';
+  const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
-  return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+(m?'<div class="attack-pattern-line upgrade"><b>'+m+'</b></div>':'')+'<div class="attack-pattern-line hint">ทุก 4 Lv. รูปแบบจะปลดล็อกความสามารถใหม่</div></div>';
+  return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
+    (milestone?'<div class="attack-pattern-line upgrade">✨ <b>ผลที่ได้รับตอนนี้: '+milestone+'</b></div>':'')+
+    '<div class="attack-pattern-line hint">Milestone: Lv.4 / Lv.8 / Lv.12</div></div>';
 }
 
 function renderItemPreview(item){
@@ -2914,9 +2936,11 @@ function renderItemPreview(item){
     const ownership=renderItemOwnership(item);
     const attackInfo=getAttackPatternUpgradeInfo(item);
     if(!rows.length){
-      return '<div class="item-preview">'+ownership+attackInfo+renderOwnedAttackPatterns()+'</div>';
+      return '<div class="item-preview">'+ownership+attackInfo+
+        '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
+        '<div style="font-size:8px;color:#94a3b8">ไอเทมนี้เปลี่ยนความสามารถ/รูปแบบการโจมตีโดยตรง</div></div>';
     }
-    return '<div class="item-preview">'+ownership+attackInfo+renderOwnedAttackPatterns()+
+    return '<div class="item-preview">'+ownership+attackInfo+
       '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
       '<div class="item-preview-grid">'+rows.join('')+'</div></div>';
   }catch(e){
