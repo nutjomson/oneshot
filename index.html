@@ -2875,7 +2875,7 @@ function getShortItemDescription(item){
         const totalBase=count*dmg;
         const nextBonus=Math.min(0.38,Math.max(0,next-1)*0.02);
         const mode=p.ring?'ยิงรอบทิศ':p.cross?'กากบาท':p.diagonal?'กากบาททแยง':p.side?'ยิงคู่ด้านข้าง':(count===1?'ยิงตรง':`ยิง ${count} นัด`);
-        return `${mode} • ความเสียหายรวมพื้นฐาน x${totalBase.toFixed(2)} • อัปเกรดครั้งนี้ +2% Damage${next>1?` (รวม +${Math.round(nextBonus*100)}% ที่ Lv.${next})`:''}`;
+        return level>0 ? mode+' • Stack ซ้ำ = +2% Damage • ปัจจุบัน Lv.'+level+' (+'+Math.round(Math.min(0.38,Math.max(0,(level-1)*0.02))*100)+'%) → Lv.'+next+' (+'+Math.round(nextBonus*100)+'%)' : mode+' • ปลดล็อก Pattern ใหม่ • จากนั้น Stack ซ้ำแต่ละครั้ง +2% Damage (สูงสุด Lv.20 = +38%)';
       }
       const s=String(f.stat||'');
       const n=Number(f.v);
