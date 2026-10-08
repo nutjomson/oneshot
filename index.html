@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.198</title>
-<meta name="game-version" content="v1.0.198">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.199</title>
+<meta name="game-version" content="v1.0.199">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2809,7 +2809,7 @@ function getCanonicalItem(item){
   if(!item) return null;
   const id=String(item.id||'');
   if(!id) return item;
-  const pools=[luxuryShopPool,levelUpgrades,activeShopItems];
+  const pools=[activeShopItems,luxuryShopPool,levelUpgrades];
   for(const pool of pools){
     if(!Array.isArray(pool)) continue;
     const found=pool.find(x=>x&&String(x.id||'')===id);
@@ -2833,6 +2833,38 @@ function renderItemOwnership(item){
   return '<div class="item-ownership '+(maxed?'maxed':'')+'">📦 มีแล้ว <b>'+owned+'</b> / '+cap+' ชิ้น'+(maxed?' • MAX':'')+'</div>';
 }
 
+function getShortItemDescription(item){
+  if(!item) return 'เพิ่มความสามารถให้ฮีโร่';
+  const raw=typeof item.desc==='string'?item.desc.trim():'';
+  if(raw && !/undefined|NaN|nan/i.test(raw)) return raw.split(' และ ').slice(0,2).join(' และ ');
+  const fx=Array.isArray(item.fx)?item.fx:[];
+  const parts=fx.map(f=>{
+    try{
+      if(!f || typeof f!=='object') return '';
+      if(f.op==='attackPattern') return 'เปลี่ยนรูปแบบการยิง';
+      const s=String(f.stat||'');
+      const n=Number(f.v);
+      if(f.op==='heal') return Number.isFinite(n)?'ฟื้นฟู '+numN(n)+' HP':'ฟื้นฟู HP';
+      if(f.op==='healPct') return Number.isFinite(n)?'ฟื้นฟู HP '+pctN(n)+'%':'ฟื้นฟู HP';
+      if(f.op==='addBulletType') return 'เพิ่มชนิดกระสุนใหม่';
+      if(f.op==='mul'){
+        if(s==='fireRate' && Number.isFinite(n)) return n<1?'ยิงเร็วขึ้น '+pctN(1-n)+'%':'ยิงช้าลง '+pctN(n-1)+'%';
+        const label=MUL_LABEL[s]||FRAC_LABEL[s]||s;
+        return label&&Number.isFinite(n)?label+' '+(n>=1?'+':'-')+pctN(Math.abs(n-1))+'%':'เพิ่มความสามารถ';
+      }
+      if(FRAC_LABEL[s] && Number.isFinite(n)) return FRAC_LABEL[s]+' '+(n>=0?'+':'-')+pctN(Math.abs(n))+'%';
+      if(INT_LABEL[s] && Number.isFinite(n)) return INT_LABEL[s][0]+' '+(n>=0?'+':'-')+numN(Math.abs(n))+(INT_LABEL[s][1]||'');
+      if(s==='damage'&&Number.isFinite(n)) return 'พลังโจมตี +'+numN(Math.abs(n))+'%';
+      if(s==='speed'&&Number.isFinite(n)) return 'ความเร็วเคลื่อนที่ +'+numN(Math.abs(n))+'%';
+      if(s==='bulletSpeed'&&Number.isFinite(n)) return 'ความเร็วกระสุน +'+numN(Math.abs(n))+'%';
+      if(s==='attackRange'&&Number.isFinite(n)) return 'ระยะโจมตี +'+numN(Math.abs(n))+'%';
+      if(s) return 'เพิ่ม '+s;
+    }catch(e){}
+    return '';
+  }).filter(Boolean);
+  return parts.length?parts.slice(0,2).join(' และ '):'เพิ่มความสามารถให้ฮีโร่';
+}
+
 function renderItemPreview(item){
   try{
     const preview=previewItemStats(item), rows=[];
@@ -2854,9 +2886,7 @@ function renderItemPreview(item){
     });
     const ownership=renderItemOwnership(item);
     if(!rows.length){
-      return '<div class="item-preview">'+ownership+
-        '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
-        '<div class="item-preview-stat positive"><span class="item-preview-name">ไอเทมนี้ไม่มีค่าสถานะตัวเลข</span></div></div>';
+      return '<div class="item-preview">'+ownership+'</div>';
     }
     return '<div class="item-preview">'+ownership+
       '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
@@ -2885,12 +2915,10 @@ function buildItem(def,i){
     stackCount:Number(def.stackCount)||0,
 
     desc:
-      def.desc ||
-      fx
-        .map(descEffect)
-        .filter(Boolean)
-        .join(' และ ') ||
-      'ไม่มีคำอธิบายเพิ่มเติม',
+      (typeof def.desc==='string' && def.desc.trim() && !/undefined|NaN|nan/i.test(def.desc)
+        ? def.desc.trim()
+        : fx.map(descEffect).filter(x=>typeof x==='string' && x.trim() && !/undefined|NaN|nan/i.test(x)).join(' และ ')) ||
+      'เพิ่มความสามารถให้ฮีโร่',
 
     /*
      * จุดสำคัญ:
@@ -2902,7 +2930,7 @@ function buildItem(def,i){
     apply:(showDelta=true)=>{
 
       /*
-       * v1.0.198 FIX:
+       * v1.0.199 FIX:
        * nextStack must be calculated from the item's current stack.
        * Previously apply() referenced nextStack without declaring it,
        * causing "Can't find nextStack" when a Treasure Chest/Boss reward
@@ -4111,7 +4139,7 @@ function showItemReward(item,source){
       icon.textContent=item.icon||'📦';
       tier.textContent=(item.rarity||'normal')+' • ได้รับแล้ว';
       name.textContent=item.name||'ไอเทม';
-      desc.textContent=item.desc||'ได้รับไอเทมฟรี';
+      desc.textContent=getShortItemDescription(item);
       // แสดงผลการเปลี่ยนสถานะทันทีหลังได้รับไอเทม
       // ไม่เรียก helper ที่อาจไม่มีใน build นี้ เพราะจะทำให้ callback หยุด
       // ก่อนปุ่ม "ตกลง" ถูกเปิดใช้งาน
@@ -4330,7 +4358,7 @@ function openLevelUp(forceHigherRarity=false){
     b.style.position='relative';
     b.style.zIndex='5';
     const desc=typeof u.desc==='string'?u.desc:'';
-    const quickDesc=desc || 'ไม่มีคำอธิบายเพิ่มเติม';
+    const quickDesc=getShortItemDescription(u);
     const label='';
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
@@ -4426,7 +4454,11 @@ function openLevelUp(forceHigherRarity=false){
     if(chosen.length<wanted) chosen.push(...shuffle(available).slice(0,wanted-chosen.length));
     const rawPricePerWave=Number(shopCfg.pricePerWave);
     const pricePerWave=Number.isFinite(rawPricePerWave)?rawPricePerWave:0.08;
-    activeShopItems=chosen.map(i=>({...i,cost:Math.round(Number(i.cost||0)*0.80*(1+(wave-1)*pricePerWave))}));
+    activeShopItems=chosen.map(i=>{
+      i.cost=Math.round(Number(i.cost||0)*0.80*(1+(wave-1)*pricePerWave));
+      i.purchased=false;
+      return i;
+    });
     renderShopItems();
   }
   function getShopRecommendationScore(item){
@@ -4500,7 +4532,7 @@ function openLevelUp(forceHigherRarity=false){
         const b=document.createElement('div');
         b.className='shop-item item-'+(item.rarity||'normal')+(index===0?' recommended':' alternative')+(item.purchased?' disabled':'');
         const desc=typeof item.desc==='string'?item.desc:'';
-        const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
+        const quickDesc=getShortItemDescription(item);
         const label='';
         const reason='';
         const cost=Math.max(0,Math.floor(Number(item.cost)||0));
