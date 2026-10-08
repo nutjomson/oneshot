@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.215</title>
 <meta name="game-version" content="v1.0.214">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1404,6 +1404,10 @@ const ATTACK_PATTERNS = {
   split6:{count:6,spread:0.11,damage:0.42,mode:'bullet'},
   burst4:{count:4,spread:0.05,damage:0.66,mode:'burst'},
   storm8:{count:8,ring:true,damage:0.34,mode:'ring',rotate:true},
+  slashCone:{count:1,damage:0.62,mode:'slash',range:145,arc:0.68},
+  powerWave:{count:1,damage:0.58,mode:'wave',range:420,speed:640,radius:14,life:0.66},
+  frontSlash:{count:1,damage:0.76,mode:'slash',range:105,arc:0.98},
+  lightningStrike:{count:3,damage:0.46,mode:'lightning',range:500},
   bomb:{count:1,damage:0.78,mode:'bomb',range:520,speed:620,radius:150,life:1.10},
   poisonBottle:{count:1,damage:0.34,mode:'poison',range:480,speed:560,radius:125,life:0.95,zoneLife:3.50,tick:0.45},
   windStorm:{count:1,damage:0.22,mode:'windStorm',range:500,speed:470,radius:95,life:1.25,knockback:155}
@@ -1511,7 +1515,7 @@ const SHOP_RARITIES = {
 };
 
 /* ===== 15. LEVEL_UPGRADES =====
-   15 รูปแบบการโจมตี: Normal 9 / Rare 4 / Legend 2 — ทุกชนิดตีบวกได้สูงสุด +20
+   22 รูปแบบการโจมตี: Normal 9 / Rare 6 / Legend 7 — ทุกชนิดตีบวกได้สูงสุด +20
 */
 const LEVEL_UPGRADES = [
   {id:'atk_focused',rarity:'normal',icon:'🎯',name:'กระสุนโฟกัส',stackCap:20,fx:[setAttackPattern('focused')]},
@@ -1529,7 +1533,11 @@ const LEVEL_UPGRADES = [
   {id:'atk_split6',rarity:'rare',icon:'🔷',name:'คริสตัลแยก 6 ทาง',stackCap:20,fx:[setAttackPattern('split6')]},
   {id:'atk_burst4',rarity:'legend',icon:'☄️',name:'มหาระเบิด 4 นัด',stackCap:20,fx:[setAttackPattern('burst4')]},
   {id:'atk_storm8',rarity:'legend',icon:'🌪️',name:'พายุ 8 ทิศ',stackCap:20,fx:[setAttackPattern('storm8')]},
-  {id:'atk_bomb',rarity:'legend',icon:'💣',name:'ระเบิดวงกว้าง',stackCap:20,fx:[setAttackPattern('bomb')]},
+  {id:'atk_slash_cone',rarity:'rare',icon:'🗡️',name:'ฟันวงกรวยด้านหน้า',stackCap:20,fx:[setAttackPattern('slashCone')]},
+  {id:'atk_power_wave',rarity:'rare',icon:'〰️',name:'คลื่นพลังสั้น',stackCap:20,fx:[setAttackPattern('powerWave')]},
+  {id:'atk_front_slash',rarity:'legend',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:20,fx:[setAttackPattern('frontSlash')]},
+  {id:'atk_lightning',rarity:'legend',icon:'⚡',name:'สายฟ้าสุ่มฟาด',stackCap:20,fx:[setAttackPattern('lightningStrike')]},
+  {id:'atk_bomb',rarity:'legend',icon:'💣',name:'ระเบิดวงกว้าง',stackCap:20,fx:[setAttackPattern('bomb')]} 
   {id:'atk_poison',rarity:'legend',icon:'☠️',name:'ขวดพิษสนามพิษ',stackCap:20,fx:[setAttackPattern('poisonBottle')]},
   {id:'atk_windstorm',rarity:'legend',icon:'🌬️',name:'พายุพัดศัตรู',stackCap:20,fx:[setAttackPattern('windStorm')]}
 ];
