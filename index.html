@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.197</title>
-<meta name="game-version" content="v1.0.197">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.198</title>
+<meta name="game-version" content="v1.0.198">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2805,6 +2805,34 @@ function previewItemStats(item){
   }
 }
 
+function getCanonicalItem(item){
+  if(!item) return null;
+  const id=String(item.id||'');
+  if(!id) return item;
+  const pools=[luxuryShopPool,levelUpgrades,activeShopItems];
+  for(const pool of pools){
+    if(!Array.isArray(pool)) continue;
+    const found=pool.find(x=>x&&String(x.id||'')===id);
+    if(found) return found;
+  }
+  return item;
+}
+function getItemOwnedCount(item){
+  const canonical=getCanonicalItem(item);
+  return Math.max(0,Math.floor(Number(canonical?.stackCount)||0));
+}
+function getItemStackCap(item){
+  const canonical=getCanonicalItem(item);
+  const cap=Math.floor(Number(canonical?.stackCap));
+  return Number.isFinite(cap)&&cap>0?cap:1;
+}
+function renderItemOwnership(item){
+  const owned=getItemOwnedCount(item);
+  const cap=getItemStackCap(item);
+  const maxed=owned>=cap;
+  return '<div class="item-ownership '+(maxed?'maxed':'')+'">📦 มีแล้ว <b>'+owned+'</b> / '+cap+' ชิ้น'+(maxed?' • MAX':'')+'</div>';
+}
+
 function renderItemPreview(item){
   try{
     const preview=previewItemStats(item), rows=[];
@@ -2814,23 +2842,29 @@ function renderItemPreview(item){
       const na=Number(a), nb=Number(b);
       if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
       const positive=def.key==='fireRate' ? nb<na : nb>na;
+      const delta=nb-na;
+      const shownDelta=def.key==='fireRate' ? -delta : delta;
+      const sign=shownDelta>=0?'+':'';
       rows.push(
         '<div class="item-preview-stat '+(positive?'positive':'negative')+'">'+
         '<span class="item-preview-name">'+def.icon+' '+def.name+'</span>'+
-        '<span class="item-preview-values">'+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span>'+
+        '<span class="item-preview-values">'+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b> <em style="font-style:normal">('+sign+formatStatValue(def.key,Math.abs(shownDelta))+')</em></span>'+
         '</div>'
       );
     });
+    const ownership=renderItemOwnership(item);
     if(!rows.length){
-      return '<div class="item-preview"><div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
+      return '<div class="item-preview">'+ownership+
+        '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
         '<div class="item-preview-stat positive"><span class="item-preview-name">ไอเทมนี้ไม่มีค่าสถานะตัวเลข</span></div></div>';
     }
-    return '<div class="item-preview">'+
+    return '<div class="item-preview">'+ownership+
       '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
       '<div class="item-preview-grid">'+rows.join('')+'</div></div>';
   }catch(e){
     console.warn('ITEM PREVIEW RENDER ERROR',item?.id,e);
-    return '<div class="item-preview"><div class="item-preview-title">📋 ผลของไอเทม</div><div style="font-size:8px;color:#cbd5e1">ตรวจสอบผลของไอเทมเมื่อซื้อ</div></div>';
+    return '<div class="item-preview">'+renderItemOwnership(item)+
+      '<div class="item-preview-title">📋 ผลของไอเทม</div><div style="font-size:8px;color:#cbd5e1">ตรวจสอบผลของไอเทมเมื่อซื้อ</div></div>';
   }
 }
 
@@ -2868,7 +2902,7 @@ function buildItem(def,i){
     apply:(showDelta=true)=>{
 
       /*
-       * v1.0.197 FIX:
+       * v1.0.198 FIX:
        * nextStack must be calculated from the item's current stack.
        * Previously apply() referenced nextStack without declaring it,
        * causing "Can't find nextStack" when a Treasure Chest/Boss reward
@@ -3987,10 +4021,13 @@ function renderStartPerks(){
       const na=Number(a), nb=Number(b);
       if(!Number.isFinite(na)||!Number.isFinite(nb)||Math.abs(nb-na)<0.000001) return;
       const positive=def.key==='fireRate' ? nb<na : nb>na;
-      rows.push('<div style="display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #1e293b;padding:3px 0"><span>'+def.icon+' '+def.name+'</span><span style="color:'+(positive?'#4ade80':'#f87171')+'">'+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b></span></div>');
+      const rawDelta=nb-na;
+      const effectiveDelta=def.key==='fireRate' ? -rawDelta : rawDelta;
+      const sign=effectiveDelta>=0?'+':'';
+      rows.push('<div style="display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #1e293b;padding:3px 0"><span>'+def.icon+' '+def.name+'</span><span style="color:'+(positive?'#4ade80':'#f87171')+'">'+formatStatValue(def.key,na)+' → <b>'+formatStatValue(def.key,nb)+'</b> <b>('+sign+formatStatValue(def.key,Math.abs(effectiveDelta))+')</b></span></div>');
     });
     if(!rows.length) return '<div style="color:#94a3b8">ไอเทมนี้ไม่เพิ่มค่าสถานะตัวเลข</div>';
-    return '<b>📊 สถานะที่เพิ่มขึ้น</b>'+rows.join('');
+    return '<b>📊 สถานะที่เพิ่มขึ้น / ลดลง</b>'+rows.join('');
   }
 
   let activeRewardFinisher=null;
@@ -4078,9 +4115,9 @@ function showItemReward(item,source){
       // แสดงผลการเปลี่ยนสถานะทันทีหลังได้รับไอเทม
       // ไม่เรียก helper ที่อาจไม่มีใน build นี้ เพราะจะทำให้ callback หยุด
       // ก่อนปุ่ม "ตกลง" ถูกเปิดใช้งาน
-      status.textContent='✨ สุ่มเสร็จแล้ว! สถานะของฮีโร่เปลี่ยนตามไอเทมแล้ว';
+      status.textContent='✨ ได้รับไอเทมแล้ว • มีทั้งหมด '+getItemOwnedCount(item)+' / '+getItemStackCap(item)+' ชิ้น';
       changes.classList.remove('hidden');
-      changes.innerHTML=itemRewardChangesHtml(before,after);
+      changes.innerHTML=renderItemOwnership(item)+itemRewardChangesHtml(before,after);
       ok.classList.remove('hidden');
       playSound('coin');
       refreshHUD();
@@ -5616,6 +5653,22 @@ function openLevelUp(forceHigherRarity=false){
   requestAnimationFrame(loop);
 })();
 </script>
+
+<style id="v1-0-198-item-ownership">
+.item-ownership{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  margin-bottom:5px;padding:4px 6px;border:1px solid #334155;border-radius:4px;
+  background:rgba(2,6,23,.72);color:#cbd5e1;font-size:9px;line-height:1.2;font-weight:700;
+}
+.item-ownership b{color:#4ade80;font-weight:900}
+.item-ownership.maxed{border-color:#facc15;color:#fde68a}
+.item-ownership.maxed b{color:#facc15}
+.item-preview-values em{color:#4ade80;font-weight:900}
+.item-preview-stat.negative .item-preview-values em{color:#f87171}
+@media(max-width:640px){
+  .item-ownership{font-size:8.5px;padding:3px 5px;margin-bottom:4px}
+}
+</style>
 </body>
 </html>
 
