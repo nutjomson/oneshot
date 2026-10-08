@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.168</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.170</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1280,6 +1280,7 @@ const HEROES = [
 ];
 
 /* ===== 3. PLAYER_BASE ===== */
+// v1.0.170: treasure/boss item rewards use the IIFE-local Soft Cap helpers above.
 // v1.0.169: Hero movement speed x2.5; v1.0.167 base stats nerf retained
 const PLAYER_BASE = {
   bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 1, xpMulti: 1,
@@ -1623,6 +1624,39 @@ window.GAME_CONFIG = {
 <script id="game-engine">
 (() => {
   const CFG = window.GAME_CONFIG;
+
+  // ===== v1.0.170: SOFT CAP SCOPE FIX =====
+  // game-engine is wrapped in an IIFE, while the original Soft Cap helpers
+  // live in the config script. Treasure/Boss item rewards call applyEffect()
+  // inside this IIFE, so Safari could throw "Can't find variable: softCapAdd".
+  // Keep a local, self-contained copy here so every item reward path is safe.
+  const SOFT_CAPS = {
+    dodge: 0.60, crit: 0.90, armor: 0.75, attackRange: 1000,
+    lifesteal: 0.30, regen: 20, goldMulti: 3, xpMulti: 2,
+    projectiles: 15, pierce: 15, ricochet: 12,
+    orbitBlades: 15, revives: 10, timeSlow: 0.40,
+    executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
+    bulletSpeed: 3000
+  };
+  const SOFT_CAP_STRENGTH = 0.5;
+  function softCapMultiplier(current, cap){
+    if(!Number.isFinite(current)||!Number.isFinite(cap)||cap<=0) return 1;
+    return Math.pow(Math.max(0,1-clamp(current/cap,0,1)),SOFT_CAP_STRENGTH);
+  }
+  function softCapAdd(current, amount, stat){
+    const cap=SOFT_CAPS[stat];
+    if(!Number.isFinite(amount)||amount<=0||!cap) return amount;
+    const room=Math.max(0,cap-current);
+    if(room<=0) return 0;
+    return Math.min(room,amount*softCapMultiplier(current,cap));
+  }
+  function softCapDecrease(current, requestedDecrease, minValue){
+    if(!Number.isFinite(requestedDecrease)||requestedDecrease<=0) return 0;
+    const room=Math.max(0,current-minValue);
+    if(room<=0) return 0;
+    const ratio=clamp(room/(Math.max(current,minValue+0.000001)),0,1);
+    return Math.min(room,requestedDecrease*Math.pow(ratio,SOFT_CAP_STRENGTH));
+  }
   const canvas = document.getElementById('scene');
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
