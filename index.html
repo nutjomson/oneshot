@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.177</title>
-<meta name="game-version" content="v1.0.177">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.178</title>
+<meta name="game-version" content="v1.0.178">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -950,7 +950,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.177</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.178</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1387,7 +1387,7 @@ const SKILLS = {
 /* ===== v1.0.168 ENEMY BASE HP/DAMAGE NERF =====
    ลด HP และ contact damage ของศัตรูทุกประเภทเหลือ 1/3 จาก v1.0.167
    คง speed / spawn / XP / gold / ranged ability multipliers เดิม */
-/* v1.0.177: Base reward compensation after returning player Gold/XP multipliers to 1x.
+/* v1.0.178: Enemy HP -30%, enemy count -50%, enemy XP/Gold +50%.
    XP base values ×2.2 and Gold ranges ×2.7 preserve the previous effective reward level
    while keeping the player-facing multipliers at their original 1x baseline. */
 const ENEMIES = {
@@ -1418,10 +1418,11 @@ const ELITE = {
 
 /* ===== 9. WAVES ===== */
 const WAVES = {
-  start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005, minSpawnInterval: 0.25,
+  start: 1, duration: 7.9967999999999995, spawnInterval: 0.65, spawnIntervalPerWave: 0.005,
   batchBase: 0.9260999999999999, batchBaseMultiplier: 1.311, batchWave2: 0.48999999999999994, batchWave6: 0.7349999999999999, batchWave12: 0.7349999999999999, batchPerWave: 0.05879999999999999, lateWaveStart: 8, maxEnemies: 169.05,
 
   enemyStartHpMultiplier: 0.37632, enemyStartDamageMultiplier: 0.70,
+  enemyGlobalHpMultiplier: 0.70, enemyGlobalCountMultiplier: 0.50, enemyRewardMultiplier: 1.50,
   enemyHpPerWave: 0.10976,     enemyHpCompound: 0.02352,       lateWaveHpStart: 8,
   enemyDamagePerWave: 0.0195,    enemyDamageCompound: 0.0039,
   enemySpeedPerWave: 0.005,    enemySpeedMax: 1.6,
@@ -3811,7 +3812,7 @@ function renderStartPerks(){
     if(isElite)enemyGold+=Number(CFG.elite?.gold)||0;
     if(isMegaBoss)enemyGold=Math.floor(enemyGold*(Number(dev.wave.megaRewardMult)||1));
     const hpMult=(isMegaBoss?Number(dev.wave.megaHp)||1:1)*(isElite?Number(CFG.elite?.hp)||1:1),dmgMult=(isMegaBoss?Number(dev.wave.megaDamage)||1:1)*(isElite?Number(CFG.elite?.damage)||1:1),radiusMult=(isMegaBoss?Number(dev.wave.megaRadius)||1:1)*(isElite?Number(CFG.elite?.radius)||1:1),xpMult=(isMegaBoss?Number(dev.wave.megaRewardMult)||1:1)*(isElite?Number(CFG.elite?.xp)||1:1);
-    enemies.push({x,y,r:t.r*radiusMult,hp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*hpMult,maxHp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*hpMult,speed:t.speed*waveSpeed,damage:t.damage*waveDmg*diffMult*dev.wave.enemyStartDamageMultiplier*dmgMult,xp:baseXp*(1+(wave-1)*dev.wave.xpPerWave)*xpMult,gold:enemyGold,type:t.type,ai:t.ai,boss:isBoss,megaBoss:isMegaBoss,elite:isElite,shootInterval:t.shootInterval,eBulletSpeed:t.bulletSpeed,eBulletMult:t.bulletDamageMult,color:t.color,hit:0,animFrame:0,animTimer:0,shootTimer:t.shootTimer||0,poisonTimer:0,bladeCd:0,contactCd:0,dead:false});
+    enemies.push({x,y,r:t.r*radiusMult,hp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*(Number(dev.wave.enemyGlobalHpMultiplier)||1)*hpMult,maxHp:t.hp*waveHp*diffMult*bossMult*dev.wave.enemyStartHpMultiplier*(Number(dev.wave.enemyGlobalHpMultiplier)||1)*hpMult,speed:t.speed*waveSpeed,damage:t.damage*waveDmg*diffMult*dev.wave.enemyStartDamageMultiplier*dmgMult,xp:baseXp*(1+(wave-1)*dev.wave.xpPerWave)*xpMult,gold:enemyGold,type:t.type,ai:t.ai,boss:isBoss,megaBoss:isMegaBoss,elite:isElite,shootInterval:t.shootInterval,eBulletSpeed:t.bulletSpeed,eBulletMult:t.bulletDamageMult,color:t.color,hit:0,animFrame:0,animTimer:0,shootTimer:t.shootTimer||0,poisonTimer:0,bladeCd:0,contactCd:0,dead:false});
   }
 
   function shoot(){
@@ -3845,6 +3846,9 @@ function renderStartPerks(){
   }
 
   function addDrops(x,y,xpAmt,goldAmt){
+    const rewardMult=Math.max(0,Number(dev.wave.enemyRewardMultiplier)||1);
+    xpAmt*=rewardMult;
+    goldAmt*=rewardMult;
     if(Math.random() <= dev.drop.xpChance){
       xpAmt *= dev.drop.xpMultiplier;
       if(xpOrbs.length>dev.drop.xpMergeThreshold){
@@ -4950,7 +4954,7 @@ function openLevelUp(forceHigherRarity=false){
         (wave>=12&&Math.random()<.5?dev.wave.batchWave12:0);
       const lateBatchBonus=lateWaves*(Number(dev.wave.batchPerWave)||0);
       // v1.0.177: Wave 1 enemy count reduced 40% from the previous 1.30x opener.
-      const batchExact=(baseBatch+lateBatchBonus)*(Number(dev.wave.batchBaseMultiplier)||1)*(wave===1?0.78:1);
+      const batchExact=(baseBatch+lateBatchBonus)*(Number(dev.wave.batchBaseMultiplier)||1)*(Number(dev.wave.enemyGlobalCountMultiplier)||1)*(wave===1?0.78:1);
       const batch=Math.floor(batchExact)+(Math.random()<(batchExact-Math.floor(batchExact))?1:0);
       for(let i=0;i<batch;i++)spawnEnemy();
       spawnTimer=spawnRate;
