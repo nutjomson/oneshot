@@ -1386,6 +1386,18 @@ BULLET_TYPES.laser.desc    = `เลเซอร์: กระสุนเร็
 BULLET_TYPES.fireball.desc = `ลูกไฟ: กระสุนใหญ่ ระเบิดรัศมี ${BULLET_TYPES.fireball.explosionRadius}px ทุกครั้งที่โดน`;
 BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYPES.plasma.critBonus)}% และคริแรงขึ้น (x${BULLET_TYPES.plasma.critMult})`;
 
+/* ===== 6.5 LEVEL ATTACK PATTERNS ===== */
+const ATTACK_PATTERNS = {
+  focused:{count:1,spread:0,damage:1}, twin:{count:2,spread:0.16,damage:0.92},
+  triple:{count:3,spread:0.18,damage:0.86}, fan5:{count:5,spread:0.14,damage:0.70},
+  fan7:{count:7,spread:0.12,damage:0.60}, cross:{count:5,cross:true,damage:0.66},
+  sideTwin:{count:2,side:true,damage:0.98}, narrow3:{count:3,spread:0.06,damage:0.98},
+  shotgun:{count:7,spread:0.22,damage:0.55}, ring6:{count:6,ring:true,damage:0.64},
+  diagonal:{count:5,diagonal:true,damage:0.68}, needle5:{count:5,spread:0.035,damage:0.76},
+  split6:{count:6,spread:0.10,damage:0.66}, burst4:{count:4,spread:0.08,damage:0.82},
+  storm8:{count:8,spread:0.18,damage:0.50}
+};
+
 /* ===== 7. SKILLS ===== */
 const SKILLS = {
   // v1.0.165: ลดพลัง Skill ของฮีโร่ลงประมาณ 1/3 โดยคง cooldown เดิม
@@ -1487,162 +1499,63 @@ const SHOP_RARITIES = {
   legend: { name: 'Legend' }
 };
 
-/* ===== 15. LEVEL_UPGRADES =====/* ===== 15. LEVEL_UPGRADES ===== */
+/* ===== 15. LEVEL_UPGRADES =====
+   15 รูปแบบการโจมตี: Normal 9 / Rare 4 / Legend 2 — ทุกชนิดตีบวกได้สูงสุด +20
+*/
 const LEVEL_UPGRADES = [
-  // ───────── NORMAL ─────────
-  { rarity: 'normal', icon: '⚔️', name: 'เพิ่มพลังโจมตี',             fx: [mul('damage', 1.02625)] },
-  { rarity: 'normal', icon: '⚡', name: 'เพิ่มความเร็วการยิง',        fx: [mul('fireRate', 0.9775)] },
-  { rarity: 'normal', icon: '🏃', name: 'เพิ่มความเร็วเคลื่อนที่',      fx: [mul('speed', 1.0125)] },
-  { rarity: 'normal', icon: '❤️', name: 'ขยายพลังชีวิตสูงสุด',        fx: [add('maxHp', 13.5)] },
-  { rarity: 'normal', icon: '⭐', name: 'ประสบการณ์เข้มข้น', fx: [mul('xpMulti', 1.015)] },
-  { rarity: 'normal', icon: '🛡️', name: 'เสริมเกราะป้องกัน',          fx: [add('armor', 0.0135)] },
-  { rarity: 'normal', icon: '💥', name: 'เพิ่มโอกาสคริติคอล',          fx: [add('crit', 0.0135)] },
-  { rarity: 'normal', icon: '💚', name: 'ฟื้นฟูพลังชีวิตต่อเนื่อง',      fx: [add('regen', 0.3)] },
-  { rarity: 'normal', icon: '🩸', name: 'ดูดพลังชีวิต',                fx: [add('lifesteal', 0.007)] },
-  { rarity: 'normal', icon: '🌀', name: 'หลบหลีกคล่องตัว',            fx: [add('dodge', 0.01)] },
-  { rarity: 'normal', icon: '💰', name: 'โบนัสทองคำ',                fx: [mul('goldMulti', 1.025)] },
-  { rarity: 'normal', icon: '🪃', name: 'แกนสะท้อนวิถี',             fx: [add('ricochet', 0.25)] },
-  { rarity: 'normal', icon: '🎯', name: 'กล้องเล็งระยะใกล้',            fx: [mul('attackRange', 1.10)] },
-  { rarity: 'normal', icon: '🧪', name: 'กระสุนพิษกัดกร่อน',          fx: [add('poisonDmg', 3)], weight: 0.8 },
-  { rarity: 'normal', icon: '⚡', name: 'สายฟ้าช็อตต่อเนื่อง',          fx: [add('lightningChain', 3)], weight: 0.8 },
-  { rarity: 'normal', icon: '💣', name: 'กระสุนระเบิดวงกว้าง',        fx: [add('explosiveRadius', 6)], weight: 0.8 },
-  { rarity: 'normal', icon: '🥊', name: 'พลังผลักกระแทก',            fx: [add('knockback', 17.5)], weight: 0.7 },
-  { rarity: 'normal', icon: '💀', name: 'รังสีสังหารทันที',            fx: [add('executionThreshold', 0.0035)], weight: 0.5 },
-  { rarity: 'normal', icon: '🗡️', name: 'คมดาบดาวบริวาร',            fx: [add('orbitBlades', 0.5)], weight: 0.3 },
-  { rarity: 'normal', icon: '⚔️️', name: 'นักรบสมดุล',                fx: [mul('damage', 1.015), add('maxHp', 7.5)] },
-  { rarity: 'normal', icon: '🏰', name: 'ปราการเล็ก',                fx: [add('maxHp', 12), add('knockback', 7.5)] },
-  { rarity: 'normal', icon: '🧠', name: 'นักวางแผนทรัพยากร', fx: [mul('xpMulti', 1.02), mul('goldMulti', 1.015)], weight: 0.75 },
-  { rarity: 'normal', icon: '🩹', name: 'ผ้าพันแผลสนาม', fx: [add('maxHp', 10), add('regen', 0.3)] },
-  { rarity: 'normal', icon: '💀', name: 'จังหวะปิดฉาก',               fx: [add('executionThreshold', 0.003), add('crit', 0.005)], weight: 0.65 },
-
-  { id: 'u_n25', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งมั่นคง',             fx: [mul('attackRange', 1.08), mul('bulletSpeed', 1.025)], weight: 0.85 },
-  { id: 'u_n26', rarity: 'normal', icon: '🔋', name: 'แกนพลังงาน',                 fx: [mul('damage', 1.015), mul('fireRate', 0.99)] },
-  { id: 'u_n27', rarity: 'normal', icon: '🩸', name: 'เส้นเลือดนักสู้', fx: [add('maxHp', 8), add('lifesteal', 0.0045)] },
-  { id: 'u_n28', rarity: 'normal', icon: '🎯', name: 'กระสุนเจาะเกราะ', fx: [mul('bulletSpeed', 1.025), add('pierce', 0.25)] },
-  { id: 'u_n29', rarity: 'normal', icon: '🧠', name: 'แกนประสิทธิภาพ', fx: [mul('damage', 1.01), mul('xpMulti', 1.015)] },
-  { id: 'u_n30', rarity: 'normal', icon: '🍀', name: 'โชคเล็กน้อย',                 fx: [mul('goldMulti', 1.025), mul('xpMulti', 1.01)] },
-
-  // ───────── RARE (15) ─────────
-  { rarity: 'rare', icon: '🎯', name: 'กระสุนเจาะทะลุ', fx: [add('pierce', 1)], weight: 0.75 },
-  { rarity: 'rare', icon: '🔫', name: 'กระสุนกระจาย I', fx: [add('projectiles', 1)], weight: 0.45 },
-  { rarity: 'rare', icon: '🧱', name: 'กระสุนสะท้อน I', fx: [add('ricochet', 1)], weight: 0.55 },
-  { rarity: 'rare', icon: '🏃', name: 'ก้าวพริบตา', fx: [mul('speed', 1.0225), add('dodge', 0.006)], weight: 1.00 },
-  { rarity: 'rare', icon: '❤️', name: 'หัวใจเหล็ก', fx: [mul('maxHp', 1.025), add('maxHp', 15)], weight: 0.95 },
-  { rarity: 'rare', icon: '🩸', name: 'กระหายเลือดสงคราม', fx: [add('lifesteal', 0.01125), mul('speed', 1.01125)], weight: 0.95 },
-  { rarity: 'rare', icon: '💣', name: 'ระเบิดเพลิงผลาญ', fx: [add('explosiveRadius', 9), mul('damage', 1.01125)], weight: 0.95 },
-  { rarity: 'rare', icon: '🥊', name: 'คลื่นกระแทกหนักหน่วง', fx: [add('knockback', 30), add('maxHp', 13.5)], weight: 0.80 },
-  { rarity: 'rare', icon: '💀', name: 'เคียวเก็บวิญญาณ', fx: [add('executionThreshold', 0.01)], weight: 0.90 },
-  { rarity: 'rare', icon: '🗡️', name: 'ดาบหมุนคู่อมตะ', fx: [add('orbitBlades', 0.75), mul('damage', 1.01125)], weight: 0.35 },
-  { rarity: 'rare', icon: '🌀', name: 'ร่างเงาหลบหลีก', fx: [add('dodge', 0.01875), mul('speed', 1.01125)], weight: 0.90 },
-  { rarity: 'rare', icon: '💰', name: 'ขุมทรัพย์นักล่า', fx: [mul('goldMulti', 1.05), mul('xpMulti', 1.025)], weight: 0.85 },
-  { rarity: 'rare', icon: '🚀', name: 'จรวดมิสไซล์ติดสปีด', fx: [mul('bulletSpeed', 1.09), mul('damage', 1.0225)], weight: 0.80 },
-  { rarity: 'rare', icon: '🔭', name: 'กล้องเล็งระยะไกล', fx: [mul('attackRange', 1.25)], weight: 0.80 },
-  { rarity: 'rare', icon: '⏱️', name: 'จังหวะยิงสังหาร', fx: [mul('fireRate', 0.9675), add('crit', 0.0135)], weight: 0.75 },
-
-  // ───────── LEGEND ─────────
-{ rarity: 'legend', icon: '🏆', name: 'ดาบเทพพิพากษา',
-  fx: [mul('damage', 1.1125)],
-  weight: 0.90 },
-
-{ id: 'u_l7', rarity: 'legend', icon: '👑', name: 'ราชันย์กระสุน',
-  fx: [add('projectiles', 1), mul('damage', 1.03)],
-  weight: 0.45 },
-
-{ id: 'u_l8', rarity: 'legend', icon: '🪽', name: 'ม่านอมตะ',
-  fx: [add('dodge', 0.025), add('armor', 0.02), add('regen', 0.6)],
-  weight: 0.50 },
-{ id: 'u_l9', rarity: 'legend', icon: '☠️', name: 'แกนสังหาร',
-  fx: [mul('fireRate', 0.95), add('crit', 0.025), add('executionThreshold', 0.006)],
-  weight: 0.55 },
-
-{ id: 'u_l10', rarity: 'legend', icon: '☀️', name: 'แกนสุริยะ',
-  fx: [mul('damage', 1.05), mul('bulletSpeed', 1.08), add('crit', 0.015)],
-  weight: 0.50 },
-
-{ id: 'u_l11', rarity: 'legend', icon: '🌩️', name: 'พายุไร้ขอบเขต',
-  fx: [add('lightningChain', 25), add('explosiveRadius', 8)],
-  weight: 0.45 },
-  { id: 'u_l12', rarity: 'legend', icon: '🌀', name: 'ตราประทับสูญญากาศ', fx: [add('orbitBlades', 0.75), mul('speed', 1.02)], weight: 0.40 },
-  { id: 'u_l13', rarity: 'legend', icon: '🎯', name: 'สายตาแห่งราชัน', fx: [mul('attackRange', 1.15), mul('bulletSpeed', 1.05)], weight: 0.45 },
-  { id: 'u_l14', rarity: 'legend', icon: '🩸', name: 'หัวใจดูดกลืน', fx: [add('lifesteal', 0.02), add('maxHp', 25)], weight: 0.40 },
-  { id: 'u_l15', rarity: 'legend', icon: '♻️', name: 'ชีวิตที่สอง', fx: [add('revives', 1)], weight: 0.25 }
+  {id:'atk_focused',rarity:'normal',icon:'🎯',name:'กระสุนโฟกัส',stackCap:20,fx:[setAttackPattern('focused')]},
+  {id:'atk_twin',rarity:'normal',icon:'🔱',name:'กระสุนคู่',stackCap:20,fx:[setAttackPattern('twin')]},
+  {id:'atk_triple',rarity:'normal',icon:'🔺',name:'กระสุนสามทิศ',stackCap:20,fx:[setAttackPattern('triple')]},
+  {id:'atk_fan5',rarity:'normal',icon:'🌟',name:'พัดกระสุน 5 ทาง',stackCap:20,fx:[setAttackPattern('fan5')]},
+  {id:'atk_fan7',rarity:'normal',icon:'✴️',name:'พัดกระสุน 7 ทาง',stackCap:20,fx:[setAttackPattern('fan7')]},
+  {id:'atk_cross',rarity:'normal',icon:'✚',name:'กากบาทพิฆาต',stackCap:20,fx:[setAttackPattern('cross')]},
+  {id:'atk_side',rarity:'normal',icon:'↔️',name:'ปืนคู่ด้านข้าง',stackCap:20,fx:[setAttackPattern('sideTwin')]},
+  {id:'atk_narrow3',rarity:'normal',icon:'📍',name:'หอกกระสุน 3 นัด',stackCap:20,fx:[setAttackPattern('narrow3')]},
+  {id:'atk_shotgun',rarity:'normal',icon:'💥',name:'ช็อตกันกระจาย',stackCap:20,fx:[setAttackPattern('shotgun')]},
+  {id:'atk_ring6',rarity:'rare',icon:'⭕',name:'วงแหวน 6 ทิศ',stackCap:20,fx:[setAttackPattern('ring6')]},
+  {id:'atk_diagonal',rarity:'rare',icon:'✖️',name:'กากบาททแยง',stackCap:20,fx:[setAttackPattern('diagonal')]},
+  {id:'atk_needle5',rarity:'rare',icon:'🪡',name:'เข็มกระสุน 5 ชั้น',stackCap:20,fx:[setAttackPattern('needle5')]},
+  {id:'atk_split6',rarity:'rare',icon:'🔷',name:'คริสตัลแยก 6 ทาง',stackCap:20,fx:[setAttackPattern('split6')]},
+  {id:'atk_burst4',rarity:'legend',icon:'☄️',name:'มหาระเบิด 4 นัด',stackCap:20,fx:[setAttackPattern('burst4')]},
+  {id:'atk_storm8',rarity:'legend',icon:'🌪️',name:'พายุ 8 ทิศ',stackCap:20,fx:[setAttackPattern('storm8')]}
 ];
 
 /* ===== 16. SHOP_ITEMS ===== */
+ */
 const SHOP_ITEMS = [
-  // ───────── SHOP NORMAL ─────────
-  { id: 's_pot1', rarity: 'normal', icon: '🧪', name: 'ยาฟื้นฟูพลังชีวิตเล็ก',    cost: 18, fx: [healPct(0.24)], weight: 1 },
-  { id: 's_pot2', rarity: 'normal', icon: '🍷', name: 'ยาฟื้นฟูพลังชีวิตใหญ่',    cost: 40, fx: [healPct(0.52)], weight: 1 },
-  { id: 's_pot3', rarity: 'normal', icon: '💖', name: 'น้ำยาฟื้นฟูเต็มสูบ',       cost: 95, fx: [healPct(0.80)], weight: 0.75 },
-  { id: 's_pot4', rarity: 'normal', icon: '🧪', name: 'ยาเพิ่มพลังชีวิตถาวร',     cost: 130, fx: [add('maxHp', 18), healPct(0.80)], scale: 0.40, weight: 0.65},
+  // NORMAL: อุปกรณ์สวมใส่ 12 ชนิด / สูงสุด +10 ต่อชนิด
+  {id:'eq_chest',rarity:'normal',icon:'🛡️',name:'เกราะอกนักรบ',stackCap:10,cost:180,weight:1,fx:[add('maxHp',18),add('armor',0.012),add('damage',2)]},
+  {id:'eq_pants',rarity:'normal',icon:'👖',name:'เกราะกางเกงคล่องตัว',stackCap:10,cost:170,weight:1,fx:[add('maxHp',12),mul('speed',1.012),add('dodge',0.006)]},
+  {id:'eq_helmet',rarity:'normal',icon:'⛑️',name:'หมวกนักล่า',stackCap:10,cost:165,weight:1,fx:[add('crit',0.009),add('attackRange',12),add('bulletSpeed',20)]},
+  {id:'eq_boots',rarity:'normal',icon:'🥾',name:'รองเท้าจู่โจม',stackCap:10,cost:160,weight:1,fx:[mul('speed',1.018),add('dodge',0.008),add('knockback',8)]},
+  {id:'eq_earrings',rarity:'normal',icon:'💎',name:'ตุ้มหูนักเวท',stackCap:10,cost:190,weight:1,fx:[add('crit',0.007),add('regen',0.22),add('lifesteal',0.0025)]},
+  {id:'eq_weapon',rarity:'normal',icon:'🔫',name:'อาวุธยิงมาตรฐาน',stackCap:10,cost:220,weight:1,fx:[mul('damage',1.018),mul('fireRate',0.988),add('bulletSpeed',28)]},
+  {id:'eq_gloves',rarity:'normal',icon:'🥊',name:'ถุงมือพลัง',stackCap:10,cost:175,weight:1,fx:[add('damage',3),add('knockback',10),add('crit',0.004)]},
+  {id:'eq_belt',rarity:'normal',icon:'🧷',name:'เข็มขัดสนาม',stackCap:10,cost:155,weight:1,fx:[add('maxHp',15),add('regen',0.25),add('armor',0.008)]},
+  {id:'eq_cloak',rarity:'normal',icon:'🧥',name:'ผ้าคลุมเงา',stackCap:10,cost:185,weight:1,fx:[add('dodge',0.012),mul('speed',1.01),add('attackRange',10)]},
+  {id:'eq_amulet',rarity:'normal',icon:'📿',name:'เครื่องรางเติบโต',stackCap:10,cost:200,weight:1,fx:[mul('xpMulti',1.018),mul('goldMulti',1.015),add('regen',0.18)]},
+  {id:'eq_ring',rarity:'normal',icon:'💍',name:'แหวนทำลายล้าง',stackCap:10,cost:205,weight:1,fx:[mul('damage',1.015),add('crit',0.012),add('explosiveRadius',5)]},
+  {id:'eq_bracelet',rarity:'normal',icon:'📿',name:'กำไลพลังชีวิต',stackCap:10,cost:175,weight:1,fx:[add('maxHp',25),add('lifesteal',0.003)]},
 
-  { id: 's_wpn1', rarity: 'normal', icon: '⚡', name: 'ปืนเลเซอร์นีออน',          cost: 300, fx: [addBulletType('laser')], desc: BULLET_TYPES.laser.desc, weight: 0.9},
-  { id: 's_wpn2', rarity: 'normal', icon: '🔥', name: 'ปืนใหญ่เพลิงคอสมิก',       cost: 330, fx: [addBulletType('fireball')], desc: BULLET_TYPES.fireball.desc, weight: 0.85},
-  { id: 's_wpn3', rarity: 'normal', icon: '💥', name: 'ลำแสงพลาสม่าคริสตัล',      cost: 350, fx: [addBulletType('plasma')], desc: BULLET_TYPES.plasma.desc, weight: 0.8},
-  { id: 's_wpn4', rarity: 'normal', icon: '🔮', name: 'ปืนเวทมหาปริซึม',          cost: 300, fx: [addBulletType('arcane')], desc: BULLET_TYPES.arcane.desc, weight: 0.9},
+  // RARE: อัญมณี 9 ชนิด / สูงสุด +8 ต่อชนิด
+  {id:'gem_ruby',rarity:'rare',icon:'🔴',name:'ทับทิมเพลิง',stackCap:8,cost:520,weight:1,fx:[mul('damage',1.035),add('crit',0.012)]},
+  {id:'gem_sapphire',rarity:'rare',icon:'🔵',name:'ไพลินเยือกแข็ง',stackCap:8,cost:500,weight:1,fx:[mul('fireRate',0.97),add('timeSlow',0.008)]},
+  {id:'gem_emerald',rarity:'rare',icon:'🟢',name:'มรกตฟื้นฟู',stackCap:8,cost:480,weight:1,fx:[add('maxHp',35),add('regen',0.65)]},
+  {id:'gem_topaz',rarity:'rare',icon:'🟡',name:'บุษราคัมทองคำ',stackCap:8,cost:490,weight:1,fx:[mul('goldMulti',1.035),mul('xpMulti',1.02)]},
+  {id:'gem_amethyst',rarity:'rare',icon:'🟣',name:'แอมะทิสต์เงา',stackCap:8,cost:510,weight:1,fx:[add('dodge',0.02),mul('speed',1.02)]},
+  {id:'gem_diamond',rarity:'rare',icon:'💠',name:'เพชรเจาะเกราะ',stackCap:8,cost:560,weight:1,fx:[add('pierce',0.5),add('bulletSpeed',55)]},
+  {id:'gem_opal',rarity:'rare',icon:'🔮',name:'โอปอลสะท้อน',stackCap:8,cost:540,weight:1,fx:[add('ricochet',0.55),add('attackRange',25)]},
+  {id:'gem_garnet',rarity:'rare',icon:'❤️',name:'โกเมนดูดกลืน',stackCap:8,cost:530,weight:1,fx:[add('lifesteal',0.009),add('maxHp',20)]},
+  {id:'gem_aquamarine',rarity:'rare',icon:'🩵',name:'อะความารีนสายฟ้า',stackCap:8,cost:550,weight:1,fx:[add('lightningChain',5),add('explosiveRadius',7)]},
 
-  { id: 's_a1', rarity: 'normal', icon: '⚔️', name: 'คมดาบสังหาร',              cost: 150, fx: [mul('damage', 1.015), add('crit', 0.0075)], scale: 0.40, weight: 0.9},
-  { id: 's_a2', rarity: 'normal', icon: '🪃', name: 'วงแหวนสะท้อนวิถี',     cost: 120, fx: [add('ricochet', 0.35), mul('attackRange', 1.02)], weight: 0.8 },
-  { id: 's_a4', rarity: 'normal', icon: '💎', name: 'อัญมณีเร่งเวลา',            cost: 165, fx: [mul('fireRate', 0.985), mul('bulletSpeed', 1.03)], scale: 0.50, weight: 0.9},
-  { id: 's_a6', rarity: 'normal', icon: '💍', name: 'แหวนคริติคอลพินาศ',        cost: 145, fx: [add('crit', 0.015)], scale: 0.50, weight: 0.85},
-
-  { id: 's_d1', rarity: 'normal', icon: '🛡️', name: 'โล่เหล็กกล้า',            cost: 135, fx: [add('maxHp', 15), add('armor', 0.015)], scale: 0.45, weight: 0.8},
-  { id: 's_d2', rarity: 'normal', icon: '📿', name: 'สร้อยคอฟื้นชีวา',          cost: 130, fx: [add('regen', 0.55)], scale: 0.50, weight: 0.9},
-  { id: 's_d3', rarity: 'normal', icon: '🥋', name: 'ชุดนินจาพลิ้วไหว',         cost: 150, fx: [add('dodge', 0.01875)], scale: 0.55, weight: 0.9},
-  { id: 's_d4', rarity: 'normal', icon: '👟', name: 'รองเท้าท่องมิติ',          cost: 120, fx: [mul('speed', 1.0225)], scale: 0.50, weight: 0.95},
-  { id: 's_d5', rarity: 'normal', icon: '⭐', name: 'เครื่องเร่งประสบการณ์', cost: 125, fx: [mul('xpMulti', 1.02)], scale: 0.50, weight: 0.75},
-  { id: 's_d6', rarity: 'normal', icon: '👑', name: 'มงกุฎมิดาสน้อย',            cost: 210, fx: [mul('goldMulti', 1.04)], scale: 0.70, weight: 1},
-
-  { id: 's_n19', rarity: 'normal', icon: '🎯', name: 'ศูนย์เล็งพื้นฐาน',           cost: 115, fx: [mul('attackRange', 1.05), add('crit', 0.005)], weight: 0.95 },
-  { id: 's_n20', rarity: 'normal', icon: '☣️', name: 'ตัวเร่งปฏิกิริยา',             cost: 145, fx: [add('poisonDmg', 2), add('lightningChain', 1.5)], weight: 0.75 },
-  { id: 's_n21', rarity: 'normal', icon: '🗡️', name: 'แกนเจาะวิถี',                 cost: 130, fx: [add('pierce', 0.25), add('crit', 0.005)], weight: 0.8 },
-  { id: 's_n22', rarity: 'normal', icon: '🧱', name: 'เกราะฉุกเฉิน', cost: 125, fx: [add('armor', 0.01), add('maxHp', 10)], weight: 0.9 },
-  { id: 's_n23', rarity: 'normal', icon: '🧪', name: 'ตัวเร่งฟื้นฟูฉุกเฉิน', cost: 135, fx: [add('regen', 0.55), healPct(0.10)], weight: 0.90 },
-  { id: 's_n24', rarity: 'normal', icon: '🪙', name: 'เหรียญนำโชค',                  cost: 140, fx: [mul('goldMulti', 1.03)], weight: 1 },
-  { id: 's_n25', rarity: 'normal', icon: '🛡️', name: 'แผ่นเกราะเสริม',               cost: 125, fx: [add('armor', 0.0125)], weight: 0.95 },
-  { id: 's_n26', rarity: 'normal', icon: '🥾', name: 'พื้นรองเท้าคล่องตัว',           cost: 125, fx: [mul('speed', 1.015), add('dodge', 0.004)], weight: 1 },
-  { id: 's_n27', rarity: 'normal', icon: '⚡', name: 'ตัวนำไฟฟ้า',                   cost: 165, fx: [add('lightningChain', 4.5)], weight: 0.8 },
-  { id: 's_n28', rarity: 'normal', icon: '☣️', name: 'หลอดพิษเข้มข้น',                cost: 145, fx: [add('poisonDmg', 4)], weight: 0.85 },
-  { id: 's_n29', rarity: 'normal', icon: '💣', name: 'ดินระเบิดแรงดัน',               cost: 155, fx: [add('explosiveRadius', 5)], weight: 0.85 },
-  { id: 's_n30', rarity: 'normal', icon: '🥊', name: 'ถุงมือผลักศัตรู',               cost: 140, fx: [add('knockback', 15)], weight: 0.9 },
-
-  // ───────── SHOP RARE (15) ─────────
-  { id: 's_b1', rarity: 'rare', icon: '🗡️', name: 'ดาบเหล็กกล้าชุบ', cost: 450, fx: [mul('damage', 1.06)], weight: 0.95 },
-  { id: 's_b2', rarity: 'rare', icon: '🔰', name: 'เกราะไทเทเนียม', cost: 340, fx: [add('armor', 0.02625)], weight: 1.05 },
-  { id: 's_b3', rarity: 'rare', icon: '🏰', name: 'ป้อมปราการศิลา', cost: 520, fx: [mul('maxHp', 1.0675)], weight: 0.95 },
-  { id: 's_b4', rarity: 'rare', icon: '🩸', name: 'จี้หยดเลือดอสูร', cost: 550, fx: [add('lifesteal', 0.009)], weight: 1.10 },
-  { id: 's_b5', rarity: 'rare', icon: '🧿', name: 'เลนส์นักล่า', cost: 480, fx: [add('crit', 0.03), add('bulletSpeed', 52.5)], weight: 0.80 },
-  { id: 's_b6', rarity: 'rare', icon: '🥾', name: 'รองเท้าจู่โจม', cost: 330, fx: [mul('speed', 1.0375), add('knockback', 15)], weight: 1.05 },
-  { id: 's_b7', rarity: 'rare', icon: '💰', name: 'เหรียญนักสำรวจ', cost: 350, fx: [mul('goldMulti', 1.05), mul('xpMulti', 1.02)], weight: 1.00 },
-  { id: 's_b8', rarity: 'rare', icon: '⚙️', name: 'แกนยุทธวิธี', cost: 400, fx: [mul('damage', 1.03), mul('bulletSpeed', 1.03)], weight: 1.00 },
-  { id: 's_b9', rarity: 'rare', icon: '🔩', name: 'ห้องกระสุนเร่งรัว', cost: 450, fx: [mul('fireRate', 0.965), add('crit', 0.009)], weight: 1.00 },
-  { id: 's_b10', rarity: 'rare', icon: '❤️', name: 'หัวใจผู้พิทักษ์', cost: 460, fx: [add('maxHp', 30), add('regen', 0.45)], weight: 0.95 },
-  { id: 's_b11', rarity: 'rare', icon: '🩸', name: 'พันธสัญญาโลหิต', cost: 500, fx: [add('lifesteal', 0.0075), mul('damage', 1.015)], weight: 1.00 },
-  { id: 's_b12', rarity: 'rare', icon: '🌀', name: 'รองเท้าเฟส', cost: 420, fx: [add('dodge', 0.012), mul('speed', 1.02)], weight: 1.00 },
-  { id: 's_b13', rarity: 'rare', icon: '🎯', name: 'เลนส์นักล่าเงียบ', cost: 460, fx: [add('crit', 0.01875), mul('attackRange', 1.12)], weight: 0.90 },
-  { id: 's_b14', rarity: 'rare', icon: '🧠', name: 'แกนประสบการณ์', cost: 380, fx: [mul('xpMulti', 1.04), mul('damage', 1.01)], weight: 1.00 },
-  { id: 's_b15', rarity: 'rare', icon: '⚡', name: 'ถุงมือช็อกกระแทก', cost: 520, fx: [add('lightningChain', 7.5), add('knockback', 18)], weight: 0.90 },
-
-  // ───────── SHOP LEGEND ─────────
-  { id: 's_f1', rarity: 'legend', icon: '☄️', name: 'แกนดาวตก', cost: 1850, fx: [mul('damage', 1.1125), add('explosiveRadius', 11.25)], weight: 0.95 },
-  { id: 's_f2', rarity: 'legend', icon: '⏳', name: 'นาฬิกาแห่งกาลเวลา', cost: 1800, fx: [mul('fireRate', 0.94), add('timeSlow', 0.01875)], weight: 0.80 },
-  { id: 's_f3', rarity: 'legend', icon: '🛡️', name: 'เกราะอมตะ', cost: 2050, fx: [mul('maxHp', 1.135), add('armor', 0.04125), add('regen', 1.125)], weight: 0.70 },
-  { id: 's_f4', rarity: 'legend', icon: '⚡', name: 'หัวใจสายฟ้า', cost: 2000, fx: [add('lightningChain', 45), add('crit', 0.03)], weight: 0.85 },
-  { id: 's_f6', rarity: 'legend', icon: '👑', name: 'ราชันย์กระสุน', cost: 2100, fx: [add('projectiles', 1), mul('damage', 1.03)], weight: 0.55 },
-  { id: 's_f7', rarity: 'legend', icon: '🪽', name: 'ม่านอมตะ', cost: 2150, fx: [add('dodge', 0.025), add('armor', 0.02), add('regen', 0.6)], weight: 0.50 },
-  { id: 's_f8', rarity: 'legend', icon: '☠️', name: 'แกนสังหาร', cost: 2050, fx: [mul('fireRate', 0.95), add('crit', 0.025), add('executionThreshold', 0.006)], weight: 0.55 },
-  { id: 's_f9', rarity: 'legend', icon: '☀️', name: 'แกนสุริยะ', cost: 2200, fx: [mul('damage', 1.05), mul('bulletSpeed', 1.08), add('crit', 0.015)], weight: 0.50 },
-
-  // ───────── END SHOP ITEMS ─────────
-  ,
-  ,
-  ,
-  ,
-  ,
-  ,
-  
+  // LEGEND: รูน 5 ชนิด / สูงสุด +6 ต่อชนิด
+  {id:'rune_war',rarity:'legend',icon:'ᚱ',name:'รูนสงคราม',stackCap:6,cost:1900,weight:1,fx:[mul('damage',1.075),mul('fireRate',0.965),add('crit',0.02)]},
+  {id:'rune_guard',rarity:'legend',icon:'ᛉ',name:'รูนผู้พิทักษ์',stackCap:6,cost:1850,weight:1,fx:[add('maxHp',70),add('armor',0.035),add('regen',1)]},
+  {id:'rune_hunt',rarity:'legend',icon:'ᛏ',name:'รูนนักล่า',stackCap:6,cost:1950,weight:1,fx:[add('attackRange',55),mul('speed',1.035),add('crit',0.025)]},
+  {id:'rune_void',rarity:'legend',icon:'ᛟ',name:'รูนสุญญากาศ',stackCap:6,cost:2000,weight:1,fx:[add('pierce',1),add('projectiles',0.5),add('explosiveRadius',12)]},
+  {id:'rune_soul',rarity:'legend',icon:'ᛃ',name:'รูนวิญญาณ',stackCap:6,cost:2050,weight:1,fx:[add('lifesteal',0.018),add('revives',0.2),add('timeSlow',0.012)]}
 ];
-  
+
 /* ---------- ส่งออกให้ index.html ---------- */
 window.GAME_CONFIG = {
   world: WORLD, heroes: HEROES, playerBase: PLAYER_BASE, caps: CAPS,
@@ -2657,6 +2570,12 @@ function showStatDelta(before, after, sourceName='อัปเกรด'){
 
 function applyEffect(f){
 
+  if(f.op==='attackPattern'){
+    player.attackPattern=String(f.v||'focused');
+    player.attackPatternLevel=Math.max(1,Number(f.stackLevel)||1);
+    return;
+  }
+
   if(f.op==='addBulletType' || (f.op==='set' && f.stat==='bulletType')){
     const bt=String(f.v||'arcane');
     if(!Array.isArray(player.bulletTypes)) player.bulletTypes=[player.bulletType||'arcane'];
@@ -2869,6 +2788,7 @@ function descEffect(f){
 
 function previewItemStats(item){
   const saved={...player,bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
+  const savedStack=Number(item?.stackCount)||0;
   const before=snapshotPlayerStats();
   try{
     if(typeof item?.apply==='function')item.apply(false);
@@ -2881,6 +2801,7 @@ function previewItemStats(item){
   }finally{
     Object.assign(player,saved);
     if(Array.isArray(saved.bulletTypes)) player.bulletTypes=[...saved.bulletTypes];
+    if(item) item.stackCount=savedStack;
   }
 }
 
@@ -2926,6 +2847,8 @@ function buildItem(def,i){
     ...def,
 
     id:def.id||('u'+i),
+    stackCap:Math.max(1,Math.floor(Number(def.stackCap)||(def.rarity==='legend'?6:def.rarity==='rare'?8:10))),
+    stackCount:Number(def.stackCount)||0,
 
     desc:
       def.desc ||
@@ -2946,7 +2869,8 @@ function buildItem(def,i){
 
       const before=snapshotPlayerStats();
 
-      scaledEffects().forEach(applyEffect);
+      scaledEffects().map(f=>f&&f.op==='attackPattern'?{...f,stackLevel:nextStack}:f).forEach(applyEffect);
+       o.stackCount=nextStack;
       const after=snapshotPlayerStats();
 
       /*
@@ -3086,14 +3010,9 @@ function getBossRarityWeights(w){
 }
 
 function isItemMaxed(item){
-  const C=CFG.caps, fx=item.fx||[];
-  const useful=fx.filter(f=>!(f.op==='mul'&&((f.stat==='damage'&&f.v<1)||(f.stat==='fireRate'&&f.v>1))));
-  if(!useful.length) return false;
-  return useful.every(f=>{
-    if(f.op!=='add') return false;
-    const cap=f.stat==='armor'?C.armorMax:C[f.stat];
-    return cap!==undefined&&Number(player[f.stat]||0)>=cap-1e-9;
-  });
+  if(!item) return true;
+  const cap=Number(item.stackCap)||20;
+  return Number(item.stackCount||0)>=cap;
 }
 function rand(a,b){
   return a+Math.random()*(b-a);
