@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.216</title>
-<meta name="game-version" content="v1.0.214">
+<meta name="game-version" content="v1.0.216">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5685,6 +5685,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.globalAlpha=.35; ctx.fillStyle='#d9f99d';
       for(let k=0;k<7;k++){const a=performance.now()/500+k*.9;ctx.fillRect(px+Math.cos(a)*z.r*.55-2,py+Math.sin(a)*z.r*.55-2,4,4);}
       ctx.restore();
+    }
     for(const z of blackHoles){const px=sx(z.x,cam),py=sy(z.y,cam),p=1+Math.sin(performance.now()/90)*.08;ctx.save();ctx.globalAlpha=.3+.12*(z.life/z.maxLife);ctx.fillStyle='#020617';ctx.beginPath();ctx.arc(px,py,z.r*p,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.9;ctx.strokeStyle='#a78bfa';ctx.lineWidth=3;ctx.shadowColor='#7c3aed';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(px,py,z.r*p,0,Math.PI*2);ctx.stroke();ctx.restore();}
     for(const z of mudZones){const px=sx(z.x,cam),py=sy(z.y,cam);ctx.save();ctx.globalAlpha=.42;ctx.fillStyle='#92400e';ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.8;ctx.strokeStyle='#d97706';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.stroke();ctx.restore();}
     for(const m of mines){const px=sx(m.x,cam),py=sy(m.y,cam);ctx.save();ctx.fillStyle='#334155';ctx.fillRect(px-7,py-5,14,10);ctx.fillStyle='#facc15';ctx.fillRect(px-2,py-2,4,4);ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,m.r*.65,0,Math.PI*2);ctx.stroke();ctx.restore();}
