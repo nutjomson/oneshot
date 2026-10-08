@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.190</title>
-<meta name="game-version" content="v1.0.194">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.195</title>
+<meta name="game-version" content="v1.0.195">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1524,36 +1524,36 @@ const LEVEL_UPGRADES = [
  */
 const SHOP_ITEMS = [
   // NORMAL: อุปกรณ์สวมใส่ 12 ชนิด / สูงสุด +10 ต่อชนิด
-  {id:'eq_chest',rarity:'normal',icon:'🛡️',name:'เกราะอกนักรบ',stackCap:10,cost:180,weight:1,fx:[add('maxHp',18),add('armor',0.012),add('damage',2)]},
-  {id:'eq_pants',rarity:'normal',icon:'👖',name:'เกราะกางเกงคล่องตัว',stackCap:10,cost:170,weight:1,fx:[add('maxHp',12),mul('speed',1.012),add('dodge',0.006)]},
-  {id:'eq_helmet',rarity:'normal',icon:'⛑️',name:'หมวกนักล่า',stackCap:10,cost:165,weight:1,fx:[add('crit',0.009),add('attackRange',12),add('bulletSpeed',20)]},
-  {id:'eq_boots',rarity:'normal',icon:'🥾',name:'รองเท้าจู่โจม',stackCap:10,cost:160,weight:1,fx:[mul('speed',1.018),add('dodge',0.008),add('knockback',8)]},
-  {id:'eq_earrings',rarity:'normal',icon:'💎',name:'ตุ้มหูนักเวท',stackCap:10,cost:190,weight:1,fx:[add('crit',0.007),add('regen',0.22),add('lifesteal',0.0025)]},
-  {id:'eq_weapon',rarity:'normal',icon:'🔫',name:'อาวุธยิงมาตรฐาน',stackCap:10,cost:220,weight:1,fx:[mul('damage',1.018),mul('fireRate',0.988),add('bulletSpeed',28)]},
-  {id:'eq_gloves',rarity:'normal',icon:'🥊',name:'ถุงมือพลัง',stackCap:10,cost:175,weight:1,fx:[add('damage',3),add('knockback',10),add('crit',0.004)]},
-  {id:'eq_belt',rarity:'normal',icon:'🧷',name:'เข็มขัดสนาม',stackCap:10,cost:155,weight:1,fx:[add('maxHp',15),add('regen',0.25),add('armor',0.008)]},
-  {id:'eq_cloak',rarity:'normal',icon:'🧥',name:'ผ้าคลุมเงา',stackCap:10,cost:185,weight:1,fx:[add('dodge',0.012),mul('speed',1.01),add('attackRange',10)]},
-  {id:'eq_amulet',rarity:'normal',icon:'📿',name:'เครื่องรางเติบโต',stackCap:10,cost:200,weight:1,fx:[mul('xpMulti',1.018),mul('goldMulti',1.015),add('regen',0.18)]},
-  {id:'eq_ring',rarity:'normal',icon:'💍',name:'แหวนทำลายล้าง',stackCap:10,cost:205,weight:1,fx:[mul('damage',1.015),add('crit',0.012),add('explosiveRadius',5)]},
-  {id:'eq_bracelet',rarity:'normal',icon:'📿',name:'กำไลพลังชีวิต',stackCap:10,cost:175,weight:1,fx:[add('maxHp',25),add('lifesteal',0.003)]},
+  {id:'eq_chest',rarity:'normal',icon:'🛡️',name:'เกราะอกนักรบ',stackCap:10,cost:180,weight:1,fx:[add('maxHp',18),add('armor',0.0195),add('damage',2)]},
+  {id:'eq_pants',rarity:'normal',icon:'👖',name:'เกราะกางเกงคล่องตัว',stackCap:10,cost:170,weight:1,fx:[add('maxHp',12),mul('speed',1.01791),add('dodge',0.009)]},
+  {id:'eq_helmet',rarity:'normal',icon:'⛑️',name:'หมวกนักล่า',stackCap:10,cost:165,weight:1,fx:[add('crit',0.0126),add('attackRange',12.67),add('bulletSpeed',50.2)]},
+  {id:'eq_boots',rarity:'normal',icon:'🥾',name:'รองเท้าจู่โจม',stackCap:10,cost:160,weight:1,fx:[mul('speed',1.02691),add('dodge',0.018),add('knockback',28)]},
+  {id:'eq_earrings',rarity:'normal',icon:'💎',name:'ตุ้มหูนักเวท',stackCap:10,cost:190,weight:1,fx:[add('crit',0.0098),add('regen',0.249),add('lifesteal',0.00335)]},
+  {id:'eq_weapon',rarity:'normal',icon:'🔫',name:'อาวุธยิงมาตรฐาน',stackCap:10,cost:220,weight:1,fx:[mul('damage',1.018),mul('fireRate',0.92),add('bulletSpeed',70.28)]},
+  {id:'eq_gloves',rarity:'normal',icon:'🥊',name:'ถุงมือพลัง',stackCap:10,cost:175,weight:1,fx:[add('damage',3),add('knockback',35),add('crit',0.0056)]},
+  {id:'eq_belt',rarity:'normal',icon:'🧷',name:'เข็มขัดสนาม',stackCap:10,cost:155,weight:1,fx:[add('maxHp',15),add('regen',0.283),add('armor',0.013)]},
+  {id:'eq_cloak',rarity:'normal',icon:'🧥',name:'ผ้าคลุมเงา',stackCap:10,cost:185,weight:1,fx:[add('dodge',0.018),mul('speed',1.01467),add('attackRange',10.57)]},
+  {id:'eq_amulet',rarity:'normal',icon:'📿',name:'เครื่องรางเติบโต',stackCap:10,cost:200,weight:1,fx:[mul('xpMulti',1.0735),mul('goldMulti',1.048),add('regen',0.204)]},
+  {id:'eq_ring',rarity:'normal',icon:'💍',name:'แหวนทำลายล้าง',stackCap:10,cost:205,weight:1,fx:[mul('damage',1.015),add('crit',0.0168),add('explosiveRadius',6.5)]},
+  {id:'eq_bracelet',rarity:'normal',icon:'📿',name:'กำไลพลังชีวิต',stackCap:10,cost:175,weight:1,fx:[add('maxHp',25),add('lifesteal',0.00402)]},
 
   // RARE: อัญมณี 9 ชนิด / สูงสุด +8 ต่อชนิด
-  {id:'gem_ruby',rarity:'rare',icon:'🔴',name:'ทับทิมเพลิง',stackCap:8,cost:520,weight:1,fx:[mul('damage',1.035),add('crit',0.012)]},
-  {id:'gem_sapphire',rarity:'rare',icon:'🔵',name:'ไพลินเยือกแข็ง',stackCap:8,cost:500,weight:1,fx:[mul('fireRate',0.97),add('timeSlow',0.008)]},
-  {id:'gem_emerald',rarity:'rare',icon:'🟢',name:'มรกตฟื้นฟู',stackCap:8,cost:480,weight:1,fx:[add('maxHp',35),add('regen',0.65)]},
-  {id:'gem_topaz',rarity:'rare',icon:'🟡',name:'บุษราคัมทองคำ',stackCap:8,cost:490,weight:1,fx:[mul('goldMulti',1.035),mul('xpMulti',1.02)]},
-  {id:'gem_amethyst',rarity:'rare',icon:'🟣',name:'แอมะทิสต์เงา',stackCap:8,cost:510,weight:1,fx:[add('dodge',0.02),mul('speed',1.02)]},
-  {id:'gem_diamond',rarity:'rare',icon:'💠',name:'เพชรเจาะเกราะ',stackCap:8,cost:560,weight:1,fx:[add('pierce',0.5),add('bulletSpeed',55)]},
-  {id:'gem_opal',rarity:'rare',icon:'🔮',name:'โอปอลสะท้อน',stackCap:8,cost:540,weight:1,fx:[add('ricochet',0.55),add('attackRange',25)]},
-  {id:'gem_garnet',rarity:'rare',icon:'❤️',name:'โกเมนดูดกลืน',stackCap:8,cost:530,weight:1,fx:[add('lifesteal',0.009),add('maxHp',20)]},
-  {id:'gem_aquamarine',rarity:'rare',icon:'🩵',name:'อะความารีนสายฟ้า',stackCap:8,cost:550,weight:1,fx:[add('lightningChain',5),add('explosiveRadius',7)]},
+  {id:'gem_ruby',rarity:'rare',icon:'🔴',name:'ทับทิมเพลิง',stackCap:8,cost:520,weight:1,fx:[mul('damage',1.035),add('crit',0.0168)]},
+  {id:'gem_sapphire',rarity:'rare',icon:'🔵',name:'ไพลินเยือกแข็ง',stackCap:8,cost:500,weight:1,fx:[mul('fireRate',0.90),add('timeSlow',0.02472)]},
+  {id:'gem_emerald',rarity:'rare',icon:'🟢',name:'มรกตฟื้นฟู',stackCap:8,cost:480,weight:1,fx:[add('maxHp',35),add('regen',0.735)]},
+  {id:'gem_topaz',rarity:'rare',icon:'🟡',name:'บุษราคัมทองคำ',stackCap:8,cost:490,weight:1,fx:[mul('goldMulti',1.111),mul('xpMulti',1.082)]},
+  {id:'gem_amethyst',rarity:'rare',icon:'🟣',name:'แอมะทิสต์เงา',stackCap:8,cost:510,weight:1,fx:[add('dodge',0.028),mul('speed',1.02445)]},
+  {id:'gem_diamond',rarity:'rare',icon:'💠',name:'เพชรเจาะเกราะ',stackCap:8,cost:560,weight:1,fx:[add('pierce',0.735),add('bulletSpeed',138.0)]},
+  {id:'gem_opal',rarity:'rare',icon:'🔮',name:'โอปอลสะท้อน',stackCap:8,cost:540,weight:1,fx:[add('ricochet',1.573),add('attackRange',26.39)]},
+  {id:'gem_garnet',rarity:'rare',icon:'❤️',name:'โกเมนดูดกลืน',stackCap:8,cost:530,weight:1,fx:[add('lifesteal',0.01206),add('maxHp',20)]},
+  {id:'gem_aquamarine',rarity:'rare',icon:'🩵',name:'อะความารีนสายฟ้า',stackCap:8,cost:550,weight:1,fx:[add('lightningChain',5),add('explosiveRadius',9.1)]},
 
   // LEGEND: รูน 5 ชนิด / สูงสุด +6 ต่อชนิด
-  {id:'rune_war',rarity:'legend',icon:'ᚱ',name:'รูนสงคราม',stackCap:6,cost:1900,weight:1,fx:[mul('damage',1.075),mul('fireRate',0.965),add('crit',0.02)]},
-  {id:'rune_guard',rarity:'legend',icon:'ᛉ',name:'รูนผู้พิทักษ์',stackCap:6,cost:1850,weight:1,fx:[add('maxHp',70),add('armor',0.035),add('regen',1)]},
-  {id:'rune_hunt',rarity:'legend',icon:'ᛏ',name:'รูนนักล่า',stackCap:6,cost:1950,weight:1,fx:[add('attackRange',55),mul('speed',1.035),add('crit',0.025)]},
-  {id:'rune_void',rarity:'legend',icon:'ᛟ',name:'รูนสุญญากาศ',stackCap:6,cost:2000,weight:1,fx:[add('pierce',1),add('projectiles',0.5),add('explosiveRadius',12)]},
-  {id:'rune_soul',rarity:'legend',icon:'ᛃ',name:'รูนวิญญาณ',stackCap:6,cost:2050,weight:1,fx:[add('lifesteal',0.018),add('revives',0.2),add('timeSlow',0.012)]}
+  {id:'rune_war',rarity:'legend',icon:'ᚱ',name:'รูนสงคราม',stackCap:6,cost:1900,weight:1,fx:[mul('damage',1.075),mul('fireRate',0.82),add('crit',0.028)]},
+  {id:'rune_guard',rarity:'legend',icon:'ᛉ',name:'รูนผู้พิทักษ์',stackCap:6,cost:1850,weight:1,fx:[add('maxHp',70),add('armor',0.057),add('regen',1.13)]},
+  {id:'rune_hunt',rarity:'legend',icon:'ᛏ',name:'รูนนักล่า',stackCap:6,cost:1950,weight:1,fx:[add('attackRange',58.03),mul('speed',1.04289),add('crit',0.035)]},
+  {id:'rune_void',rarity:'legend',icon:'ᛟ',name:'รูนสุญญากาศ',stackCap:6,cost:2000,weight:1,fx:[add('pierce',1.47),add('projectiles',2.45),add('explosiveRadius',15.6)]},
+  {id:'rune_soul',rarity:'legend',icon:'ᛃ',name:'รูนวิญญาณ',stackCap:6,cost:2050,weight:1,fx:[add('lifesteal',0.02412),add('revives',1.75),add('timeSlow',0.03708)]}
 ];
 
 /* ---------- ส่งออกให้ index.html ---------- */
@@ -2613,7 +2613,7 @@ function applyEffect(f){
     const requested=cur*f.v;
     if(f.stat==='fireRate' && f.v<1){
       const minRate=Number(CFG.caps.fireRateMin)||0.04;
-      nv=cur-softCapDecrease(cur,cur-requested,minRate);
+      nv=Math.max(minRate,requested);
     }else if(f.stat==='speed' && f.v>1 && selectedHero){
       const speedCap=(Number(selectedHero.speed)||cur)*2;
       nv=cur+Math.min(Math.max(0,speedCap-cur),(requested-cur)*softCapMultiplier(cur,speedCap));
