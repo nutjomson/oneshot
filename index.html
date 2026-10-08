@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.216">
+<meta name="game-version" content="v1.0.217">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1389,10 +1389,10 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 
 /* ===== 6.5 LEVEL ATTACK PATTERNS ===== */
 const ATTACK_PATTERNS = {
-  oneDir:{count:1,spread:0,damage:0.24,mode:'bullet'},twoDir:{count:2,spread:0.10,damage:0.18,mode:'bullet'},threeDir:{count:3,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{count:5,spread:0.12,damage:0.10,mode:'bullet'},
-  slashCone:{count:1,damage:0.28,mode:'slash',range:90,arc:0.22,bleedDps:0.012,bleedTime:1.5},powerWave:{count:1,damage:0.22,mode:'wave',range:250,speed:480,radius:6,life:0.55},frontSlash:{count:1,damage:0.32,mode:'slash',range:82,arc:0.55},
-  fireballChain:{count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{count:1,damage:0.25,mode:'lightningBolt',speed:900,life:0.9},bomb:{count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{count:1,damage:0.16,mode:'poison',range:300,speed:500,radius:55,life:0.9,zoneLife:2.2,tick:0.5},
-  lightningStrike:{count:1,damage:0.18,mode:'lightning',range:500,cooldown:0.5},blackHole:{count:1,damage:0.12,mode:'blackHole',range:360,speed:420,radius:55,life:0.9,zoneLife:1.5,pull:85},mudPool:{count:1,damage:0.08,mode:'mud',range:330,speed:460,radius:60,life:0.85,zoneLife:2.5,slow:0.25,tick:0.5},mine:{count:1,damage:0.30,mode:'mine',range:300,speed:430,radius:55,life:0.9}
+  oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'bullet'},twoDir:{id:'twoDir',count:2,spread:0.10,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:3,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
+  slashCone:{id:'slashCone',count:1,damage:0.28,mode:'slash',range:90,arc:0.22,bleedDps:0.012,bleedTime:1.5},powerWave:{id:'powerWave',count:1,damage:0.22,mode:'wave',range:250,speed:480,radius:6,life:0.55},frontSlash:{id:'frontSlash',count:1,damage:0.32,mode:'slash',range:82,arc:0.55},
+  fireballChain:{id:'fireballChain',count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{id:'lightningBolt',count:1,damage:0.25,mode:'lightningBolt',speed:900,life:0.9},bomb:{id:'bomb',count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{id:'poisonBottle',count:1,damage:0.16,mode:'poison',range:300,speed:500,radius:55,life:0.9,zoneLife:2.2,tick:0.5},
+  lightningStrike:{id:'lightningStrike',count:1,damage:0.18,mode:'lightning',range:500,cooldown:0.5},blackHole:{id:'blackHole',count:1,damage:0.12,mode:'blackHole',range:360,speed:420,radius:55,life:0.9,zoneLife:1.5,pull:85},mudPool:{id:'mudPool',count:1,damage:0.08,mode:'mud',range:330,speed:460,radius:60,life:0.85,zoneLife:2.5,slow:0.25,tick:0.5},mine:{id:'mine',count:1,damage:0.30,mode:'mine',range:300,speed:430,radius:55,life:0.9}
 };
 
 /* ===== 7. SKILLS ===== */
@@ -2890,35 +2890,20 @@ function getAttackPatternName(id){
 }
 function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[];
-  const f=fx.find(x=>x&&x.op==='attackPattern');
-  if(!f) return '';
-  const pid=String(f.v||'focused');
-  const p=CFG.attackPatterns?.[pid]||CFG.attackPatterns?.focused||{count:1,damage:1};
-  const current=getOwnedAttackPatternLevel(pid);
-  const next=Math.min(20,current+1);
-  const levelForDamage=Math.max(1,next);
-  const bonus=Math.min(0.38,Math.max(0,(levelForDamage-1)*0.02));
-  const count=Math.max(1,Math.floor(Number(p.count)||1));
-  const damage=Number(p.damage)||1;
-  const totalBase=count*damage;
-  const mode=p.ring?'ยิงรอบทิศ':p.cross?'กากบาท':p.diagonal?'กากบาททแยง':p.side?'ยิงคู่ด้านข้าง':(count===1?'ยิงตรง':`ยิง ${count} นัด`);
-  const shape=[];
-  if(Number(p.spread)>0) shape.push(`กระจาย ${(Number(p.spread)*180/Math.PI).toFixed(1)}°`);
-  if(p.ring) shape.push('รอบตัว');
-  if(p.side) shape.push('ซ้าย/ขวา');
-  if(p.cross) shape.push('4 ทิศ + เป้าหมาย');
-  if(p.diagonal) shape.push('ทแยง 4 มุม');
-  if(p.mode==='bomb') shape.push('รัศมี '+(Number(p.radius)||150)+' • ระเบิดเมื่อถึงจุด');
-  if(p.mode==='poison') shape.push('รัศมี '+(Number(p.radius)||125)+' • '+(Number(p.zoneLife)||3.5).toFixed(1)+' วิ • ทุก '+(Number(p.tick)||.45).toFixed(2)+' วิ');
-  if(p.mode==='windStorm') shape.push('รัศมี '+(Number(p.radius)||95)+' • ผลักศัตรูบางส่วน • Damage เบา');
-  const shapeText=shape.length?' • '+shape.join(' • '):'';
-  return '<div class="attack-pattern-upgrade-info">'+
-    '<div class="attack-pattern-line"><b>⚔️ รูปแบบ:</b> '+mode+shapeText+'</div>'+
-    '<div class="attack-pattern-line"><b>💥 พลังพื้นฐาน:</b> '+count+' นัด × x'+damage.toFixed(2)+' = x'+totalBase.toFixed(2)+' ต่อชุด</div>'+
-    '<div class="attack-pattern-line"><b>📦 Stack ระบบ:</b> '+(current>0?'Pattern นี้มี Lv.'+current+' อยู่แล้ว':'ยังไม่มี Pattern นี้ — ครั้งนี้เป็นการปลดล็อก')+'</div>'+
-    '<div class="attack-pattern-line upgrade"><b>⬆️ ผลของ Stack นี้:</b> Lv.'+current+' → Lv.'+next+' • <strong>Damage เฉพาะ '+getAttackPatternName(pid)+' +2%</strong> • โบนัสสะสม +'+Math.round(bonus*100)+'%</div>'+
-    '<div class="attack-pattern-line hint">สูงสุด Lv.20 = โบนัส Damage รูปแบบ +38%</div>'+
-  '</div>';
+  const f=fx.find(x=>x&&x.op==='attackPattern'); if(!f)return '';
+  const pid=String(f.v||''),base=CFG.attackPatterns?.[pid]; if(!base)return '';
+  const current=getOwnedAttackPatternLevel(pid),next=Math.min(20,current+1),p=resolveAttackPattern(base,next);
+  const names={oneDir:'ยิง 1 ทิศทาง',twoDir:'ยิง 2 ทิศทาง',threeDir:'ยิง 3 ทิศทาง',fiveDir:'ยิง 5 ทิศทาง',powerWave:'คลื่นพลัง',slashCone:'ฟันวงกรวยด้านหน้า',frontSlash:'ฟันระยะใกล้รอบด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้า 1 ทิศ',bomb:'โยนระเบิดวงกว้าง',poisonBottle:'โยนพิษ',lightningStrike:'สายฟ้าสุ่มฟาด',blackHole:'หลุมดำ',mudPool:'ปาโคลนดูด',mine:'วางกับระเบิด'};
+  const shape=names[pid]||getAttackPatternName(pid),count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0,extra=[];
+  if(pid==='slashCone')extra.push('ระยะ '+Math.round(p.range)+' • มุม '+Math.round(p.arc*180/Math.PI)+'° • Bleed');
+  if(pid==='frontSlash')extra.push('ระยะ '+Math.round(p.range)+' • มุม '+Math.round(p.arc*180/Math.PI)+'°');
+  if(pid==='powerWave')extra.push('ระยะ '+Math.round(p.range)+' • รัศมี '+Math.round(p.radius));
+  if(pid==='lightningStrike')extra.push(count+' เป้าหมาย • ทุก '+Number(p.cooldown).toFixed(2)+' วิ');
+  if(pid==='fireballChain')extra.push('ลาม '+Math.round(p.chainCount)+' เป้าหมาย');
+  if(['bomb','poisonBottle','blackHole','mudPool','mine'].includes(pid))extra.push('รัศมี '+Math.round(p.radius));
+  if(pid==='lightningBolt')extra.push('เจาะ '+Math.round(p.pierce||1));
+  const bonus=Math.min(0.38,Math.max(0,(next-1)*0.02));
+  return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ รูปแบบ:</b> '+shape+(extra.length?' • '+extra.join(' • '):'')+'</div><div class="attack-pattern-line"><b>💥 Lv.'+next+':</b> '+count+' × x'+dmg.toFixed(2)+' Damage</div><div class="attack-pattern-line"><b>📦 Stack:</b> '+(current>0?'Lv.'+current+' → Lv.'+next:'ปลดล็อก Lv.1')+' • โบนัสสะสม +'+Math.round(bonus*100)+'%</div><div class="attack-pattern-line hint">Lv.20 = รูปแบบโจมตีพัฒนาเต็มขั้น ไม่ใช่แค่เพิ่ม Damage</div></div>';
 }
 function renderOwnedAttackPatterns(){
   const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
@@ -3944,6 +3929,7 @@ function renderStartPerks(){
   function lerpN(a,b,t){return a+(b-a)*Math.max(0,Math.min(1,t));}
   function resolveAttackPattern(base,level){
     const t=(Math.max(1,Math.min(20,Number(level)||1))-1)/19,P={...base},L=(a,b)=>lerpN(a,b,t);
+    P.id=String(P.id||'');
     switch(P.mode){
       case 'slash':P.range=L(P.range||80,P.id==='slashCone'?165:135);P.arc=L(P.arc||.22,P.id==='slashCone'?1:.2+2.15);P.damage=L(P.damage||.25,P.id==='slashCone'?.90:.88);if(P.bleedDps)P.bleedDps=L(P.bleedDps,.095);if(P.bleedTime)P.bleedTime=L(P.bleedTime,4);break;
       case 'wave':P.range=L(250,590);P.radius=L(6,30);P.speed=L(480,720);P.life=L(.55,.95);P.damage=L(.22,.90);break;
