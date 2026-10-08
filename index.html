@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.228</title>
-<meta name="game-version" content="v1.0.228">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.229</title>
+<meta name="game-version" content="v1.0.229">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4194,8 +4194,10 @@ function renderStartPerks(){
     if(!blade&&floaters.length<60)floaters.push({x:e.x+rand(-8,8),y:e.y-e.r,t:.6,v:Math.round(actualDamage),c:crit});
     makeSparks(e.x,e.y,crit?'#facc15':e.color,crit?14:8);
     if(crit&&settings.shake) screenShake=4;
-    if(player.knockback>0){
-      const a=Math.atan2(e.y-player.y,e.x-player.x), k=player.knockback*(blade?CFG.combat.knockbackScaleBlade:CFG.combat.knockbackScale)*(e.type==='boss'?CFG.combat.knockbackBossResist:1);
+    const patternKnockback=(!blade&&bullet)?Math.max(0,Number(bullet.patternKnockback)||0):0;
+    const totalKnockback=Math.max(0,Number(player.knockback)||0)+patternKnockback;
+    if(totalKnockback>0){
+      const a=Math.atan2(e.y-player.y,e.x-player.x), k=totalKnockback*(blade?CFG.combat.knockbackScaleBlade:CFG.combat.knockbackScale)*(e.type==='boss'?CFG.combat.knockbackBossResist:1);
       e.x=clamp(e.x+Math.cos(a)*k,40,world.w-40); e.y=clamp(e.y+Math.sin(a)*k,40,world.h-40);
     }
     if(!blade&&player.poisonDmg>0)e.poisonTimer=CFG.combat.poisonDuration;
