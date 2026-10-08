@@ -3956,7 +3956,7 @@ function renderStartPerks(){
       case 'mud':P.damage=L(.08,.32);P.radius=L(60,135);P.range=L(330,470);P.speed=L(460,580);P.zoneLife=L(2.5,6);P.slow=L(.25,.65);P.tick=L(.5,.25);break;
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
-    }P.id=base.id||'';return P;
+    }return P;
   }
 
   function shoot(lightningOnly=false){
