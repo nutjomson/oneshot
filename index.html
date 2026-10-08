@@ -5274,16 +5274,17 @@ function openLevelUp(forceHigherRarity=false){
 
       // v1.0.211: Area-impact attack patterns.
       if(!remove && (b.patternMode==='bomb' || b.patternMode==='poison')){
+        const impactEnemy=enemies.find(e=>!e.dead && dist(b.x,b.y,e.x,e.y)<b.r+e.r);
         const reachedTarget=dist(b.x,b.y,b.targetX,b.targetY)<=Math.max(18,b.r+8);
-        if(reachedTarget || b.life<=0){
-          const impactX=reachedTarget?b.targetX:b.x, impactY=reachedTarget?b.targetY:b.y;
+        if(reachedTarget || impactEnemy || b.life<=0){
+          const impactX=impactEnemy?b.x:(reachedTarget?b.targetX:b.x);
+          const impactY=impactEnemy?b.y:(reachedTarget?b.targetY:b.y);
           if(b.patternMode==='bomb'){
             const radius=150;
             for(const e of enemies){
               if(!e.dead && dist(impactX,impactY,e.x,e.y)<=radius+e.r) hitEnemy(e,b.damage,b.crit,b);
             }
             makeSparks(impactX,impactY,'#f97316',28);
-            sparks.push({x:impactX,y:impactY,vx:0,vy:0,life:.28,size:radius*2,color:'#fb923c',ring:true});
           }else{
             poisonZones.push({
               x:impactX,y:impactY,r:125,
