@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.172</title>
-<meta name="game-version" content="v1.0.175">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.176</title>
+<meta name="game-version" content="v1.0.176">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -950,7 +950,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.172</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.176</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1284,8 +1284,10 @@ const HEROES = [
 // v1.0.171: treasure/boss item rewards use the IIFE-local Soft Cap helpers above.
 // v1.0.169: Hero movement speed x2.5; v1.0.167 base stats nerf retained
 const PLAYER_BASE = {
-  bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 2.7, xpMulti: 2.2,
-  dodge: 0, lifesteal: 0, revives: 2, ricochet: 0, poisonDmg: 0, lightningChain: 0, 
+  // v1.0.176: Gold/XP base multipliers returned to 1x.
+  // Compensation is moved to enemy reward values so the previous effective economy is retained.
+  bulletSpeed: 800, projectiles: 1, pierce: 1, attackRange: 180, regen: 1.0, goldMulti: 1, xpMulti: 1,
+  dodge: 0, lifesteal: 0, revives: 2, ricochet: 0, poisonDmg: 0, lightningChain: 0,
   explosiveRadius: 0, knockback: 0, executionThreshold: 0, orbitBlades: 0, timeSlow: 0
 };
 
@@ -1385,21 +1387,24 @@ const SKILLS = {
 /* ===== v1.0.168 ENEMY BASE HP/DAMAGE NERF =====
    ลด HP และ contact damage ของศัตรูทุกประเภทเหลือ 1/3 จาก v1.0.167
    คง speed / spawn / XP / gold / ranged ability multipliers เดิม */
+/* v1.0.176: Base reward compensation after returning player Gold/XP multipliers to 1x.
+   XP base values ×2.2 and Gold ranges ×2.7 preserve the previous effective reward level
+   while keeping the player-facing multipliers at their original 1x baseline. */
 const ENEMIES = {
-  stalker:    { hp: 21.6666666667, speed: 65, damage: 4, r: 16, color: '#ff0055', xpBase: 6,  goldMin: 2,  goldMax: 4,  spawnWeight: 30, weightPerWave: -0.15, minWave: 1 },
-  runner:     { hp: 15, speed: 135, damage: 2.6666666667,  r: 13, color: '#ff9900', xpBase: 5,  goldMin: 2,  goldMax: 4,  spawnWeight: 18, weightPerWave: -0.06, minWave: 1 },
-  shooter:    { hp: 26.6666666667, speed: 50, damage: 3.3333333333, r: 16, color: '#00e5ff', xpBase: 11, goldMin: 3,  goldMax: 5,  spawnWeight: 12, weightPerWave: 0.05,  minWave: 2, ai: 'shooter', shootTimer: 2.5 },
-  brute:      { hp: 60, speed: 40, damage: 7.3333333333, r: 24, color: '#aa00ff', xpBase: 20, goldMin: 4,  goldMax: 7,  spawnWeight: 8,  weightPerWave: 0.12,  minWave: 3 },
-  ghost:      { hp: 13.3333333333, speed: 80, damage: 4, r: 14, color: '#00ffaa', xpBase: 8,  goldMin: 3,  goldMax: 5,  spawnWeight: 10, weightPerWave: 0.05,  minWave: 5 },
-  swarmer:    { sprite: 'runner', hp: 4.6666666667, speed: 105, damage: 1.6666666667, r: 10, color: '#ff66cc', xpBase: 3, goldMin: 1, goldMax: 2, spawnWeight: 12, weightPerWave: -0.05, minWave: 6 },
-  juggernaut: { sprite: 'brute', hp: 216.6666666667, speed: 36, damage: 12.6666666667, r: 30, color: '#ff4d00', xpBase: 60, goldMin: 10, goldMax: 16, spawnWeight: 3, weightPerWave: 0.10, minWave: 18 },
-  sniper:     { sprite: 'shooter', ai: 'shooter', hp: 31.6666666667, speed: 42, damage: 7.3333333333, r: 15, color: '#ffcc00', xpBase: 30, goldMin: 6, goldMax: 10, spawnWeight: 3, weightPerWave: 0.06, minWave: 25,
+  stalker:    { hp: 21.6666666667, speed: 65, damage: 4, r: 16, color: '#ff0055', xpBase: 13.2, goldMin: 5.4, goldMax: 10.8, spawnWeight: 30, weightPerWave: -0.15, minWave: 1 },
+  runner:     { hp: 15, speed: 135, damage: 2.6666666667, r: 13, color: '#ff9900', xpBase: 11, goldMin: 5.4, goldMax: 10.8, spawnWeight: 18, weightPerWave: -0.06, minWave: 1 },
+  shooter:    { hp: 26.6666666667, speed: 50, damage: 3.3333333333, r: 16, color: '#00e5ff', xpBase: 24.2, goldMin: 8.1, goldMax: 13.5, spawnWeight: 12, weightPerWave: 0.05, minWave: 2, ai: 'shooter', shootTimer: 2.5 },
+  brute:      { hp: 60, speed: 40, damage: 7.3333333333, r: 24, color: '#aa00ff', xpBase: 44, goldMin: 10.8, goldMax: 18.9, spawnWeight: 8, weightPerWave: 0.12, minWave: 3 },
+  ghost:      { hp: 13.3333333333, speed: 80, damage: 4, r: 14, color: '#00ffaa', xpBase: 17.6, goldMin: 8.1, goldMax: 13.5, spawnWeight: 10, weightPerWave: 0.05, minWave: 5 },
+  swarmer:    { sprite: 'runner', hp: 4.6666666667, speed: 105, damage: 1.6666666667, r: 10, color: '#ff66cc', xpBase: 6.6, goldMin: 2.7, goldMax: 5.4, spawnWeight: 12, weightPerWave: -0.05, minWave: 6 },
+  juggernaut: { sprite: 'brute', hp: 216.6666666667, speed: 36, damage: 12.6666666667, r: 30, color: '#ff4d00', xpBase: 132, goldMin: 27, goldMax: 43.2, spawnWeight: 3, weightPerWave: 0.10, minWave: 18 },
+  sniper:     { sprite: 'shooter', ai: 'shooter', hp: 31.6666666667, speed: 42, damage: 7.3333333333, r: 15, color: '#ffcc00', xpBase: 66, goldMin: 16.2, goldMax: 27, spawnWeight: 3, weightPerWave: 0.06, minWave: 25,
                 shootTimer: 3, shootInterval: 3.4, bulletSpeed: 373.33, bulletDamageMult: 1.067 },
-  wraith:     { sprite: 'ghost', hp: 40, speed: 100, damage: 8.6666666667, r: 14, color: '#b266ff', xpBase: 35, goldMin: 6, goldMax: 10, spawnWeight: 3, weightPerWave: 0.08, minWave: 38 },
-  boss:       { hp: 333.3333333333, speed: 35, damage: 11.6666666667, r: 38, color: '#ff0000', xpBase: 100, goldMin: 20, goldMax: 40, spawnWeight: 0, minWave: 1, shootTimer: 1.2 }
+  wraith:     { sprite: 'ghost', hp: 40, speed: 100, damage: 8.6666666667, r: 14, color: '#b266ff', xpBase: 77, goldMin: 16.2, goldMax: 27, spawnWeight: 3, weightPerWave: 0.08, minWave: 38 },
+  boss:       { hp: 333.3333333333, speed: 35, damage: 11.6666666667, r: 38, color: '#ff0000', xpBase: 220, goldMin: 54, goldMax: 108, spawnWeight: 0, minWave: 1, shootTimer: 1.2 }
 };
 
-const ENEMY_AI = {
+const ENEMY_AIconst ENEMY_AI = {
   // v1.0.165: ลดพลังความสามารถโจมตีระยะไกล/บอสลงประมาณ 1/3
   shootRange: 333.33, shooterInterval: 2.2, shooterBulletSpeed: 226.67, shooterBulletDamageMult: 0.667,
   shooterKeepDistance: 260, shooterRetreatFactor: 0.4, bossInterval: 1.2, bossBulletSpeed: 200,
