@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.221">
+<meta name="game-version" content="v1.0.222">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3904,7 +3904,7 @@ function renderStartPerks(){
   const attackPatternNextFire={};
   function lerpN(a,b,t){return a+(b-a)*Math.max(0,Math.min(1,t));}
   function resolveAttackPattern(base,level){
-    const t=(Math.max(1,Math.min(12,Number(level)||1))-1)/11,P={...base},L=(a,b)=>lerpN(a,b,t);
+    const lv=Math.max(1,Math.min(12,Number(level)||1)),t=(lv-1)/11,P={...base},L=(a,b)=>lerpN(a,b,t);
     P.id=String(P.id||'');
     switch(P.mode){
       case 'slash':P.range=L(P.range||80,P.id==='slashCone'?165:135);P.arc=L(P.arc||.22,P.id==='slashCone'?1:.2+2.15);P.damage=L(P.damage||.25,P.id==='slashCone'?.90:.88);if(P.bleedDps)P.bleedDps=L(P.bleedDps,.095);if(P.bleedTime)P.bleedTime=L(P.bleedTime,4);break;
@@ -3919,39 +3919,63 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    const lv=Math.max(1,Math.min(12,Number(level)||1));
-    P.milestone4=lv>=4; P.milestone8=lv>=8; P.milestone12=lv>=12;
-    P.milestoneText4='เพิ่มความสามารถพิเศษ'; P.milestoneText8='อัปเกรดขั้นสูง'; P.milestoneText12='ขั้นสมบูรณ์';
+    P.milestone4=lv>=4;P.milestone8=lv>=8;P.milestone12=lv>=12;
+    // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
-      if(P.mode==='bullet'||P.mode==='lightningBolt')P.pierce=Math.max(1,Math.round(Number(P.pierce)||1)+1);
-      if(P.mode==='wave')P.pierce=Math.max(1,Math.round(Number(P.pierce)||1)+1);
-      if(P.mode==='slash')P.bleedDps=Math.max(Number(P.bleedDps)||0,.03);
-      if(P.mode==='chainFireball')P.chainCount=Math.max(Number(P.chainCount)||1,3);
-      if(P.mode==='bomb'||P.mode==='poison'||P.mode==='blackHole'||P.mode==='mud'||P.mode==='mine')P.radius*=1.12;
+      if(P.id==='oneDir')P.bonusProjectiles=1;
+      else if(P.id==='twoDir')P.spread=.18;
+      else if(P.id==='threeDir')P.pierce=Math.max(1,Math.round(Number(P.pierce)||1)+1);
+      else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
+      else if(P.id==='powerWave')P.knockbackBonus=35;
+      else if(P.id==='slashCone')P.bleedDps=Math.max(Number(P.bleedDps)||0,.03);
+      else if(P.id==='frontSlash')P.range*=1.15;
+      else if(P.id==='fireballChain')P.chainCount=Math.max(Number(P.chainCount)||1,3);
+      else if(P.id==='lightningBolt')P.pierce=Math.max(2,Math.round(Number(P.pierce)||1)+1);
+      else if(P.id==='bomb')P.radius*=1.15;
+      else if(P.id==='poisonBottle')P.zoneLife*=1.25;
+      else if(P.id==='lightningStrike')P.count+=1;
+      else if(P.id==='blackHole')P.pull*=1.25;
+      else if(P.id==='mudPool')P.slow=Math.min(.8,(Number(P.slow)||0)+.10);
+      else if(P.id==='mine')P.radius*=1.20;
     }
+    // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
-      if(P.mode==='bullet'||P.mode==='lightningBolt')P.pierce+=1;
-      if(P.mode==='wave')P.radius*=1.20;
-      if(P.mode==='slash'){P.range*=1.12;P.arc=Math.min(Math.PI,P.arc*1.12);}
-      if(P.mode==='lightning')P.count+=2;
-      if(P.mode==='chainFireball'){P.chainCount+=1;P.chainRange*=1.18;}
-      if(P.mode==='bomb'||P.mode==='poison')P.zoneLife*=1.20;
-      if(P.mode==='blackHole')P.pull*=1.25;
-      if(P.mode==='mud')P.slow=Math.min(.85,(Number(P.slow)||0)*1.20);
-      if(P.mode==='mine')P.damage*=1.15;
+      if(P.id==='oneDir')P.damage*=1.18;
+      else if(P.id==='twoDir')P.count=4;
+      else if(P.id==='threeDir')P.damage*=1.18;
+      else if(P.id==='fiveDir')P.count=7;
+      else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
+      else if(P.id==='slashCone'){P.arc=Math.min(Math.PI,P.arc*1.18);P.bleedTime=Math.max(Number(P.bleedTime)||0,2.5);}
+      else if(P.id==='frontSlash'){P.arc=Math.min(Math.PI,P.arc*1.25);}
+      else if(P.id==='fireballChain'){P.chainRange*=1.25;P.chainCount+=1;}
+      else if(P.id==='lightningBolt')P.speed*=1.18;
+      else if(P.id==='bomb')P.damage*=1.18;
+      else if(P.id==='poisonBottle')P.tick=Math.min(Number(P.tick)||.5,.30);
+      else if(P.id==='lightningStrike')P.cooldown*=.72;
+      else if(P.id==='blackHole')P.zoneLife*=1.25;
+      else if(P.id==='mudPool')P.zoneLife*=1.30;
+      else if(P.id==='mine')P.damage*=1.20;
     }
+    // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
-      if(P.mode==='bullet'||P.mode==='lightningBolt')P.pierce+=2;
-      if(P.mode==='wave'){P.radius*=1.25;P.damage*=1.18;}
-      if(P.mode==='slash'){P.bleedDps=Math.max(Number(P.bleedDps)||0,.095);P.bleedTime=Math.max(Number(P.bleedTime)||0,4);}
-      if(P.mode==='lightning')P.count+=2;
-      if(P.mode==='chainFireball'){P.chainCount+=2;P.chainRange*=1.20;}
-      if(P.mode==='bomb'||P.mode==='poison'||P.mode==='blackHole'||P.mode==='mud'||P.mode==='mine')P.radius*=1.18;
-      P.damage*=1.15;
+      if(P.id==='oneDir'){P.pierce=(Number(P.pierce)||1)+2;P.damage*=1.15;}
+      else if(P.id==='twoDir'){P.pierce=(Number(P.pierce)||1)+1;P.damage*=1.12;}
+      else if(P.id==='threeDir'){P.count=5;P.pierce=(Number(P.pierce)||1)+1;}
+      else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
+      else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
+      else if(P.id==='slashCone'){P.bleedDps=Math.max(Number(P.bleedDps)||0,.095);P.bleedTime=Math.max(Number(P.bleedTime)||0,4);P.damage*=1.12;}
+      else if(P.id==='frontSlash'){P.arc=Math.min(Math.PI,P.arc+.45);P.damage*=1.15;}
+      else if(P.id==='fireballChain'){P.chainCount+=2;P.chainRange*=1.20;P.damage*=1.12;}
+      else if(P.id==='lightningBolt'){P.pierce+=2;P.damage*=1.12;}
+      else if(P.id==='bomb'){P.radius*=1.20;P.damage*=1.12;}
+      else if(P.id==='poisonBottle'){P.radius*=1.18;P.zoneLife*=1.25;P.tick=.25;}
+      else if(P.id==='lightningStrike'){P.count+=2;P.cooldown*=.70;P.damage*=1.10;}
+      else if(P.id==='blackHole'){P.radius*=1.20;P.pull*=1.25;P.zoneLife*=1.20;}
+      else if(P.id==='mudPool'){P.radius*=1.18;P.slow=Math.min(.90,(Number(P.slow)||0)+.12);P.zoneLife*=1.20;}
+      else if(P.id==='mine'){P.radius*=1.22;P.damage*=1.15;}
     }
     return P;
   }
-
   function shoot(lightningOnly=false){
     let target=null,bd=Infinity;
     const attackRange=Math.max(0,Number(player.attackRange)||0);
