@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.189</title>
-<meta name="game-version" content="v1.0.189">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.190</title>
+<meta name="game-version" content="v1.0.190">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,16 +61,6 @@ body.gameplay-actions .hud-controls{display:flex}
 .hp{background:linear-gradient(90deg, #f43f5e, #fb7185);box-shadow:inset 0 -2px 0 #be123c}
 .xp{background:linear-gradient(90deg, #0ea5e9, #38bdf8);box-shadow:inset 0 -2px 0 #0369a1}
 .wave{width:100%;min-width:0;box-sizing:border-box;font-size:11px;font-weight:800;text-align:right;line-height:1.4;color:#facc15;border-color:#facc15;box-shadow:inset -2px -2px 0px #ca8a04, inset 2px 2px 0px #fef08a, 0 4px 12px rgba(0,0,0,0.6)}
-.wave1-spawn-panel{
-  position:absolute;left:max(8px,env(safe-area-inset-left));top:112px;z-index:18;
-  min-width:158px;padding:7px 9px;background:rgba(2,6,23,.92);
-  border:2px solid #facc15;box-shadow:inset 0 0 0 1px #854d0e,0 3px 10px rgba(0,0,0,.55);
-  color:#fff;pointer-events:none;font-size:9px;line-height:1.35;
-}
-.wave1-spawn-title{font-size:9px;font-weight:900;color:#facc15;letter-spacing:.5px;margin-bottom:3px}
-.wave1-spawn-row{display:flex;justify-content:space-between;gap:12px}
-.wave1-spawn-row b{color:#38bdf8;font-size:10px}
-@media(max-width:620px){.wave1-spawn-panel{top:108px;min-width:145px;padding:6px 8px;font-size:8px}.wave1-spawn-title{font-size:8px}.wave1-spawn-row b{font-size:9px}}
 #minimap{display:block;width:92px;height:92px;margin-top:6px;pointer-events:none;background:rgba(5,12,8,.9);border:2px solid #94a3b8;box-shadow:0 3px 10px rgba(0,0,0,.55);image-rendering:pixelated}
 @media(max-width:620px){#minimap{width:76px;height:76px;margin-top:5px}}
 .small{font-size:10px;font-weight:600;color:#cbd5e1;margin-top:2px}
@@ -236,7 +226,7 @@ body.gameplay-actions .hud-controls{display:flex}
   .shop-modal .shop-topline .icon{font-size:21px}
   .shop-modal .shop-topline .uName{font-size:10px}
   .shop-modal .shop-topline .shop-inline-cost{font-size:9px}
-  .shop-modal .shop-quick-desc{font-size:7.8px}
+  .shop-modal .shop-quick-desc{font-size:8.5px}
   .shop-modal .shop-item .item-preview{font-size:7.5px;max-height:48px}
   .shop-modal .shop-reason{display:none!important}
   .shop-modal .shop-buy-btn{min-height:29px;font-size:8.5px}
@@ -636,13 +626,12 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-modal .shop-quick-desc{
   grid-column:1/-1;
   font-size:10px;
-  line-height:1.25;
+  line-height:1.35;
   min-height:0;
   margin:0;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-  overflow:hidden;
+  display:block;
+  overflow:visible;
+  white-space:normal;
 }
 .shop-modal .shop-item .item-preview{
   grid-column:1/-1;
@@ -707,7 +696,7 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:700px) and (max-height:700px){
   .level-modal #upgrades,.shop-modal #shopItems{max-height:calc(100dvh - 185px)}
   .level-modal .upgrade,.shop-modal .shop-item{padding:5px 6px}
-  .level-modal .upgrade .uDesc,.shop-modal .shop-quick-desc{font-size:9px}
+  .level-modal .upgrade .uDesc,.shop-modal .shop-quick-desc{font-size:9px;line-height:1.3}
   .level-modal .upgrade .item-preview,.shop-modal .shop-item .item-preview{font-size:9px;max-height:32px}
 }
 /* Landscape phones / iPad: use the horizontal card layout */
@@ -942,12 +931,6 @@ button,input,select,textarea{
       <div class="small" id="killsText">กำจัด: 0</div>
     </div>
   </div>
-  <div id="wave1SpawnPanel" class="wave1-spawn-panel hidden" aria-live="polite">
-    <div class="wave1-spawn-title">WAVE 1 • SPAWN CHECK</div>
-    <div class="wave1-spawn-row"><span>เกิดรอบล่าสุด</span><b id="wave1LastBatchText">0</b></div>
-    <div class="wave1-spawn-row"><span>เกิดสะสม</span><b id="wave1SpawnedText">0</b></div>
-    <div class="wave1-spawn-row"><span>เหลือในสนาม</span><b id="wave1RemainingText">0</b></div>
-  </div>
   <div class="hud-controls">
     <button class="hud-btn" id="shopHudBtn" type="button">🏪 ร้านค้า</button>
     <button class="hud-btn" id="pauseHudBtn" type="button">⏸ พัก</button>
@@ -966,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.189</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.190</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1410,7 +1393,7 @@ const SKILLS = {
 /* ===== v1.0.168 ENEMY BASE HP/DAMAGE NERF =====
    ลด HP และ contact damage ของศัตรูทุกประเภทเหลือ 1/3 จาก v1.0.167
    คง speed / spawn / XP / gold / ranged ability multipliers เดิม */
-/* v1.0.189: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
+/* v1.0.190: Keep enemy count -50% without rounding fractional batches up to one enemy every spawn tick.
    Fractional spawn batches are accumulated across spawn ticks.
    XP base values ×2.2 and Gold ranges ×2.7 preserve the previous effective reward level
    while keeping the player-facing multipliers at their original 1x baseline. */
@@ -1444,7 +1427,7 @@ const ELITE = {
 const WAVES = {
   start: 1, duration: 7.9967999999999995,
 
-  // ===== v1.0.189: Independent enemy spawn controls =====
+  // ===== v1.0.190: Independent enemy spawn controls =====
   // Batch = จำนวนศัตรูที่เกิดในแต่ละ spawn tick
   // Spawn Interval = เวลาระหว่าง spawn tick
   // Max Enemies = จำนวนศัตรูสูงสุดที่อนุญาตในสนาม
@@ -2014,7 +1997,7 @@ let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
-  // v1.0.189: Wave 1 spawn diagnostics.
+  // v1.0.190: Wave 1 spawn diagnostics.
   let wave1Spawned=0, wave1LastBatch=0;
   let level=1, xp=0, xpNeed=10, lastShopWave=0, freeShopRerolls=0, shopCyclePurchased=false, shopFinalChance=false;
   let screenShake = 0, levelOpen=false, shopOpen=false, pauseOpen=false, pendingLevels=0, pendingShopWave=0, rerollN=0, levelRerollN=0, bossWave=0, skillCd=0, shownWave=1, toastT=0, bests={wave:0,kills:0};
@@ -3829,7 +3812,7 @@ function renderStartPerks(){
     }
 
     if(type!=='boss'){
-      // v1.0.189: Enforce the new independent Max Enemies curve here as well as in the spawn batch limiter.
+      // v1.0.190: Enforce the new independent Max Enemies curve here as well as in the spawn batch limiter.
       const maxStart=Math.max(1,Number(dev.wave.maxEnemiesStart)||45);
       const maxPerWave=Math.max(0,Number(dev.wave.maxEnemiesPerWave)||1.35);
       const maxCap=Math.max(maxStart,Number(dev.wave.maxEnemiesCap)||160);
@@ -4342,7 +4325,7 @@ function openLevelUp(forceHigherRarity=false){
     b.style.position='relative';
     b.style.zIndex='5';
     const desc=typeof u.desc==='string'?u.desc:'';
-    const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
+    const quickDesc=desc || 'ไม่มีคำอธิบายเพิ่มเติม';
     const label='';
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
@@ -4533,7 +4516,7 @@ function openLevelUp(forceHigherRarity=false){
             if(player.gold>=cost){
               const before=snapshotPlayerStats();
               player.gold-=cost;
-              if(typeof item.apply==='function')item.apply();
+              if(typeof item.apply==='function')item.apply(false);
               clampStats();
               const after=snapshotPlayerStats();
               item.purchased=true;
@@ -4999,9 +4982,9 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.189: Guard every spawn interval against missing/invalid Developer values.
+    // v1.0.190: Guard every spawn interval against missing/invalid Developer values.
     // A missing minSpawnInterval made spawnRate = NaN, so only the first spawn could occur.
-    // v1.0.189: Batch, Spawn Interval and Max Enemies are now independent.
+    // v1.0.190: Batch, Spawn Interval and Max Enemies are now independent.
     // This prevents one global count multiplier from unintentionally changing all three systems.
     const batchBase=Math.max(0,Number(dev.wave.spawnBatchBase)||1);
     const batchPerWave=Math.max(0,Number(dev.wave.spawnBatchPerWave)||0);
