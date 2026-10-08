@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.190</title>
-<meta name="game-version" content="v1.0.190">
+<meta name="game-version" content="v1.0.191">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.190</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.191</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1334,10 +1334,14 @@ const SOFT_CAPS = {
   executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
   bulletSpeed: 3000
 };
-const SOFT_CAP_STRENGTH = 0.5; // v1.0.164: ลดแรง Soft Cap ทุก Stat ลง เพื่อให้ Build ที่โฟกัส Stat สามารถไต่ถึง ~70% ของ Cap ภายใน Wave 100
+const SOFT_CAP_START = 0.70; // v1.0.191: Soft Cap ยังไม่ทำงานจนกว่า Stat จะถึง 70% ของ Cap
+const SOFT_CAP_STRENGTH = 0.5;
 function softCapMultiplier(current, cap){
   if(!Number.isFinite(current)||!Number.isFinite(cap)||cap<=0) return 1;
-  return Math.pow(Math.max(0,1-clamp(current/cap,0,1)),SOFT_CAP_STRENGTH);
+  const ratio=clamp(current/cap,0,1);
+  if(ratio<=SOFT_CAP_START) return 1;
+  const t=(ratio-SOFT_CAP_START)/(1-SOFT_CAP_START);
+  return Math.pow(Math.max(0,1-t),SOFT_CAP_STRENGTH);
 }
 function softCapAdd(current, amount, stat){
   const cap=SOFT_CAPS[stat];
@@ -1350,8 +1354,10 @@ function softCapDecrease(current, requestedDecrease, minValue){
   if(!Number.isFinite(requestedDecrease)||requestedDecrease<=0) return 0;
   const room=Math.max(0,current-minValue);
   if(room<=0) return 0;
-  const ratio=clamp(room/(Math.max(current,minValue+0.000001)),0,1);
-  return Math.min(room,requestedDecrease*Math.pow(ratio,SOFT_CAP_STRENGTH));
+  const cap=Math.max(current,minValue+0.000001);
+  const ratio=clamp(current/cap,0,1);
+  const multiplier=ratio<=SOFT_CAP_START?1:Math.pow(Math.max(0,1-((ratio-SOFT_CAP_START)/(1-SOFT_CAP_START))),SOFT_CAP_STRENGTH);
+  return Math.min(room,requestedDecrease*multiplier);
 }
 
 /* ===== 5. COMBAT ===== */
