@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.172</title>
-<meta name="game-version" content="v1.0.172">
+<meta name="game-version" content="v1.0.174">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4031,7 +4031,7 @@ function showItemReward(item,source){
       itemRewardSpinTimer=null;
       const before=snapshotPlayerStats();
       try{
-        if(typeof item.apply==='function') item.apply();
+        if(typeof item.apply==='function') item.apply(false);
         clampStats();
       }catch(e){
         console.error('ITEM REWARD APPLY ERROR',e);
@@ -4274,6 +4274,10 @@ function openLevelUp(forceHigherRarity=false){
     const b=document.createElement('button');
     b.type='button';
     b.className='upgrade item-'+(u.rarity||'normal')+(index===0?' recommended':' alternative');
+    b.style.pointerEvents='auto';
+    b.style.touchAction='manipulation';
+    b.style.position='relative';
+    b.style.zIndex='5';
     const desc=typeof u.desc==='string'?u.desc:'';
     const quickDesc=desc.split(' และ ').slice(0,2).join(' และ ');
     const label='';
@@ -4284,9 +4288,12 @@ function openLevelUp(forceHigherRarity=false){
       '<div class="uDesc">'+quickDesc+'</div>'+
       (typeof renderItemPreview==='function'?renderItemPreview(u):'')+
       '<div class="upgrade-reason"></div></div>';
-    b.onclick=()=>{
+    b.onclick=(ev)=>{
+      ev.preventDefault();
+      ev.stopPropagation();
       try{
-        u.apply();
+        if(typeof u.apply!=='function') throw new Error('ITEM_APPLY_MISSING');
+        u.apply(true);
         clampStats();
         levelOpen=false;
         document.getElementById('levelOverlay').classList.add('hidden');
@@ -4301,6 +4308,12 @@ function openLevelUp(forceHigherRarity=false){
   });
 
   document.getElementById('levelOverlay').classList.remove('hidden');
+  // v1.0.174: force item cards above modal contents so iOS touch/click reaches the button.
+  wrap.style.pointerEvents='auto';
+  wrap.querySelectorAll('button.upgrade').forEach(btn=>{
+    btn.style.pointerEvents='auto';
+    btn.style.touchAction='manipulation';
+  });
   refreshHUD();
 }
 
