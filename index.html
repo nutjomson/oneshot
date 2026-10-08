@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.213">
+<meta name="game-version" content="v1.0.214">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4033,6 +4033,8 @@ function renderStartPerks(){
         if(P.ring){
           a=baseAngle+i*Math.PI*2/count;
           if(P.rotate)a+=offset;
+        }else if(P.side){
+          a=baseAngle+(i===0?Math.PI/2:-Math.PI/2);
         }else if(P.cross){
           a=baseAngle+[0,Math.PI/2,Math.PI,-Math.PI/2][i%4];
         }else if(P.diagonal){
