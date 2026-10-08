@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
 <title>16-Bit Survivor Arena - Expanded Edition v1.0.214</title>
-<meta name="game-version" content="v1.0.219">
+<meta name="game-version" content="v1.0.220">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2828,7 +2828,7 @@ function getItemOwnedCount(item){
   return Math.max(0,Math.floor(Number(canonical?.stackCount)||0));
 }
 function getItemStackCap(item){
-  if(getAttackPatternId(item)) return 20;
+  if(getAttackPatternId(item)) return 12;
   const canonical=getCanonicalItem(item);
   const cap=Math.floor(Number(canonical?.stackCap));
   return Number.isFinite(cap)&&cap>0?cap:1;
@@ -2850,16 +2850,10 @@ function getShortItemDescription(item){
       if(!f || typeof f!=='object') return '';
       if(f.op==='attackPattern'){
         const pid=String(f.v||'focused');
-        const p=CFG.attackPatterns?.[pid]||CFG.attackPatterns?.focused||{count:1,damage:1};
+        const p=CFG.attackPatterns?.[pid]||CFG.attackPatterns?.focused||{count:1};
         const count=Math.max(1,Math.floor(Number(p.count)||1));
-        const dmg=Number(p.damage)||1;
-        const patternId=String(f.v||'focused');
-        const level=getOwnedAttackPatternLevel(patternId);
-        const next=Math.min(12,level+1);
-        const totalBase=count*dmg;
-        const nextBonus=Math.min(0.38,Math.max(0,next-1)*0.02);
-        const mode=p.mode==='blackHole'?'หลุมดำ • ดูดศัตรูหายไปแต่ยังดรอปของ':p.mode==='mud'?'โคลนดูด • ลดความเร็วและทำดาเมจเล็กน้อย':p.mode==='mine'?'กับระเบิด • รอศัตรูเหยียบแล้วระเบิด':p.mode==='chainFireball'?'ลูกไฟลาม • กระโดดหาเป้าหมายใกล้เคียง':p.mode==='lightningBolt'?'สายฟ้า 1 ทิศ • พุ่งตรง':p.mode==='windStorm'?'พายุพัด • ผลักศัตรูและทำดาเมจเบา':p.mode==='bomb'?'โยนระเบิด • ระเบิดวงกว้าง':p.mode==='poison'?'โยนขวดพิษ • สร้างพื้นที่พิษต่อเนื่อง':p.mode==='slash'?'ฟันประชิด':p.mode==='wave'?'คลื่นพลังสั้น':p.mode==='lightning'?'สายฟ้าสุ่มเป้าหมาย':p.mode==='pierce'?'หอกพุ่งตรงเจาะทะลุ':p.ring?'ยิงรอบทิศ':p.cross?'กากบาท':p.diagonal?'กากบาททแยง':p.side?'ยิงคู่ด้านข้าง':(count===1?'ยิงตรง':`ยิง ${count} นัด`);
-        return level>0 ? mode+' • Stack ซ้ำ = +2% Damage • ปัจจุบัน Lv.'+level+' (+'+Math.round(Math.min(0.38,Math.max(0,(level-1)*0.02))*100)+'%) → Lv.'+next+' (+'+Math.round(nextBonus*100)+'%)' : mode+' • ปลดล็อก Pattern ใหม่ • จากนั้น Stack ซ้ำแต่ละครั้ง +2% Damage (สูงสุด Lv.20 = +38%)';
+        const mode=p.mode==='blackHole'?'หลุมดำ • ดูดศัตรู':p.mode==='mud'?'โคลนดูด • ลดความเร็ว':p.mode==='mine'?'กับระเบิด • ระเบิดเมื่อศัตรูเหยียบ':p.mode==='chainFireball'?'ลูกไฟลาม':p.mode==='lightningBolt'?'สายฟ้า 1 ทิศ':p.mode==='bomb'?'ระเบิดวงกว้าง':p.mode==='poison'?'พื้นที่พิษต่อเนื่อง':p.mode==='slash'?'ฟันประชิด':p.mode==='wave'?'คลื่นพลัง':p.mode==='lightning'?'สายฟ้าสุ่มเป้าหมาย':(count===1?'ยิงตรง':'ยิง '+count+' นัด');
+        return mode;
       }
       const s=String(f.stat||'');
       const n=Number(f.v);
@@ -2897,17 +2891,7 @@ function getAttackPatternUpgradeInfo(item){
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+(m?'<div class="attack-pattern-line upgrade"><b>'+m+'</b></div>':'')+'<div class="attack-pattern-line hint">ทุก 4 Lv. รูปแบบจะปลดล็อกความสามารถใหม่</div></div>';
 }
-function renderOwnedAttackPatterns(){
-  const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
-  if(!owned.length) return '';
-  return '<div class="owned-attack-patterns"><div class="owned-attack-patterns-title">⚔️ รูปแบบการโจมตีที่มี • Stack ซ้ำ = +2% Damage ของ Pattern นั้น</div>'+
-    owned.map(x=>{
-      const lv=Math.max(1,Math.min(12,Number(x.level)||1));
-      const bonus=Math.min(38,(lv-1)*2);
-      return '<span class="owned-attack-pattern '+(String(x.id)===String(player.attackPattern)?'active':'')+'">'+getAttackPatternName(x.id)+' • Lv.'+lv+' • +'+bonus+'% Damage'+(lv>=20?' • MAX':'')+'</span>';
-    }).join('')+
-    '</div>';
-}
+
 function renderItemPreview(item){
   try{
     const preview=previewItemStats(item), rows=[];
@@ -4313,7 +4297,7 @@ function showItemReward(item,source){
       // ก่อนปุ่ม "ตกลง" ถูกเปิดใช้งาน
       status.textContent='✨ ได้รับไอเทมแล้ว • มีทั้งหมด '+getItemOwnedCount(item)+' / '+getItemStackCap(item)+' ชิ้น';
       changes.classList.remove('hidden');
-      changes.innerHTML=renderItemOwnership(item)+renderOwnedAttackPatterns()+itemRewardChangesHtml(before,after);
+      changes.innerHTML=renderItemOwnership(item)+itemRewardChangesHtml(before,after);
       ok.classList.remove('hidden');
       playSound('coin');
       refreshHUD();
