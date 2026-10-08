@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.160</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.161</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3990,6 +3990,16 @@ function showItemReward(item,source){
     return true;
   }
 
+  // Reset iOS page zoom when leaving the item-reward screen so combat always returns to its normal zoom.
+  function resetCombatPageZoom(){
+    const vp=document.querySelector('meta[name="viewport"]');
+    if(!vp) return;
+    const original=vp.getAttribute('content')||'';
+    const locked=original.replace(/,?\\s*(minimum-scale|maximum-scale|user-scalable)=[^,]+/gi,'');
+    vp.setAttribute('content',locked+', minimum-scale=1, maximum-scale=1, user-scalable=no');
+    requestAnimationFrame(()=>setTimeout(()=>vp.setAttribute('content',original),80));
+  }
+
   document.getElementById('itemRewardOkBtn')?.addEventListener('click',()=>{
     const overlay=document.getElementById('itemRewardOverlay');
     const ok=document.getElementById('itemRewardOkBtn');
@@ -4558,7 +4568,7 @@ function openLevelUp(forceHigherRarity=false){
     const hero=selectedHero?.name||selectedHero?.id||'-';
     const lines=[];
     lines.push('16-Bit Survivor Arena — BALANCE ANALYSIS DATA');
-    lines.push('Game Version: v1.0.160');
+    lines.push('Game Version: v1.0.161');
     lines.push('Exported: '+new Date().toISOString());
     lines.push('');
     lines.push('[RUN SUMMARY]');
