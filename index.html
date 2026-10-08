@@ -1688,10 +1688,14 @@ window.GAME_CONFIG = {
     executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
     bulletSpeed: 3000
   };
+  const SOFT_CAP_START = 0.70; // v1.0.192: Soft Cap เริ่มทำงานเมื่อ Stat เกิน 70% ของ Cap
   const SOFT_CAP_STRENGTH = 0.5;
   function softCapMultiplier(current, cap){
     if(!Number.isFinite(current)||!Number.isFinite(cap)||cap<=0) return 1;
-    return Math.pow(Math.max(0,1-clamp(current/cap,0,1)),SOFT_CAP_STRENGTH);
+    const ratio=clamp(current/cap,0,1);
+    if(ratio<=SOFT_CAP_START) return 1;
+    const t=(ratio-SOFT_CAP_START)/(1-SOFT_CAP_START);
+    return Math.pow(Math.max(0,1-t),SOFT_CAP_STRENGTH);
   }
   function softCapAdd(current, amount, stat){
     const cap=SOFT_CAPS[stat];
@@ -1704,8 +1708,7 @@ window.GAME_CONFIG = {
     if(!Number.isFinite(requestedDecrease)||requestedDecrease<=0) return 0;
     const room=Math.max(0,current-minValue);
     if(room<=0) return 0;
-    const ratio=clamp(room/(Math.max(current,minValue+0.000001)),0,1);
-    return Math.min(room,requestedDecrease*Math.pow(ratio,SOFT_CAP_STRENGTH));
+    return Math.min(room,requestedDecrease);
   }
   const canvas = document.getElementById('scene');
   const ctx = canvas.getContext('2d');
