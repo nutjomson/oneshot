@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.206</title>
-<meta name="game-version" content="v1.0.206">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.207</title>
+<meta name="game-version" content="v1.0.207">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2939,13 +2939,6 @@ function getAttackPatternUpgradeInfo(item){
 function renderOwnedAttackPatterns(){
   return '';
 }
-function getAttackPatternStackBadge(item){
-  const pid=getAttackPatternId(item);
-  if(!pid) return '';
-  const current=getOwnedAttackPatternLevel(pid);
-  if(current>=20) return '<span class="attack-pattern-stack-badge max">MAX</span>';
-  return '<span class="attack-pattern-stack-badge">+'+(current+1)+'</span>';
-}
 function renderItemPreview(item){
   try{
     const preview=previewItemStats(item), rows=[];
@@ -4482,7 +4475,6 @@ function openLevelUp(forceHigherRarity=false){
     const label='';
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
-      getAttackPatternStackBadge(u)+
       '<div class="icon">'+(u.icon||'📦')+'</div>'+
       '<div><div class="uName">'+label+'<span class="tier-badge tier-'+(u.rarity||'normal')+'">'+(u.rarity||'normal')+'</span>'+u.name+'</div>'+
       '<div class="uDesc">'+quickDesc+'</div>'+
@@ -4660,7 +4652,6 @@ function openLevelUp(forceHigherRarity=false){
         const canBuy=!item.purchased&&Number(player.gold||0)>=cost;
         b.innerHTML=
           '<div class="shop-choice-label"></div>'+
-          getAttackPatternStackBadge(item)+
           '<div class="shop-topline"><div class="icon">'+(item.icon||'📦')+'</div>'+
           '<div class="uName">'+label+'<span class="tier-badge tier-'+(item.rarity||'normal')+'">'+(item.rarity||'normal')+'</span>'+(item.name||'ไอเทม')+'</div>'+
           '<span class="shop-inline-cost">'+(item.purchased?'ซื้อแล้ว':cost+' 🪙')+'</span></div>'+
@@ -5825,7 +5816,7 @@ function openLevelUp(forceHigherRarity=false){
 </style>
 
 <style>
-.attack-pattern-stack-badge{position:absolute;top:6px;right:6px;z-index:30;padding:4px 8px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.82);color:#ffd166;font-weight:900;font-size:12px;line-height:1;box-shadow:0 0 8px rgba(255,209,102,.22);pointer-events:none}.attack-pattern-stack-badge.max{color:#94a3b8;border-color:#64748b;box-shadow:none}
+.attack-pattern-stack-badge{position:absolute;top:6px;right:6px;z-index:3;padding:3px 7px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.72);color:#ffd166;font-weight:900;font-size:11px;line-height:1;box-shadow:0 0 8px rgba(255,209,102,.22)}
  id="v1-0-200-attack-pattern-list">
 .owned-attack-patterns{margin:5px 0;padding:5px 6px;border:1px solid #334155;border-radius:4px;background:rgba(2,6,23,.72)}
 .owned-attack-patterns-title{font-size:9px;font-weight:900;color:#facc15;margin-bottom:4px}
