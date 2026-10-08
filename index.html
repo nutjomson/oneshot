@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.227</title>
-<meta name="game-version" content="v1.0.227">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.228</title>
+<meta name="game-version" content="v1.0.228">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4030,6 +4030,21 @@ function renderStartPerks(){
       const patternData=attackPatterns[patternIndex];
       const patternId=patternData.id;
       const P=resolveAttackPattern(patternData.p,patternData.level);
+      // Each pattern now respects its own resolved attack range instead of
+      // silently inheriting the hero's global range.
+      const patternMaxRange=Number(P.range);
+      let patternTarget=target;
+      if(Number.isFinite(patternMaxRange)&&patternMaxRange>0){
+        let pBest=null,pDist=Infinity;
+        for(const e of enemies){
+          if(e.dead)continue;
+          const d=dist(player.x,player.y,e.x,e.y);
+          if(d<=Math.min(attackRange,patternMaxRange)&&d<pDist){pDist=d;pBest=e;}
+        }
+        if(!pBest) continue;
+        patternTarget=pBest;
+      }
+      const patternAngle=Math.atan2(patternTarget.y-player.y,patternTarget.x-player.x);
       // Persistent per-pattern cadence: each owned weapon keeps its own timer,
       // so the 0.18s offset is applied on every firing cycle, not just at startup.
       if(P.mode!=='lightning'){
@@ -4048,6 +4063,7 @@ function renderStartPerks(){
       const level=patternData.level;
       const levelDmg=1+Math.min(0.38,Math.max(0,level-1)*0.02);
       const patternDamage=player.damage*wMult*(Number(P.damage)||1)*levelDmg;
+      const attackBaseAngle=patternAngle;
 
       // ฟันประชิด: โจมตีศัตรูทั้งหมดในกรวยด้านหน้าแบบทันที
       if(P.mode==='slash'){
@@ -4057,17 +4073,17 @@ function renderStartPerks(){
           const d=dist(player.x,player.y,e.x,e.y);
           if(d>range)continue;
           const a=Math.atan2(e.y-player.y,e.x-player.x);
-          let da=Math.atan2(Math.sin(a-baseAngle),Math.cos(a-baseAngle));
+          let da=Math.atan2(Math.sin(a-attackBaseAngle),Math.cos(a-attackBaseAngle));
           if(Math.abs(da)<=arc){hitEnemy(e,patternDamage,false,null,false);if(P.bleedDps>0&&!e.dead){e.bleedTimer=Math.max(e.bleedTimer||0,P.bleedTime||1.5);e.bleedDps=Math.max(e.bleedDps||0,player.damage*P.bleedDps);}}
         }
-        makeSparks(player.x+Math.cos(baseAngle)*((Number(P.range)||120)*0.55),player.y+Math.sin(baseAngle)*((Number(P.range)||120)*0.55),'#facc15',12);
+        makeSparks(player.x+Math.cos(attackBaseAngle)*((Number(P.range)||120)*0.55),player.y+Math.sin(attackBaseAngle)*((Number(P.range)||120)*0.55),'#facc15',12);
         continue;
       }
 
       // สายฟ้า: เลือกเป้าหมายแบบสุ่มแล้วฟาดลงทันที
       if(P.mode==='lightning'){
         const now=performance.now()/1000,next=Number(attackPatternNextFire[patternId]||0);if(now<next)continue;attackPatternNextFire[patternId]=now+(Number(P.cooldown)||.5);
-        const pool=enemies.filter(e=>!e.dead&&dist(player.x,player.y,e.x,e.y)<=(Number(P.range)||500));
+        const pool=enemies.filter(e=>!e.dead&&dist(player.x,player.y,e.x,e.y)<=Math.min(attackRange,Number(P.range)||500));
         for(let n=0;n<Math.min(Number(P.count)||1,pool.length);n++){
           const idx=Math.floor(Math.random()*pool.length);
           const e=pool.splice(idx,1)[0];
@@ -4082,7 +4098,7 @@ function renderStartPerks(){
       const count=Math.max(1,Math.floor(P.count||1))+Math.max(0,Math.floor(Number(P.bonusProjectiles)||0));
       const angles=[];
       for(let i=0;i<count;i++){
-        let a=baseAngle;
+        let a=attackBaseAngle;
         if(P.ring){
           a=baseAngle+i*Math.PI*2/count;
           if(P.rotate)a+=(typeof offset==='number'?offset:0);
@@ -4114,7 +4130,7 @@ function renderStartPerks(){
             bounce:player.ricochet+(B.bounce||0),
             hitList:[],trail:[],attackPatternId:patternId,attackPatternLevel:level,
             patternMode:P.mode,patternRange:Number(P.range)||0,patternRadius:Number(P.radius)||0,patternZoneLife:Number(P.zoneLife)||0,patternTick:Number(P.tick)||0,patternPull:Number(P.pull)||0,patternSlow:Number(P.slow)||0,patternChainCount:Number(P.chainCount)||0,patternChainRange:Number(P.chainRange)||0,chainUsed:false,
-            targetX:target.x,targetY:target.y,
+            targetX:patternTarget.x,targetY:patternTarget.y,
             zoneLife:Number(P.zoneLife)||0,zoneTick:Number(P.tick)||0,
             patternKnockback:(Number(P.knockback)||0)+(Number(P.knockbackBonus)||0)
           });
@@ -5369,6 +5385,14 @@ function openLevelUp(forceHigherRarity=false){
           if(!e.dead && !b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
             b.hitList.push(e);
             hitEnemy(e,b.damage,b.crit,b);
+            // Attack-pattern knockback is distinct from the player's global
+            // knockback stat and must be consumed by the actual hit resolver.
+            if(Number(b.patternKnockback)>0&&!e.dead){
+              const ka=Math.atan2(e.y-player.y,e.x-player.x);
+              const kd=Math.min(Number(b.patternKnockback),600)*0.01;
+              e.x=clamp(e.x+Math.cos(ka)*kd,40,world.w-40);
+              e.y=clamp(e.y+Math.sin(ka)*kd,40,world.h-40);
+            }
             if(b.patternMode==='chainFireball'&&!b.chainUsed){b.chainUsed=true;const near=enemies.filter(o=>o!==e&&!o.dead&&dist(e.x,e.y,o.x,o.y)<=Math.max(60,b.patternChainRange||110)).sort((p,q)=>dist(e.x,e.y,p.x,p.y)-dist(e.x,e.y,q.x,q.y)).slice(0,Math.max(0,b.patternChainCount||2));near.forEach((o,j)=>{hitEnemy(o,b.damage*(.78-Math.min(.25,j*.06)),b.crit,null,false);makeSparks(o.x,o.y,'#fb923c',10);});}
             b.pierceHits=(b.pierceHits||0)+1;
             const pierceWhole=Math.floor(Math.max(0,b.pierce)),pierceFrac=Math.max(0,b.pierce-pierceWhole),canContinue=b.pierceHits<pierceWhole||(b.pierceHits===pierceWhole&&pierceFrac>0&&Math.random()<pierceFrac);
