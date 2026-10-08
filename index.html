@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.170</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.171</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1280,7 +1280,7 @@ const HEROES = [
 ];
 
 /* ===== 3. PLAYER_BASE ===== */
-// v1.0.170: treasure/boss item rewards use the IIFE-local Soft Cap helpers above.
+// v1.0.171: treasure/boss item rewards use the IIFE-local Soft Cap helpers above.
 // v1.0.169: Hero movement speed x2.5; v1.0.167 base stats nerf retained
 const PLAYER_BASE = {
   bulletSpeed: 800, projectiles: 1, pierce: 1,  attackRange: 180, regen: 1.0, goldMulti: 1, xpMulti: 1,
@@ -1625,7 +1625,7 @@ window.GAME_CONFIG = {
 (() => {
   const CFG = window.GAME_CONFIG;
 
-  // ===== v1.0.170: SOFT CAP SCOPE FIX =====
+  // ===== v1.0.171: LEVEL-UP APPLY + STAT DELTA FIX =====
   // game-engine is wrapped in an IIFE, while the original Soft Cap helpers
   // live in the config script. Treasure/Boss item rewards call applyEffect()
   // inside this IIFE, so Safari could throw "Can't find variable: softCapAdd".
@@ -2816,7 +2816,7 @@ function previewItemStats(item){
   const saved={...player,bulletTypes:Array.isArray(player.bulletTypes)?[...player.bulletTypes]:player.bulletTypes};
   const before=snapshotPlayerStats();
   try{
-    if(typeof item?.apply==='function')item.apply();
+    if(typeof item?.apply==='function')item.apply(false);
     else(Array.isArray(item?.fx)?item.fx:[]).forEach(applyEffect);
     try{ clampStats(); }catch(e){}
     return {before, after:snapshotPlayerStats()};
@@ -2845,16 +2845,11 @@ function renderItemPreview(item){
         '</div>'
       );
     });
-    const desc=typeof item?.desc==='string'&&item.desc.trim()
-      ? item.desc.trim()
-      : ((Array.isArray(item?.fx)?item.fx:[]).map(descEffect).filter(Boolean).join(' และ ')||'ไม่มีคำอธิบายเพิ่มเติม');
     if(!rows.length){
-      return '<div class="item-preview"><div class="item-preview-title">✨ ผลของไอเทม</div>'+
-        '<div class="item-preview-stat positive"><span class="item-preview-name">'+desc+'</span></div></div>';
+      return '<div class="item-preview"><div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
+        '<div class="item-preview-stat positive"><span class="item-preview-name">ไอเทมนี้ไม่มีค่าสถานะตัวเลข</span></div></div>';
     }
     return '<div class="item-preview">'+
-      '<div class="item-preview-title">✨ ผลของไอเทม</div>'+
-      '<div style="margin-bottom:5px;color:#cbd5e1;font-size:8px;line-height:1.3">'+desc+'</div>'+
       '<div class="item-preview-title">📊 สถานะที่จะเปลี่ยน</div>'+
       '<div class="item-preview-grid">'+rows.join('')+'</div></div>';
   }catch(e){
@@ -2909,10 +2904,10 @@ function buildItem(def,i){
 
       const finalStats=snapshotPlayerStats();
 
-      /*
-       * แสดงเฉพาะค่าที่เปลี่ยนจริง
-       */
-       return true;
+      if(showDelta && typeof showStatDelta==='function'){
+        showStatDelta(before,finalStats,'✨ '+(o.name||'อัปเกรด'));
+      }
+      return true;
     }
   };
 
