@@ -2874,13 +2874,15 @@ function buildItem(def,i){
        * causing "Can't find nextStack" when a Treasure Chest/Boss reward
        * or Level Up/Shop item was actually applied.
        */
+      console.groupCollapsed('[ITEM APPLY] '+(o.id||'unknown')+' '+(o.name||'ไอเทม'));
+      console.log('[ITEM APPLY] context:',{id:o.id,name:o.name,rarity:o.rarity,stackCount:o.stackCount,stackCap:o.stackCap,showDelta,wave,level});
       const currentStack=Math.max(0,Number(o.stackCount)||0);
-      const nextStack=Math.min(
-        Number(o.stackCap)||1,
-        currentStack+1
-      );
-
+      const rawStackCap=Number(o.stackCap);
+      const safeStackCap=Number.isFinite(rawStackCap)&&rawStackCap>0?rawStackCap:1;
+      const nextStack=Math.min(safeStackCap,currentStack+1);
+      console.log('[nextStack] calculation:',{rawStackCount:o.stackCount,currentStack,rawStackCap:o.stackCap,safeStackCap,nextStack});
       const before=snapshotPlayerStats();
+      console.log('[ITEM APPLY] stats before:',before);
 
       scaledEffects()
         .map(f=>f&&f.op==='attackPattern'
@@ -2902,6 +2904,9 @@ function buildItem(def,i){
       }catch(e){}
 
       const finalStats=snapshotPlayerStats();
+      console.log('[ITEM APPLY] stats after:',finalStats);
+      console.log('[ITEM APPLY] committed:',{id:o.id,name:o.name,stackCount:o.stackCount,stackCap:o.stackCap,nextStack});
+      console.groupEnd();
 
       if(showDelta && typeof showStatDelta==='function'){
         showStatDelta(before,finalStats,'✨ '+(o.name||'อัปเกรด'));
