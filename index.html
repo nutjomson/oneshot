@@ -4954,13 +4954,11 @@ function openLevelUp(forceHigherRarity=false){
         (wave>=6&&Math.random()<.5?dev.wave.batchWave6:0)+
         (wave>=12&&Math.random()<.5?dev.wave.batchWave12:0);
       const lateBatchBonus=lateWaves*(Number(dev.wave.batchPerWave)||0);
-      // v1.0.184: Restore the pre-50% spawn behavior.
-      // Use probabilistic rounding so fractional batches can produce 2+ enemies
-      // instead of the carry system collapsing Wave 1 into exactly one spawn per tick.
-      const batchExact=Math.max(0,(baseBatch+lateBatchBonus)*(Number(dev.wave.batchBaseMultiplier)||1)*(Number(dev.wave.enemyGlobalCountMultiplier)||1)*(wave===1?0.78:1));
-      const wholeBatch=Math.floor(batchExact);
-      const fractionalBatch=batchExact-wholeBatch;
-      const batch=wholeBatch+(Math.random()<fractionalBatch?1:0);
+      // v1.0.185: Restore the exact pre-50% enemy spawn formula.
+      // Wave 1 returns to the original 1.30x opener and normal probabilistic rounding.
+      // The global count multiplier is intentionally not applied here.
+      const batchExact=(baseBatch+lateBatchBonus)*(Number(dev.wave.batchBaseMultiplier)||1)*(wave===1?1.30:1);
+      const batch=Math.floor(batchExact)+(Math.random()<(batchExact-Math.floor(batchExact))?1:0);
       for(let i=0;i<batch;i++)spawnEnemy();
       spawnTimer=spawnRate;
     }
