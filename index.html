@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.162</title>
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.163</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1321,7 +1321,7 @@ const SOFT_CAPS = {
   executionThreshold: 0.25, knockback: 600, explosiveRadius: 220,
   bulletSpeed: 3000
 };
-const SOFT_CAP_STRENGTH = 2;
+const SOFT_CAP_STRENGTH = 1; // ลดความแรง Soft Cap: เป้าหมายให้ Build ที่โฟกัส Stat สามารถแตะ ~70% ของ Cap ได้ภายใน Wave 100
 function softCapMultiplier(current, cap){
   if(!Number.isFinite(current)||!Number.isFinite(cap)||cap<=0) return 1;
   return Math.pow(Math.max(0,1-clamp(current/cap,0,1)),SOFT_CAP_STRENGTH);
