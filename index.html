@@ -1333,6 +1333,13 @@ function softCapAdd(current, amount, stat){
   if(room<=0) return 0;
   return Math.min(room,amount*softCapMultiplier(current,cap));
 }
+function softCapDecrease(current, requestedDecrease, minValue){
+  if(!Number.isFinite(requestedDecrease)||requestedDecrease<=0) return 0;
+  const room=Math.max(0,current-minValue);
+  if(room<=0) return 0;
+  const ratio=clamp(room/(Math.max(current,minValue+0.000001)),0,1);
+  return Math.min(room,requestedDecrease*Math.pow(ratio,SOFT_CAP_STRENGTH));
+}
 
 /* ===== 5. COMBAT ===== */
 const COMBAT = {
@@ -2587,9 +2594,17 @@ function applyEffect(f){
 
   if(f.op==='mul'){
     const requested=cur*f.v;
-    nv=f.v>1
-      ? cur+softCapAdd(cur,requested-cur,f.stat)
-      : requested;
+    if(f.stat==='fireRate' && f.v<1){
+      const minRate=Number(CFG.caps.fireRateMin)||0.04;
+      nv=cur-softCapDecrease(cur,cur-requested,minRate);
+    }else if(f.stat==='speed' && f.v>1 && selectedHero){
+      const speedCap=(Number(selectedHero.speed)||cur)*2;
+      nv=cur+Math.min(Math.max(0,speedCap-cur),(requested-cur)*softCapMultiplier(cur,speedCap));
+    }else{
+      nv=f.v>1
+        ? cur+softCapAdd(cur,requested-cur,f.stat)
+        : requested;
+    }
   }else if(f.op==='add'){
     nv=f.v>0
       ? cur+softCapAdd(cur,f.v,f.stat)
