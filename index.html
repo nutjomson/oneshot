@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.204</title>
-<meta name="game-version" content="v1.0.204">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.205</title>
+<meta name="game-version" content="v1.0.205">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2913,7 +2913,9 @@ function getAttackPatternUpgradeInfo(item){
   const current=getOwnedAttackPatternLevel(pid);
   const next=Math.min(20,current+1);
   const levelForDamage=Math.max(1,next);
-  const bonus=Math.min(0.38,Math.max(0,(levelForDamage-1)*0.02));
+  const currentBonus=Math.min(0.38,Math.max(0,(current-1)*0.02));
+  const nextBonus=Math.min(0.38,Math.max(0,(next-1)*0.02));
+  const bonus=nextBonus;
   const count=Math.max(1,Math.floor(Number(p.count)||1));
   const damage=Number(p.damage)||1;
   const totalBase=count*damage;
@@ -2928,21 +2930,14 @@ function getAttackPatternUpgradeInfo(item){
   return '<div class="attack-pattern-upgrade-info">'+
     '<div class="attack-pattern-line"><b>⚔️ รูปแบบ:</b> '+mode+shapeText+'</div>'+
     '<div class="attack-pattern-line"><b>💥 พลังพื้นฐาน:</b> '+count+' นัด × x'+damage.toFixed(2)+' = x'+totalBase.toFixed(2)+' ต่อชุด</div>'+
-    '<div class="attack-pattern-line"><b>📦 Stack ระบบ:</b> '+(current>0?'Pattern นี้มี Lv.'+current+' อยู่แล้ว':'ยังไม่มี Pattern นี้ — ครั้งนี้เป็นการปลดล็อก')+'</div>'+
-    '<div class="attack-pattern-line upgrade"><b>⬆️ ผลของ Stack นี้:</b> Lv.'+current+' → Lv.'+next+' • <strong>Damage เฉพาะ '+getAttackPatternName(pid)+' +2%</strong> • โบนัสสะสม +'+Math.round(bonus*100)+'%</div>'+
+    '<div class="attack-pattern-line"><b>📦 Stack:</b> '+current+' → '+next+'</div>'+
+    '<div class="attack-pattern-line"><b>💥 Damage Pattern:</b> '+Math.round(currentBonus*100)+'% → <strong>+'+Math.round(nextBonus*100)+'%</strong></div>'+
+    '<div class="attack-pattern-line upgrade"><b>⬆️ ได้จากการซื้อครั้งนี้:</b> <strong>+'+(next-current)+'</strong> Stack • +2% Damage เฉพาะ '+getAttackPatternName(pid)+'</div>'+
     '<div class="attack-pattern-line hint">สูงสุด Lv.20 = โบนัส Damage รูปแบบ +38%</div>'+
   '</div>';
 }
 function renderOwnedAttackPatterns(){
-  const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
-  if(!owned.length) return '';
-  return '<div class="owned-attack-patterns"><div class="owned-attack-patterns-title">⚔️ รูปแบบการโจมตีที่มี • Stack ซ้ำ = +2% Damage ของ Pattern นั้น</div>'+
-    owned.map(x=>{
-      const lv=Math.max(1,Math.min(20,Number(x.level)||1));
-      const bonus=Math.min(38,(lv-1)*2);
-      return '<span class="owned-attack-pattern '+(String(x.id)===String(player.attackPattern)?'active':'')+'">'+getAttackPatternName(x.id)+' • Lv.'+lv+' • +'+bonus+'% Damage'+(lv>=20?' • MAX':'')+'</span>';
-    }).join('')+
-    '</div>';
+  return '';
 }
 function renderItemPreview(item){
   try{
@@ -5820,7 +5815,9 @@ function openLevelUp(forceHigherRarity=false){
 }
 </style>
 
-<style id="v1-0-200-attack-pattern-list">
+<style>
+.attack-pattern-stack-badge{position:absolute;top:6px;right:6px;z-index:3;padding:3px 7px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.72);color:#ffd166;font-weight:900;font-size:11px;line-height:1;box-shadow:0 0 8px rgba(255,209,102,.22)}
+ id="v1-0-200-attack-pattern-list">
 .owned-attack-patterns{margin:5px 0;padding:5px 6px;border:1px solid #334155;border-radius:4px;background:rgba(2,6,23,.72)}
 .owned-attack-patterns-title{font-size:9px;font-weight:900;color:#facc15;margin-bottom:4px}
 .owned-attack-pattern{display:inline-block;margin:2px;padding:3px 5px;border:1px solid #475569;border-radius:4px;color:#cbd5e1;font-size:8px;font-weight:700}
