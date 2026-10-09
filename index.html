@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.242</title>
-<meta name="game-version" content="v1.0.242">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.243</title>
+<meta name="game-version" content="v1.0.243">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.242</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.243</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -5606,7 +5606,7 @@ function openLevelUp(forceHigherRarity=false){
   }
   const HG={
     prism:G(`.......bb....... ......bbbb...... .....kkkkkk..... ....kaaaaaak.... ....kakccakk.... ....kaaaaaak.... ...kkkaaaakkk... ..kggkaaaakggk.. .kyykaaAAaakgwk. .kyykaaaaaakgwk. .kykkaaAAaakkwk. ..kk.kaaaak.wk.. .....kaaaak.w... .....kAkkAk.w... ....kkAk.kAkk... ....kkkk.kkkk...`),
-    neon:G(`.....kkkk....... ....kaaaak...... ...kaaaaaak..... ...kassssak..... ...kscsscsk..... ....kssssk.b.... ...kkaaaakkb.... ..kgkaaaaaak.gk. ..kgkaabbaak.gk. ...kkaabbaak.gk. ....kaaaaaak.gk. ....kaakkaak.gk. ....kbk..kbk.g.. ....kbk..kbk.... ...kbbk..kbbk... ...kkkk..kkkk...`),
+    neon:G(`.......kk....... ......kAkk...... .....kAAaak..... ....kAAAAaak.... ...kkAasssaak... ...kAsccsskbbk.. ...kAssssskbbk.. ....kAaaakbbb... ...kAAaabbbk.... ..kggkaaaabk.gk. .kykkaaAabbbk.gk .kykkaaabbbbk.gk ..kkkaaaakkbkgk. .....kbbk.kbbk.. ....kkbbk.kkbbk. ...kkkkk...kkkk.`)
     psycho:G(`.......kk....... ......kaak...... .....kaaaak..... ....kaaabaak.... ..kkkbbbbbkkk... ....kssssssk.... ....kscsscsk.... .....kssssk..cc. ....kaaaaaak.cc. ...kaabaabaak.k. ..kaaabaabaak.k. ..kaaabaabaak.k. ...kaaaaaaak..k. ...kaabbbaak..k. ...kAAAAAAAk..k. ...kkkkkkkkk..k.`),
     cyber:G(`....kkkkkk...... ...kaaaaaak..... ...kaaaaaakbb... ...kssssssk.bb.. ...kcckkcck.b... ...kkaaaakk..... ..kbbbbbbbbk.... .kaakaaaakaak... .kaakaabbaakg... ..kkaabbaak.gw.. ....kaaaak..gw.. ....kaaaak..g... ....kaakaak.g... ....kaakaak.g... ...kAAk.kAAk.y.. ...kkkk.kkkk....`)
   };
@@ -5679,7 +5679,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.242: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.243: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
