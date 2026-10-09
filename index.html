@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.281</title>
-<meta name="game-version" content="v1.0.281">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.282</title>
+<meta name="game-version" content="v1.0.282">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4040,6 +4040,9 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
+      // v1.0.282: Lv.1 spear lifetime must cover its actual travel range.
+      // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
+      P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
     P.milestone4=lv>=4;P.milestone8=lv>=8;P.milestone12=lv>=12;
     // Lv.4: each pattern gets a unique new mechanic.
