@@ -5293,7 +5293,7 @@ function openLevelUp(forceHigherRarity=false){
       Math.floor(maxStart+Math.max(0,wave-1)*maxPerWave)
     );
 
-    if(!skillLabMode && spawnTimer<=0){
+    if(spawnTimer<=0){
       const available=Math.max(0,maxEnemies-enemies.length);
       const spawnCount=Math.min(batch,available);
       let spawnedThisTick=0;
