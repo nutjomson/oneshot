@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.274</title>
-<meta name="game-version" content="v1.0.274">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.275</title>
+<meta name="game-version" content="v1.0.275">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4025,6 +4025,8 @@ function renderStartPerks(){
     if(P.id==='twoDir')P.projectileSpeedMul=0.6; // 40% slower projectile travel
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
+      // Keep multi-spear shots visually separated at every level that fires more than one.
+      if(lv>=4)P.spread=lv>=12?0.22:0.30;
       if(lv>=2)P.range*=1.04;
       if(lv>=3)P.projectileSpeedMul=(Number(P.projectileSpeedMul)||1)*1.05;
       if(lv>=5)P.damage*=1.06;
@@ -4218,13 +4220,17 @@ function renderStartPerks(){
       }
 
       for(const bt of ownedTypes){
-        for(const a of angles){
+        for(let shotIndex=0;shotIndex<angles.length;shotIndex++){
+          const a=angles[shotIndex];
+          // Separate multiple Dimension-Splitting Spears at their muzzle as well as by angle,
+          // so the thick spear sprites don't stack on top of each other.
+          const spearLaneOffset=patternId==='oneDir'&&angles.length>1?(shotIndex-(angles.length-1)/2)*40:0;
           const B=CFG.bulletTypes[bt]||{},K=CFG.combat;
           const crit=Math.random()<clamp(player.crit+(B.critBonus||0),0,1);
           const rawSpeed=player.bulletSpeed*(B.speedMult||1)*(P.speed?((Number(P.speed)||800)/800):1)*(P.mode==='pierce'?((Number(P.speed)||1050)/800):1)*(Number(P.projectileSpeedMul)||1),sp=P.mode==='lightningBolt'?(P.id==='oneDir'?(Number(P.speed)||220):420):rawSpeed;
           const dmg=patternDamage*(crit?(B.critMult||K.critMult):1);
           bullets.push({
-            x:player.x+Math.cos(a)*K.muzzleOffset,y:player.y+Math.sin(a)*K.muzzleOffset,
+            x:player.x+Math.cos(a)*K.muzzleOffset-Math.sin(a)*spearLaneOffset,y:player.y+Math.sin(a)*K.muzzleOffset+Math.cos(a)*spearLaneOffset,
             vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
             r:P.mode==='lightningBolt'?19:(P.mode==='wave'?(Number(P.radius)||10):(B.radius||K.bulletRadius)),
             life:P.mode==='lightningBolt'?(P.id==='oneDir'?(Number(P.life)||0.24):2.4):(P.life?(Number(P.life)||0.58):(P.mode==='pierce'?(Number(P.life)||0.72):K.bulletLife)),
