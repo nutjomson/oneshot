@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.241</title>
-<meta name="game-version" content="v1.0.241">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.242</title>
+<meta name="game-version" content="v1.0.242">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.241</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.242</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1268,11 +1268,11 @@ const HEROES = [
     desc: 'อัศวินผลึกแก้ว: ป้องกันสูง ถึกทนทาน โตด้านพลังชีวิตและเกราะดีที่สุด'
   },
   {
-    id: 'neon', name: 'นีออน เรนเจอร์ (NEON RANGER)', icon: '🏹',
-    color: '#39ff14', secondaryColor: '#00e5ff', bulletType: 'laser',
+    id: 'neon', name: 'เวสเปอร์ สกายแดนเซอร์ (VESPER SKYDANCER)', icon: '🌈',
+    color: '#ff4fd8', secondaryColor: '#35f2ff', bulletType: 'laser',
     stats: { hp: 68, speed: 241.66666666666669, damage: 10.14, fireRate: 0.5671077682291119, armor: 0.016666666666666666, crit: 0.06666666666666667, attackRange: 290.304 },
     growth: { maxHp: 5, damagePct: 0.008, regen: 0.02 },
-    desc: 'จอมยิงลำแสงเรืองแสง ความเร็วสูง ยิงรวดเร็วแม่นยำ'
+    desc: 'นักล่าลำแสงสายรุ้ง เคลื่อนที่พริ้วไหว ทิ้งภาพติดตาหลากสีและยิงเลเซอร์อย่างแม่นยำ'
   },
   {
     id: 'psycho', name: 'ไซโค เมจ (PSYCHO MAGE)', icon: '🔮',
@@ -5678,7 +5678,28 @@ function openLevelUp(forceHigherRarity=false){
     const flash=player.hit>0&&Math.floor(player.hit*25)%2===0;
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
+    if(h.id==='neon'){
+      // v1.0.242: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      const moveA=player.angle, trailLen=mv?3:1;
+      for(let k=trailLen;k>=1;k--){
+        ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
+        ctx.translate(px-Math.cos(moveA)*k*(mv?10:3),py+bob-Math.sin(moveA)*k*(mv?10:3));
+        ctx.rotate(Math.sin(t*12-k)*.08);ctx.scale(sd,1);
+        ctx.globalCompositeOperation='lighter';
+        ctx.filter='hue-rotate('+(t*130+k*95)+'deg) saturate(2)';
+        ctx.drawImage(fl,-24,-30,48,48);ctx.restore();
+      }
+      for(let k=0;k<3;k++){
+        const an=-t*4+k*Math.PI*2/3,rr=mv?31:27;
+        const sx0=px+Math.cos(an)*rr,sy0=py+Math.sin(an)*rr*.55;
+        ctx.save();ctx.translate(sx0,sy0);ctx.rotate(an+t*2);
+        ctx.globalAlpha=.85;ctx.shadowColor=k===0?'#ff4fd8':k===1?'#35f2ff':'#ffe66d';ctx.shadowBlur=9;
+        ctx.fillStyle=k===0?'#ff4fd8':k===1?'#35f2ff':'#ffe66d';
+        ctx.beginPath();ctx.moveTo(0,-5);ctx.lineTo(3,0);ctx.lineTo(0,5);ctx.lineTo(-3,0);ctx.closePath();ctx.fill();ctx.restore();
+      }
+    }
     ctx.save(); ctx.translate(px,py+bob); ctx.scale(sd,1);
+    if(h.id==='neon'&&mv){ctx.rotate(Math.sin(t*16)*.075);ctx.translate(2,0);}
     if(h.id==='prism'&&prismKnightImgReady){
       if(flash)ctx.globalAlpha=.55;
       ctx.imageSmoothingEnabled=false;
