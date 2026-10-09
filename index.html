@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.273</title>
-<meta name="game-version" content="v1.0.273">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.274</title>
+<meta name="game-version" content="v1.0.274">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2958,7 +2958,7 @@ function getAttackPatternName(id){
 }
 function getAttackPatternMilestoneDetail(pid,lv){
   const details={
-    oneDir:{2:'ระยะหอก +4% จากค่าที่คำนวณตามเลเวล',3:'ความเร็วหอก +5%',4:'ได้รับหอกเพิ่ม 1 เล่ม ทำให้ยิงเป็นชุดคู่',5:'Damage +6%',6:'ระยะโจมตีของหอก +6%',7:'ความเร็วหอก +8% เพิ่มเติม',8:'Damage +18% และพลังหอกเด่นชัดขึ้น',9:'หอกทะลุศัตรูได้ทั้งหมด',10:'Damage +8% เพิ่มเติม',11:'ระยะโจมตี +10% เพิ่มเติม',12:'ยิงพร้อมกัน 5 หอก กระจายมุมเล็กน้อย ทะลุศัตรูทั้งหมด และ Damage +15%'},
+    oneDir:{1:'ระยะหอกเริ่มต้นเพิ่มขึ้น 90%',2:'ระยะหอก +4% จากค่าที่คำนวณตามเลเวล',3:'ความเร็วหอก +5%',4:'ได้รับหอกเพิ่ม 1 เล่ม ทำให้ยิงเป็นชุดคู่',5:'Damage +6%',6:'ระยะโจมตีของหอก +6%',7:'ความเร็วหอก +8% เพิ่มเติม',8:'Damage +18% และพลังหอกเด่นชัดขึ้น',9:'หอกทะลุศัตรูได้ทั้งหมด',10:'Damage +8% เพิ่มเติม',11:'ระยะโจมตี +10% เพิ่มเติม',12:'ยิงพร้อมกัน 5 หอก กระจายมุมเล็กน้อย ทะลุศัตรูทั้งหมด และ Damage +15%'},
     twoDir:{4:'เพิ่ม Spread เพื่อกระจายทิศยิง',8:'เพิ่มจำนวนเป็น 4 ทิศ',12:'Pierce +1 และ Damage เพิ่ม 12%'},
     threeDir:{4:'Pierce +1',8:'Damage เพิ่ม 18%',12:'เพิ่มจำนวนเป็น 5 ทิศ และ Pierce +1'},
     fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
@@ -4013,7 +4013,7 @@ function renderStartPerks(){
       case 'slash':P.range=L(P.range||80,P.id==='slashCone'?165:135);P.arc=L(P.arc||.22,P.id==='slashCone'?1:.2+2.15);P.damage=L(P.damage||.25,P.id==='slashCone'?.90:.88);if(P.bleedDps)P.bleedDps=L(P.bleedDps,.095);if(P.bleedTime)P.bleedTime=L(P.bleedTime,4);break;
       case 'wave':P.range=L(250,590);P.radius=L(6,30);P.speed=L(480,720);P.life=L(.55,.95);P.damage=L(.22,.90);break;
       case 'chainFireball':P.damage=L(.26,.92);P.chainCount=Math.round(L(2,6));P.chainRange=L(95,185);P.radius=L(8,15);P.speed=L(540,680);P.life=L(.85,1.1);break;
-      case 'lightningBolt':if(P.id==='oneDir'){P.damage=L(.24,.82);P.range=L(100,420);P.speed=L(220,420);P.life=L(.24,.85);P.radius=L(19,24);P.pierce=999;}else{P.damage=L(.25,.92);P.speed=L(900,1250);P.life=L(.9,1.2);P.radius=L(5,9);P.pierce=Math.round(L(1,4));}break;
+      case 'lightningBolt':if(P.id==='oneDir'){P.damage=L(.24,.82);P.range=L(190,420);P.speed=L(220,420);P.life=L(.24,.85);P.radius=L(19,24);P.pierce=999;}else{P.damage=L(.25,.92);P.speed=L(900,1250);P.life=L(.9,1.2);P.radius=L(5,9);P.pierce=Math.round(L(1,4));}break;
       case 'bomb':P.damage=L(.30,.95);P.radius=L(70,190);P.range=L(300,560);P.speed=L(520,680);P.life=L(.95,1.15);break;
       case 'poison':P.damage=L(.10,.30);P.radius=L(42,82);P.range=L(260,390);P.speed=L(460,560);P.zoneLife=L(1.6,2.8);P.tick=L(.65,.48);break;
       case 'lightning':P.count=Math.round(L(1,7));P.damage=L(.18,.88);P.cooldown=L(.5,.1);P.range=L(360,620);break;
