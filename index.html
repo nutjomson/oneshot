@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.289</title>
-<meta name="game-version" content="v1.0.289">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.290</title>
+<meta name="game-version" content="v1.0.290">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1020,7 +1020,13 @@ button,input,select,textarea{
       <label>สกิลโจมตี<select id="skillLabPattern"></select></label>
       <label>เลเวลสกิล<select id="skillLabLevel"></select></label>
     </div>
-    <div class="skill-lab-actions"><button type="button" class="btn" id="skillLabStartBtn">▶ เริ่มทดสอบ</button><button type="button" class="btn btn-blue" id="skillLabChangeBtn">✦ เปลี่ยนสกิล</button><button type="button" class="btn btn-gold" id="skillLabPauseBtn">⏸ หยุดชั่วคราว</button><button type="button" class="btn btn-sec" id="skillLabResetBtn">↻ รีเซ็ตผล</button></div><div id="skillLabLivePicker" class="skill-lab-live-picker hidden"><label>สกิล<select id="skillLabLivePattern"></select></label><label>เลเวล<select id="skillLabLiveLevel"></select></label><span id="skillLabRarity" class="skill-lab-rarity normal">NORMAL</span></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:end;margin:8px 0;padding:9px;background:#0b1728;border:1px solid #334155;border-radius:10px">
+      <label style="display:grid;gap:4px;color:#cbd5e1;font-size:12px">เวฟที่ต้องการทดสอบ<input id="skillLabWaveInput" type="number" min="1" max="1000" value="1" inputmode="numeric" style="width:100%;min-width:0;padding:9px;background:#020617;color:#fff;border:1px solid #475569;border-radius:7px;font-size:14px"></label>
+      <button type="button" class="btn btn-blue" id="skillLabGoWaveBtn">⏩ ไปเวฟ</button>
+      <button type="button" class="btn btn-gold" id="skillLabWaveOneBtn">↻ เวฟ 1</button>
+    </div>
+    <div class="skill-lab-actions"><button type="button" class="btn" id="skillLabStartBtn">▶ เริ่มเวฟ</button><button type="button" class="btn btn-blue" id="skillLabChangeBtn">✦ เปลี่ยนสกิล</button><button type="button" class="btn btn-gold" id="skillLabPauseBtn">⏸ หยุดชั่วคราว</button><button type="button" class="btn btn-sec" id="skillLabResetBtn">↻ รีเซ็ตเวฟ</button><button type="button" class="btn btn-sec" id="skillLabBackBtn">← กลับหน้าก่อน</button><button type="button" class="btn btn-sec" id="skillLabHomeBtn">⌂ หน้าแรก</button></div>
+    <div id="skillLabLivePicker" class="skill-lab-live-picker hidden"><label>สกิล<select id="skillLabLivePattern"></select></label><label>เลเวล<select id="skillLabLiveLevel"></select></label><span id="skillLabRarity" class="skill-lab-rarity normal">NORMAL</span></div>
     <div class="skill-lab-stats">
       <div><span>ดาเมจรวม</span><b id="skillLabDamage">0</b></div><div><span>DPS เฉลี่ย</span><b id="skillLabDps">0</b></div><div><span>จำนวนฮิต</span><b id="skillLabHits">0</b></div><div><span>เวลาทดสอบ</span><b id="skillLabTime">0.0s</b></div>
     </div>
@@ -1975,7 +1981,7 @@ window.GAME_CONFIG = {
 let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
-  let skillLabMode=false,skillLabHudTimer=0,skillLabStats={hits:0,attacks:0};
+  let skillLabMode=false,skillLabHudTimer=0,skillLabStats={hits:0,attacks:0},skillLabWaveOffset=1;
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   // v1.0.190: Wave 1 spawn diagnostics.
   let wave1Spawned=0, wave1LastBatch=0;
@@ -3855,7 +3861,7 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.289: 3 / 6 / 7 / unlimited targets
+    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.290: 3 / 6 / 7 / unlimited targets
     if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
@@ -3869,7 +3875,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.289: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.290: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -3877,7 +3883,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.289: Lv.4 pierce 6 and damage +20%
+      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.290: Lv.4 pierce 6 and damage +20%
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
@@ -3895,7 +3901,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.289: Lv.8 pierce 7 and damage +20%
+      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.290: Lv.8 pierce 7 and damage +20%
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -3913,7 +3919,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.289: Lv.12 pierces all targets and damage +80%
+      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.290: Lv.12 pierces all targets and damage +80%
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
@@ -4107,7 +4113,7 @@ function renderStartPerks(){
         xpOrbs[xpOrbs.length-1].life=CFG.pickups.xpLife;
       } else xpOrbs.push({x,y,r:6,value:xpAmt,life:CFG.pickups.xpLife,animTimer:Math.random()*10});
     }
-    // v1.0.289: Gold pickups are disabled; enemies no longer spawn collectible coins.
+    // v1.0.290: Gold pickups are disabled; enemies no longer spawn collectible coins.
   }
 
   function makeSparks(x,y,color,count=8){
@@ -4413,7 +4419,7 @@ function showItemReward(item,source){
     const heroSpeed=Math.max(1,Number(selectedHero?.speed)||Number(player.speed)||1);
     if(!('speed' in autoLevelBaseStats))autoLevelBaseStats.speed=Number(player.speed)||heroSpeed;
     player.speed=Math.min(heroSpeed*(Number(C.speedMultOfHero)||2),autoLevelBaseStats.speed+(heroSpeed*(Number(C.speedMultOfHero)||2)-autoLevelBaseStats.speed)*progress);
-    // v1.0.289: Automatic level growth only affects the stats shown in the approved groups.
+    // v1.0.290: Automatic level growth only affects the stats shown in the approved groups.
     // Max HP and damage continue scaling by level; current HP keeps the same health ratio.
     const extraLevels=Math.max(0,level-1);
     if(!('maxHp' in autoLevelBaseStats))autoLevelBaseStats.maxHp=Number(player.maxHp)||100;
@@ -4426,6 +4432,7 @@ function showItemReward(item,source){
     clampStats();
   }
   function gainXP(v){
+    if(skillLabMode)return; // Skill Lab combat never grants XP or opens Level Up.
     v*=Math.max(0,player.xpMulti||1);
     xp+=v;
     while(xp>=xpNeed){
@@ -4434,7 +4441,7 @@ function showItemReward(item,source){
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
     }
     if(level%10===0)setStatus('⬆️ เลเวล '+level+' • ค่าสถานะพัฒนาอัตโนมัติ');
-    // v1.0.289: Every earned level queues a choice and opens the Level Up modal when safe.
+    // v1.0.290: Every earned level queues a choice and opens the Level Up modal when safe.
     if(pendingLevels>0 && running && !levelOpen && !shopOpen && !pauseOpen && !rewardOpen){
       openLevelUp();
     }
@@ -4538,7 +4545,7 @@ function openLevelUp(forceHigherRarity=false){
     ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
     : levelUpgrades;
   let eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
-  // v1.0.289: Never leave the Level Up overlay empty when all owned weapons are capped
+  // v1.0.290: Never leave the Level Up overlay empty when all owned weapons are capped
   // or a saved run has weapon IDs that no longer match the current pool.
   if(!eligiblePool.length){
     const gearPool=(Array.isArray(luxuryShopPool)?luxuryShopPool:[])
@@ -5170,12 +5177,14 @@ function openLevelUp(forceHigherRarity=false){
 
   function update(dt){
     elapsed+=dt;
-    if(skillLabMode){skillLabHudTimer+=dt;if(skillLabHudTimer>=0.15){skillLabHudTimer=0;updateSkillLabHud();}wave=1;shownWave=1;}else wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
+    if(skillLabMode){skillLabHudTimer+=dt;if(skillLabHudTimer>=0.15){skillLabHudTimer=0;updateSkillLabHud();}wave=skillLabWaveOffset+Math.floor(elapsed/dev.wave.duration);}else wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
     if(wave!==shownWave){
       const prevWave=shownWave;
       shownWave=wave;
       if(wave!==1) wave1LastBatch=0;
-      spawnTreasureChest(wave);
+      if(!skillLabMode)spawnTreasureChest(wave);
+      if(!skillLabMode){
+
       const every=Math.max(1,Math.floor(dev.shop.freeRerollEveryWaves||10));
       const gained=Math.max(0,Math.floor(wave/every)-Math.floor(prevWave/every));
       if(gained>0) freeShopRerolls+=gained;
@@ -5201,6 +5210,8 @@ function openLevelUp(forceHigherRarity=false){
         }
       }
       if(wave>1)setStatus('🌊 เวฟ '+wave+(wave%Math.max(1,Math.floor(dev.wave.bossEvery))===0?' — บอส!':'')+(gained>0?' • 🎁 รีโรลฟรี +'+gained:''));
+
+      }
     }
     if(!skillLabMode) maybeOpenScheduledShop();
 
@@ -5298,7 +5309,7 @@ function openLevelUp(forceHigherRarity=false){
       const e = enemies[i];
       const a=Math.atan2(player.y-e.y,player.x-e.x); 
       e.bladeCd=Math.max(0,e.bladeCd-dt);
-      if(!skillLabMode){const sp=e.speed*(1-(player.timeSlow||0))*(1-(e.mudSlow||0));e.mudSlow=0; const dir=((e.type==='shooter'||e.ai==='shooter')&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
+      {const sp=e.speed*(1-(player.timeSlow||0))*(1-(e.mudSlow||0));e.mudSlow=0; const dir=((e.type==='shooter'||e.ai==='shooter')&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
       e.x=clamp(e.x+Math.cos(a)*sp*dt*dir,30,world.w-30); e.y=clamp(e.y+Math.sin(a)*sp*dt*dir,30,world.h-30);}
       e.hit=Math.max(0,e.hit-dt);e.lightningFlash=Math.max(0,(e.lightningFlash||0)-dt);
       e.animTimer+=dt*6;
@@ -5313,7 +5324,7 @@ function openLevelUp(forceHigherRarity=false){
         if(e.hp <= 0) e.dead=true;
       }
 
-      if(!skillLabMode && (e.type === 'shooter' || e.ai === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
+      if((e.type === 'shooter' || e.ai === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
         e.shootTimer -= dt;
         if(e.shootTimer <= 0){
           if(e.type==='boss'){
@@ -5328,7 +5339,7 @@ function openLevelUp(forceHigherRarity=false){
       
       const d=dist(e.x,e.y,player.x,player.y);
       e.contactCd=Math.max(0,e.contactCd-dt);
-      if(!skillLabMode && d<e.r+player.r&&e.contactCd<=0&&!e.dead&&player.hit<=0){hurt(e.damage*CFG.combat.contactDamageMult);e.contactCd=CFG.combat.contactCooldown;}
+      if(d<e.r+player.r&&e.contactCd<=0&&!e.dead&&player.hit<=0){hurt(e.damage*CFG.combat.contactDamageMult);e.contactCd=CFG.combat.contactCooldown;}
     }
 
     for(let i=bullets.length-1;i>=0;i--){
@@ -5485,7 +5496,7 @@ function openLevelUp(forceHigherRarity=false){
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // v1.0.289: Remove any legacy coins from a loaded run; gold is no longer collectible.
+    // v1.0.290: Remove any legacy coins from a loaded run; gold is no longer collectible.
     if(goldCoins.length) goldCoins.length=0;
 
     skillCd=Math.max(0,skillCd-dt);
@@ -6028,7 +6039,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
-    // v1.0.289: Gold coin rendering removed.
+    // v1.0.290: Gold coin rendering removed.
 
     for(const s of sparks){
       const px=sx(s.x,cam), py=sy(s.y,cam);
@@ -6179,14 +6190,14 @@ function openLevelUp(forceHigherRarity=false){
     const syncLive=()=>{if(livePattern)livePattern.value=patternSel.value;if(liveLevel)liveLevel.value=levelSel.value;const r=document.getElementById('skillLabRarity');if(r){r.textContent=labRarity((livePattern||patternSel).value);r.className='skill-lab-rarity '+r.textContent.toLowerCase();}};
     levelSel.innerHTML=Array.from({length:12},(_,i)=>'<option value="'+(i+1)+'">Lv.'+(i+1)+'</option>').join('');
     heroSel.value=selectedHero?.id||heroes[0]?.id||'prism';patternSel.value='oneDir';levelSel.value='1';
-    const apply=()=>{if(!skillLabMode)return;const id=patternSel.value,lv=Math.max(1,Math.min(12,Number(levelSel.value)||1));player.attackPatternsOwned=[{id,level:lv}];player.attackPattern=id;player.attackPatternLevel=lv;Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);bullets=[];poisonZones=[];windZones=[];blackHoles=[];mudZones=[];mines=[];skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;enemies.forEach(e=>{if(e.labDummy){e.hp=e.maxHp;e.dead=false;}});updateSkillLabHud();document.getElementById('skillLabStatus').textContent='กำลังทดสอบ '+(SKILL_LAB_NAMES[id]||id)+' Lv.'+lv+' ด้วยระบบโจมตีจริงของเกม';};
+    const apply=()=>{if(!skillLabMode)return;applySkillLabSelection();};
     patternSel.onchange=()=>{syncLive();apply();};levelSel.onchange=()=>{syncLive();apply();};if(livePattern)livePattern.onchange=()=>{patternSel.value=livePattern.value;syncLive();apply();};if(liveLevel)liveLevel.onchange=()=>{levelSel.value=liveLevel.value;syncLive();apply();};syncLive();
   }
   function setupSkillLabDummies(){
     enemies=[];bullets=[];enemyBullets=[];xpOrbs=[];goldCoins=[];treasureChests=[];poisonZones=[];windZones=[];blackHoles=[];mudZones=[];mines=[];attackFx=[];slashEffects=[];floaters=[];
-    const offsets=[[75,0],[105,-52],[105,52],[150,-92],[150,92]];
-    for(const [dx,dy] of offsets){if(spawnEnemy('brute')){const e=enemies[enemies.length-1];e.x=clamp(player.x+dx,40,world.w-40);e.y=clamp(player.y+dy,40,world.h-40);e.speed=0;e.damage=0;e.hp=e.maxHp=1000000;e.labDummy=true;e.dead=false;e.contactCd=999;}}
-    player.attackRange=650;player.x=world.w/2;player.y=world.h/2;player.angle=0;player.facing='right';player.hp=player.maxHp;player.gold=0;spawnTimer=999999;skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);
+    player.x=world.w/2;player.y=world.h/2;player.angle=0;player.facing='right';player.hp=player.maxHp;player.gold=0;spawnTimer=0;
+    skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);
+    wave=shownWave=skillLabWaveOffset;pendingLevels=0;levelOpen=false;shopOpen=false;rewardOpen=false;pendingItemReward=null;updateSkillLabHud();
   }
   function updateSkillLabHud(){
     const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
@@ -6200,21 +6211,42 @@ function openLevelUp(forceHigherRarity=false){
   document.getElementById('skillLabZoomOut')?.addEventListener('click',()=>setSkillLabZoom(skillLabZoom-.1));
   document.getElementById('skillLabZoomReset')?.addEventListener('click',()=>setSkillLabZoom(1));
 
+  function applySkillLabSelection(){
+    const pattern=document.getElementById('skillLabLivePattern')?.value||document.getElementById('skillLabPattern')?.value||'oneDir';
+    const lv=Math.max(1,Math.min(12,Number(document.getElementById('skillLabLiveLevel')?.value||document.getElementById('skillLabLevel')?.value)||1));
+    player.attackPatternsOwned=[{id:pattern,level:lv}];player.attackPattern=pattern;player.attackPatternLevel=lv;
+    Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);bullets=[];poisonZones=[];windZones=[];blackHoles=[];mudZones=[];mines=[];
+    document.getElementById('skillLabPattern').value=pattern;document.getElementById('skillLabLevel').value=String(lv);
+    const rarity=({oneDir:'RARE',threeDir:'RARE',fiveDir:'RARE',powerWave:'RARE',lightningBolt:'RARE',bomb:'RARE',lightningStrike:'RARE',fireballChain:'LEGEND',blackHole:'LEGEND'}[pattern]||'NORMAL');
+    const r=document.getElementById('skillLabRarity');if(r){r.textContent=rarity;r.className='skill-lab-rarity '+rarity.toLowerCase();}
+    skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;document.getElementById('skillLabStatus').textContent='เปลี่ยนเป็น '+(SKILL_LAB_NAMES[pattern]||pattern)+' Lv.'+lv+' • ระบบต่อสู้จริง';updateSkillLabHud();
+  }
   function startSkillLab(){
     const hero=heroes.find(h=>h.id===document.getElementById('skillLabHero')?.value);if(hero)selectedHero=hero;
     skillLabMode=false;startGame();skillLabMode=true;paused=false;over=false;
+    skillLabWaveOffset=Math.max(1,Math.min(1000,Math.floor(Number(document.getElementById('skillLabWaveInput')?.value)||1)));
     const pattern=document.getElementById('skillLabPattern')?.value||'oneDir',lv=Math.max(1,Math.min(12,Number(document.getElementById('skillLabLevel')?.value)||1));
     player.attackPatternsOwned=[{id:pattern,level:lv}];player.attackPattern=pattern;player.attackPatternLevel=lv;
     setupSkillLabDummies();document.getElementById('startOverlay')?.classList.add('hidden');document.getElementById('skillLabOverlay')?.classList.remove('hidden');document.getElementById('skillLabOverlay')?.classList.add('lab-running');
-    document.getElementById('skillLabStartBtn').textContent='▶ ทดสอบต่อ';document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='สนามพร้อม • หุ่นทดสอบ 5 ตัว • ใช้ระบบ shoot / projectile / hit ของเกมจริง';updateSkillLabHud();
+    document.getElementById('skillLabStartBtn').textContent='▶ เล่นต่อ';document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='เวฟ '+wave+' • ศัตรูจริง • ไม่มี XP/เลเวลอัพ/ร้านค้า';updateSkillLabHud();
   }
-  function resetSkillLab(){if(!skillLabMode){startSkillLab();return;}setupSkillLabDummies();paused=false;document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='รีเซ็ตสนามแล้ว • เริ่มนับดาเมจใหม่';updateSkillLabHud();}
+  function resetSkillLab(){if(!skillLabMode){startSkillLab();return;}skillLabWaveOffset=1;document.getElementById('skillLabWaveInput').value='1';setupSkillLabDummies();paused=false;over=false;running=true;document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='เริ่มเวฟ 1 ใหม่แล้ว • รีเซ็ตสถิติ';updateSkillLabHud();}
+  function jumpSkillLabWave(){
+    skillLabWaveOffset=Math.max(1,Math.min(1000,Math.floor(Number(document.getElementById('skillLabWaveInput')?.value)||1)));document.getElementById('skillLabWaveInput').value=String(skillLabWaveOffset);
+    if(!skillLabMode){document.getElementById('skillLabStatus').textContent='ตั้งค่าเวฟ '+skillLabWaveOffset+' แล้ว • กดเริ่มเวฟ';return;}
+    setupSkillLabDummies();paused=false;over=false;running=true;document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='ข้ามไปเวฟ '+wave+' • ศัตรูจริง • ไม่มี XP/เลเวลอัพ/ร้านค้า';updateSkillLabHud();
+  }
+  function backSkillLabSetup(){skillLabMode=false;running=false;paused=false;over=false;document.getElementById('skillLabOverlay')?.classList.remove('lab-running');document.getElementById('skillLabLivePicker')?.classList.add('hidden');document.getElementById('skillLabStatus').textContent='ตั้งค่าการทดสอบ แล้วกดเริ่มเวฟ';document.getElementById('skillLabStartBtn').textContent='▶ เริ่มเวฟ';document.body.classList.remove('gameplay-actions');resetInput();}
   function exitSkillLab(){skillLabMode=false;running=false;paused=false;over=false;document.getElementById('skillLabOverlay')?.classList.add('hidden');document.getElementById('skillLabOverlay')?.classList.remove('lab-running');document.getElementById('startOverlay')?.classList.remove('hidden');document.body.classList.remove('gameplay-actions');resetInput();}
   document.getElementById('openSkillLabBtn')?.addEventListener('click',()=>{initSkillLabControls();document.getElementById('startOverlay')?.classList.add('hidden');document.getElementById('skillLabOverlay')?.classList.remove('hidden');document.getElementById('skillLabStatus').textContent='เลือกฮีโร่ สกิล และเลเวล แล้วกดเริ่มทดสอบ';});
   document.getElementById('skillLabStartBtn')?.addEventListener('click',()=>{if(!skillLabMode)startSkillLab();else{paused=false;document.getElementById('skillLabStatus').textContent='กำลังทดสอบสกิลจริง';document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';}});
   document.getElementById('skillLabChangeBtn')?.addEventListener('click',()=>{if(!skillLabMode)return;const p=document.getElementById('skillLabLivePicker');if(p)p.classList.toggle('hidden');});
   document.getElementById('skillLabPauseBtn')?.addEventListener('click',()=>{if(!skillLabMode)return;paused=!paused;document.getElementById('skillLabPauseBtn').textContent=paused?'▶ เล่นต่อ':'⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent=paused?'หยุดการจำลองชั่วคราว':'กำลังทดสอบสกิลจริง';});
   document.getElementById('skillLabResetBtn')?.addEventListener('click',resetSkillLab);
+  document.getElementById('skillLabGoWaveBtn')?.addEventListener('click',jumpSkillLabWave);
+  document.getElementById('skillLabWaveOneBtn')?.addEventListener('click',()=>{document.getElementById('skillLabWaveInput').value='1';jumpSkillLabWave();});
+  document.getElementById('skillLabBackBtn')?.addEventListener('click',backSkillLabSetup);
+  document.getElementById('skillLabHomeBtn')?.addEventListener('click',exitSkillLab);
   document.getElementById('skillLabExitBtn')?.addEventListener('click',exitSkillLab);
   initSkillLabControls();
 
@@ -6243,7 +6275,7 @@ function openLevelUp(forceHigherRarity=false){
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
-    // v1.0.289: Start every run with one uniformly random attack pattern at Level 1.
+    // v1.0.290: Start every run with one uniformly random attack pattern at Level 1.
     const startingWeaponPool=Array.isArray(levelUpgrades)?levelUpgrades:[];
     if(startingWeaponPool.length){
       const startingWeapon=startingWeaponPool[Math.floor(Math.random()*startingWeaponPool.length)];
