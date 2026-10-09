@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.279</title>
-<meta name="game-version" content="v1.0.279">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.280</title>
+<meta name="game-version" content="v1.0.280">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2634,7 +2634,11 @@ function applyEffect(f){
     if(!Array.isArray(player.attackPatternsOwned)) player.attackPatternsOwned=[];
     const existing=player.attackPatternsOwned.find(x=>x&&String(x.id)===pattern);
     if(existing) existing.level=level;
-    else player.attackPatternsOwned.push({id:pattern,level});
+    else {
+      // v1.0.280: A hero may carry at most five distinct attack weapons.
+      if(player.attackPatternsOwned.filter(x=>x&&x.id).length>=5) return;
+      player.attackPatternsOwned.push({id:pattern,level});
+    }
     player.attackPattern=pattern;
     player.attackPatternLevel=level;
     return;
@@ -3852,7 +3856,7 @@ let startPerkSelected=[];
 const startPerkCounts={normal:4,rare:2,legend:1};
 function getStartPerkPool(rarity){
   const seen=new Set();
-  return [...levelUpgrades,...luxuryShopPool].filter(item=>{
+  return [...luxuryShopPool].filter(item=>{
     if(!item||item.rarity!==rarity)return false;
     const key=(item.id||'')+'|'+item.name;
     if(seen.has(key))return false;
@@ -4691,57 +4695,24 @@ function openLevelUp(forceHigherRarity=false){
   document.getElementById('levelPremiumRerollCostText').textContent=getPremiumLevelRerollCost();
 
   const choiceCount=Math.max(1,Math.floor(Number(dev.level.choices)||3));
-  const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
-  const baseRarityWeights={
-    normal:100-(2.9+(14-2.9)*progress)-(0.1+(1-0.1)*progress),
-    rare:2.9+(14-2.9)*progress,
-    legend:0.1+(1-0.1)*progress
-  };
-  // Premium reroll: exactly one guaranteed Rare, then the remaining
-  // slots use Normal/Legend only with Legend x3. This is intentionally
-  // identical to Shop Premium so Premium never becomes Rare 3/3.
-  const premiumLegend=baseRarityWeights.legend*3;
-  const premiumNormal=Math.max(0,baseRarityWeights.normal-(premiumLegend-baseRarityWeights.legend));
-  const rarityWeights=forceHigherRarity
-    ? {normal:premiumNormal,rare:0,legend:premiumLegend}
-    : baseRarityWeights;
-
-  const availableRarities=[...new Set(levelUpgrades.map(i=>String(i.rarity||'normal')))].filter(isRarityAvailable);
   const used=new Set();
   const choices=[];
-
-  if(forceHigherRarity){
-    const guaranteedRarePool=levelUpgrades.filter(i=>
-      String(i.rarity||'normal')==='rare' &&
-      !used.has(i.id) &&
-      !isItemMaxed(i)
-    );
-    if(guaranteedRarePool.length && choiceCount>0){
-      const guaranteed=weightedPick(guaranteedRarePool);
-      if(guaranteed){
-        used.add(guaranteed.id);
-        choices.push(guaranteed);
-      }
-    }
-  }
-
+  const owned=Array.isArray(player.attackPatternsOwned)?player.attackPatternsOwned:[];
+  const ownedIds=new Set(owned.filter(x=>x&&x.id).map(x=>String(x.id)));
+  const weaponCount=ownedIds.size;
+  // All weapons have equal selection probability; Normal/Rare/Legend no longer affect weapon rolls.
+  // Once five distinct weapons are held, Level Up only offers those owned weapons for further upgrades.
+  const weaponPool=weaponCount>=5
+    ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
+    : levelUpgrades;
+  const eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
   while(choices.length<choiceCount){
-    const eligible=availableRarities.filter(r=>{
-      if(Number(rarityWeights[r]||0)<=0)return false;
-      return levelUpgrades.some(i=>String(i.rarity||'normal')===r&&!used.has(i.id)&&!isItemMaxed(i));
-    });
-    if(!eligible.length)break;
-    const rarity=weightedPickRarity(rarityWeights,eligible);
-    const pool=levelUpgrades.filter(i=>String(i.rarity||'normal')===String(rarity)&&!used.has(i.id)&&!isItemMaxed(i));
-    const pick=weightedPick(pool);
+    const pool=eligiblePool.filter(i=>!used.has(i.id));
+    if(!pool.length)break;
+    const pick=pool[Math.floor(Math.random()*pool.length)];
     if(!pick)break;
     used.add(pick.id);
     choices.push(pick);
-  }
-
-  if(choices.length<choiceCount){
-    const fallback=shuffle(levelUpgrades.filter(i=>!used.has(i.id)&&!isItemMaxed(i)));
-    choices.push(...fallback.slice(0,choiceCount-choices.length));
   }
 
   // FREE BUILD: keep the three valid RNG results in their original random order.
@@ -4751,7 +4722,7 @@ function openLevelUp(forceHigherRarity=false){
   ranked.forEach((u,index)=>{
     const b=document.createElement('button');
     b.type='button';
-    b.className='upgrade item-'+(u.rarity||'normal')+(index===0?' recommended':' alternative');
+    b.className='upgrade item-weapon'+(index===0?' recommended':' alternative');
     b.style.pointerEvents='auto';
     b.style.touchAction='manipulation';
     b.style.position='relative';
@@ -4762,7 +4733,7 @@ function openLevelUp(forceHigherRarity=false){
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
       '<div class="icon">'+(u.icon||'📦')+'</div>'+
-      '<div><div class="uName">'+label+'<span class="tier-badge tier-'+(u.rarity||'normal')+'">'+(u.rarity||'normal')+'</span>'+u.name+'</div>'+
+      '<div><div class="uName">'+label+u.name+'</div>'+
       '<div class="uDesc">'+quickDesc+'</div>'+
       (typeof renderItemPreview==='function'?renderItemPreview(u):'')+
       '<div class="upgrade-reason"></div></div>';
