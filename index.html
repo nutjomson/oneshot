@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.301</title>
-<meta name="game-version" content="v1.0.301">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.302</title>
+<meta name="game-version" content="v1.0.302">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5954,13 +5954,15 @@ function openLevelUp(forceHigherRarity=false){
       const px=sx(f.x,cam),py=sy(f.y,cam),fade=Math.max(0,1-t),r=Math.max(8,Number(f.r)||30);
       ctx.save();ctx.globalAlpha=fade;ctx.lineCap='round';ctx.lineJoin='round';
       if(f.type==='tridentSeaRift'){
-        // A brief ground scar like a split in the sea: concentric tide rings and curling foam.
-        const rr=(Number(f.r)||58)*(.28+1.05*t),pulse=.82+.18*Math.sin(t*25+(f.seed||0));
-        ctx.globalAlpha=fade*.34;ctx.fillStyle='#0891b2';ctx.beginPath();ctx.ellipse(px,py,rr*1.15,rr*.42,0,0,Math.PI*2);ctx.fill();
-        ctx.globalAlpha=fade*.9;ctx.strokeStyle='#0284c7';ctx.lineWidth=4*(1-t)+1;ctx.beginPath();ctx.ellipse(px,py,rr,rr*.34,Math.sin((f.seed||0)+t)*.08,0,Math.PI*2);ctx.stroke();
-        ctx.strokeStyle='#67e8f9';ctx.lineWidth=3*(1-t)+.7;ctx.beginPath();ctx.ellipse(px,py,rr*.76,rr*.25,-.06,0,Math.PI*2);ctx.stroke();
-        ctx.globalAlpha=fade*pulse;ctx.strokeStyle='#ecfeff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-rr*.82,py+rr*.05);ctx.quadraticCurveTo(px-rr*.48,py-rr*.30,px-rr*.18,py+rr*.02);ctx.quadraticCurveTo(px+rr*.12,py+rr*.28,px+rr*.42,py-rr*.02);ctx.quadraticCurveTo(px+rr*.66,py-rr*.20,px+rr*.84,py+.02*rr);ctx.stroke();
-        for(let k=0;k<5;k++){const a=(f.seed||0)+k*2.4+t*2,xx=px+Math.cos(a)*rr*.62,yy=py+Math.sin(a)*rr*.22;ctx.fillStyle=k%2?'#f0fdfa':'#facc15';ctx.globalAlpha=fade*(.5+.5*pulse);ctx.beginPath();ctx.arc(xx,yy,1.5+2*(1-t),0,Math.PI*2);ctx.fill();}
+        // Narrow, straight sea-parting corridor: two restrained walls of water and foam, little lateral spray.
+        const rr=(Number(f.r)||58)*(.18+.92*t),pulse=.88+.12*Math.sin(t*20+(f.seed||0));
+        const halfW=rr*.34,len=rr*1.42;
+        ctx.globalAlpha=fade*.22;ctx.fillStyle='#0891b2';ctx.beginPath();ctx.moveTo(px-len,py-halfW*.45);ctx.lineTo(px-len*.68,py-halfW);ctx.lineTo(px+len*.68,py-halfW);ctx.lineTo(px+len,py-halfW*.38);ctx.lineTo(px+len,py+halfW*.38);ctx.lineTo(px+len*.68,py+halfW);ctx.lineTo(px-len*.68,py+halfW);ctx.lineTo(px-len,py+halfW*.45);ctx.closePath();ctx.fill();
+        ctx.globalAlpha=fade*.92;ctx.strokeStyle='#0284c7';ctx.lineWidth=3.5*(1-t)+.8;ctx.beginPath();ctx.moveTo(px-len,py-halfW*.48);ctx.quadraticCurveTo(px-len*.62,py-halfW*.82,px,py-halfW*.72);ctx.quadraticCurveTo(px+len*.62,py-halfW*.82,px+len,py-halfW*.42);ctx.stroke();
+        ctx.strokeStyle='#38bdf8';ctx.lineWidth=2.5*(1-t)+.6;ctx.beginPath();ctx.moveTo(px-len,py+halfW*.48);ctx.quadraticCurveTo(px-len*.62,py+halfW*.82,px,py+halfW*.72);ctx.quadraticCurveTo(px+len*.62,py+halfW*.82,px+len,py+halfW*.42);ctx.stroke();
+        ctx.globalAlpha=fade*pulse;ctx.strokeStyle='#ecfeff';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(px-len*.92,py-halfW*.43);ctx.quadraticCurveTo(px-len*.45,py-halfW*.64,px,py-halfW*.56);ctx.quadraticCurveTo(px+len*.45,py-halfW*.64,px+len*.92,py-halfW*.37);ctx.moveTo(px-len*.92,py+halfW*.43);ctx.quadraticCurveTo(px-len*.45,py+halfW*.64,px,py+halfW*.56);ctx.quadraticCurveTo(px+len*.45,py+halfW*.64,px+len*.92,py+halfW*.37);ctx.stroke();
+        // Only a few tiny droplets near the edges; the main effect stays straight and narrow.
+        for(let k=0;k<3;k++){const side=k%2?-1:1,xx=px+(k-1)*len*.52,yy=py+side*halfW*.82;ctx.fillStyle=k===1?'#facc15':'#f0fdfa';ctx.globalAlpha=fade*.65;ctx.beginPath();ctx.arc(xx,yy,1.2+1.3*(1-t),0,Math.PI*2);ctx.fill();}
       }else if(f.type==='stormStrike'){
         // Epic random thunder judgement: warning sigil, branching sky bolt, ground shock rings and white-hot impact.
         const pulse=.72+.28*Math.sin(t*34),rr=(Number(f.r)||48)*(.35+.65*t),impact=Math.max(0,1-Math.abs(t-.48)*2.8);
