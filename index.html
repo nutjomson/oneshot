@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.294</title>
-<meta name="game-version" content="v1.0.294">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.295</title>
+<meta name="game-version" content="v1.0.295">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1636,7 +1636,7 @@ const SHOP_RARITIES = {
    15 รูปแบบ: Normal 5 / Rare 6 / Legend 4 — ทุกชนิดตีบวกได้สูงสุด +20
 */
 const LEVEL_UPGRADES = [
-{id:'atk_one',rarity:'rare',icon:'➤',name:'Spear',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'Twin',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'Trident',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'Starshot',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'Pulse',stackCap:12,fx:[setAttackPattern('powerWave')]},
+{id:'atk_one',rarity:'rare',icon:'➤',name:'Rift Lance',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'Twin Rend',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'Trident',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'Starshot',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'Pulse',stackCap:12,fx:[setAttackPattern('powerWave')]},
 {id:'atk_cone',rarity:'rare',icon:'🗡️',name:'Crescent',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'Cleave',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'Firechain',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'Bolt',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'Bomb',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'Venom',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
 {id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'Storm',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'Singularity',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'Mire',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'Mine',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
@@ -2861,8 +2861,8 @@ function getAttackPatternName(id){
 }
 function getAttackPatternMilestoneDetail(pid,lv){
   const details={
-    oneDir:{1:'ระยะหอกเริ่มต้นเพิ่มขึ้น 90%',2:'ระยะหอก +4% จากค่าที่คำนวณตามเลเวล',3:'ความเร็วหอก +5%',4:'ได้รับหอกเพิ่ม 1 เล่ม ทำให้ยิงเป็นชุดคู่',5:'Damage +6%',6:'ระยะโจมตีของหอก +6%',7:'ความเร็วหอก +8% เพิ่มเติม',8:'Damage +18% และพลังหอกเด่นชัดขึ้น',9:'หอกทะลุศัตรูได้ทั้งหมด',10:'Damage +8% เพิ่มเติม',11:'ระยะโจมตี +10% เพิ่มเติม',12:'ยิงพร้อมกัน 5 หอก กระจายมุมเล็กน้อย ทะลุศัตรูทั้งหมด และ Damage +15%'},
-    twoDir:{4:'Pierce 6 targets; Damage +10%',8:'Pierce 7 targets; Damage +12%',12:'Unlimited Pierce; Damage +40%'},
+    oneDir:{1:'Slow, heavy spear with long travel range',2:'Range +4%',3:'Projectile speed +5%',4:'Fire 2 spears; damage tuned for wave balance',5:'Damage +6%',6:'Range +6%',7:'Projectile speed +8%',8:'Fire 3 spears; damage +18%',9:'Unlimited Pierce',10:'Damage +8%',11:'Range +10%',12:'Fire 5 spears with slight spread; unlimited Pierce; damage +15%'},
+    twoDir:{4:'Pierce 6 targets; Damage +10%',8:'Fire 3 blades; Pierce 7 targets; Damage +8%',12:'Fire 4 blades; Unlimited Pierce; Damage +20%'},
     threeDir:{4:'ยิงตรีศูลพร้อมกัน 2 ชิ้น และทะลุศัตรู 2 ตัวก่อนแยกสามทาง',8:'ยิงพร้อมกัน 3 ชิ้น และทะลุศัตรู 3 ตัวก่อนแยกสามทาง',12:'ยิงพร้อมกัน 5 ชิ้น และทะลุศัตรู 5 ตัวก่อนแยกสามทาง'},
     fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
     powerWave:{4:'Knockback +35',8:'Radius +20% และ Pierce 2',12:'Radius +25%, ระยะ +12%, Knockback รวม +75'},
@@ -2883,7 +2883,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'Spear',twoDir:'Twin',threeDir:'Trident',fiveDir:'Starshot',powerWave:'Pulse',slashCone:'Crescent',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
+  const names={oneDir:'Rift Lance',twoDir:'Twin Rend',threeDir:'Trident',fiveDir:'Starshot',powerWave:'Pulse',slashCone:'Crescent',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -3940,6 +3940,8 @@ function renderStartPerks(){
       // v1.0.292: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
+      // v1.0.295 balance: the spear gains extra projectiles and unlimited pierce, so reduce per-spear damage from Lv.4 onward.
+      if(lv>=4)P.damage*=0.48;
     }
     P.milestone4=lv>=4;P.milestone8=lv>=8;P.milestone12=lv>=12;
     // Lv.4: each pattern gets a unique new mechanic.
