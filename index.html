@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.291</title>
-<meta name="game-version" content="v1.0.291">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.292</title>
+<meta name="game-version" content="v1.0.292">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -759,7 +759,7 @@ body.gameplay-actions .hud-controls{display:flex}
 @media(max-width:560px){#skillLabOverlay.lab-running .skill-lab-actions .btn{font-size:9px;padding:5px 2px;}}
 </style>
 <style id="v1-0-291-skill-lab-touch-scroll-fix">
-/* v1.0.291: Keep Skill Lab controls tappable and its setup panel scrollable on touch devices. */
+/* v1.0.292: Keep Skill Lab controls tappable and its setup panel scrollable on touch devices. */
 #skillLabOverlay.overlay{
   z-index:1200!important;
   box-sizing:border-box;
@@ -792,6 +792,33 @@ body.gameplay-actions .hud-controls{display:flex}
 #skillLabOverlay.lab-running .skill-lab-modal,
 #skillLabOverlay.lab-running .skill-lab-zoom{pointer-events:auto!important;touch-action:pan-y!important;}
 #skillLabOverlay.lab-running .skill-lab-modal{max-height:calc(100dvh - 72px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;overflow-y:auto!important;}
+</style>
+<style id="v1-0-292-skill-lab-compact-running">
+/* v1.0.292: Compact live Skill Lab panel so it doesn't cover the arena. */
+#skillLabOverlay.lab-running{padding:3px 3px max(3px,env(safe-area-inset-bottom))!important;align-items:flex-start!important;justify-content:center!important;}
+#skillLabOverlay.lab-running .skill-lab-modal{
+  width:min(360px,calc(100vw - 12px))!important;
+  max-width:360px!important;
+  max-height:38dvh!important;
+  margin:2px auto 0!important;
+  padding:4px 5px!important;
+  overflow-y:auto!important;
+  background:rgba(3,8,20,.62)!important;
+  border:1px solid rgba(56,189,248,.28)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.25)!important;
+  border-radius:8px!important;
+}
+#skillLabOverlay.lab-running .skill-lab-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;margin-top:3px!important;}
+#skillLabOverlay.lab-running .skill-lab-actions .btn{min-height:22px!important;padding:2px 3px!important;font-size:9px!important;line-height:1.1!important;}
+#skillLabOverlay.lab-running .skill-lab-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:2px!important;margin-top:3px!important;}
+#skillLabOverlay.lab-running .skill-lab-stats>div{padding:2px!important;}
+#skillLabOverlay.lab-running .skill-lab-stats span{font-size:7px!important;}
+#skillLabOverlay.lab-running .skill-lab-stats b{font-size:10px!important;}
+#skillLabOverlay.lab-running .skill-lab-live-picker{margin-top:3px!important;padding:3px!important;gap:3px!important;}
+#skillLabOverlay.lab-running .skill-lab-live-picker select{font-size:10px!important;padding:3px!important;}
+#skillLabOverlay.lab-running .skill-lab-note{font-size:9px!important;margin-top:2px!important;}
+#skillLabOverlay.lab-running .skill-lab-zoom{position:fixed!important;right:5px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;transform:scale(.78);transform-origin:bottom right;}
+@media(max-height:500px){#skillLabOverlay.lab-running .skill-lab-modal{max-height:30dvh!important;}#skillLabOverlay.lab-running .skill-lab-head .sub{display:none!important;}}
 </style>
 <style id="shop-alchemy-backdrop-v1-0-141">
 /* ===== v1.0.148 VISIBLE ALCHEMY SHOP ===== */
@@ -3896,7 +3923,7 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.291: 3 / 6 / 7 / unlimited targets
+    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.292: 3 / 6 / 7 / unlimited targets
     if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
@@ -3910,7 +3937,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.291: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.292: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -3918,7 +3945,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.291: Lv.4 pierce 6 and damage +20%
+      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.292: Lv.4 pierce 6 and damage +20%
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
@@ -3936,7 +3963,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.291: Lv.8 pierce 7 and damage +20%
+      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.292: Lv.8 pierce 7 and damage +20%
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -3954,7 +3981,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.291: Lv.12 pierces all targets and damage +80%
+      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.292: Lv.12 pierces all targets and damage +80%
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
@@ -4148,7 +4175,7 @@ function renderStartPerks(){
         xpOrbs[xpOrbs.length-1].life=CFG.pickups.xpLife;
       } else xpOrbs.push({x,y,r:6,value:xpAmt,life:CFG.pickups.xpLife,animTimer:Math.random()*10});
     }
-    // v1.0.291: Gold pickups are disabled; enemies no longer spawn collectible coins.
+    // v1.0.292: Gold pickups are disabled; enemies no longer spawn collectible coins.
   }
 
   function makeSparks(x,y,color,count=8){
@@ -4454,7 +4481,7 @@ function showItemReward(item,source){
     const heroSpeed=Math.max(1,Number(selectedHero?.speed)||Number(player.speed)||1);
     if(!('speed' in autoLevelBaseStats))autoLevelBaseStats.speed=Number(player.speed)||heroSpeed;
     player.speed=Math.min(heroSpeed*(Number(C.speedMultOfHero)||2),autoLevelBaseStats.speed+(heroSpeed*(Number(C.speedMultOfHero)||2)-autoLevelBaseStats.speed)*progress);
-    // v1.0.291: Automatic level growth only affects the stats shown in the approved groups.
+    // v1.0.292: Automatic level growth only affects the stats shown in the approved groups.
     // Max HP and damage continue scaling by level; current HP keeps the same health ratio.
     const extraLevels=Math.max(0,level-1);
     if(!('maxHp' in autoLevelBaseStats))autoLevelBaseStats.maxHp=Number(player.maxHp)||100;
@@ -4476,7 +4503,7 @@ function showItemReward(item,source){
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
     }
     if(level%10===0)setStatus('⬆️ เลเวล '+level+' • ค่าสถานะพัฒนาอัตโนมัติ');
-    // v1.0.291: Every earned level queues a choice and opens the Level Up modal when safe.
+    // v1.0.292: Every earned level queues a choice and opens the Level Up modal when safe.
     if(pendingLevels>0 && running && !levelOpen && !shopOpen && !pauseOpen && !rewardOpen){
       openLevelUp();
     }
@@ -4580,7 +4607,7 @@ function openLevelUp(forceHigherRarity=false){
     ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
     : levelUpgrades;
   let eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
-  // v1.0.291: Never leave the Level Up overlay empty when all owned weapons are capped
+  // v1.0.292: Never leave the Level Up overlay empty when all owned weapons are capped
   // or a saved run has weapon IDs that no longer match the current pool.
   if(!eligiblePool.length){
     const gearPool=(Array.isArray(luxuryShopPool)?luxuryShopPool:[])
@@ -5531,7 +5558,7 @@ function openLevelUp(forceHigherRarity=false){
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // v1.0.291: Remove any legacy coins from a loaded run; gold is no longer collectible.
+    // v1.0.292: Remove any legacy coins from a loaded run; gold is no longer collectible.
     if(goldCoins.length) goldCoins.length=0;
 
     skillCd=Math.max(0,skillCd-dt);
@@ -6074,7 +6101,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
-    // v1.0.291: Gold coin rendering removed.
+    // v1.0.292: Gold coin rendering removed.
 
     for(const s of sparks){
       const px=sx(s.x,cam), py=sy(s.y,cam);
@@ -6310,7 +6337,7 @@ function openLevelUp(forceHigherRarity=false){
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
-    // v1.0.291: Start every run with one uniformly random attack pattern at Level 1.
+    // v1.0.292: Start every run with one uniformly random attack pattern at Level 1.
     const startingWeaponPool=Array.isArray(levelUpgrades)?levelUpgrades:[];
     if(startingWeaponPool.length){
       const startingWeapon=startingWeaponPool[Math.floor(Math.random()*startingWeaponPool.length)];
