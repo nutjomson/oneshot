@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.234</title>
-<meta name="game-version" content="v1.0.234">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.235</title>
+<meta name="game-version" content="v1.0.235">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1894,7 +1894,7 @@ window.GAME_CONFIG = {
   };
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[], poisonZones=[], windZones=[], blackHoles=[], mudZones=[], mines=[];
-  let slashEffects=[], chainEffects=[];
+  let slashEffects=[], chainEffects=[], attackFx=[];
   // Fixed core mechanic: XP and gold auto-pick up within this radius. No Pickup stat/upgrades.
   const AUTO_PICKUP_RADIUS = 409.5; // v1.0.166: +30% pickup range
   let treasureChests=[];
@@ -4070,7 +4070,7 @@ function renderStartPerks(){
       if(P.mode==='slash'){
         const range=Number(P.range)||120, arc=Number(P.arc)||0.6;
         // Short-lived visible sword sweep; damage remains resolved exactly once below.
-        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.22,maxLife:.22,color:patternId==='frontSlash'?'#fde047':'#f8fafc'});
+        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.24,maxLife:.24,color:patternId==='frontSlash'?'#fde047':'#f8fafc',style:patternId==='frontSlash'?'heavy':'quick'});
         if(slashEffects.length>12)slashEffects.shift();
         for(const e of enemies){
           if(e.dead)continue;
@@ -4094,6 +4094,7 @@ function renderStartPerks(){
           if(!e)continue;
           hitEnemy(e,patternDamage,false,null,false);
           e.lightningFlash=0.16;
+          attackFx.push({type:'lightning',x:e.x,y:e.y,life:.22,maxLife:.22,seed:Math.random()*20});
           makeSparks(e.x,e.y,'#67e8f9',18);
         }
         continue;
@@ -5369,21 +5370,23 @@ function openLevelUp(forceHigherRarity=false){
         if(arrived||hit||b.life<=0){
           const x=hit?b.x:(arrived?b.targetX:b.x),y=hit?b.y:(arrived?b.targetY:b.y);
           if(b.patternMode==='bomb'){
-            const r=b.patternRadius||150;for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
+            const r=b.patternRadius||150;attackFx.push({type:'explosion',x,y,r,life:.38,maxLife:.38});for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
             const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;
-            // v1.0.234: Cap overlapping poison pools so combat remains readable.
+            // v1.0.235: Cap overlapping poison pools so combat remains readable.
             if(poisonZones.length>=4) poisonZones.shift();
             poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});
+            attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
             makeSparks(x,y,'#84cc16',10);
           }else if(b.patternMode==='blackHole'){
-            const life=b.patternZoneLife||2;blackHoles.push({x,y,r:b.patternRadius||80,life,maxLife:life,pull:b.patternPull||120,age:0});makeSparks(x,y,'#7c3aed',30);
+            const life=b.patternZoneLife||2;blackHoles.push({x,y,r:b.patternRadius||80,life,maxLife:life,pull:b.patternPull||120,age:0});attackFx.push({type:'voidBurst',x,y,r:b.patternRadius||80,life:.42,maxLife:.42});makeSparks(x,y,'#7c3aed',30);
           }else if(b.patternMode==='mud'){
-            const life=b.patternZoneLife||3;mudZones.push({x,y,r:b.patternRadius||80,life,maxLife:life,slow:b.patternSlow||.3,tick:0,tickRate:b.patternTick||.5,damage:Math.max(1,b.damage)});makeSparks(x,y,'#92400e',18);
+            const life=b.patternZoneLife||3;mudZones.push({x,y,r:b.patternRadius||80,life,maxLife:life,slow:b.patternSlow||.3,tick:0,tickRate:b.patternTick||.5,damage:Math.max(1,b.damage)});attackFx.push({type:'mudBurst',x,y,r:b.patternRadius||80,life:.34,maxLife:.34});makeSparks(x,y,'#92400e',18);
           }else if(b.patternMode==='mine'){
-            mines.push({x,y,r:b.patternRadius||60,damage:Math.max(1,b.damage),armed:.15,life:12});makeSparks(x,y,'#facc15',12);
+            mines.push({x,y,r:b.patternRadius||60,damage:Math.max(1,b.damage),armed:.15,life:12});attackFx.push({type:'mineSet',x,y,r:b.patternRadius||60,life:.28,maxLife:.28});makeSparks(x,y,'#facc15',12);
           }else{
             windZones.push({x,y,r:95,life:1.25,maxLife:1.25,damage:Math.max(1,b.damage),knockback:155});
+            attackFx.push({type:'windBurst',x,y,r:95,life:.30,maxLife:.30});
             makeSparks(x,y,'#e0f2fe',22);
           }
           remove=true;
@@ -5401,6 +5404,9 @@ function openLevelUp(forceHigherRarity=false){
           if(!e.dead && !b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
             b.hitList.push(e);
             hitEnemy(e,b.damage,b.crit,b);
+            if(b.patternMode==='lightningBolt') attackFx.push({type:'boltHit',x:e.x,y:e.y,life:.20,maxLife:.20,seed:Math.random()*20});
+            else if(b.patternMode==='wave') attackFx.push({type:'waveHit',x:e.x,y:e.y,r:Math.max(24,b.r*3),life:.24,maxLife:.24});
+            else if(b.patternMode==='bullet') attackFx.push({type:'impact',x:e.x,y:e.y,life:.12,maxLife:.12,color:b.crit?'#facc15':'#bae6fd'});
             // Attack-pattern knockback is distinct from the player's global
             // knockback stat and must be consumed by the actual hit resolver.
             if(Number(b.patternKnockback)>0&&!e.dead){
@@ -5423,7 +5429,7 @@ function openLevelUp(forceHigherRarity=false){
 
     for(let i=blackHoles.length-1;i>=0;i--){const z=blackHoles[i];z.life-=dt;z.age+=dt;for(const e of enemies){if(e.dead)continue;const d=dist(z.x,z.y,e.x,e.y);if(d<=z.r+e.r){const a=Math.atan2(z.y-e.y,z.x-e.x),pull=Math.max(0,z.pull)*(1-Math.min(1,d/Math.max(1,z.r*2)));e.x=clamp(e.x+Math.cos(a)*pull*dt,40,world.w-40);e.y=clamp(e.y+Math.sin(a)*pull*dt,40,world.h-40);if(d<Math.max(16,z.r*.32)&&z.age>.28)e.dead=true;}}if(z.life<=0)blackHoles.splice(i,1);}
     for(let i=mudZones.length-1;i>=0;i--){const z=mudZones[i];z.life-=dt;z.tick-=dt;for(const e of enemies){if(e.dead||dist(z.x,z.y,e.x,e.y)>z.r+e.r)continue;e.mudSlow=Math.max(e.mudSlow||0,z.slow||.3);if(z.tick<=0){hitEnemy(e,z.damage,false,null);z.tick=z.tickRate;}}if(z.life<=0)mudZones.splice(i,1);}
-    for(let i=mines.length-1;i>=0;i--){const m=mines[i];m.life-=dt;m.armed-=dt;const e=enemies.find(o=>!o.dead&&m.armed<=0&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r);if(e){for(const o of enemies)if(!o.dead&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r)hitEnemy(o,m.damage,false,null);makeSparks(m.x,m.y,'#facc15',30);mines.splice(i,1);continue;}if(m.life<=0)mines.splice(i,1);}
+    for(let i=mines.length-1;i>=0;i--){const m=mines[i];m.life-=dt;m.armed-=dt;const e=enemies.find(o=>!o.dead&&m.armed<=0&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r);if(e){attackFx.push({type:'explosion',x:m.x,y:m.y,r:m.r*1.5,life:.34,maxLife:.34});for(const o of enemies)if(!o.dead&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r)hitEnemy(o,m.damage,false,null);makeSparks(m.x,m.y,'#facc15',30);mines.splice(i,1);continue;}if(m.life<=0)mines.splice(i,1);}
     // v1.0.213: poison zones deal repeated area damage while enemies remain inside.
     // Wind storm: push only a portion of enemies, with light periodic damage.
     for(let i=windZones.length-1;i>=0;i--){
@@ -5707,7 +5713,22 @@ function openLevelUp(forceHigherRarity=false){
         ctx.fillRect(tpx-2, tpy-2, 4, 4);
       }
 
-      if(b.type === 'fireball'){
+      const pid=b.attackPatternId||'';
+      if(b.patternMode==='wave'){
+        const t=1-Math.max(0,b.life)/(Number(b.lifeMax)||.55);
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));
+        ctx.globalAlpha=.9;ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.ellipse(0,0,Math.max(9,b.r*2.3),Math.max(4,b.r*.8),0,0,Math.PI*2);ctx.fill();
+        ctx.globalAlpha=.85;ctx.strokeStyle='#e0f2fe';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,0,Math.max(12,b.r*2.8),Math.max(6,b.r*1.1),0,0,Math.PI*2);ctx.stroke();ctx.restore();
+      } else if(b.patternMode==='lightningBolt'){
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#67e8f9';ctx.shadowBlur=10;
+        ctx.fillStyle='#0891b2';ctx.beginPath();ctx.moveTo(-10,-4);ctx.lineTo(-1,-4);ctx.lineTo(5,-10);ctx.lineTo(2,-1);ctx.lineTo(10,2);ctx.lineTo(-1,4);ctx.lineTo(-5,9);ctx.lineTo(-3,1);ctx.closePath();ctx.fill();ctx.fillStyle='#ecfeff';ctx.fillRect(-4,-2,10,3);ctx.restore();
+      } else if(b.patternMode==='chainFireball'){
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#f97316';ctx.shadowBlur=12;
+        ctx.fillStyle='#ea580c';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(1,6);ctx.lineTo(-7,4);ctx.lineTo(-4,0);ctx.lineTo(-7,-4);ctx.lineTo(1,-6);ctx.closePath();ctx.fill();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();
+      } else if(pid==='twoDir'||pid==='threeDir'||pid==='fiveDir'||pid==='oneDir'){
+        const col=pid==='oneDir'?'#38bdf8':pid==='twoDir'?'#a3e635':pid==='threeDir'?'#c084fc':'#facc15';
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.fillStyle=col;ctx.fillRect(-5,-3,10,6);ctx.fillStyle='#ffffff';ctx.fillRect(0,-1,5,2);ctx.restore();
+      } else if(b.type === 'fireball'){ 
         ctx.fillStyle = b.crit ? '#facc15' : '#f97316';
         ctx.fillRect(px-6, py-6, 12, 12);
         ctx.fillStyle = '#ffffff'; ctx.fillRect(px-2, py-2, 4, 4);
@@ -5740,7 +5761,7 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.234: visible melee sweeps and animated fire-chain arcs.
+    // v1.0.235: visible melee sweeps and animated fire-chain arcs.
     const animNow=performance.now();
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
@@ -5768,6 +5789,47 @@ function openLevelUp(forceHigherRarity=false){
       ctx.strokeStyle='#fff7ed';ctx.lineWidth=1.5;ctx.stroke();
       ctx.fillStyle='#fb923c';ctx.beginPath();ctx.arc(x2,y2,3+4*(1-t),0,Math.PI*2);ctx.fill();
       ctx.restore();c.life-=1/60;
+    }
+
+    // v1.0.235: distinct, short-lived impact animations for every attack family.
+    for(let i=attackFx.length-1;i>=0;i--){
+      const f=attackFx[i],t=1-f.life/f.maxLife;
+      if(f.life<=0){attackFx.splice(i,1);continue;}
+      const px=sx(f.x,cam),py=sy(f.y,cam),fade=Math.max(0,1-t),r=Math.max(8,Number(f.r)||30);
+      ctx.save();ctx.globalAlpha=fade;ctx.lineCap='round';ctx.lineJoin='round';
+      if(f.type==='lightning'||f.type==='boltHit'){
+        const topY=f.type==='lightning'?py-70:py-24;
+        for(let layer=0;layer<(f.type==='lightning'?3:2);layer++){
+          ctx.beginPath();ctx.moveTo(px+(Math.random()-.5)*8,topY);
+          let yy=topY;
+          while(yy<py){yy=Math.min(py,yy+9+Math.random()*10);ctx.lineTo(px+(Math.random()-.5)*(f.type==='lightning'?34:24),yy);}
+          ctx.strokeStyle=layer===0?'#ffffff':layer===1?'#67e8f9':'#2563eb';ctx.lineWidth=layer===0?2:layer===1?5:8;ctx.stroke();
+        }
+        ctx.fillStyle='#ecfeff';ctx.beginPath();ctx.arc(px,py,5+10*fade,0,Math.PI*2);ctx.fill();
+      }else if(f.type==='explosion'){
+        ctx.fillStyle='#f97316';ctx.beginPath();ctx.arc(px,py,r*(.2+t*.8),0,Math.PI*2);ctx.fill();
+        ctx.globalAlpha=fade*.9;ctx.strokeStyle='#facc15';ctx.lineWidth=5*(1-t)+1;ctx.beginPath();ctx.arc(px,py,r*(.25+t*1.15),0,Math.PI*2);ctx.stroke();
+        ctx.globalAlpha=fade;ctx.strokeStyle='#fff7ed';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,r*(.12+t*.65),0,Math.PI*2);ctx.stroke();
+      }else if(f.type==='poisonBurst'){
+        ctx.strokeStyle='#bef264';ctx.lineWidth=4;ctx.setLineDash([6,4]);ctx.beginPath();ctx.arc(px,py,r*(.35+t*.8),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+        for(let k=0;k<7;k++){const a=k*Math.PI*2/7+t*2,rr=r*(.25+t*.65);ctx.fillStyle=k%2?'#84cc16':'#d9f99d';ctx.beginPath();ctx.arc(px+Math.cos(a)*rr,py+Math.sin(a)*rr,2+3*fade,0,Math.PI*2);ctx.fill();}
+      }else if(f.type==='voidBurst'){
+        ctx.strokeStyle='#c4b5fd';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r*(.25+t),0,Math.PI*2);ctx.stroke();
+        for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(px,py,r*(.25+t*.5),r*(.1+t*.2),t*4+k,0,Math.PI*2);ctx.strokeStyle=k%2?'#7c3aed':'#e9d5ff';ctx.lineWidth=2;ctx.stroke();}
+      }else if(f.type==='mudBurst'){
+        ctx.strokeStyle='#d97706';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(px,py,r*(.25+t),r*(.16+t*.75),Math.sin(t*5)*.2,0,Math.PI*2);ctx.stroke();
+        for(let k=0;k<5;k++){const a=k*2.4+t*3;ctx.fillStyle='#92400e';ctx.beginPath();ctx.arc(px+Math.cos(a)*r*(.2+t*.6),py+Math.sin(a)*r*(.2+t*.6),2+4*fade,0,Math.PI*2);ctx.fill();}
+      }else if(f.type==='mineSet'){
+        ctx.strokeStyle='#facc15';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r*(.25+t*.75),0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle='#fff7ed';ctx.beginPath();ctx.moveTo(px-8,py);ctx.lineTo(px+8,py);ctx.moveTo(px,py-8);ctx.lineTo(px,py+8);ctx.stroke();
+      }else if(f.type==='windBurst'){
+        for(let k=0;k<4;k++){ctx.beginPath();ctx.arc(px,py,r*(.25+t*.8),k*Math.PI/2+t*3,k*Math.PI/2+1.2+t*3);ctx.strokeStyle=k%2?'#bae6fd':'#ffffff';ctx.lineWidth=3+k;ctx.stroke();}
+      }else if(f.type==='waveHit'){
+        ctx.strokeStyle='#7dd3fc';ctx.lineWidth=4;ctx.beginPath();ctx.arc(px,py,r*(.3+t),0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,r*(.15+t*.6),0,Math.PI*2);ctx.stroke();
+      }else{
+        ctx.strokeStyle=f.color||'#bae6fd';ctx.lineWidth=2+2*fade;ctx.beginPath();ctx.arc(px,py,5+12*t,0,Math.PI*2);ctx.stroke();
+      }
+      ctx.restore();f.life-=1/60;
     }
 
     for(const eb of enemyBullets){
@@ -5799,9 +5861,9 @@ function openLevelUp(forceHigherRarity=false){
   }
 
   function drawNewAttackZones(cam){
-    for(const z of blackHoles){const px=sx(z.x,cam),py=sy(z.y,cam);ctx.save();ctx.globalAlpha=.35;ctx.fillStyle='#020617';ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.9;ctx.strokeStyle='#a78bfa';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.stroke();ctx.restore();}
-    for(const z of mudZones){const px=sx(z.x,cam),py=sy(z.y,cam);ctx.save();ctx.globalAlpha=.4;ctx.fillStyle='#92400e';ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.8;ctx.strokeStyle='#d97706';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.stroke();ctx.restore();}
-    for(const m of mines){const px=sx(m.x,cam),py=sy(m.y,cam);ctx.save();ctx.fillStyle='#334155';ctx.fillRect(px-7,py-5,14,10);ctx.fillStyle='#facc15';ctx.fillRect(px-2,py-2,4,4);ctx.strokeStyle='#fbbf24';ctx.beginPath();ctx.arc(px,py,m.r*.65,0,Math.PI*2);ctx.stroke();ctx.restore();}
+    for(const z of blackHoles){const px=sx(z.x,cam),py=sy(z.y,cam),t=performance.now()/180;ctx.save();ctx.globalAlpha=.30;ctx.fillStyle='#020617';ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.9;ctx.strokeStyle='#a78bfa';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,z.r*(.92+.06*Math.sin(t)),0,Math.PI*2);ctx.stroke();for(let k=0;k<4;k++){const a=t*(k%2?1:-1)+k*Math.PI/2,rr=z.r*(.25+.13*k);ctx.strokeStyle=k%2?'#7c3aed':'#ddd6fe';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px+Math.cos(a)*z.r*.16,py+Math.sin(a)*z.r*.16,rr,Math.max(3,rr*.25),a,0,Math.PI*2);ctx.stroke();}ctx.restore();}
+    for(const z of mudZones){const px=sx(z.x,cam),py=sy(z.y,cam),t=performance.now()/260;ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#92400e';ctx.beginPath();ctx.arc(px,py,z.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.8;ctx.strokeStyle='#d97706';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(px,py,z.r*(.9+.05*Math.sin(t)),z.r*(.78+.06*Math.cos(t)),0,0,Math.PI*2);ctx.stroke();for(let k=0;k<6;k++){const a=t*(k%2?1:-1)+k*Math.PI/3,rr=z.r*(.22+.11*(k%3));ctx.fillStyle=k%2?'#a16207':'#d97706';ctx.beginPath();ctx.arc(px+Math.cos(a)*rr,py+Math.sin(a)*rr,2+Math.abs(Math.sin(t+k))*3,0,Math.PI*2);ctx.fill();}ctx.restore();}
+    for(const m of mines){const px=sx(m.x,cam),py=sy(m.y,cam),pulse=.72+.28*Math.sin(performance.now()/100);ctx.save();ctx.globalAlpha=.35+.4*pulse;ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,m.r*.65*pulse,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle='#334155';ctx.fillRect(px-7,py-5,14,10);ctx.fillStyle='#facc15';ctx.fillRect(px-2,py-2,4,4);ctx.restore();}
   }
 
   function drawTreasureChestMarkers(cam){
