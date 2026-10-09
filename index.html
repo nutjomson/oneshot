@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.232</title>
-<meta name="game-version" content="v1.0.232">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.233</title>
+<meta name="game-version" content="v1.0.233">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5367,7 +5367,11 @@ function openLevelUp(forceHigherRarity=false){
           if(b.patternMode==='bomb'){
             const r=b.patternRadius||150;for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
-            const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});makeSparks(x,y,'#84cc16',20);
+            const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;
+            // v1.0.233: Cap overlapping poison pools so combat remains readable.
+            if(poisonZones.length>=4) poisonZones.shift();
+            poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});
+            makeSparks(x,y,'#84cc16',10);
           }else if(b.patternMode==='blackHole'){
             const life=b.patternZoneLife||2;blackHoles.push({x,y,r:b.patternRadius||80,life,maxLife:life,pull:b.patternPull||120,age:0});makeSparks(x,y,'#7c3aed',30);
           }else if(b.patternMode==='mud'){
@@ -5435,7 +5439,11 @@ function openLevelUp(forceHigherRarity=false){
       if(z.tick<=0){
         z.tick+=z.tickRate;
         for(const e of enemies){
-          if(!e.dead && dist(z.x,z.y,e.x,e.y)<=z.r+e.r) hitEnemy(e,z.damage,false,null);
+          // Poison ticks are damage-over-time, not direct hits: don't retrigger
+          // knockback, lifesteal, explosion/chain effects or hit feedback every tick.
+          if(!e.dead && dist(z.x,z.y,e.x,e.y)<=z.r+e.r) {
+            dealRaw(e,z.damage,'#84cc16');
+          }
         }
       }
       if(z.life<=0)poisonZones.splice(i,1);
@@ -5745,12 +5753,13 @@ function openLevelUp(forceHigherRarity=false){
       const px=sx(z.x,cam), py=sy(z.y,cam);
       const pulse=1+Math.sin(performance.now()/120+z.x*.01)*.08;
       ctx.save();
-      ctx.globalAlpha=.30+.12*(z.life/z.maxLife);
+      // Keep the poison pool translucent and edge-led so enemies remain visible.
+      ctx.globalAlpha=.075+.035*(z.life/z.maxLife);
       ctx.fillStyle='#84cc16'; ctx.beginPath(); ctx.arc(px,py,z.r*pulse,0,Math.PI*2); ctx.fill();
-      ctx.globalAlpha=.78;
-      ctx.strokeStyle='#bef264'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(px,py,z.r*pulse,0,Math.PI*2); ctx.stroke();
-      ctx.globalAlpha=.35; ctx.fillStyle='#d9f99d';
-      for(let k=0;k<7;k++){const a=performance.now()/500+k*.9;ctx.fillRect(px+Math.cos(a)*z.r*.55-2,py+Math.sin(a)*z.r*.55-2,4,4);}
+      ctx.globalAlpha=.48;
+      ctx.strokeStyle='#bef264'; ctx.lineWidth=2; ctx.setLineDash([7,6]); ctx.beginPath(); ctx.arc(px,py,z.r*pulse,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.globalAlpha=.24; ctx.fillStyle='#d9f99d';
+      for(let k=0;k<5;k++){const a=performance.now()/700+k*Math.PI*2/5;ctx.beginPath();ctx.arc(px+Math.cos(a)*z.r*.72,py+Math.sin(a)*z.r*.72,2,0,Math.PI*2);ctx.fill();}
       ctx.restore();
     }
   }
