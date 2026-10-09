@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.307</title>
-<meta name="game-version" content="v1.0.307">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.308</title>
+<meta name="game-version" content="v1.0.308">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3048,6 +3048,10 @@ function normalizeItemRarities(){
 }
 normalizeItemRarities();
 
+// v1.0.308: Live game temporarily enables only the five attack patterns with completed designs.
+const ACTIVE_DESIGNED_ATTACK_ITEM_IDS = new Set(['atk_one','atk_two','atk_three','atk_five','atk_cone']);
+CFG.levelUpgrades = CFG.levelUpgrades.filter(item => item && ACTIVE_DESIGNED_ATTACK_ITEM_IDS.has(String(item.id||'')));
+
 const levelUpgrades =
   CFG.levelUpgrades.map(buildItem);
 
@@ -3923,10 +3927,10 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.20,.66);else if(P.id==='twoDir')P.damage=L(.16,.52);else if(P.id==='threeDir')P.damage=L(.10,.34);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='slashCone'){P.range*=1.15;P.count=lv>=12?8:lv>=8?5:lv>=4?3:1;} // v1.0.307: Crescent range +15%; multi-sword directions unlock at Lv.4/8/12
+    if(P.id==='slashCone'){P.range*=1.15;P.count=lv>=12?8:lv>=8?5:lv>=4?3:1;} // v1.0.308: Crescent range +15%; multi-sword directions unlock at Lv.4/8/12
     if(P.id==='twoDir'){P.projectileSpeedMul=0.72;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.293: Twin Blades speed improved; pierce scales 3 / 6 / 7 / unlimited
     if(P.id==='threeDir'){P.projectileSpeedMul=0.55;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // v1.0.300: faster travel, lower damage, and controlled split scaling
-    if(P.id==='fiveDir'){P.projectileSpeedMul=0.35;P.pierce=lv>=12?3:lv>=4?2:1;} // v1.0.307: Starshot speed reduced another 30% from 0.50x to 0.35x base speed
+    if(P.id==='fiveDir'){P.projectileSpeedMul=0.35;P.pierce=lv>=12?3:lv>=4?2:1;} // v1.0.308: Starshot speed reduced another 30% from 0.50x to 0.35x base speed
     // Dimensional Spear: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
       // Keep multi-spear shots visually separated at every level that fires more than one.
@@ -4070,7 +4074,7 @@ function renderStartPerks(){
         // Short-lived visible sword sweep; damage remains resolved exactly once below.
         // v1.0.272: Front Slash effects spawn at each enemy actually hit, not at the player.
         if(patternId!=='frontSlash'){
-          slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,swordCount:patternId==='slashCone'?(Number(P.count)||1):1,life:.34,maxLife:.34,color:'#ffffff',style:patternId==='slashCone'?'crescentSword':'moonCleave',seed:Math.random()*1000}); // v1.0.307: centered Crescent sweep with level-scaled multi-sword visual
+          slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,swordCount:patternId==='slashCone'?(Number(P.count)||1):1,life:.34,maxLife:.34,color:'#ffffff',style:patternId==='slashCone'?'crescentSword':'moonCleave',seed:Math.random()*1000}); // v1.0.308: centered Crescent sweep with level-scaled multi-sword visual
           if(slashEffects.length>12)slashEffects.shift();
         }
         for(const e of enemies){
@@ -4079,7 +4083,7 @@ function renderStartPerks(){
           if(d>range)continue;
           const a=Math.atan2(e.y-player.y,e.x-player.x);
           let da=Math.atan2(Math.sin(a-attackBaseAngle),Math.cos(a-attackBaseAngle));
-          if(patternId==='slashCone'||Math.abs(da)<=arc){ // v1.0.307: Crescent hits all enemies within its close-range radius
+          if(patternId==='slashCone'||Math.abs(da)<=arc){ // v1.0.308: Crescent hits all enemies within its close-range radius
             if(patternId==='frontSlash'){
               slashEffects.push({x:e.x,y:e.y,angle:a,range:70,arc:.58,life:.30,maxLife:.30,color:'#fde047',style:'heavy',seed:Math.random()*1000});
               if(slashEffects.length>18)slashEffects.shift();
@@ -5826,7 +5830,7 @@ function openLevelUp(forceHigherRarity=false){
           ctx.strokeStyle='#fff7ae';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(8,0);ctx.moveTo(-1,-3);ctx.lineTo(3,0);ctx.lineTo(-1,3);ctx.stroke();ctx.fillStyle='#fffde7';ctx.beginPath();ctx.arc(1,0,2,0,Math.PI*2);ctx.fill();
         }else{
           // Starshot: radiant celestial shuriken, layered violet-blue blades, cyan edges and a white-hot star core.
-          const spin=performance.now()*.004;ctx.rotate(spin);ctx.scale(1.5,1.5); // v1.0.307: Starshot projectile visual size +50%
+          const spin=performance.now()*.004;ctx.rotate(spin);ctx.scale(1.5,1.5); // v1.0.308: Starshot projectile visual size +50%
           ctx.globalAlpha=.24;ctx.shadowColor='#818cf8';ctx.shadowBlur=24;ctx.fillStyle='#6366f1';ctx.beginPath();ctx.arc(0,0,13,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
           ctx.shadowColor='#a5b4fc';ctx.shadowBlur=18;ctx.fillStyle='#312e81';
           ctx.beginPath();for(let k=0;k<16;k++){const a=-Math.PI/2+k*Math.PI/8,rr=k%2===0?12:5.5;const xx=Math.cos(a)*rr,yy=Math.sin(a)*rr;if(k===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);}ctx.closePath();ctx.fill();
@@ -5879,7 +5883,7 @@ function openLevelUp(forceHigherRarity=false){
       const heavy=a.style==='heavy',moon=a.style==='moonCleave',crescent=a.style==='crescentSword',px=sx(a.x,cam),py=sy(a.y,cam),slashT=Math.min(1,t*1.35),rr=Math.max(18,a.range*(moon?(.48+.52*t):(heavy ? 0.42 + 0.72*slashT : 0.78 + 0.22*t)));
       ctx.save();ctx.globalAlpha=Math.max(0,1-t);ctx.lineCap='round';ctx.lineJoin='round';
       if(crescent){
-        // v1.0.307: close-range 360-degree sword sweep around the hero, with a silver longsword and brilliant white cutting trail.
+        // v1.0.308: close-range 360-degree sword sweep around the hero, with a silver longsword and brilliant white cutting trail.
         const progress=Math.min(1,t*1.8),fade=Math.max(0,1-t),radius=Math.min(78,Math.max(42,a.range*.42));
         const sweep=1.05+progress*.72,base=a.angle+Math.PI*.9-progress*2.7,start=base-sweep*.5,end=base+sweep*.5;
         ctx.globalAlpha=fade*.28;ctx.strokeStyle='#ffffff';ctx.lineWidth=22;ctx.shadowColor='#ffffff';ctx.shadowBlur=22;
