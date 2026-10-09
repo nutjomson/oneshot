@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.246</title>
-<meta name="game-version" content="v1.0.246">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.247</title>
+<meta name="game-version" content="v1.0.247">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -909,12 +909,20 @@ button,input,select,textarea{
 .skill-lab-controls{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin:16px 0}.skill-lab-controls label{display:grid;gap:6px;color:#cbd5e1;font-size:12px;font-weight:800}.skill-lab-controls select{width:100%;min-width:0;padding:10px 8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;border-radius:7px;font:inherit}
 .skill-lab-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.skill-lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.skill-lab-stats>div{padding:10px 6px;text-align:center;background:#0b1728;border:1px solid #263b53;border-radius:8px;min-width:0}.skill-lab-stats span{display:block;color:#94a3b8;font-size:10px}.skill-lab-stats b{display:block;color:#facc15;font-size:clamp(16px,3vw,24px);overflow-wrap:anywhere;margin-top:3px}.skill-lab-note{margin-top:12px;padding:10px;border-radius:7px;background:#0f172a;color:#bae6fd;font-size:11px;line-height:1.5}
 @media(max-width:560px){.skill-lab-modal{padding:12px!important}.skill-lab-controls{grid-template-columns:1fr 1fr}.skill-lab-controls label:first-child{grid-column:1/-1}.skill-lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-lab-head .btn{padding:8px 9px;font-size:11px}.skill-lab-actions .btn{padding:9px 5px;font-size:11px}}
-/* v1.0.246: Keep the real combat canvas visible behind a compact Skill Lab console. */
+/* v1.0.247: Keep the real combat canvas visible behind a compact Skill Lab console. */
 #skillLabOverlay{align-items:flex-start;justify-content:center;background:rgba(2,6,23,.16);backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(76px,env(safe-area-inset-bottom));}
 #skillLabOverlay .skill-lab-modal{width:min(900px,98vw);max-width:900px;max-height:min(48dvh,430px);overflow-y:auto;margin:0 auto;background:rgba(5,12,25,.91);border:1px solid #38bdf8;padding:10px;box-shadow:0 8px 28px #0009;}
 #skillLabOverlay .skill-lab-controls{margin:8px 0;gap:6px}#skillLabOverlay .skill-lab-controls select{padding:7px 6px}#skillLabOverlay .skill-lab-stats{margin-top:8px;gap:5px}#skillLabOverlay .skill-lab-stats>div{padding:6px 4px}#skillLabOverlay .skill-lab-note{margin-top:7px;padding:6px 8px}
 .skill-lab-zoom{position:fixed;z-index:1202;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #38bdf8;border-radius:12px;background:rgba(5,12,25,.94);box-shadow:0 0 20px #0009;color:#e0f2fe;font-size:12px;white-space:nowrap}.skill-lab-zoom button{min-width:36px;height:36px;border:1px solid #64748b;border-radius:8px;background:#172554;color:#fff;font-size:21px;font-weight:900}.skill-lab-zoom #skillLabZoomReset{font-size:11px;padding:0 9px}.skill-lab-zoom b{min-width:42px;text-align:center;color:#facc15}
 @media(max-width:560px){#skillLabOverlay .skill-lab-modal{max-height:52dvh;padding:9px!important}#skillLabOverlay .skill-lab-head .title{font-size:17px}.skill-lab-zoom{gap:5px;padding:6px 7px}.skill-lab-zoom span{font-size:10px}.skill-lab-zoom button{min-width:34px;height:34px}}
+/* v1.0.247: Minimize the console footprint so the real arena remains visible. */
+#skillLabOverlay{padding-top:max(5px,env(safe-area-inset-top));padding-bottom:68px;}
+#skillLabOverlay .skill-lab-modal{max-height:30dvh;overflow-y:auto;padding:7px 9px;background:rgba(5,12,25,.78);}
+#skillLabOverlay .skill-lab-head{gap:5px}#skillLabOverlay .skill-lab-head .title{font-size:16px;margin:0}#skillLabOverlay .skill-lab-head .sub{font-size:9px;margin:2px 0 0}
+#skillLabOverlay .skill-lab-controls{grid-template-columns:1fr 1.35fr .55fr;margin:5px 0;gap:5px}#skillLabOverlay .skill-lab-controls label{font-size:10px;gap:3px}#skillLabOverlay .skill-lab-controls select{font-size:11px;padding:5px 4px}
+#skillLabOverlay .skill-lab-actions{gap:5px}#skillLabOverlay .skill-lab-actions .btn{font-size:10px;padding:6px 4px;min-height:30px}
+#skillLabOverlay .skill-lab-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:5px}#skillLabOverlay .skill-lab-stats>div{padding:4px 2px}#skillLabOverlay .skill-lab-stats span{font-size:8px}#skillLabOverlay .skill-lab-stats b{font-size:14px;margin-top:1px}#skillLabOverlay .skill-lab-note{display:none}
+@media(max-width:560px){#skillLabOverlay .skill-lab-modal{max-height:25dvh;padding:6px!important}#skillLabOverlay .skill-lab-head .title{font-size:13px}#skillLabOverlay .skill-lab-head .sub{font-size:8px}#skillLabOverlay .skill-lab-head .btn{padding:5px 7px;font-size:9px}#skillLabOverlay .skill-lab-controls{grid-template-columns:.8fr 1.25fr .45fr;margin:4px 0;gap:4px}#skillLabOverlay .skill-lab-controls label{font-size:9px}#skillLabOverlay .skill-lab-controls select{font-size:10px;padding:4px 2px}#skillLabOverlay .skill-lab-actions .btn{font-size:9px;padding:5px 2px;min-height:28px}#skillLabOverlay .skill-lab-stats span{font-size:7px}#skillLabOverlay .skill-lab-stats b{font-size:12px}.skill-lab-zoom{bottom:max(7px,env(safe-area-inset-bottom));}}
 </style>
 
 </head>
@@ -964,7 +972,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.246</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.247</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -5721,7 +5729,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.246: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.247: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
