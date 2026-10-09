@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.231</title>
-<meta name="game-version" content="v1.0.231">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.232</title>
+<meta name="game-version" content="v1.0.232">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4693,10 +4693,16 @@ function openLevelUp(forceHigherRarity=false){
     if(chosen.length<wanted) chosen.push(...shuffle(available).slice(0,wanted-chosen.length));
     const rawPricePerWave=Number(shopCfg.pricePerWave);
     const pricePerWave=Number.isFinite(rawPricePerWave)?rawPricePerWave:0.08;
+    // v1.0.232: Always price from the item's base definition.
+    // Do not mutate luxuryShopPool items: repeated shop visits otherwise compound
+    // the previous shop's already-inflated cost into the next price.
     activeShopItems=chosen.map(i=>{
-      i.cost=Math.round(Number(i.cost||0)*0.80*(1+(wave-1)*pricePerWave));
-      i.purchased=false;
-      return i;
+      const baseCost=Math.max(0,Number(i.cost)||0);
+      return {
+        ...i,
+        cost:Math.round(baseCost*0.80*(1+Math.max(0,(Number(wave)||1)-1)*Math.max(0,pricePerWave))),
+        purchased:false
+      };
     });
     renderShopItems();
   }
