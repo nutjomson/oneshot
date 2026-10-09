@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.236</title>
-<meta name="game-version" content="v1.0.236">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.237</title>
+<meta name="game-version" content="v1.0.237">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1500,7 +1500,7 @@ const SHOP_RARITIES = {
    15 รูปแบบ: Normal 5 / Rare 6 / Legend 4 — ทุกชนิดตีบวกได้สูงสุด +20
 */
 const LEVEL_UPGRADES = [
-{id:'atk_one',rarity:'normal',icon:'➤',name:'ยิง 1 ทิศทาง',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'ยิง 2 ทิศทาง',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ยิง 3 ทิศทาง',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ยิง 5 ทิศทาง',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
+{id:'atk_one',rarity:'normal',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
 {id:'atk_cone',rarity:'rare',icon:'🗡️',name:'ฟันวงกรวยด้านหน้า',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'โยนพิษ',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
 {id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'สายฟ้าสุ่มฟาด',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
@@ -2907,7 +2907,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'ยิง 1 ทิศ',twoDir:'ยิง 2 ทิศ',threeDir:'ยิง 3 ทิศ',fiveDir:'ยิง 5 ทิศ',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'ขวดพิษ',lightningStrike:'สายฟ้าสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
+  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'ขวดพิษ',lightningStrike:'สายฟ้าสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -5373,7 +5373,7 @@ function openLevelUp(forceHigherRarity=false){
             const r=b.patternRadius||150;attackFx.push({type:'explosion',x,y,r,life:.38,maxLife:.38});for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
             const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;
-            // v1.0.236: Cap overlapping poison pools so combat remains readable.
+            // v1.0.237: Cap overlapping poison pools so combat remains readable.
             if(poisonZones.length>=4) poisonZones.shift();
             poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
@@ -5725,9 +5725,32 @@ function openLevelUp(forceHigherRarity=false){
       } else if(b.patternMode==='chainFireball'){
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#f97316';ctx.shadowBlur=12;
         ctx.fillStyle='#ea580c';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(1,6);ctx.lineTo(-7,4);ctx.lineTo(-4,0);ctx.lineTo(-7,-4);ctx.lineTo(1,-6);ctx.closePath();ctx.fill();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();
-      } else if(pid==='twoDir'||pid==='threeDir'||pid==='fiveDir'||pid==='oneDir'){
-        const col=pid==='oneDir'?'#38bdf8':pid==='twoDir'?'#a3e635':pid==='threeDir'?'#c084fc':'#facc15';
-        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.fillStyle=col;ctx.fillRect(-5,-3,10,6);ctx.fillStyle='#ffffff';ctx.fillRect(0,-1,5,2);ctx.restore();
+      } else if(pid==='oneDir'||pid==='twoDir'||pid==='threeDir'||pid==='fiveDir'){
+        // v1.0.237: four signature silhouettes; each pattern reads instantly at a glance.
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));
+        if(pid==='oneDir'){
+          // A long, needle-like cyan spear with a bright piercing core and twin tail fins.
+          ctx.shadowColor='#38bdf8';ctx.shadowBlur=10;ctx.fillStyle='#0284c7';
+          ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(1,4);ctx.lineTo(-8,3);ctx.lineTo(-5,0);ctx.lineTo(-8,-3);ctx.lineTo(1,-4);ctx.closePath();ctx.fill();
+          ctx.fillStyle='#e0f2fe';ctx.fillRect(-3,-1.5,12,3);ctx.fillStyle='#ffffff';ctx.fillRect(7,-1,4,2);
+          ctx.fillStyle='#7dd3fc';ctx.fillRect(-9,-5,4,2);ctx.fillRect(-9,3,4,2);
+        }else if(pid==='twoDir'){
+          // Twin green blades with a visible split-notch, unlike the solid spear.
+          ctx.shadowColor='#a3e635';ctx.shadowBlur=8;ctx.fillStyle='#65a30d';
+          ctx.beginPath();ctx.moveTo(10,-5);ctx.lineTo(2,-1);ctx.lineTo(-7,-4);ctx.lineTo(-3,0);ctx.lineTo(-7,4);ctx.lineTo(2,1);ctx.lineTo(10,5);ctx.lineTo(5,0);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#ecfccb';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(8,-3);ctx.moveTo(-4,0);ctx.lineTo(8,3);ctx.stroke();
+        }else if(pid==='threeDir'){
+          // Violet trident pulse: three prongs and a luminous central spine.
+          ctx.shadowColor='#c084fc';ctx.shadowBlur=10;ctx.fillStyle='#7e22ce';
+          ctx.beginPath();ctx.moveTo(11,0);ctx.lineTo(2,-2);ctx.lineTo(-2,-7);ctx.lineTo(-1,-2);ctx.lineTo(-8,-5);ctx.lineTo(-4,0);ctx.lineTo(-8,5);ctx.lineTo(-1,2);ctx.lineTo(-2,7);ctx.lineTo(2,2);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#f3e8ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(8,0);ctx.moveTo(-1,-3);ctx.lineTo(3,0);ctx.lineTo(-1,3);ctx.stroke();
+        }else{
+          // Gold five-point star dart with a rotating glint and an unmistakable star silhouette.
+          const spin=animNow*.006;ctx.rotate(spin);ctx.shadowColor='#facc15';ctx.shadowBlur=11;ctx.fillStyle='#ca8a04';
+          ctx.beginPath();for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2===0?9:4;const xx=Math.cos(a)*rr,yy=Math.sin(a)*rr;if(k===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);}ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#fef3c7';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#ffffff';ctx.fillRect(-1.5,-1.5,3,3);
+        }
+        ctx.restore();
       } else if(b.type === 'fireball'){ 
         ctx.fillStyle = b.crit ? '#facc15' : '#f97316';
         ctx.fillRect(px-6, py-6, 12, 12);
@@ -5761,7 +5784,7 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.236: visible melee sweeps and animated fire-chain arcs.
+    // v1.0.237: visible melee sweeps and animated fire-chain arcs.
     const animNow=performance.now();
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
@@ -5792,7 +5815,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.restore();c.life-=1/60;
     }
 
-    // v1.0.236: distinct, short-lived impact animations for every attack family.
+    // v1.0.237: distinct, short-lived impact animations for every attack family.
     for(let i=attackFx.length-1;i>=0;i--){
       const f=attackFx[i],t=1-f.life/f.maxLife;
       if(f.life<=0){attackFx.splice(i,1);continue;}
