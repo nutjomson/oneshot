@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.287</title>
-<meta name="game-version" content="v1.0.287">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.288</title>
+<meta name="game-version" content="v1.0.288">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2186,190 +2186,21 @@ function formatStatValue(stat, value){
    ========================================================= */
 
 const PLAYER_STAT_DEFS = [
+  {key:'maxHp',icon:'❤️',name:'พลังชีวิตสูงสุด',group:'combat'},
+  {key:'hp',icon:'💚',name:'พลังชีวิตปัจจุบัน',group:'combat'},
+  {key:'damage',icon:'⚔️',name:'พลังโจมตี',group:'combat'},
+  {key:'crit',icon:'💥',name:'คริติคอล',group:'combat'},
 
-  {
-    key:'damage',
-    icon:'⚔️',
-    name:'พลังโจมตี',
-    group:'combat'
-  },
+  {key:'armor',icon:'🛡️',name:'เกราะ',group:'defense'},
+  {key:'dodge',icon:'🌀',name:'หลบหลีก',group:'defense'},
+  {key:'regen',icon:'💚',name:'ฟื้นฟู HP',group:'defense'},
+  {key:'lifesteal',icon:'🩸',name:'ดูดเลือด',group:'defense'},
+  {key:'revives',icon:'♻️',name:'ชุบชีวิต',group:'defense'},
 
-  {
-    key:'fireRate',
-    icon:'🔥',
-    name:'ความเร็วการยิง',
-    group:'combat'
-  },
-
-  {
-    key:'projectiles',
-    icon:'🔫',
-    name:'จำนวนกระสุน',
-    group:'combat'
-  },
-
-  {
-    key:'pierce',
-    icon:'🎯',
-    name:'เจาะทะลุ',
-    group:'combat'
-  },
-
-  {
-    key:'bulletSpeed',
-    icon:'💨',
-    name:'ความเร็วกระสุน',
-    group:'combat'
-  },
-
-  {
-    key:'attackRange',
-    icon:'🎯',
-    name:'ระยะโจมตี',
-    group:'combat'
-  },
-
-  {
-    key:'crit',
-    icon:'💥',
-    name:'คริติคอล',
-    group:'combat'
-  },
-
-  {
-    key:'ricochet',
-    icon:'🧱',
-    name:'กระสุนสะท้อน',
-    group:'combat'
-  },
-
-  {
-    key:'poisonDmg',
-    icon:'🧪',
-    name:'พิษ',
-    group:'special'
-  },
-
-  {
-    key:'lightningChain',
-    icon:'⚡',
-    name:'สายฟ้า',
-    group:'special'
-  },
-
-  {
-    key:'explosiveRadius',
-    icon:'💣',
-    name:'รัศมีระเบิด',
-    group:'special'
-  },
-
-  {
-    key:'knockback',
-    icon:'🥊',
-    name:'แรงผลัก',
-    group:'special'
-  },
-
-  {
-    key:'executionThreshold',
-    icon:'☠️',
-    name:'สังหารศัตรูที่ HP ต่ำ',
-    group:'special'
-  },
-
-  {
-    key:'orbitBlades',
-    icon:'🗡️',
-    name:'ดาบหมุนวน',
-    group:'special'
-  },
-
-  {
-    key:'timeSlow',
-    icon:'⏳',
-    name:'หน่วงเวลา',
-    group:'special'
-  },
-
-  {
-    key:'maxHp',
-    icon:'❤️',
-    name:'พลังชีวิตสูงสุด',
-    group:'defense'
-  },
-
-  {
-    key:'hp',
-    icon:'💚',
-    name:'พลังชีวิตปัจจุบัน',
-    group:'defense'
-  },
-
-  {
-    key:'armor',
-    icon:'🛡️',
-    name:'เกราะ',
-    group:'defense'
-  },
-
-  {
-    key:'dodge',
-    icon:'🌀',
-    name:'หลบหลีก',
-    group:'defense'
-  },
-
-  {
-    key:'regen',
-    icon:'💚',
-    name:'ฟื้นฟู HP',
-    group:'defense'
-  },
-
-  {
-    key:'lifesteal',
-    icon:'🩸',
-    name:'ดูดเลือด',
-    group:'defense'
-  },
-
-  {
-    key:'revives',
-    icon:'♻️',
-    name:'ชุบชีวิต',
-    group:'defense'
-  },
-
-  {
-    key:'speed',
-    icon:'🏃',
-    name:'ความเร็วเคลื่อนที่',
-    group:'utility'
-  },
-
-  {
-    key:'goldMulti',
-    icon:'💰',
-    name:'ตัวคูณทอง',
-    group:'utility'
-  },
-
-  {
-    key:'xpMulti',
-    icon:'⭐',
-    name:'ตัวคูณ XP',
-    group:'utility'
-  },
-
-  {
-    key:'bulletType',
-    icon:'🔮',
-    name:'ชนิดกระสุน',
-    group:'utility'
-  }
+  {key:'speed',icon:'🏃',name:'ความเร็วเคลื่อนที่',group:'utility'},
+  {key:'xpMulti',icon:'⭐',name:'ตัวคูณ XP',group:'utility'},
+  {key:'bulletType',icon:'🔮',name:'ชนิดกระสุน',group:'utility'}
 ];
-
 
 /* =========================================================
    SNAPSHOT
@@ -3804,8 +3635,6 @@ function renderCharacterStatsHtml(p){
 
       ${renderGroup('defense')}
 
-      ${renderGroup('special')}
-
       ${renderGroup('utility')}
 
     </div>
@@ -4026,7 +3855,7 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.287: 3 / 6 / 7 / unlimited targets
+    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.288: 3 / 6 / 7 / unlimited targets
     if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
@@ -4040,7 +3869,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.287: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.288: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -4048,7 +3877,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.287: Lv.4 pierce 6 and damage +20%
+      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.288: Lv.4 pierce 6 and damage +20%
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
@@ -4066,7 +3895,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.287: Lv.8 pierce 7 and damage +20%
+      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.288: Lv.8 pierce 7 and damage +20%
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -4084,7 +3913,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.287: Lv.12 pierces all targets and damage +80%
+      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.288: Lv.12 pierces all targets and damage +80%
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
@@ -4278,7 +4107,7 @@ function renderStartPerks(){
         xpOrbs[xpOrbs.length-1].life=CFG.pickups.xpLife;
       } else xpOrbs.push({x,y,r:6,value:xpAmt,life:CFG.pickups.xpLife,animTimer:Math.random()*10});
     }
-    // v1.0.287: Gold pickups are disabled; enemies no longer spawn collectible coins.
+    // v1.0.288: Gold pickups are disabled; enemies no longer spawn collectible coins.
   }
 
   function makeSparks(x,y,color,count=8){
@@ -4566,42 +4395,32 @@ function showItemReward(item,source){
     const C=CFG.caps||{};
     const progress=clamp((level-1)/99,0,1);
     const capped={
-      dodge:C.dodge,crit:C.crit,armor:C.armorMax,attackRange:C.attackRange,fireRate:C.fireRateMin,executionThreshold:C.executionThreshold,damage:Math.max(1,(Number(selectedHero?.damage)||1)*(Number(C.damageMultOfHero)||200)),
-      lifesteal:C.lifesteal,timeSlow:C.timeSlow,pierce:C.pierce,projectiles:C.projectiles,
-      ricochet:C.ricochet,orbitBlades:C.orbitBlades,revives:C.revives,regen:C.regen,
-      goldMulti:C.goldMulti,xpMulti:C.xpMulti,knockback:C.knockback,
-      explosiveRadius:C.explosiveRadius
+      crit:C.crit,
+      armor:C.armorMax,
+      dodge:C.dodge,
+      lifesteal:C.lifesteal,
+      revives:C.revives,
+      regen:C.regen,
+      xpMulti:C.xpMulti
     };
     Object.keys(capped).forEach(key=>{
       const cap=Number(capped[key]);
       if(!Number.isFinite(cap)||cap<=0||!(key in player))return;
       if(!(key in autoLevelBaseStats))autoLevelBaseStats[key]=Number(player[key])||0;
       const base=autoLevelBaseStats[key];
-      // Fire Rate is inverse: lower seconds-per-shot means faster attacks.
-      player[key]=key==='fireRate'
-        ?Math.max(cap,base+(cap-base)*progress)
-        :Math.min(cap,base+(cap-base)*progress);
+      player[key]=Math.min(cap,base+(cap-base)*progress);
     });
     const heroSpeed=Math.max(1,Number(selectedHero?.speed)||Number(player.speed)||1);
     if(!('speed' in autoLevelBaseStats))autoLevelBaseStats.speed=Number(player.speed)||heroSpeed;
     player.speed=Math.min(heroSpeed*(Number(C.speedMultOfHero)||2),autoLevelBaseStats.speed+(heroSpeed*(Number(C.speedMultOfHero)||2)-autoLevelBaseStats.speed)*progress);
-    // Stats without a cap keep scaling after Lv.100.
+    // v1.0.288: Automatic level growth only affects the stats shown in the approved groups.
+    // Max HP and damage continue scaling by level; current HP keeps the same health ratio.
     const extraLevels=Math.max(0,level-1);
     if(!('maxHp' in autoLevelBaseStats))autoLevelBaseStats.maxHp=Number(player.maxHp)||100;
-    if(!('poisonDmg' in autoLevelBaseStats))autoLevelBaseStats.poisonDmg=Number(player.poisonDmg)||0;
-    if(!('lightningChain' in autoLevelBaseStats))autoLevelBaseStats.lightningChain=Number(player.lightningChain)||0;
-    // Damage has a hero-relative hard cap; reach it by Lv.100 like other capped stats.
     if(!('damage' in autoLevelBaseStats))autoLevelBaseStats.damage=Number(player.damage)||1;
     const damageCap=Math.max(autoLevelBaseStats.damage,(Number(selectedHero?.damage)||autoLevelBaseStats.damage)*(Number(C.damageMultOfHero)||200));
     player.damage=Math.min(damageCap,autoLevelBaseStats.damage+(damageCap-autoLevelBaseStats.damage)*progress);
-    const executionCap=Number(C.executionThreshold)||0.25;
-    if('executionThreshold' in player){
-      if(!('executionThreshold' in autoLevelBaseStats))autoLevelBaseStats.executionThreshold=Number(player.executionThreshold)||0;
-      player.executionThreshold=Math.min(executionCap,autoLevelBaseStats.executionThreshold+(executionCap-autoLevelBaseStats.executionThreshold)*progress);
-    }
     player.maxHp=autoLevelBaseStats.maxHp+extraLevels*Math.max(1,autoLevelBaseStats.maxHp*.012);
-    player.poisonDmg=autoLevelBaseStats.poisonDmg+extraLevels*.02;
-    player.lightningChain=autoLevelBaseStats.lightningChain+extraLevels*.01;
     const hpRatio=Number(player.hp)/Math.max(1,Number(player.maxHp)||1);
     player.hp=clamp(hpRatio*player.maxHp,1,player.maxHp);
     clampStats();
@@ -4615,7 +4434,7 @@ function showItemReward(item,source){
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
     }
     if(level%10===0)setStatus('⬆️ เลเวล '+level+' • ค่าสถานะพัฒนาอัตโนมัติ');
-    // v1.0.287: Every earned level queues a choice and opens the Level Up modal when safe.
+    // v1.0.288: Every earned level queues a choice and opens the Level Up modal when safe.
     if(pendingLevels>0 && running && !levelOpen && !shopOpen && !pauseOpen && !rewardOpen){
       openLevelUp();
     }
@@ -4692,7 +4511,7 @@ function openLevelUp(forceHigherRarity=false){
     ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
     : levelUpgrades;
   let eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
-  // v1.0.287: Never leave the Level Up overlay empty when all owned weapons are capped
+  // v1.0.288: Never leave the Level Up overlay empty when all owned weapons are capped
   // or a saved run has weapon IDs that no longer match the current pool.
   if(!eligiblePool.length){
     const gearPool=(Array.isArray(luxuryShopPool)?luxuryShopPool:[])
@@ -5639,7 +5458,7 @@ function openLevelUp(forceHigherRarity=false){
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // v1.0.287: Remove any legacy coins from a loaded run; gold is no longer collectible.
+    // v1.0.288: Remove any legacy coins from a loaded run; gold is no longer collectible.
     if(goldCoins.length) goldCoins.length=0;
 
     skillCd=Math.max(0,skillCd-dt);
@@ -6182,7 +6001,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
-    // v1.0.287: Gold coin rendering removed.
+    // v1.0.288: Gold coin rendering removed.
 
     for(const s of sparks){
       const px=sx(s.x,cam), py=sy(s.y,cam);
@@ -6397,7 +6216,7 @@ function openLevelUp(forceHigherRarity=false){
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
-    // v1.0.287: Start every run with one uniformly random attack pattern at Level 1.
+    // v1.0.288: Start every run with one uniformly random attack pattern at Level 1.
     const startingWeaponPool=Array.isArray(levelUpgrades)?levelUpgrades:[];
     if(startingWeaponPool.length){
       const startingWeapon=startingWeaponPool[Math.floor(Math.random()*startingWeaponPool.length)];
