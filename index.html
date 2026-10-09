@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.240</title>
-<meta name="game-version" content="v1.0.240">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.241</title>
+<meta name="game-version" content="v1.0.241">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -949,7 +949,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.240</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.241</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1504,7 +1504,7 @@ const SHOP_RARITIES = {
 */
 const LEVEL_UPGRADES = [
 {id:'atk_one',rarity:'normal',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
-{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'คมจันทร์ฉีกอากาศ',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
+{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'คมจันทร์ฉีกอากาศ',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'อสนีหอกคราม',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
 {id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'พิพากษาอสนีสุ่ม',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
 
@@ -2910,7 +2910,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'คมจันทร์ฉีกอากาศ',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
+  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'คมจันทร์ฉีกอากาศ',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'อสนีหอกคราม',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -5415,7 +5415,7 @@ function openLevelUp(forceHigherRarity=false){
           if(!e.dead && !b.hitList.includes(e) && dist(b.x,b.y,e.x,e.y)<b.r+e.r){
             b.hitList.push(e);
             hitEnemy(e,b.damage,b.crit,b);
-            if(b.patternMode==='lightningBolt') attackFx.push({type:'boltHit',x:e.x,y:e.y,life:.20,maxLife:.20,seed:Math.random()*20});
+            if(b.patternMode==='lightningBolt') attackFx.push({type:'skyLanceHit',x:e.x,y:e.y,life:.34,maxLife:.34,seed:Math.random()*20});
             else if(b.patternMode==='wave') attackFx.push({type:'waveHit',x:e.x,y:e.y,r:Math.max(24,b.r*3),life:.24,maxLife:.24});
             else if(b.patternMode==='bullet') attackFx.push({type:'impact',x:e.x,y:e.y,life:.12,maxLife:.12,color:b.crit?'#facc15':'#bae6fd'});
             // Attack-pattern knockback is distinct from the player's global
@@ -5731,8 +5731,13 @@ function openLevelUp(forceHigherRarity=false){
         ctx.globalAlpha=.9;ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.ellipse(0,0,Math.max(9,b.r*2.3),Math.max(4,b.r*.8),0,0,Math.PI*2);ctx.fill();
         ctx.globalAlpha=.85;ctx.strokeStyle='#e0f2fe';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,0,Math.max(12,b.r*2.8),Math.max(6,b.r*1.1),0,0,Math.PI*2);ctx.stroke();ctx.restore();
       } else if(b.patternMode==='lightningBolt'){
-        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#67e8f9';ctx.shadowBlur=10;
-        ctx.fillStyle='#0891b2';ctx.beginPath();ctx.moveTo(-10,-4);ctx.lineTo(-1,-4);ctx.lineTo(5,-10);ctx.lineTo(2,-1);ctx.lineTo(10,2);ctx.lineTo(-1,4);ctx.lineTo(-5,9);ctx.lineTo(-3,1);ctx.closePath();ctx.fill();ctx.fillStyle='#ecfeff';ctx.fillRect(-4,-2,10,3);ctx.restore();
+        // v1.0.241: a royal-blue thunder lance with a rune-shaped head and electric tail.
+        const pulse=.8+.2*Math.sin(performance.now()*.025);
+        ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#38bdf8';ctx.shadowBlur=15;
+        ctx.globalAlpha=.9;ctx.strokeStyle='#22d3ee';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-17,0);ctx.lineTo(-8,-4);ctx.lineTo(-2,2);ctx.lineTo(5,-2);ctx.stroke();
+        ctx.fillStyle='#1d4ed8';ctx.beginPath();ctx.moveTo(13,0);ctx.lineTo(1,-5);ctx.lineTo(3,-2);ctx.lineTo(-9,-5);ctx.lineTo(-4,0);ctx.lineTo(-9,5);ctx.lineTo(3,2);ctx.lineTo(1,5);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#67e8f9';ctx.beginPath();ctx.moveTo(14,0);ctx.lineTo(0,-2.4);ctx.lineTo(-5,0);ctx.lineTo(0,2.4);ctx.closePath();ctx.fill();
+        ctx.globalAlpha=pulse;ctx.strokeStyle='#e0f2fe';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-5,-8);ctx.lineTo(-1,-3);ctx.lineTo(-4,0);ctx.lineTo(1,3);ctx.lineTo(-1,8);ctx.stroke();ctx.restore();
       } else if(b.patternMode==='chainFireball'){
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#f97316';ctx.shadowBlur=12;
         ctx.fillStyle='#ea580c';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(1,6);ctx.lineTo(-7,4);ctx.lineTo(-4,0);ctx.lineTo(-7,-4);ctx.lineTo(1,-6);ctx.closePath();ctx.fill();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();
@@ -5850,6 +5855,13 @@ function openLevelUp(forceHigherRarity=false){
         ctx.strokeStyle='#fef3c7';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-rr*.72,py);ctx.lineTo(px-rr*.35,py);ctx.moveTo(px+rr*.35,py);ctx.lineTo(px+rr*.72,py);ctx.moveTo(px,py-rr*.72);ctx.lineTo(px,py-rr*.35);ctx.moveTo(px,py+rr*.35);ctx.lineTo(px,py+rr*.72);ctx.stroke();
         for(let layer=0;layer<3;layer++){ctx.beginPath();ctx.moveTo(px+(Math.random()-.5)*7,py-72);let yy=py-72;while(yy<py){yy=Math.min(py,yy+8+Math.random()*11);ctx.lineTo(px+(Math.random()-.5)*(layer===0?15:32),yy);}ctx.strokeStyle=layer===0?'#ffffff':layer===1?'#fef08a':'#f59e0b';ctx.lineWidth=layer===0?2:layer===1?4:7;ctx.stroke();}
         ctx.globalAlpha=fade*pulse;ctx.fillStyle='#fff7cc';ctx.beginPath();ctx.arc(px,py,5+8*t,0,Math.PI*2);ctx.fill();
+      }else if(f.type==='skyLanceHit'){
+        // A compact cyan rune seal snaps shut as the lance pierces its target.
+        const rr=10+25*t,pulse=.7+.3*Math.sin(t*32);
+        ctx.globalAlpha=fade*pulse;ctx.strokeStyle='#22d3ee';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(px,py,rr,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle='#dbeafe';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-rr-9,py);ctx.lineTo(px-5,py);ctx.moveTo(px+5,py);ctx.lineTo(px+rr+9,py);ctx.moveTo(px,py-rr-7);ctx.lineTo(px,py-5);ctx.moveTo(px,py+5);ctx.lineTo(px,py+rr+7);ctx.stroke();
+        ctx.strokeStyle='#67e8f9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px-rr*.65,py-rr*.25);ctx.lineTo(px-rr*.15,py+rr*.15);ctx.lineTo(px+rr*.12,py-rr*.5);ctx.lineTo(px+rr*.55,py+rr*.2);ctx.stroke();
+        ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(px,py,3+3*(1-t),0,Math.PI*2);ctx.fill();
       }else if(f.type==='lightning'||f.type==='boltHit'){
         const topY=f.type==='lightning'?py-70:py-24;
         for(let layer=0;layer<(f.type==='lightning'?3:2);layer++){
