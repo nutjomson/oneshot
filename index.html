@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.235</title>
-<meta name="game-version" content="v1.0.235">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.236</title>
+<meta name="game-version" content="v1.0.236">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5373,7 +5373,7 @@ function openLevelUp(forceHigherRarity=false){
             const r=b.patternRadius||150;attackFx.push({type:'explosion',x,y,r,life:.38,maxLife:.38});for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
             const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;
-            // v1.0.235: Cap overlapping poison pools so combat remains readable.
+            // v1.0.236: Cap overlapping poison pools so combat remains readable.
             if(poisonZones.length>=4) poisonZones.shift();
             poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
@@ -5761,16 +5761,17 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.235: visible melee sweeps and animated fire-chain arcs.
+    // v1.0.236: visible melee sweeps and animated fire-chain arcs.
     const animNow=performance.now();
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
       if(a.life<=0){slashEffects.splice(i,1);continue;}
-      const px=sx(a.x,cam),py=sy(a.y,cam),rr=Math.max(18,a.range*(.62+.38*t));
+      const heavy=a.style==='heavy',px=sx(a.x,cam),py=sy(a.y,cam),rr=Math.max(18,a.range*(heavy?.58+.42*t:.78+.22*t));
       ctx.save();ctx.globalAlpha=Math.max(0,1-t);ctx.lineCap='round';ctx.lineJoin='round';
-      for(let layer=0;layer<3;layer++){
-        ctx.beginPath();ctx.arc(px,py,rr*(.72+layer*.10),a.angle-a.arc*(.72+layer*.08),a.angle+a.arc*(.72+layer*.08));
-        ctx.strokeStyle=layer===0?'#ffffff':layer===1?a.color:'#f59e0b';ctx.lineWidth=layer===0?4:layer===1?7:12;ctx.globalAlpha=(1-t)*(layer===0?.95:layer===1?.72:.25);ctx.stroke();
+      const layers=heavy?3:2;
+      for(let layer=0;layer<layers;layer++){
+        ctx.beginPath();ctx.arc(px,py,rr*(heavy?.68+layer*.13:.82+layer*.10),a.angle-a.arc*(heavy?.72+layer*.10:.86+layer*.08),a.angle+a.arc*(heavy?.72+layer*.10:.86+layer*.08));
+        ctx.strokeStyle=heavy?(layer===0?'#fff7ed':layer===1?'#fde047':'#f59e0b'):(layer===0?'#ffffff':'#bae6fd');ctx.lineWidth=heavy?(layer===0?5:layer===1?9:14):(layer===0?3:6);ctx.globalAlpha=(1-t)*(layer===0?.98:layer===1?.72:.28);ctx.stroke();
       }
       const tipX=px+Math.cos(a.angle)*rr,tipY=py+Math.sin(a.angle)*rr;
       ctx.globalAlpha=(1-t)*.9;ctx.fillStyle='#fff7ed';ctx.fillRect(tipX-3,tipY-3,6,6);
@@ -5791,7 +5792,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.restore();c.life-=1/60;
     }
 
-    // v1.0.235: distinct, short-lived impact animations for every attack family.
+    // v1.0.236: distinct, short-lived impact animations for every attack family.
     for(let i=attackFx.length-1;i>=0;i--){
       const f=attackFx[i],t=1-f.life/f.maxLife;
       if(f.life<=0){attackFx.splice(i,1);continue;}
