@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.282</title>
-<meta name="game-version" content="v1.0.282">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.283</title>
+<meta name="game-version" content="v1.0.283">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1457,7 +1457,7 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 
 /* ===== 6.5 LEVEL ATTACK PATTERNS ===== */
 const ATTACK_PATTERNS = {
-  oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'lightningBolt'},twoDir:{id:'twoDir',count:2,spread:0.10,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:1,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
+  oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'lightningBolt'},twoDir:{id:'twoDir',count:2,spread:0.12,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:1,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
   slashCone:{id:'slashCone',count:1,damage:0.28,mode:'slash',range:90,arc:0.22,bleedDps:0.012,bleedTime:1.5},powerWave:{id:'powerWave',count:1,damage:0.22,mode:'wave',range:250,speed:480,radius:6,life:0.55},frontSlash:{id:'frontSlash',count:1,damage:0.32,mode:'slash',range:82,arc:0.55},
   fireballChain:{id:'fireballChain',count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{id:'lightningBolt',count:1,damage:0.25,mode:'lightningBolt',speed:420,life:2.4},bomb:{id:'bomb',count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{id:'poisonBottle',count:1,damage:0.10,mode:'poison',range:260,speed:460,radius:42,life:0.9,zoneLife:1.6,tick:0.65},
   lightningStrike:{id:'lightningStrike',count:1,damage:0.18,mode:'lightning',range:500,cooldown:0.5},blackHole:{id:'blackHole',count:1,damage:0.12,mode:'blackHole',range:360,speed:420,radius:55,life:0.9,zoneLife:1.5,pull:85},mudPool:{id:'mudPool',count:1,damage:0.08,mode:'mud',range:330,speed:460,radius:60,life:0.85,zoneLife:2.5,slow:0.25,tick:0.5},mine:{id:'mine',count:1,damage:0.30,mode:'mine',range:300,speed:430,radius:55,life:0.9}
@@ -4040,7 +4040,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.282: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.283: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -4048,7 +4048,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir')P.spread=.18;
+      else if(P.id==='twoDir')P.spread=.216; // v1.0.283: +20% blade separation from .18
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
