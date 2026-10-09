@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.238</title>
-<meta name="game-version" content="v1.0.238">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.239</title>
+<meta name="game-version" content="v1.0.239">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1501,7 +1501,7 @@ const SHOP_RARITIES = {
 */
 const LEVEL_UPGRADES = [
 {id:'atk_one',rarity:'normal',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
-{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'ฟันวงกรวยด้านหน้า',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
+{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'คมจันทร์ฉีกอากาศ',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
 {id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'พิพากษาอสนีสุ่ม',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
 
@@ -2907,7 +2907,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
+  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'คมจันทร์ฉีกอากาศ',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -4070,7 +4070,7 @@ function renderStartPerks(){
       if(P.mode==='slash'){
         const range=Number(P.range)||120, arc=Number(P.arc)||0.6;
         // Short-lived visible sword sweep; damage remains resolved exactly once below.
-        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.24,maxLife:.24,color:patternId==='frontSlash'?'#fde047':'#f8fafc',style:patternId==='frontSlash'?'heavy':'quick'});
+        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.24,maxLife:.24,color:patternId==='frontSlash'?'#fde047':'#f8fafc',style:patternId==='frontSlash'?'heavy':'moonCleave'});
         if(slashEffects.length>12)slashEffects.shift();
         for(const e of enemies){
           if(e.dead)continue;
@@ -5373,7 +5373,7 @@ function openLevelUp(forceHigherRarity=false){
             const r=b.patternRadius||150;attackFx.push({type:'explosion',x,y,r,life:.38,maxLife:.38});for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
             const r=b.patternRadius||50,life=b.patternZoneLife||1.8,tick=b.patternTick||.6;
-            // v1.0.238: A single active pool prevents stacked circles and runaway area damage.
+            // v1.0.239: A single active pool prevents stacked circles and runaway area damage.
             poisonZones.length=0;
             poisonZones.push({x,y,r,life,maxLife:life,tick:Math.min(.8,Math.max(.4,tick)),damage:Math.max(1,b.damage*.42)});
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
@@ -5726,7 +5726,7 @@ function openLevelUp(forceHigherRarity=false){
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#f97316';ctx.shadowBlur=12;
         ctx.fillStyle='#ea580c';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(1,6);ctx.lineTo(-7,4);ctx.lineTo(-4,0);ctx.lineTo(-7,-4);ctx.lineTo(1,-6);ctx.closePath();ctx.fill();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();
       } else if(pid==='oneDir'||pid==='twoDir'||pid==='threeDir'||pid==='fiveDir'){
-        // v1.0.238: four signature silhouettes; each pattern reads instantly at a glance.
+        // v1.0.239: four signature silhouettes; each pattern reads instantly at a glance.
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));
         if(pid==='oneDir'){
           // A long, needle-like cyan spear with a bright piercing core and twin tail fins.
@@ -5784,13 +5784,23 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.238: visible melee sweeps and animated fire-chain arcs.
+    // v1.0.239: visible melee sweeps and animated fire-chain arcs.
     const animNow=performance.now();
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
       if(a.life<=0){slashEffects.splice(i,1);continue;}
-      const heavy=a.style==='heavy',px=sx(a.x,cam),py=sy(a.y,cam),rr=Math.max(18,a.range*(heavy ? 0.58 + 0.42*t : 0.78 + 0.22*t));
+      const heavy=a.style==='heavy',moon=a.style==='moonCleave',px=sx(a.x,cam),py=sy(a.y,cam),rr=Math.max(18,a.range*(moon?(.48+.52*t):(heavy ? 0.58 + 0.42*t : 0.78 + 0.22*t)));
       ctx.save();ctx.globalAlpha=Math.max(0,1-t);ctx.lineCap='round';ctx.lineJoin='round';
+      if(moon){
+        // Signature crescent cleave: a broad teal moon arc, two etched rune trails, and a sharp finishing glint.
+        const sweep=a.arc*(.55+.45*t),inner=rr*.70,outer=rr*(.98+.05*Math.sin(animNow/35));
+        ctx.shadowColor='#2dd4bf';ctx.shadowBlur=14;
+        ctx.beginPath();ctx.arc(px,py,outer,a.angle-sweep,a.angle+sweep);ctx.strokeStyle='#0f766e';ctx.lineWidth=15*(1-.35*t);ctx.stroke();
+        ctx.beginPath();ctx.arc(px,py,outer,a.angle-sweep,a.angle+sweep);ctx.strokeStyle='#5eead4';ctx.lineWidth=5*(1-.3*t);ctx.stroke();
+        ctx.shadowBlur=0;ctx.beginPath();ctx.arc(px,py,inner,a.angle-sweep*.78,a.angle+sweep*.78);ctx.strokeStyle='#ccfbf1';ctx.lineWidth=2.5;ctx.stroke();
+        for(let side of [-1,1]){const ang=a.angle+side*sweep*.82,rad=outer*.82;const rx=px+Math.cos(ang)*rad,ry=py+Math.sin(ang)*rad;ctx.fillStyle='#f0fdfa';ctx.beginPath();ctx.moveTo(rx+Math.cos(ang)*9,ry+Math.sin(ang)*9);ctx.lineTo(rx+Math.cos(ang+2.35)*5,ry+Math.sin(ang+2.35)*5);ctx.lineTo(rx+Math.cos(ang-2.35)*5,ry+Math.sin(ang-2.35)*5);ctx.closePath();ctx.fill();}
+        ctx.strokeStyle='#99f6e4';ctx.lineWidth=1.5;for(let k=0;k<3;k++){const ang=a.angle+(k-1)*sweep*.42,rad=outer*(.42+k*.13);ctx.beginPath();ctx.moveTo(px+Math.cos(ang)*rad,py+Math.sin(ang)*rad);ctx.lineTo(px+Math.cos(ang)*Math.min(outer,rad+10),py+Math.sin(ang)*Math.min(outer,rad+10));ctx.stroke();}
+      }else{
       const layers=heavy?3:2;
       for(let layer=0;layer<layers;layer++){
         ctx.beginPath();ctx.arc(px,py,rr*(heavy ? 0.68+layer*.13 : 0.82+layer*.10),a.angle-a.arc*(heavy ? 0.72+layer*.10 : 0.86+layer*.08),a.angle+a.arc*(heavy?.72+layer*.10:.86+layer*.08));
@@ -5798,6 +5808,7 @@ function openLevelUp(forceHigherRarity=false){
       }
       const tipX=px+Math.cos(a.angle)*rr,tipY=py+Math.sin(a.angle)*rr;
       ctx.globalAlpha=(1-t)*.9;ctx.fillStyle='#fff7ed';ctx.fillRect(tipX-3,tipY-3,6,6);
+      }
       ctx.restore();a.life-=1/60;
     }
     for(let i=chainEffects.length-1;i>=0;i--){
@@ -5815,7 +5826,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.restore();c.life-=1/60;
     }
 
-    // v1.0.238: distinct, short-lived impact animations for every attack family.
+    // v1.0.239: distinct, short-lived impact animations for every attack family.
     for(let i=attackFx.length-1;i>=0;i--){
       const f=attackFx[i],t=1-f.life/f.maxLife;
       if(f.life<=0){attackFx.splice(i,1);continue;}
