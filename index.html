@@ -6241,7 +6241,7 @@ function openLevelUp(forceHigherRarity=false){
     clearTimeout(toastT); toastT=setTimeout(()=>{el.style.opacity=0},2200);
   }
 
-  const SKILL_LAB_NAMES={oneDir:'Dimensional Spear',twoDir:'Twin Blades',threeDir:'Triad Spear',fiveDir:'Starburst',slashCone:'Moon Slash',powerWave:'Pulse Wave',frontSlash:'Front Slash',fireballChain:'Fire Chain',lightningBolt:'Storm Bolt',bomb:'Blast Bomb',poisonBottle:'Toxic Flask',lightningStrike:'Storm Strike',blackHole:'Black Hole',mudPool:'Mud Trap',mine:'Land Mine'};
+  const SKILL_LAB_NAMES={oneDir:'Spear',twoDir:'Twin',threeDir:'Trident',fiveDir:'Starshot',slashCone:'Crescent',powerWave:'Pulse',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
   function initSkillLabControls(){
     const heroSel=document.getElementById('skillLabHero'),patternSel=document.getElementById('skillLabPattern'),levelSel=document.getElementById('skillLabLevel');
     if(!heroSel||!patternSel||!levelSel)return;
