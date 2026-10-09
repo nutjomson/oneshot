@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.249</title>
-<meta name="game-version" content="v1.0.249">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.250</title>
+<meta name="game-version" content="v1.0.250">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -736,7 +736,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-modal .shop-topline .shop-inline-cost{grid-column:3!important;font-size:10px;font-weight:900;color:#facc15;white-space:nowrap;text-align:right}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 
-/* v1.0.249: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
+/* v1.0.250: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
 #skillLabOverlay.lab-running{pointer-events:none;background:transparent!important;padding:4px 4px 58px!important;}
 #skillLabOverlay.lab-running .skill-lab-modal{pointer-events:auto;width:min(520px,96vw);max-height:none!important;overflow:visible;margin:0 auto;padding:5px 7px!important;background:rgba(3,8,20,.68)!important;border-color:#38bdf855;box-shadow:0 3px 12px #0005;}
 #skillLabOverlay.lab-running .skill-lab-head,#skillLabOverlay.lab-running .skill-lab-controls,#skillLabOverlay.lab-running .skill-lab-note{display:none!important;}
@@ -748,7 +748,7 @@ body.gameplay-actions .hud-controls{display:flex}
 #skillLabOverlay.lab-running .skill-lab-stats b{font-size:12px;margin-top:0;}
 #skillLabOverlay.lab-running .skill-lab-zoom{pointer-events:auto;}
 
-/* v1.0.249: Live skill switching and explicit rarity labels in Skill Testing Lab. */
+/* v1.0.250: Live skill switching and explicit rarity labels in Skill Testing Lab. */
 #skillLabOverlay .skill-lab-live-picker{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:5px;padding:5px;background:rgba(4,12,25,.88);border:1px solid #334155;border-radius:8px;pointer-events:auto;}
 #skillLabOverlay .skill-lab-live-picker label{display:flex;align-items:center;gap:4px;color:#e2e8f0;font-size:10px;}
 #skillLabOverlay .skill-lab-live-picker select{max-width:42vw;min-width:0;padding:5px;background:#0f172a;color:#fff;border:1px solid #64748b;border-radius:6px;font-size:11px;}
@@ -931,13 +931,13 @@ button,input,select,textarea{
 .skill-lab-controls{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin:16px 0}.skill-lab-controls label{display:grid;gap:6px;color:#cbd5e1;font-size:12px;font-weight:800}.skill-lab-controls select{width:100%;min-width:0;padding:10px 8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;border-radius:7px;font:inherit}
 .skill-lab-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.skill-lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.skill-lab-stats>div{padding:10px 6px;text-align:center;background:#0b1728;border:1px solid #263b53;border-radius:8px;min-width:0}.skill-lab-stats span{display:block;color:#94a3b8;font-size:10px}.skill-lab-stats b{display:block;color:#facc15;font-size:clamp(16px,3vw,24px);overflow-wrap:anywhere;margin-top:3px}.skill-lab-note{margin-top:12px;padding:10px;border-radius:7px;background:#0f172a;color:#bae6fd;font-size:11px;line-height:1.5}
 @media(max-width:560px){.skill-lab-modal{padding:12px!important}.skill-lab-controls{grid-template-columns:1fr 1fr}.skill-lab-controls label:first-child{grid-column:1/-1}.skill-lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-lab-head .btn{padding:8px 9px;font-size:11px}.skill-lab-actions .btn{padding:9px 5px;font-size:11px}}
-/* v1.0.249: Keep the real combat canvas visible behind a compact Skill Lab console. */
+/* v1.0.250: Keep the real combat canvas visible behind a compact Skill Lab console. */
 #skillLabOverlay{align-items:flex-start;justify-content:center;background:rgba(2,6,23,.16);backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(76px,env(safe-area-inset-bottom));}
 #skillLabOverlay .skill-lab-modal{width:min(900px,98vw);max-width:900px;max-height:min(48dvh,430px);overflow-y:auto;margin:0 auto;background:rgba(5,12,25,.91);border:1px solid #38bdf8;padding:10px;box-shadow:0 8px 28px #0009;}
 #skillLabOverlay .skill-lab-controls{margin:8px 0;gap:6px}#skillLabOverlay .skill-lab-controls select{padding:7px 6px}#skillLabOverlay .skill-lab-stats{margin-top:8px;gap:5px}#skillLabOverlay .skill-lab-stats>div{padding:6px 4px}#skillLabOverlay .skill-lab-note{margin-top:7px;padding:6px 8px}
 .skill-lab-zoom{position:fixed;z-index:1202;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #38bdf8;border-radius:12px;background:rgba(5,12,25,.94);box-shadow:0 0 20px #0009;color:#e0f2fe;font-size:12px;white-space:nowrap}.skill-lab-zoom button{min-width:36px;height:36px;border:1px solid #64748b;border-radius:8px;background:#172554;color:#fff;font-size:21px;font-weight:900}.skill-lab-zoom #skillLabZoomReset{font-size:11px;padding:0 9px}.skill-lab-zoom b{min-width:42px;text-align:center;color:#facc15}
 @media(max-width:560px){#skillLabOverlay .skill-lab-modal{max-height:52dvh;padding:9px!important}#skillLabOverlay .skill-lab-head .title{font-size:17px}.skill-lab-zoom{gap:5px;padding:6px 7px}.skill-lab-zoom span{font-size:10px}.skill-lab-zoom button{min-width:34px;height:34px}}
-/* v1.0.249: Minimize the console footprint so the real arena remains visible. */
+/* v1.0.250: Minimize the console footprint so the real arena remains visible. */
 #skillLabOverlay{padding-top:max(5px,env(safe-area-inset-top));padding-bottom:68px;}
 #skillLabOverlay .skill-lab-modal{max-height:30dvh;overflow-y:auto;padding:7px 9px;background:rgba(5,12,25,.78);}
 #skillLabOverlay .skill-lab-head{gap:5px}#skillLabOverlay .skill-lab-head .title{font-size:16px;margin:0}#skillLabOverlay .skill-lab-head .sub{font-size:9px;margin:2px 0 0}
@@ -994,7 +994,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.249</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.250</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -4143,7 +4143,7 @@ function renderStartPerks(){
       if(P.mode==='slash'){
         const range=Number(P.range)||120, arc=Number(P.arc)||0.6;
         // Short-lived visible sword sweep; damage remains resolved exactly once below.
-        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.24,maxLife:.24,color:patternId==='frontSlash'?'#fde047':'#f8fafc',style:patternId==='frontSlash'?'heavy':'moonCleave'});
+        slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:patternId==='frontSlash'?.52:.30,maxLife:patternId==='frontSlash'?.52:.30,color:patternId==='frontSlash'?'#fde047':'#f8fafc',style:patternId==='frontSlash'?'heavy':'moonCleave',seed:Math.random()*1000});
         if(slashEffects.length>12)slashEffects.shift();
         for(const e of enemies){
           if(e.dead)continue;
@@ -4153,7 +4153,7 @@ function renderStartPerks(){
           let da=Math.atan2(Math.sin(a-attackBaseAngle),Math.cos(a-attackBaseAngle));
           if(Math.abs(da)<=arc){hitEnemy(e,patternDamage,false,null,false);if(P.bleedDps>0&&!e.dead){e.bleedTimer=Math.max(e.bleedTimer||0,P.bleedTime||1.5);e.bleedDps=Math.max(e.bleedDps||0,player.damage*P.bleedDps);}}
         }
-        makeSparks(player.x+Math.cos(attackBaseAngle)*((Number(P.range)||120)*0.55),player.y+Math.sin(attackBaseAngle)*((Number(P.range)||120)*0.55),'#facc15',12);
+        const sxHit=player.x+Math.cos(attackBaseAngle)*((Number(P.range)||120)*0.72),syHit=player.y+Math.sin(attackBaseAngle)*((Number(P.range)||120)*0.72);makeSparks(sxHit,syHit,patternId==='frontSlash'?'#fff7ed':'#facc15',patternId==='frontSlash'?30:12);if(patternId==='frontSlash'){makeSparks(sxHit,syHit,'#fbbf24',22);attackFx.push({type:'slashShockwave',x:sxHit,y:syHit,r:range*.8,life:.42,maxLife:.42});}
         continue;
       }
 
@@ -4167,8 +4167,9 @@ function renderStartPerks(){
           if(!e)continue;
           hitEnemy(e,patternDamage,false,null,false);
           e.lightningFlash=0.16;
-          attackFx.push({type:'stormStrike',x:e.x,y:e.y,life:.34,maxLife:.34,seed:Math.random()*20});
-          makeSparks(e.x,e.y,'#67e8f9',18);
+          attackFx.push({type:'stormStrike',x:e.x,y:e.y,life:.68,maxLife:.68,seed:Math.random()*20,r:Math.max(44,(Number(e.r)||16)*3)});
+          attackFx.push({type:'slashShockwave',x:e.x,y:e.y,r:Math.max(48,(Number(e.r)||16)*3),life:.42,maxLife:.42});
+          makeSparks(e.x,e.y,'#ffffff',30);makeSparks(e.x,e.y,'#67e8f9',26);
         }
         continue;
       }
@@ -5751,7 +5752,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.249: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.250: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
@@ -5898,7 +5899,7 @@ function openLevelUp(forceHigherRarity=false){
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
       if(a.life<=0){slashEffects.splice(i,1);continue;}
-      const heavy=a.style==='heavy',moon=a.style==='moonCleave',px=sx(a.x,cam),py=sy(a.y,cam),rr=Math.max(18,a.range*(moon?(.48+.52*t):(heavy ? 0.58 + 0.42*t : 0.78 + 0.22*t)));
+      const heavy=a.style==='heavy',moon=a.style==='moonCleave',px=sx(a.x,cam),py=sy(a.y,cam),slashT=Math.min(1,t*1.35),rr=Math.max(18,a.range*(moon?(.48+.52*t):(heavy ? 0.42 + 0.72*slashT : 0.78 + 0.22*t)));
       ctx.save();ctx.globalAlpha=Math.max(0,1-t);ctx.lineCap='round';ctx.lineJoin='round';
       if(moon){
         // Signature crescent cleave: a broad teal moon arc, two etched rune trails, and a sharp finishing glint.
@@ -5942,12 +5943,15 @@ function openLevelUp(forceHigherRarity=false){
       const px=sx(f.x,cam),py=sy(f.y,cam),fade=Math.max(0,1-t),r=Math.max(8,Number(f.r)||30);
       ctx.save();ctx.globalAlpha=fade;ctx.lineCap='round';ctx.lineJoin='round';
       if(f.type==='stormStrike'){
-        // A storm-court sigil flashes before a gold-white bolt strikes its center.
-        const pulse=.75+.25*Math.sin(t*18),rr=18+24*t;
-        ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,rr,0,Math.PI*2);ctx.stroke();
-        ctx.strokeStyle='#fef3c7';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-rr*.72,py);ctx.lineTo(px-rr*.35,py);ctx.moveTo(px+rr*.35,py);ctx.lineTo(px+rr*.72,py);ctx.moveTo(px,py-rr*.72);ctx.lineTo(px,py-rr*.35);ctx.moveTo(px,py+rr*.35);ctx.lineTo(px,py+rr*.72);ctx.stroke();
-        for(let layer=0;layer<3;layer++){ctx.beginPath();ctx.moveTo(px+(Math.random()-.5)*7,py-72);let yy=py-72;while(yy<py){yy=Math.min(py,yy+8+Math.random()*11);ctx.lineTo(px+(Math.random()-.5)*(layer===0?15:32),yy);}ctx.strokeStyle=layer===0?'#ffffff':layer===1?'#fef08a':'#f59e0b';ctx.lineWidth=layer===0?2:layer===1?4:7;ctx.stroke();}
-        ctx.globalAlpha=fade*pulse;ctx.fillStyle='#fff7cc';ctx.beginPath();ctx.arc(px,py,5+8*t,0,Math.PI*2);ctx.fill();
+        // Epic random thunder judgement: warning sigil, branching sky bolt, ground shock rings and white-hot impact.
+        const pulse=.72+.28*Math.sin(t*34),rr=(Number(f.r)||48)*(.35+.65*t),impact=Math.max(0,1-Math.abs(t-.48)*2.8);
+        ctx.globalAlpha=fade*(t<.18?.55:1);ctx.strokeStyle='#f59e0b';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(px,py,rr*.72,0,Math.PI*2);ctx.stroke();
+        ctx.save();ctx.translate(px,py);ctx.rotate((f.seed||0)*.2+t*.8);ctx.strokeStyle='#fde68a';ctx.lineWidth=2;ctx.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4,r1=rr*.36,r2=rr*.58;ctx.moveTo(Math.cos(a)*r1,Math.sin(a)*r1);ctx.lineTo(Math.cos(a)*r2,Math.sin(a)*r2);}ctx.stroke();ctx.restore();
+        for(let layer=0;layer<4;layer++){ctx.beginPath();let xx=px+(Math.random()-.5)*12,yy=py-125;ctx.moveTo(xx,yy);while(yy<py+4){yy=Math.min(py+4,yy+5+Math.random()*10);xx+=((Math.random()-.5)*(layer===0?22:layer===1?42:62));ctx.lineTo(xx,yy);}ctx.strokeStyle=['#ffffff','#bae6fd','#67e8f9','#fef08a'][layer];ctx.lineWidth=[3.8,6,9,2][layer];ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=[18,14,10,5][layer];ctx.stroke();}
+        ctx.shadowBlur=0;ctx.globalAlpha=fade*(.45+.55*impact);ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(px,py,8+20*impact,0,Math.PI*2);ctx.fill();
+        ctx.globalAlpha=fade*(.65+.35*pulse);ctx.strokeStyle='#67e8f9';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(px,py+5,rr*.9,rr*.28,0,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#fef3c7';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px,py+5,rr*.58,rr*.18,0,0,Math.PI*2);ctx.stroke();
+      }else if(f.type==='slashShockwave'){
+        const rr2=(Number(f.r)||60)*(.25+1.35*t);ctx.globalAlpha=fade*.85;ctx.strokeStyle='#fff7ed';ctx.lineWidth=7*(1-t)+1;ctx.beginPath();ctx.ellipse(px,py,rr2,rr2*.42,0,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#f59e0b';ctx.lineWidth=3*(1-t)+.5;ctx.beginPath();ctx.ellipse(px,py,rr2*.78,rr2*.30,0,0,Math.PI*2);ctx.stroke();
       }else if(f.type==='skyLanceHit'){
         // A compact cyan rune seal snaps shut as the lance pierces its target.
         const rr=10+25*t,pulse=.7+.3*Math.sin(t*32);
