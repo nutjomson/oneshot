@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.229</title>
-<meta name="game-version" content="v1.0.229">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.230</title>
+<meta name="game-version" content="v1.0.230">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -6237,4 +6237,116 @@ function openLevelUp(forceHigherRarity=false){
 .shop-modal .item-preview-values{font-size:clamp(9px,calc(10px * var(--ui-scale)),13px)!important;line-height:1.25!important;font-weight:700!important}
 .shop-modal .shop-actions button{font-size:clamp(10px,calc(11px * var(--ui-scale)),14px)!important;font-weight:800!important;line-height:1.15!important;min-height:clamp(44px,calc(46px * var(--ui-scale)),54px)!important}
 .shop-modal .shop-topline .tier-badge{font-size:clamp(7px,calc(8px * var(--ui-scale)),11px)!important;font-weight:800!important}
+</style>
+
+<style id="level-up-responsive-redesign-v1-0-230">
+/* v1.0.230 — Level Up cards: responsive layout and overflow-safe text */
+#levelOverlay{padding: max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));}
+#levelOverlay .level-modal{
+  display:flex!important;flex-direction:column!important;gap:clamp(8px,1.4dvh,14px)!important;
+  width:min(94vw,760px)!important;max-width:760px!important;min-width:0!important;
+  max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px)!important;
+  height:auto!important;overflow:hidden!important;padding:clamp(10px,2.2vw,18px)!important;
+  border:2px solid #d6a85d!important;border-radius:12px!important;
+  box-shadow:0 0 0 3px #2a170f,0 14px 42px #000b!important;
+}
+#levelOverlay .level-head{flex:0 0 auto;min-width:0;gap:8px;align-items:center;}
+#levelOverlay .level-head .title{
+  min-width:0;max-width:100%;font-size:clamp(15px,3.5vw,22px)!important;
+  line-height:1.2!important;overflow-wrap:anywhere;word-break:normal;white-space:normal;
+}
+#levelOverlay .level-speed{flex:0 0 auto;white-space:normal;text-align:center;font-size:clamp(9px,2.2vw,12px)!important;line-height:1.25;padding:5px 7px;}
+#levelOverlay .sub{
+  flex:0 0 auto;min-width:0;margin:0!important;padding:8px 10px;
+  border-left:3px solid #eabf63;background:#20170f;border-radius:4px;
+  font-size:clamp(10px,2.6vw,13px)!important;line-height:1.45!important;
+  white-space:normal!important;overflow-wrap:anywhere;word-break:normal;
+}
+#levelOverlay #upgrades{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;
+  width:100%;min-width:0;max-width:100%;flex:1 1 auto;min-height:0;
+  max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  padding:2px 4px 4px 2px!important;
+}
+#levelOverlay .upgrade{
+  display:grid!important;grid-template-columns:clamp(34px,8vw,48px) minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto auto auto!important;
+  align-items:start;gap:4px 9px!important;width:100%!important;min-width:0!important;
+  max-width:100%!important;height:auto!important;min-height:0!important;
+  padding:clamp(9px,2.2vw,14px)!important;overflow:visible!important;
+  border-radius:8px!important;box-sizing:border-box!important;
+  background:linear-gradient(135deg,#302116,#1b1b23)!important;
+  border:1px solid #8b6841!important;
+}
+#levelOverlay .upgrade.recommended{
+  border:2px solid #facc15!important;
+  background:linear-gradient(135deg,#443116,#22202a)!important;
+  box-shadow:inset 0 0 0 1px #facc1533,0 0 12px #facc1522!important;
+}
+#levelOverlay .upgrade-choice-label{
+  grid-column:1/-1!important;grid-row:auto!important;margin:0 0 2px!important;
+  font-size:clamp(9px,2.3vw,11px)!important;line-height:1.3!important;
+  letter-spacing:.03em;white-space:normal!important;overflow-wrap:anywhere;
+}
+#levelOverlay .upgrade .icon{
+  grid-column:1!important;grid-row:2/span 3!important;align-self:start;
+  width:100%;max-width:48px;font-size:clamp(24px,6vw,36px)!important;
+  line-height:1.15!important;text-align:center;margin:0!important;padding:0!important;
+}
+#levelOverlay .upgrade>div:not(.icon):not(.upgrade-choice-label){
+  grid-column:2!important;min-width:0!important;max-width:100%!important;
+  width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;
+}
+#levelOverlay .upgrade .uName{
+  font-size:clamp(12px,3vw,15px)!important;line-height:1.35!important;
+  font-weight:900!important;margin:0!important;white-space:normal!important;
+  overflow-wrap:anywhere;word-break:normal;
+}
+#levelOverlay .upgrade .uDesc{
+  font-size:clamp(10px,2.5vw,12px)!important;line-height:1.45!important;
+  margin:2px 0!important;white-space:normal!important;overflow-wrap:anywhere;
+}
+#levelOverlay .upgrade .item-preview{
+  display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  max-height:none!important;height:auto!important;overflow:visible!important;
+  white-space:normal!important;overflow-wrap:anywhere;word-break:normal;
+  font-size:clamp(10px,2.4vw,12px)!important;line-height:1.4!important;
+  padding:7px 8px!important;margin-top:4px!important;
+}
+#levelOverlay .upgrade .item-preview *{
+  max-width:100%;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;
+}
+#levelOverlay .upgrade .upgrade-reason{
+  margin:3px 0 0!important;padding:4px 0 0!important;
+  font-size:clamp(10px,2.4vw,12px)!important;line-height:1.4!important;
+  white-space:normal!important;overflow-wrap:anywhere;
+}
+#levelOverlay .level-actions{
+  flex:0 0 auto;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;width:100%;min-width:0;margin-top:0!important;
+}
+#levelOverlay .level-actions .btn{
+  min-width:0!important;width:100%;height:auto!important;min-height:42px!important;
+  padding:8px 7px!important;font-size:clamp(10px,2.5vw,13px)!important;
+  line-height:1.35!important;white-space:normal!important;overflow-wrap:anywhere;
+}
+@media(min-width:680px) and (min-height:540px){
+  #levelOverlay .level-modal{width:min(94vw,900px)!important;max-width:900px!important}
+  #levelOverlay #upgrades{grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch}
+  #levelOverlay .upgrade{grid-template-columns:34px minmax(0,1fr)!important;align-content:start}
+  #levelOverlay .upgrade .icon{font-size:28px!important}
+}
+@media(max-height:560px){
+  #levelOverlay .level-modal{gap:5px!important;padding:8px!important}
+  #levelOverlay .sub{padding:5px 7px}
+  #levelOverlay #upgrades{gap:5px!important}
+  #levelOverlay .upgrade{padding:7px!important}
+  #levelOverlay .level-actions .btn{min-height:34px!important;padding:5px!important}
+}
+@media(max-width:360px){
+  #levelOverlay .level-head{align-items:flex-start}
+  #levelOverlay .level-speed{max-width:76px}
+  #levelOverlay .level-actions{grid-template-columns:minmax(0,1fr)!important}
+}
 </style>
