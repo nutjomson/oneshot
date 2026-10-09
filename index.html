@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.244</title>
-<meta name="game-version" content="v1.0.244">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.245</title>
+<meta name="game-version" content="v1.0.245">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -902,6 +902,15 @@ button,input,select,textarea{
   border-color:rgba(139,90,53,.72)!important;
 }
 </style>
+
+<style id="v1-0-245-skill-testing-lab">
+.skill-lab-modal{width:min(920px,96vw);max-width:920px;max-height:94dvh;overflow:auto;background:rgba(5,12,25,.97);border:1px solid #38bdf8;box-shadow:0 0 35px #0ea5e933}
+.skill-lab-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.skill-lab-head .title{font-size:clamp(18px,4vw,28px);color:#67e8f9;text-align:left}.skill-lab-head .sub{font-size:11px;color:#94a3b8;margin-top:4px}
+.skill-lab-controls{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin:16px 0}.skill-lab-controls label{display:grid;gap:6px;color:#cbd5e1;font-size:12px;font-weight:800}.skill-lab-controls select{width:100%;min-width:0;padding:10px 8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;border-radius:7px;font:inherit}
+.skill-lab-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.skill-lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.skill-lab-stats>div{padding:10px 6px;text-align:center;background:#0b1728;border:1px solid #263b53;border-radius:8px;min-width:0}.skill-lab-stats span{display:block;color:#94a3b8;font-size:10px}.skill-lab-stats b{display:block;color:#facc15;font-size:clamp(16px,3vw,24px);overflow-wrap:anywhere;margin-top:3px}.skill-lab-note{margin-top:12px;padding:10px;border-radius:7px;background:#0f172a;color:#bae6fd;font-size:11px;line-height:1.5}
+@media(max-width:560px){.skill-lab-modal{padding:12px!important}.skill-lab-controls{grid-template-columns:1fr 1fr}.skill-lab-controls label:first-child{grid-column:1/-1}.skill-lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-lab-head .btn{padding:8px 9px;font-size:11px}.skill-lab-actions .btn{padding:9px 5px;font-size:11px}}
+</style>
+
 </head>
 <body>
 <div id="game">
@@ -949,18 +958,37 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.244</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.245</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
 
     <div class="btn-group">
       <button type="button" class="btn" id="startBtn">🆕 เริ่มเกมใหม่</button>
+      <button type="button" class="btn btn-blue" id="openSkillLabBtn">🧪 Skill Testing Lab</button>
       <button type="button" class="btn btn-gold" id="homeLoadBtn">📂 โหลดเซฟ</button>
       <button type="button" class="btn btn-blue" id="settingsBtn">⚙️ ตั้งค่าเกม</button>
     </div>
 
     <div class="stats-box" id="startHeroStats"></div>
+  </div>
+</div>
+
+
+<!-- Skill Testing Lab: isolated controls, uses the game's real shoot/update/hit pipeline -->
+<div id="skillLabOverlay" class="overlay hidden" style="z-index:1200">
+  <div class="modal skill-lab-modal">
+    <div class="skill-lab-head"><div><div class="title">🧪 SKILL TESTING LAB</div><div class="sub">สนามทดสอบระบบโจมตีจริง • แยกจากโหมดปกติ</div></div><button type="button" class="btn btn-sec" id="skillLabExitBtn">✕ ออก</button></div>
+    <div class="skill-lab-controls">
+      <label>ฮีโร่<select id="skillLabHero"></select></label>
+      <label>สกิลโจมตี<select id="skillLabPattern"></select></label>
+      <label>เลเวลสกิล<select id="skillLabLevel"></select></label>
+    </div>
+    <div class="skill-lab-actions"><button type="button" class="btn" id="skillLabStartBtn">▶ เริ่มทดสอบ</button><button type="button" class="btn btn-gold" id="skillLabPauseBtn">⏸ หยุดชั่วคราว</button><button type="button" class="btn btn-sec" id="skillLabResetBtn">↻ รีเซ็ตผล</button></div>
+    <div class="skill-lab-stats">
+      <div><span>ดาเมจรวม</span><b id="skillLabDamage">0</b></div><div><span>DPS เฉลี่ย</span><b id="skillLabDps">0</b></div><div><span>จำนวนฮิต</span><b id="skillLabHits">0</b></div><div><span>เวลาทดสอบ</span><b id="skillLabTime">0.0s</b></div>
+    </div>
+    <div class="skill-lab-note" id="skillLabStatus">เลือกฮีโร่ สกิล และเลเวล จากนั้นกดเริ่มทดสอบ</div>
   </div>
 </div>
 
@@ -1906,6 +1934,7 @@ window.GAME_CONFIG = {
 let pendingItemReward=null, itemRewardTimer=null, itemRewardSpinTimer=null;
 let itemHistory=[];
 let runStats={shots:0,critHits:0,damageDealt:0,damageTaken:0,enemiesSpawned:0,enemiesKilled:0,bossesKilled:0,goldCollected:0,xpCollected:0,chestsOpened:0,bossItemDrops:0,itemsReceived:0,rerolls:0,premiumRerolls:0,levelUps:0,highestDamageHit:0};
+  let skillLabMode=false,skillLabHudTimer=0,skillLabStats={hits:0,attacks:0};
   let last=performance.now(), elapsed=0, wave=1, kills=0, spawnTimer=0;
   // v1.0.190: Wave 1 spawn diagnostics.
   let wave1Spawned=0, wave1LastBatch=0;
@@ -4065,6 +4094,7 @@ function renderStartPerks(){
       }
       if(lightningOnly !== (P.mode==='lightning')) continue;
       const level=patternData.level;
+      if(skillLabMode)skillLabStats.attacks++;
       const levelDmg=1+Math.min(0.38,Math.max(0,level-1)*0.02);
       const patternDamage=player.damage*wMult*(Number(P.damage)||1)*levelDmg;
       const attackBaseAngle=patternAngle;
@@ -4193,6 +4223,7 @@ function renderStartPerks(){
       damage=Math.max(0,e.hp); makeSparks(e.x,e.y,'#f43f5e',20);
     }
     const actualDamage=Math.max(0,damage);
+    if(skillLabMode)skillLabStats.hits++;
     const heal=actualDamage;
     e.hp-=actualDamage; e.hit=.12;
     runStats.damageDealt+=actualDamage;
@@ -4454,6 +4485,7 @@ function showItemReward(item,source){
     for(let i=enemies.length-1;i>=0;i--){
       const e=enemies[i];
       if(e.dead||e.hp<=0){
+        if(skillLabMode&&e.labDummy){e.hp=e.maxHp;e.dead=false;e.hit=0;continue;}
         enemies.splice(i,1); kills++; runStats.enemiesKilled++; if(e.type==='boss') runStats.bossesKilled++; addDrops(e.x,e.y,e.xp,e.gold);
         if(e.type==='boss'){
           for(let k=0;k<dev.misc.bossBonusDrops;k++)addDrops(
@@ -5205,7 +5237,7 @@ function openLevelUp(forceHigherRarity=false){
 
   function update(dt){
     elapsed+=dt;
-    wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
+    if(skillLabMode){wave=1;shownWave=1;}else wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
     if(wave!==shownWave){
       const prevWave=shownWave;
       shownWave=wave;
@@ -5237,7 +5269,7 @@ function openLevelUp(forceHigherRarity=false){
       }
       if(wave>1)setStatus('🌊 เวฟ '+wave+(wave%Math.max(1,Math.floor(dev.wave.bossEvery))===0?' — บอส!':'')+(gained>0?' • 🎁 รีโรลฟรี +'+gained:''));
     }
-    maybeOpenScheduledShop();
+    if(!skillLabMode) maybeOpenScheduledShop();
 
     if(screenShake > 0) screenShake = Math.max(0, screenShake - dt * 25);
 
@@ -5317,7 +5349,7 @@ function openLevelUp(forceHigherRarity=false){
       Math.floor(maxStart+Math.max(0,wave-1)*maxPerWave)
     );
 
-    if(spawnTimer<=0){
+    if(!skillLabMode && spawnTimer<=0){
       const available=Math.max(0,maxEnemies-enemies.length);
       const spawnCount=Math.min(batch,available);
       let spawnedThisTick=0;
@@ -5333,8 +5365,8 @@ function openLevelUp(forceHigherRarity=false){
       const e = enemies[i];
       const a=Math.atan2(player.y-e.y,player.x-e.x); 
       e.bladeCd=Math.max(0,e.bladeCd-dt);
-      const sp=e.speed*(1-(player.timeSlow||0))*(1-(e.mudSlow||0));e.mudSlow=0; const dir=((e.type==='shooter'||e.ai==='shooter')&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
-      e.x=clamp(e.x+Math.cos(a)*sp*dt*dir,30,world.w-30); e.y=clamp(e.y+Math.sin(a)*sp*dt*dir,30,world.h-30);
+      if(!skillLabMode){const sp=e.speed*(1-(player.timeSlow||0))*(1-(e.mudSlow||0));e.mudSlow=0; const dir=((e.type==='shooter'||e.ai==='shooter')&&dist(e.x,e.y,player.x,player.y)<CFG.enemyAI.shooterKeepDistance)?-CFG.enemyAI.shooterRetreatFactor:1;
+      e.x=clamp(e.x+Math.cos(a)*sp*dt*dir,30,world.w-30); e.y=clamp(e.y+Math.sin(a)*sp*dt*dir,30,world.h-30);}
       e.hit=Math.max(0,e.hit-dt);e.lightningFlash=Math.max(0,(e.lightningFlash||0)-dt);
       e.animTimer+=dt*6;
       if(e.animTimer>=1){e.animFrame=(e.animFrame+1)%2;e.animTimer=0;}
@@ -5348,7 +5380,7 @@ function openLevelUp(forceHigherRarity=false){
         if(e.hp <= 0) e.dead=true;
       }
 
-      if((e.type === 'shooter' || e.ai === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
+      if(!skillLabMode && (e.type === 'shooter' || e.ai === 'shooter' || e.type === 'boss') && dist(e.x,e.y,player.x,player.y) < CFG.enemyAI.shootRange){
         e.shootTimer -= dt;
         if(e.shootTimer <= 0){
           if(e.type==='boss'){
@@ -5363,7 +5395,7 @@ function openLevelUp(forceHigherRarity=false){
       
       const d=dist(e.x,e.y,player.x,player.y);
       e.contactCd=Math.max(0,e.contactCd-dt);
-      if(d<e.r+player.r&&e.contactCd<=0&&!e.dead&&player.hit<=0){hurt(e.damage*CFG.combat.contactDamageMult);e.contactCd=CFG.combat.contactCooldown;}
+      if(!skillLabMode && d<e.r+player.r&&e.contactCd<=0&&!e.dead&&player.hit<=0){hurt(e.damage*CFG.combat.contactDamageMult);e.contactCd=CFG.combat.contactCooldown;}
     }
 
     for(let i=bullets.length-1;i>=0;i--){
@@ -5679,7 +5711,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.244: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.245: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
@@ -6126,6 +6158,44 @@ function openLevelUp(forceHigherRarity=false){
     const el=document.getElementById('status'); el.textContent=msg; el.style.opacity=1;
     clearTimeout(toastT); toastT=setTimeout(()=>{el.style.opacity=0},2200);
   }
+
+  const SKILL_LAB_NAMES={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',slashCone:'คมจันทร์ฉีกอากาศ',powerWave:'คลื่นพลัง',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'อสนีหอกคราม',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
+  function initSkillLabControls(){
+    const heroSel=document.getElementById('skillLabHero'),patternSel=document.getElementById('skillLabPattern'),levelSel=document.getElementById('skillLabLevel');
+    if(!heroSel||!patternSel||!levelSel)return;
+    heroSel.innerHTML=heroes.map(h=>'<option value="'+h.id+'">'+h.name+'</option>').join('');
+    patternSel.innerHTML=Object.keys(CFG.attackPatterns).filter(id=>SKILL_LAB_NAMES[id]).map(id=>'<option value="'+id+'">'+SKILL_LAB_NAMES[id]+'</option>').join('');
+    levelSel.innerHTML=Array.from({length:12},(_,i)=>'<option value="'+(i+1)+'">Lv.'+(i+1)+'</option>').join('');
+    heroSel.value=selectedHero?.id||heroes[0]?.id||'prism';patternSel.value='oneDir';levelSel.value='1';
+    const apply=()=>{if(!skillLabMode)return;const id=patternSel.value,lv=Math.max(1,Math.min(12,Number(levelSel.value)||1));player.attackPatternsOwned=[{id,level:lv}];player.attackPattern=id;player.attackPatternLevel=lv;Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);bullets=[];poisonZones=[];windZones=[];blackHoles=[];mudZones=[];mines=[];skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;enemies.forEach(e=>{if(e.labDummy){e.hp=e.maxHp;e.dead=false;}});updateSkillLabHud();document.getElementById('skillLabStatus').textContent='กำลังทดสอบ '+(SKILL_LAB_NAMES[id]||id)+' Lv.'+lv+' ด้วยระบบโจมตีจริงของเกม';};
+    patternSel.onchange=apply;levelSel.onchange=apply;
+  }
+  function setupSkillLabDummies(){
+    enemies=[];bullets=[];enemyBullets=[];xpOrbs=[];goldCoins=[];treasureChests=[];poisonZones=[];windZones=[];blackHoles=[];mudZones=[];mines=[];attackFx=[];slashEffects=[];floaters=[];
+    const offsets=[[75,0],[105,-52],[105,52],[150,-92],[150,92]];
+    for(const [dx,dy] of offsets){if(spawnEnemy('brute')){const e=enemies[enemies.length-1];e.x=clamp(player.x+dx,40,world.w-40);e.y=clamp(player.y+dy,40,world.h-40);e.speed=0;e.damage=0;e.hp=e.maxHp=1000000;e.labDummy=true;e.dead=false;e.contactCd=999;}}
+    player.attackRange=650;player.x=world.w/2;player.y=world.h/2;player.angle=0;player.facing='right';player.hp=player.maxHp;player.gold=0;spawnTimer=999999;skillLabStats={hits:0,attacks:0};runStats.damageDealt=0;elapsed=0;Object.keys(attackPatternNextFire).forEach(k=>delete attackPatternNextFire[k]);
+  }
+  function updateSkillLabHud(){
+    const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    put('skillLabDamage',Math.round(runStats.damageDealt).toLocaleString());put('skillLabDps',Math.round(runStats.damageDealt/Math.max(.1,elapsed)).toLocaleString());put('skillLabHits',skillLabStats.hits.toLocaleString());put('skillLabTime',elapsed.toFixed(1)+'s');
+  }
+  function startSkillLab(){
+    const hero=heroes.find(h=>h.id===document.getElementById('skillLabHero')?.value);if(hero)selectedHero=hero;
+    skillLabMode=false;startGame();skillLabMode=true;paused=false;over=false;
+    const pattern=document.getElementById('skillLabPattern')?.value||'oneDir',lv=Math.max(1,Math.min(12,Number(document.getElementById('skillLabLevel')?.value)||1));
+    player.attackPatternsOwned=[{id:pattern,level:lv}];player.attackPattern=pattern;player.attackPatternLevel=lv;
+    setupSkillLabDummies();document.getElementById('startOverlay')?.classList.add('hidden');document.getElementById('skillLabOverlay')?.classList.remove('hidden');
+    document.getElementById('skillLabStartBtn').textContent='▶ ทดสอบต่อ';document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='สนามพร้อม • หุ่นทดสอบ 5 ตัว • ใช้ระบบ shoot / projectile / hit ของเกมจริง';updateSkillLabHud();
+  }
+  function resetSkillLab(){if(!skillLabMode){startSkillLab();return;}setupSkillLabDummies();paused=false;document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent='รีเซ็ตสนามแล้ว • เริ่มนับดาเมจใหม่';updateSkillLabHud();}
+  function exitSkillLab(){skillLabMode=false;running=false;paused=false;over=false;document.getElementById('skillLabOverlay')?.classList.add('hidden');document.getElementById('startOverlay')?.classList.remove('hidden');document.body.classList.remove('gameplay-actions');resetInput();}
+  document.getElementById('openSkillLabBtn')?.addEventListener('click',()=>{initSkillLabControls();document.getElementById('startOverlay')?.classList.add('hidden');document.getElementById('skillLabOverlay')?.classList.remove('hidden');document.getElementById('skillLabStatus').textContent='เลือกฮีโร่ สกิล และเลเวล แล้วกดเริ่มทดสอบ';});
+  document.getElementById('skillLabStartBtn')?.addEventListener('click',()=>{if(!skillLabMode)startSkillLab();else{paused=false;document.getElementById('skillLabStatus').textContent='กำลังทดสอบสกิลจริง';document.getElementById('skillLabPauseBtn').textContent='⏸ หยุดชั่วคราว';}});
+  document.getElementById('skillLabPauseBtn')?.addEventListener('click',()=>{if(!skillLabMode)return;paused=!paused;document.getElementById('skillLabPauseBtn').textContent=paused?'▶ เล่นต่อ':'⏸ หยุดชั่วคราว';document.getElementById('skillLabStatus').textContent=paused?'หยุดการจำลองชั่วคราว':'กำลังทดสอบสกิลจริง';});
+  document.getElementById('skillLabResetBtn')?.addEventListener('click',resetSkillLab);
+  document.getElementById('skillLabExitBtn')?.addEventListener('click',exitSkillLab);
+  initSkillLabControls();
 
   function startGame(){document.body.classList.add('gameplay-actions');
   
