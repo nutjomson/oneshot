@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.292</title>
-<meta name="game-version" content="v1.0.293">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.294</title>
+<meta name="game-version" content="v1.0.294">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1636,9 +1636,9 @@ const SHOP_RARITIES = {
    15 รูปแบบ: Normal 5 / Rare 6 / Legend 4 — ทุกชนิดตีบวกได้สูงสุด +20
 */
 const LEVEL_UPGRADES = [
-{id:'atk_one',rarity:'rare',icon:'➤',name:'Dimensional Spear',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'Twin Blades',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'Triad Spear',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'Starburst',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'Pulse Wave',stackCap:12,fx:[setAttackPattern('powerWave')]},
-{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'Moon Slash',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'Front Slash',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'Fire Chain',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'Storm Bolt',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'Blast Bomb',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'Toxic Flask',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
-{id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'Storm Strike',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'Black Hole',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'Mud Trap',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'Land Mine',stackCap:12,fx:[setAttackPattern('mine')]}
+{id:'atk_one',rarity:'rare',icon:'➤',name:'Spear',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'Twin',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'Trident',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'Starshot',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'Pulse',stackCap:12,fx:[setAttackPattern('powerWave')]},
+{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'Crescent',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'Cleave',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'Firechain',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'Bolt',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'Bomb',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'Venom',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
+{id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'Storm',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'Singularity',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'Mire',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'Mine',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
 
 /* ===== 16. SHOP_ITEMS ===== */
@@ -2883,7 +2883,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'Dimensional Spear',twoDir:'Twin Blades',threeDir:'Triad Spear',fiveDir:'Starburst',powerWave:'Pulse Wave',slashCone:'Moon Slash',frontSlash:'Front Slash',fireballChain:'Fire Chain',lightningBolt:'Storm Bolt',bomb:'Blast Bomb',poisonBottle:'Toxic Flask',lightningStrike:'Storm Strike',blackHole:'Black Hole',mudPool:'Mud Trap',mine:'Land Mine'};
+  const names={oneDir:'Spear',twoDir:'Twin',threeDir:'Trident',fiveDir:'Starshot',powerWave:'Pulse',slashCone:'Crescent',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -3963,7 +3963,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir'){P.count=4;P.damage*=1.12;} // v1.0.293: Lv.8 damage +12%
+      else if(P.id==='twoDir'){P.count=3;P.damage*=1.08;} // v1.0.294: Lv.8 adds a third shot with a modest damage bonus
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -3981,7 +3981,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.40;} // v1.0.293: Lv.12 pierces all targets and damage +40%
+      else if(P.id==='twoDir'){P.count=4;P.pierce=999;P.damage*=1.20;} // v1.0.294: Lv.12 adds a fourth shot, unlimited pierce, +20% damage
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
