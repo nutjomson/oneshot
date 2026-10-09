@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.272</title>
-<meta name="game-version" content="v1.0.272">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.273</title>
+<meta name="game-version" content="v1.0.273">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4584,7 +4584,10 @@ function showItemReward(item,source){
       if(!Number.isFinite(cap)||cap<=0||!(key in player))return;
       if(!(key in autoLevelBaseStats))autoLevelBaseStats[key]=Number(player[key])||0;
       const base=autoLevelBaseStats[key];
-      player[key]=Math.min(cap,base+(cap-base)*progress);
+      // Fire Rate is inverse: lower seconds-per-shot means faster attacks.
+      player[key]=key==='fireRate'
+        ?Math.max(cap,base+(cap-base)*progress)
+        :Math.min(cap,base+(cap-base)*progress);
     });
     const heroSpeed=Math.max(1,Number(selectedHero?.speed)||Number(player.speed)||1);
     if(!('speed' in autoLevelBaseStats))autoLevelBaseStats.speed=Number(player.speed)||heroSpeed;
