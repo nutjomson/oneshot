@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.280</title>
-<meta name="game-version" content="v1.0.280">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.281</title>
+<meta name="game-version" content="v1.0.281">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4330,41 +4330,25 @@ function renderStartPerks(){
     if(player.lifesteal>0){const lsCap=player.maxHp*(CFG.combat.lifestealMaxPerSec||0.08);const g=Math.min(heal*player.lifesteal,Math.max(0,lsCap-lsUsed));lsUsed+=g;player.hp=Math.min(player.maxHp,player.hp+g);}
     if(e.hp<=0) e.dead=true;
   }
-  // Boss Item Drop: uses the combined Level Up + Shop item pool,
-  // with Rare x2 and Legend x1.5 at the boss wave. The extra probability
-  // is removed from Normal so the total remains exactly 100%.
+  // v1.0.281: Boss rewards use a flat eligible-item pool; weapon rarity does not affect odds.
   function dropBossItem(){
     if(!Array.isArray(mapItemPool) || !mapItemPool.length) return null;
-    const weights=getBossRarityWeights(wave);
-    const available=[...new Set(
-      mapItemPool
-        .map(item=>String(item.rarity||'normal'))
-        .filter(isRarityAvailable)
-    )];
-    const rarity=weightedPickRarity(weights, available);
-    if(!rarity) return null;
     const pool=mapItemPool.filter(i=>
-      i&&String(i.rarity||'normal')===String(rarity) &&
-      !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
-      !isItemMaxed(i)
+      i&&!(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
+      !isItemMaxed(i) &&
+      (!getAttackPatternId(i) || getOwnedAttackPatternLevel(getAttackPatternId(i))>0 || (player.attackPatternsOwned||[]).filter(x=>x&&x.id).length<5)
     );
-    return pool.length ? weightedPick(pool) : null;
+    return pool.length ? pool[Math.floor(Math.random()*pool.length)] : null;
   }
 
   // Item collected from the map/chest uses the combined Level Up + Shop pool
   // with exactly the same rarity rates as Level Up and Shop.
   function getMapItemRarity(){
-    const weights=getRarityWeights(wave);
-    // เลือกเฉพาะ Rarity ที่ยังมีไอเทมใน Map Pool และยังรับได้จริง
-    // เพื่อไม่ให้สุ่ม Rare/Legend ที่หมดสิทธิ์แล้ว แล้วกล่องเปิดไม่ได้
-    const available=[...new Set(
-      mapItemPool
-        .filter(item=>item && !isItemMaxed(item) &&
-          !(item.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(item.bt)))
-        .map(item=>String(item.rarity||'normal'))
-        .filter(isRarityAvailable)
-    )];
-    return weightedPickRarity(weights, available);
+    // v1.0.281: "all" means no rarity gate; each eligible item has equal odds.
+    const eligible=mapItemPool.filter(item=>item && !isItemMaxed(item) &&
+      !(item.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(item.bt)) &&
+      (!getAttackPatternId(item) || getOwnedAttackPatternLevel(getAttackPatternId(item))>0 || (player.attackPatternsOwned||[]).filter(x=>x&&x.id).length<5));
+    return eligible.length?'all':null;
   }
 
   function spawnTreasureChest(w){
@@ -4378,14 +4362,15 @@ function renderStartPerks(){
     const rarity=getMapItemRarity();
     if(!rarity) return;
     treasureChests.push({x,y,r:18,rarity,wave:w,animTimer:0});
-    setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w} • ${rarity}`);
+    setStatus(`🧰 กล่องสมบัติปรากฏ! เวฟ ${w}`);
   }
 
   function openTreasureChest(chest){
     const pool=mapItemPool.filter(i=>
-      i&&String(i.rarity)===String(chest.rarity) &&
+      i&&(chest.rarity==='all'||String(i.rarity)===String(chest.rarity)) &&
       !(i.bt&&Array.isArray(player.bulletTypes)&&player.bulletTypes.includes(i.bt)) &&
-      !isItemMaxed(i)
+      !isItemMaxed(i) &&
+      (!getAttackPatternId(i) || getOwnedAttackPatternLevel(getAttackPatternId(i))>0 || (player.attackPatternsOwned||[]).filter(x=>x&&x.id).length<5)
     );
     if(!pool.length){
       setStatus(`🧰 กล่องสมบัติ ${chest.rarity} ไม่มีไอเท็มที่ใช้ได้`);
