@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.251</title>
-<meta name="game-version" content="v1.0.251">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.252</title>
+<meta name="game-version" content="v1.0.252">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -736,7 +736,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-modal .shop-topline .shop-inline-cost{grid-column:3!important;font-size:10px;font-weight:900;color:#facc15;white-space:nowrap;text-align:right}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 
-/* v1.0.251: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
+/* v1.0.252: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
 #skillLabOverlay.lab-running{pointer-events:none;background:transparent!important;padding:4px 4px 58px!important;}
 #skillLabOverlay.lab-running .skill-lab-modal{pointer-events:auto;width:min(520px,96vw);max-height:none!important;overflow:visible;margin:0 auto;padding:5px 7px!important;background:rgba(3,8,20,.68)!important;border-color:#38bdf855;box-shadow:0 3px 12px #0005;}
 #skillLabOverlay.lab-running .skill-lab-head,#skillLabOverlay.lab-running .skill-lab-controls,#skillLabOverlay.lab-running .skill-lab-note{display:none!important;}
@@ -748,7 +748,7 @@ body.gameplay-actions .hud-controls{display:flex}
 #skillLabOverlay.lab-running .skill-lab-stats b{font-size:12px;margin-top:0;}
 #skillLabOverlay.lab-running .skill-lab-zoom{pointer-events:auto;}
 
-/* v1.0.251: Live skill switching and explicit rarity labels in Skill Testing Lab. */
+/* v1.0.252: Live skill switching and explicit rarity labels in Skill Testing Lab. */
 #skillLabOverlay .skill-lab-live-picker{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:5px;padding:5px;background:rgba(4,12,25,.88);border:1px solid #334155;border-radius:8px;pointer-events:auto;}
 #skillLabOverlay .skill-lab-live-picker label{display:flex;align-items:center;gap:4px;color:#e2e8f0;font-size:10px;}
 #skillLabOverlay .skill-lab-live-picker select{max-width:42vw;min-width:0;padding:5px;background:#0f172a;color:#fff;border:1px solid #64748b;border-radius:6px;font-size:11px;}
@@ -931,13 +931,13 @@ button,input,select,textarea{
 .skill-lab-controls{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin:16px 0}.skill-lab-controls label{display:grid;gap:6px;color:#cbd5e1;font-size:12px;font-weight:800}.skill-lab-controls select{width:100%;min-width:0;padding:10px 8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;border-radius:7px;font:inherit}
 .skill-lab-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.skill-lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.skill-lab-stats>div{padding:10px 6px;text-align:center;background:#0b1728;border:1px solid #263b53;border-radius:8px;min-width:0}.skill-lab-stats span{display:block;color:#94a3b8;font-size:10px}.skill-lab-stats b{display:block;color:#facc15;font-size:clamp(16px,3vw,24px);overflow-wrap:anywhere;margin-top:3px}.skill-lab-note{margin-top:12px;padding:10px;border-radius:7px;background:#0f172a;color:#bae6fd;font-size:11px;line-height:1.5}
 @media(max-width:560px){.skill-lab-modal{padding:12px!important}.skill-lab-controls{grid-template-columns:1fr 1fr}.skill-lab-controls label:first-child{grid-column:1/-1}.skill-lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-lab-head .btn{padding:8px 9px;font-size:11px}.skill-lab-actions .btn{padding:9px 5px;font-size:11px}}
-/* v1.0.251: Keep the real combat canvas visible behind a compact Skill Lab console. */
+/* v1.0.252: Keep the real combat canvas visible behind a compact Skill Lab console. */
 #skillLabOverlay{align-items:flex-start;justify-content:center;background:rgba(2,6,23,.16);backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(76px,env(safe-area-inset-bottom));}
 #skillLabOverlay .skill-lab-modal{width:min(900px,98vw);max-width:900px;max-height:min(48dvh,430px);overflow-y:auto;margin:0 auto;background:rgba(5,12,25,.91);border:1px solid #38bdf8;padding:10px;box-shadow:0 8px 28px #0009;}
 #skillLabOverlay .skill-lab-controls{margin:8px 0;gap:6px}#skillLabOverlay .skill-lab-controls select{padding:7px 6px}#skillLabOverlay .skill-lab-stats{margin-top:8px;gap:5px}#skillLabOverlay .skill-lab-stats>div{padding:6px 4px}#skillLabOverlay .skill-lab-note{margin-top:7px;padding:6px 8px}
 .skill-lab-zoom{position:fixed;z-index:1202;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #38bdf8;border-radius:12px;background:rgba(5,12,25,.94);box-shadow:0 0 20px #0009;color:#e0f2fe;font-size:12px;white-space:nowrap}.skill-lab-zoom button{min-width:36px;height:36px;border:1px solid #64748b;border-radius:8px;background:#172554;color:#fff;font-size:21px;font-weight:900}.skill-lab-zoom #skillLabZoomReset{font-size:11px;padding:0 9px}.skill-lab-zoom b{min-width:42px;text-align:center;color:#facc15}
 @media(max-width:560px){#skillLabOverlay .skill-lab-modal{max-height:52dvh;padding:9px!important}#skillLabOverlay .skill-lab-head .title{font-size:17px}.skill-lab-zoom{gap:5px;padding:6px 7px}.skill-lab-zoom span{font-size:10px}.skill-lab-zoom button{min-width:34px;height:34px}}
-/* v1.0.251: Minimize the console footprint so the real arena remains visible. */
+/* v1.0.252: Minimize the console footprint so the real arena remains visible. */
 #skillLabOverlay{padding-top:max(5px,env(safe-area-inset-top));padding-bottom:68px;}
 #skillLabOverlay .skill-lab-modal{max-height:30dvh;overflow-y:auto;padding:7px 9px;background:rgba(5,12,25,.78);}
 #skillLabOverlay .skill-lab-head{gap:5px}#skillLabOverlay .skill-lab-head .title{font-size:16px;margin:0}#skillLabOverlay .skill-lab-head .sub{font-size:9px;margin:2px 0 0}
@@ -994,7 +994,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.251</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.252</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -5463,9 +5463,9 @@ function openLevelUp(forceHigherRarity=false){
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
             makeSparks(x,y,'#84cc16',10);
           }else if(b.patternMode==='blackHole'){
-            const life=Math.min(2.2,b.patternZoneLife||2),r=Math.min(110,b.patternRadius||80);/* v1.0.251: cap stacked void zones to stop repeated pulls/instant-clears */if(blackHoles.length>=2)blackHoles.shift();blackHoles.push({x,y,r,life,maxLife:life,pull:Math.min(105,b.patternPull||120),age:0});attackFx.push({type:'voidBurst',x,y,r,life:.42,maxLife:.42});makeSparks(x,y,'#7c3aed',22);
+            const life=Math.min(2.2,b.patternZoneLife||2),r=Math.min(110,b.patternRadius||80);/* v1.0.252: cap stacked void zones to stop repeated pulls/instant-clears */if(blackHoles.length>=2)blackHoles.shift();blackHoles.push({x,y,r,life,maxLife:life,pull:Math.min(105,b.patternPull||120),age:0});attackFx.push({type:'voidBurst',x,y,r,life:.42,maxLife:.42});makeSparks(x,y,'#7c3aed',22);
           }else if(b.patternMode==='mud'){
-            const life=Math.min(2.8,b.patternZoneLife||3),r=Math.min(95,b.patternRadius||80);/* v1.0.251: limit mud puddle stacking and lower tick DPS */if(mudZones.length>=2)mudZones.shift();mudZones.push({x,y,r,life,maxLife:life,slow:Math.min(.4,b.patternSlow||.3),tick:0,tickRate:Math.max(.8,b.patternTick||.5),damage:Math.max(1,b.damage*.30)});attackFx.push({type:'mudBurst',x,y,r,life:.34,maxLife:.34});makeSparks(x,y,'#92400e',14);
+            const life=Math.min(2.8,b.patternZoneLife||3),r=Math.min(95,b.patternRadius||80);/* v1.0.252: limit mud puddle stacking and lower tick DPS */if(mudZones.length>=2)mudZones.shift();mudZones.push({x,y,r,life,maxLife:life,slow:Math.min(.4,b.patternSlow||.3),tick:0,tickRate:Math.max(.8,b.patternTick||.5),damage:Math.max(1,b.damage*.30)});attackFx.push({type:'mudBurst',x,y,r,life:.34,maxLife:.34});makeSparks(x,y,'#92400e',14);
           }else if(b.patternMode==='mine'){
             mines.push({x,y,r:b.patternRadius||60,damage:Math.max(1,b.damage),armed:.15,life:12});attackFx.push({type:'mineSet',x,y,r:b.patternRadius||60,life:.28,maxLife:.28});makeSparks(x,y,'#facc15',12);
           }else{
@@ -5511,7 +5511,7 @@ function openLevelUp(forceHigherRarity=false){
     }
     sweepDead();
 
-    for(let i=blackHoles.length-1;i>=0;i--){const z=blackHoles[i];z.life-=dt;z.age+=dt;for(const e of enemies){if(e.dead)continue;const d=dist(z.x,z.y,e.x,e.y);if(d<=z.r+e.r){const a=Math.atan2(z.y-e.y,z.x-e.x),pull=Math.max(0,z.pull)*(1-Math.min(1,d/Math.max(1,z.r*2)));e.x=clamp(e.x+Math.cos(a)*pull*dt,40,world.w-40);e.y=clamp(e.y+Math.sin(a)*pull*dt,40,world.h-40);/* v1.0.251: black holes pull enemies but no longer execute them instantly; damage stays in normal attack pipeline. */}}if(z.life<=0)blackHoles.splice(i,1);}
+    for(let i=blackHoles.length-1;i>=0;i--){const z=blackHoles[i];z.life-=dt;z.age+=dt;for(const e of enemies){if(e.dead)continue;const d=dist(z.x,z.y,e.x,e.y);if(d<=z.r+e.r){const a=Math.atan2(z.y-e.y,z.x-e.x),pull=Math.max(0,z.pull)*(1-Math.min(1,d/Math.max(1,z.r*2)));e.x=clamp(e.x+Math.cos(a)*pull*dt,40,world.w-40);e.y=clamp(e.y+Math.sin(a)*pull*dt,40,world.h-40);/* v1.0.252: black holes pull enemies but no longer execute them instantly; damage stays in normal attack pipeline. */}}if(z.life<=0)blackHoles.splice(i,1);}
     for(let i=mudZones.length-1;i>=0;i--){const z=mudZones[i];z.life-=dt;z.tick-=dt;for(const e of enemies){if(e.dead||dist(z.x,z.y,e.x,e.y)>z.r+e.r)continue;e.mudSlow=Math.max(e.mudSlow||0,z.slow||.3);if(z.tick<=0){hitEnemy(e,z.damage,false,null);z.tick=z.tickRate;}}if(z.life<=0)mudZones.splice(i,1);}
     for(let i=mines.length-1;i>=0;i--){const m=mines[i];m.life-=dt;m.armed-=dt;const e=enemies.find(o=>!o.dead&&m.armed<=0&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r);if(e){attackFx.push({type:'explosion',x:m.x,y:m.y,r:m.r*1.5,life:.34,maxLife:.34});for(const o of enemies)if(!o.dead&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r)hitEnemy(o,m.damage,false,null);makeSparks(m.x,m.y,'#facc15',30);mines.splice(i,1);continue;}if(m.life<=0)mines.splice(i,1);}
     // v1.0.213: poison zones deal repeated area damage while enemies remain inside.
@@ -5752,7 +5752,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.251: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.252: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
@@ -5910,14 +5910,29 @@ function openLevelUp(forceHigherRarity=false){
         ctx.shadowBlur=0;ctx.beginPath();ctx.arc(px,py,inner,a.angle-sweep*.78,a.angle+sweep*.78);ctx.strokeStyle='#ccfbf1';ctx.lineWidth=2.5;ctx.stroke();
         for(let side of [-1,1]){const ang=a.angle+side*sweep*.82,rad=outer*.82;const rx=px+Math.cos(ang)*rad,ry=py+Math.sin(ang)*rad;ctx.fillStyle='#f0fdfa';ctx.beginPath();ctx.moveTo(rx+Math.cos(ang)*9,ry+Math.sin(ang)*9);ctx.lineTo(rx+Math.cos(ang+2.35)*5,ry+Math.sin(ang+2.35)*5);ctx.lineTo(rx+Math.cos(ang-2.35)*5,ry+Math.sin(ang-2.35)*5);ctx.closePath();ctx.fill();}
         ctx.strokeStyle='#99f6e4';ctx.lineWidth=1.5;for(let k=0;k<3;k++){const ang=a.angle+(k-1)*sweep*.42,rad=outer*(.42+k*.13);ctx.beginPath();ctx.moveTo(px+Math.cos(ang)*rad,py+Math.sin(ang)*rad);ctx.lineTo(px+Math.cos(ang)*Math.min(outer,rad+10),py+Math.sin(ang)*Math.min(outer,rad+10));ctx.stroke();}
+      }else if(heavy){
+        // v1.0.252: organic painterly sword stroke — irregular tapered ribbons, not a geometric arc.
+        const fade=Math.max(0,1-t),dirX=Math.cos(a.angle),dirY=Math.sin(a.angle),sideX=-dirY,sideY=dirX;
+        const reach=rr*(.58+.55*slashT),sweep=a.arc*(.45+.55*slashT),seed=Number(a.seed)||1;
+        for(let layer=0;layer<4;layer++){
+          const back=-reach*(.18+layer*.035),front=reach*(.72+layer*.08),bend=reach*(.12+layer*.025)*Math.sin(seed+layer*1.7);
+          const x0=px+dirX*back+sideX*(reach*sweep*.75),y0=py+dirY*back+sideY*(reach*sweep*.75);
+          const x1=px+dirX*(reach*.12)+sideX*bend,y1=py+dirY*(reach*.12)+sideY*bend;
+          const x2=px+dirX*(reach*.48)-sideX*(reach*sweep*.55),y2=py+dirY*(reach*.48)-sideY*(reach*sweep*.55);
+          const x3=px+dirX*front-sideX*(reach*sweep*.9),y3=py+dirY*front-sideY*(reach*sweep*.9);
+          ctx.globalAlpha=fade*[.28,.52,.9,.95][layer];ctx.strokeStyle=['#92400e','#f59e0b','#fff1b8','#ffffff'][layer];ctx.lineWidth=[22,15,7,2.5][layer]*(1-.42*t);ctx.shadowColor=layer>1?'#fff7cc':'#f59e0b';ctx.shadowBlur=[5,12,18,7][layer];
+          ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(x1,y1,x2,y2);ctx.quadraticCurveTo(x2+sideX*bend*.35,y2+sideY*bend*.35,x3,y3);ctx.stroke();
+        }
+        ctx.shadowBlur=0;
+        // Broken edge fragments and directional sparks make the cut feel forceful and imperfect.
+        for(let k=0;k<7;k++){const f=.22+k*.105,j=(Math.sin(seed*4+k*8.1))*(7+12*(1-t)),x=px+dirX*reach*f+sideX*j,y=py+dirY*reach*f+sideY*j;ctx.globalAlpha=fade*(.75-f*.35);ctx.strokeStyle=k%2?'#fbbf24':'#fff7ed';ctx.lineWidth=1.5+(1-t)*2;ctx.beginPath();ctx.moveTo(x-dirX*(5+k%3),y-dirY*(5+k%3));ctx.lineTo(x+sideX*(4+j*.3),y+sideY*(4+j*.3));ctx.stroke();}
+        const tipX=px+dirX*reach,tipY=py+dirY*reach;ctx.globalAlpha=fade*.95;ctx.fillStyle='#ffffff';ctx.shadowColor='#fef3c7';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(tipX,tipY,2+7*(1-t),0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
       }else{
-      const layers=heavy?3:2;
-      for(let layer=0;layer<layers;layer++){
-        ctx.beginPath();ctx.arc(px,py,rr*(heavy ? 0.68+layer*.13 : 0.82+layer*.10),a.angle-a.arc*(heavy ? 0.72+layer*.10 : 0.86+layer*.08),a.angle+a.arc*(heavy?.72+layer*.10:.86+layer*.08));
-        ctx.strokeStyle=heavy?(layer===0?'#fff7ed':layer===1?'#fde047':'#f59e0b'):(layer===0?'#ffffff':'#bae6fd');ctx.lineWidth=heavy?(layer===0?5:layer===1?9:14):(layer===0?3:6);ctx.globalAlpha=(1-t)*(layer===0?.98:layer===1?.72:.28);ctx.stroke();
-      }
-      const tipX=px+Math.cos(a.angle)*rr,tipY=py+Math.sin(a.angle)*rr;
-      ctx.globalAlpha=(1-t)*.9;ctx.fillStyle='#fff7ed';ctx.fillRect(tipX-3,tipY-3,6,6);
+        const layers=2;
+        for(let layer=0;layer<layers;layer++){
+          ctx.beginPath();ctx.arc(px,py,rr*(0.82+layer*.10),a.angle-a.arc*(0.86+layer*.08),a.angle+a.arc*(0.86+layer*.08));
+          ctx.strokeStyle=layer===0?'#ffffff':'#bae6fd';ctx.lineWidth=layer===0?3:6;ctx.globalAlpha=(1-t)*(layer===0?.98:.72);ctx.stroke();
+        }
       }
       ctx.restore();a.life-=1/60;
     }
