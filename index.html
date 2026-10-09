@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.262</title>
-<meta name="game-version" content="v1.0.262">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.263</title>
+<meta name="game-version" content="v1.0.263">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -736,7 +736,7 @@ body.gameplay-actions .hud-controls{display:flex}
 .shop-modal .shop-topline .shop-inline-cost{grid-column:3!important;font-size:10px;font-weight:900;color:#facc15;white-space:nowrap;text-align:right}
 @media(max-width:640px){.shop-modal .shop-topline .shop-inline-cost{font-size:9px}}
 
-/* v1.0.262: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
+/* v1.0.263: Once a test starts, hide setup fields and leave only a slim live HUD/control strip. Let taps pass through the transparent overlay to the arena. */
 #skillLabOverlay.lab-running{pointer-events:none;background:transparent!important;padding:4px 4px 58px!important;}
 #skillLabOverlay.lab-running .skill-lab-modal{pointer-events:auto;width:min(520px,96vw);max-height:none!important;overflow:visible;margin:0 auto;padding:5px 7px!important;background:rgba(3,8,20,.68)!important;border-color:#38bdf855;box-shadow:0 3px 12px #0005;}
 #skillLabOverlay.lab-running .skill-lab-head,#skillLabOverlay.lab-running .skill-lab-controls,#skillLabOverlay.lab-running .skill-lab-note{display:none!important;}
@@ -748,7 +748,7 @@ body.gameplay-actions .hud-controls{display:flex}
 #skillLabOverlay.lab-running .skill-lab-stats b{font-size:12px;margin-top:0;}
 #skillLabOverlay.lab-running .skill-lab-zoom{pointer-events:auto;}
 
-/* v1.0.262: Live skill switching and explicit rarity labels in Skill Testing Lab. */
+/* v1.0.263: Live skill switching and explicit rarity labels in Skill Testing Lab. */
 #skillLabOverlay .skill-lab-live-picker{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:5px;padding:5px;background:rgba(4,12,25,.88);border:1px solid #334155;border-radius:8px;pointer-events:auto;}
 #skillLabOverlay .skill-lab-live-picker label{display:flex;align-items:center;gap:4px;color:#e2e8f0;font-size:10px;}
 #skillLabOverlay .skill-lab-live-picker select{max-width:42vw;min-width:0;padding:5px;background:#0f172a;color:#fff;border:1px solid #64748b;border-radius:6px;font-size:11px;}
@@ -931,13 +931,13 @@ button,input,select,textarea{
 .skill-lab-controls{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin:16px 0}.skill-lab-controls label{display:grid;gap:6px;color:#cbd5e1;font-size:12px;font-weight:800}.skill-lab-controls select{width:100%;min-width:0;padding:10px 8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;border-radius:7px;font:inherit}
 .skill-lab-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.skill-lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.skill-lab-stats>div{padding:10px 6px;text-align:center;background:#0b1728;border:1px solid #263b53;border-radius:8px;min-width:0}.skill-lab-stats span{display:block;color:#94a3b8;font-size:10px}.skill-lab-stats b{display:block;color:#facc15;font-size:clamp(16px,3vw,24px);overflow-wrap:anywhere;margin-top:3px}.skill-lab-note{margin-top:12px;padding:10px;border-radius:7px;background:#0f172a;color:#bae6fd;font-size:11px;line-height:1.5}
 @media(max-width:560px){.skill-lab-modal{padding:12px!important}.skill-lab-controls{grid-template-columns:1fr 1fr}.skill-lab-controls label:first-child{grid-column:1/-1}.skill-lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-lab-head .btn{padding:8px 9px;font-size:11px}.skill-lab-actions .btn{padding:9px 5px;font-size:11px}}
-/* v1.0.262: Keep the real combat canvas visible behind a compact Skill Lab console. */
+/* v1.0.263: Keep the real combat canvas visible behind a compact Skill Lab console. */
 #skillLabOverlay{align-items:flex-start;justify-content:center;background:rgba(2,6,23,.16);backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(76px,env(safe-area-inset-bottom));}
 #skillLabOverlay .skill-lab-modal{width:min(900px,98vw);max-width:900px;max-height:min(48dvh,430px);overflow-y:auto;margin:0 auto;background:rgba(5,12,25,.91);border:1px solid #38bdf8;padding:10px;box-shadow:0 8px 28px #0009;}
 #skillLabOverlay .skill-lab-controls{margin:8px 0;gap:6px}#skillLabOverlay .skill-lab-controls select{padding:7px 6px}#skillLabOverlay .skill-lab-stats{margin-top:8px;gap:5px}#skillLabOverlay .skill-lab-stats>div{padding:6px 4px}#skillLabOverlay .skill-lab-note{margin-top:7px;padding:6px 8px}
 .skill-lab-zoom{position:fixed;z-index:1202;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #38bdf8;border-radius:12px;background:rgba(5,12,25,.94);box-shadow:0 0 20px #0009;color:#e0f2fe;font-size:12px;white-space:nowrap}.skill-lab-zoom button{min-width:36px;height:36px;border:1px solid #64748b;border-radius:8px;background:#172554;color:#fff;font-size:21px;font-weight:900}.skill-lab-zoom #skillLabZoomReset{font-size:11px;padding:0 9px}.skill-lab-zoom b{min-width:42px;text-align:center;color:#facc15}
 @media(max-width:560px){#skillLabOverlay .skill-lab-modal{max-height:52dvh;padding:9px!important}#skillLabOverlay .skill-lab-head .title{font-size:17px}.skill-lab-zoom{gap:5px;padding:6px 7px}.skill-lab-zoom span{font-size:10px}.skill-lab-zoom button{min-width:34px;height:34px}}
-/* v1.0.262: Minimize the console footprint so the real arena remains visible. */
+/* v1.0.263: Minimize the console footprint so the real arena remains visible. */
 #skillLabOverlay{padding-top:max(5px,env(safe-area-inset-top));padding-bottom:68px;}
 #skillLabOverlay .skill-lab-modal{max-height:30dvh;overflow-y:auto;padding:7px 9px;background:rgba(5,12,25,.78);}
 #skillLabOverlay .skill-lab-head{gap:5px}#skillLabOverlay .skill-lab-head .title{font-size:16px;margin:0}#skillLabOverlay .skill-lab-head .sub{font-size:9px;margin:2px 0 0}
@@ -994,7 +994,7 @@ button,input,select,textarea{
 <div id="startOverlay" class="overlay">
   <div class="modal" style="position:relative">
     <div class="title">⚔️ 16-BIT SURVIVOR ARENA ⚔️</div>
-    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.262</div>
+    <div id="gameVersion" style="position:absolute;top:10px;right:12px;font-size:10px;font-weight:900;color:#94a3b8;background:#0f172acc;border:1px solid #334155;padding:4px 8px;border-radius:5px;z-index:20;letter-spacing:.4px">v1.0.263</div>
     <div class="sub">เลือกฮีโร่ของคุณเพื่อเริ่มต้นการต่อสู้!</div>
     
     <div id="heroSelect"></div>
@@ -1568,7 +1568,7 @@ const SHOP_RARITIES = {
    15 รูปแบบ: Normal 5 / Rare 6 / Legend 4 — ทุกชนิดตีบวกได้สูงสุด +20
 */
 const LEVEL_UPGRADES = [
-{id:'atk_one',rarity:'normal',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
+{id:'atk_one',rarity:'rare',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
 {id:'atk_cone',rarity:'rare',icon:'🗡️',name:'คมจันทร์ฉีกอากาศ',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'อสนีหอกคราม',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
 {id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'พิพากษาอสนีสุ่ม',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
@@ -1966,7 +1966,7 @@ window.GAME_CONFIG = {
 
   let bullets=[], enemyBullets=[], enemies=[], xpOrbs=[], goldCoins=[], sparks=[], floaters=[], poisonZones=[], windZones=[], blackHoles=[], mudZones=[], mines=[];
   let slashEffects=[], chainEffects=[], attackFx=[];
-  // v1.0.262: Front Slash is drawn entirely with Canvas primitives; no external image dependency.
+  // v1.0.263: Front Slash is drawn entirely with Canvas primitives; no external image dependency.
   // Fixed core mechanic: XP and gold auto-pick up within this radius. No Pickup stat/upgrades.
   const AUTO_PICKUP_RADIUS = 409.5; // v1.0.166: +30% pickup range
   let treasureChests=[];
@@ -2958,7 +2958,7 @@ function getAttackPatternName(id){
 }
 function getAttackPatternMilestoneDetail(pid,lv){
   const details={
-    oneDir:{4:'เพิ่มกระสุน +1',8:'Damage เพิ่ม 18%',12:'Pierce +2 และ Damage เพิ่ม 15%'},
+    oneDir:{4:'เพิ่มกระสุน +1',8:'Damage เพิ่ม 18%',12:'ยิงพร้อมกัน 5 หอก ทะลุศัตรูทั้งหมด และ Damage เพิ่ม 15%'},
     twoDir:{4:'เพิ่ม Spread เพื่อกระจายทิศยิง',8:'เพิ่มจำนวนเป็น 4 ทิศ',12:'Pierce +1 และ Damage เพิ่ม 12%'},
     threeDir:{4:'Pierce +1',8:'Damage เพิ่ม 18%',12:'เพิ่มจำนวนเป็น 5 ทิศ และ Pierce +1'},
     fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
@@ -4144,7 +4144,7 @@ function renderStartPerks(){
       if(P.mode==='slash'){
         const range=Number(P.range)||120, arc=Number(P.arc)||0.6;
         // Short-lived visible sword sweep; damage remains resolved exactly once below.
-        // v1.0.262: Front Slash effects spawn at each enemy actually hit, not at the player.
+        // v1.0.263: Front Slash effects spawn at each enemy actually hit, not at the player.
         if(patternId!=='frontSlash'){
           slashEffects.push({x:player.x,y:player.y,angle:attackBaseAngle,range,arc,life:.30,maxLife:.30,color:'#f8fafc',style:'moonCleave',seed:Math.random()*1000});
           if(slashEffects.length>12)slashEffects.shift();
@@ -5485,9 +5485,9 @@ function openLevelUp(forceHigherRarity=false){
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
             makeSparks(x,y,'#84cc16',10);
           }else if(b.patternMode==='blackHole'){
-            const life=Math.min(2.2,b.patternZoneLife||2),r=Math.min(110,b.patternRadius||80);/* v1.0.262: cap stacked void zones to stop repeated pulls/instant-clears */if(blackHoles.length>=2)blackHoles.shift();blackHoles.push({x,y,r,life,maxLife:life,pull:Math.min(105,b.patternPull||120),age:0});attackFx.push({type:'voidBurst',x,y,r,life:.42,maxLife:.42});makeSparks(x,y,'#7c3aed',22);
+            const life=Math.min(2.2,b.patternZoneLife||2),r=Math.min(110,b.patternRadius||80);/* v1.0.263: cap stacked void zones to stop repeated pulls/instant-clears */if(blackHoles.length>=2)blackHoles.shift();blackHoles.push({x,y,r,life,maxLife:life,pull:Math.min(105,b.patternPull||120),age:0});attackFx.push({type:'voidBurst',x,y,r,life:.42,maxLife:.42});makeSparks(x,y,'#7c3aed',22);
           }else if(b.patternMode==='mud'){
-            const life=Math.min(2.8,b.patternZoneLife||3),r=Math.min(95,b.patternRadius||80);/* v1.0.262: limit mud puddle stacking and lower tick DPS */if(mudZones.length>=2)mudZones.shift();mudZones.push({x,y,r,life,maxLife:life,slow:Math.min(.4,b.patternSlow||.3),tick:0,tickRate:Math.max(.8,b.patternTick||.5),damage:Math.max(1,b.damage*.30)});attackFx.push({type:'mudBurst',x,y,r,life:.34,maxLife:.34});makeSparks(x,y,'#92400e',14);
+            const life=Math.min(2.8,b.patternZoneLife||3),r=Math.min(95,b.patternRadius||80);/* v1.0.263: limit mud puddle stacking and lower tick DPS */if(mudZones.length>=2)mudZones.shift();mudZones.push({x,y,r,life,maxLife:life,slow:Math.min(.4,b.patternSlow||.3),tick:0,tickRate:Math.max(.8,b.patternTick||.5),damage:Math.max(1,b.damage*.30)});attackFx.push({type:'mudBurst',x,y,r,life:.34,maxLife:.34});makeSparks(x,y,'#92400e',14);
           }else if(b.patternMode==='mine'){
             mines.push({x,y,r:b.patternRadius||60,damage:Math.max(1,b.damage),armed:.15,life:12});attackFx.push({type:'mineSet',x,y,r:b.patternRadius||60,life:.28,maxLife:.28});makeSparks(x,y,'#facc15',12);
           }else{
@@ -5533,7 +5533,7 @@ function openLevelUp(forceHigherRarity=false){
     }
     sweepDead();
 
-    for(let i=blackHoles.length-1;i>=0;i--){const z=blackHoles[i];z.life-=dt;z.age+=dt;for(const e of enemies){if(e.dead)continue;const d=dist(z.x,z.y,e.x,e.y);if(d<=z.r+e.r){const a=Math.atan2(z.y-e.y,z.x-e.x),pull=Math.max(0,z.pull)*(1-Math.min(1,d/Math.max(1,z.r*2)));e.x=clamp(e.x+Math.cos(a)*pull*dt,40,world.w-40);e.y=clamp(e.y+Math.sin(a)*pull*dt,40,world.h-40);/* v1.0.262: black holes pull enemies but no longer execute them instantly; damage stays in normal attack pipeline. */}}if(z.life<=0)blackHoles.splice(i,1);}
+    for(let i=blackHoles.length-1;i>=0;i--){const z=blackHoles[i];z.life-=dt;z.age+=dt;for(const e of enemies){if(e.dead)continue;const d=dist(z.x,z.y,e.x,e.y);if(d<=z.r+e.r){const a=Math.atan2(z.y-e.y,z.x-e.x),pull=Math.max(0,z.pull)*(1-Math.min(1,d/Math.max(1,z.r*2)));e.x=clamp(e.x+Math.cos(a)*pull*dt,40,world.w-40);e.y=clamp(e.y+Math.sin(a)*pull*dt,40,world.h-40);/* v1.0.263: black holes pull enemies but no longer execute them instantly; damage stays in normal attack pipeline. */}}if(z.life<=0)blackHoles.splice(i,1);}
     for(let i=mudZones.length-1;i>=0;i--){const z=mudZones[i];z.life-=dt;z.tick-=dt;for(const e of enemies){if(e.dead||dist(z.x,z.y,e.x,e.y)>z.r+e.r)continue;e.mudSlow=Math.max(e.mudSlow||0,z.slow||.3);if(z.tick<=0){hitEnemy(e,z.damage,false,null);z.tick=z.tickRate;}}if(z.life<=0)mudZones.splice(i,1);}
     for(let i=mines.length-1;i>=0;i--){const m=mines[i];m.life-=dt;m.armed-=dt;const e=enemies.find(o=>!o.dead&&m.armed<=0&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r);if(e){attackFx.push({type:'explosion',x:m.x,y:m.y,r:m.r*1.5,life:.34,maxLife:.34});for(const o of enemies)if(!o.dead&&dist(m.x,m.y,o.x,o.y)<=m.r+o.r)hitEnemy(o,m.damage,false,null);makeSparks(m.x,m.y,'#facc15',30);mines.splice(i,1);continue;}if(m.life<=0)mines.splice(i,1);}
     // v1.0.213: poison zones deal repeated area damage while enemies remain inside.
@@ -5774,7 +5774,7 @@ function openLevelUp(forceHigherRarity=false){
     const sd=player.facing==='left'?-1:1;
     if(h.id==='cyber'&&mv){for(let k=1;k<=2;k++){ctx.save();ctx.globalAlpha=.22/k;ctx.translate(px-Math.cos(player.angle)*k*11,py+bob-Math.sin(player.angle)*k*11);ctx.scale(sd,1);ctx.drawImage(fl,-24,-30,48,48);ctx.restore();}}
     if(h.id==='neon'){
-      // v1.0.262: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
+      // v1.0.263: Vesper leaves colorful prismatic afterimages and orbiting light shards while moving.
       const moveA=player.angle, trailLen=mv?3:1;
       for(let k=trailLen;k>=1;k--){
         ctx.save();ctx.globalAlpha=(mv?.17:.055)/k;
@@ -5847,7 +5847,7 @@ function openLevelUp(forceHigherRarity=false){
         ctx.globalAlpha=.9;ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.ellipse(0,0,Math.max(9,b.r*2.3),Math.max(4,b.r*.8),0,0,Math.PI*2);ctx.fill();
         ctx.globalAlpha=.85;ctx.strokeStyle='#e0f2fe';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,0,Math.max(12,b.r*2.8),Math.max(6,b.r*1.1),0,0,Math.PI*2);ctx.stroke();ctx.restore();
       } else if(b.patternMode==='lightningBolt'){
-        // v1.0.262: a massive dimensional light-spear with a slow, heavy flight and splintering shards.
+        // v1.0.263: a massive dimensional light-spear with a slow, heavy flight and splintering shards.
         const pulse=.82+.18*Math.sin(performance.now()*.018),ang=Math.atan2(b.vy,b.vx);
         ctx.save();ctx.translate(px,py);ctx.rotate(ang);ctx.globalAlpha=.96;
         // Long fractured energy wake.
@@ -5947,7 +5947,7 @@ function openLevelUp(forceHigherRarity=false){
         for(let side of [-1,1]){const ang=a.angle+side*sweep*.82,rad=outer*.82;const rx=px+Math.cos(ang)*rad,ry=py+Math.sin(ang)*rad;ctx.fillStyle='#f0fdfa';ctx.beginPath();ctx.moveTo(rx+Math.cos(ang)*9,ry+Math.sin(ang)*9);ctx.lineTo(rx+Math.cos(ang+2.35)*5,ry+Math.sin(ang+2.35)*5);ctx.lineTo(rx+Math.cos(ang-2.35)*5,ry+Math.sin(ang-2.35)*5);ctx.closePath();ctx.fill();}
         ctx.strokeStyle='#99f6e4';ctx.lineWidth=1.5;for(let k=0;k<3;k++){const ang=a.angle+(k-1)*sweep*.42,rad=outer*(.42+k*.13);ctx.beginPath();ctx.moveTo(px+Math.cos(ang)*rad,py+Math.sin(ang)*rad);ctx.lineTo(px+Math.cos(ang)*Math.min(outer,rad+10),py+Math.sin(ang)*Math.min(outer,rad+10));ctx.stroke();}
       }else if(heavy){
-        // v1.0.262: compact forward sword arc; reveal the curved blade progressively from left to right.
+        // v1.0.263: compact forward sword arc; reveal the curved blade progressively from left to right.
         const fade=Math.max(0,1-t),dirX=Math.cos(a.angle),dirY=Math.sin(a.angle);
         const progress=Math.max(.015,Math.min(1,t*1.65));
         const radius=Math.min(76,Math.max(30,rr*.58));
@@ -5965,7 +5965,7 @@ function openLevelUp(forceHigherRarity=false){
         strokeArc('#fbbf24',6,.98,7);
         strokeArc('#fff7d6',2.2,1,4);
         ctx.shadowBlur=0;
-        // v1.0.262: draw a compact sword that moves with the advancing slash tip.
+        // v1.0.263: draw a compact sword that moves with the advancing slash tip.
         const swordX=px+Math.cos(endAngle)*radius*.72,swordY=py+Math.sin(endAngle)*radius*.72;
         ctx.save();ctx.translate(swordX,swordY);ctx.rotate(endAngle);
         ctx.globalAlpha=fade*(.55+.45*progress);
