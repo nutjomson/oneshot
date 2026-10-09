@@ -5237,7 +5237,7 @@ function openLevelUp(forceHigherRarity=false){
 
   function update(dt){
     elapsed+=dt;
-    if(skillLabMode){wave=1;shownWave=1;}else wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
+    if(skillLabMode){skillLabHudTimer+=dt;if(skillLabHudTimer>=0.15){skillLabHudTimer=0;updateSkillLabHud();}wave=1;shownWave=1;}else wave=dev.wave.start+Math.floor(elapsed/dev.wave.duration);
     if(wave!==shownWave){
       const prevWave=shownWave;
       shownWave=wave;
