@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.237</title>
-<meta name="game-version" content="v1.0.237">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.238</title>
+<meta name="game-version" content="v1.0.238">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1391,7 +1391,7 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 const ATTACK_PATTERNS = {
   oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'bullet'},twoDir:{id:'twoDir',count:2,spread:0.10,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:3,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
   slashCone:{id:'slashCone',count:1,damage:0.28,mode:'slash',range:90,arc:0.22,bleedDps:0.012,bleedTime:1.5},powerWave:{id:'powerWave',count:1,damage:0.22,mode:'wave',range:250,speed:480,radius:6,life:0.55},frontSlash:{id:'frontSlash',count:1,damage:0.32,mode:'slash',range:82,arc:0.55},
-  fireballChain:{id:'fireballChain',count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{id:'lightningBolt',count:1,damage:0.25,mode:'lightningBolt',speed:900,life:0.9},bomb:{id:'bomb',count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{id:'poisonBottle',count:1,damage:0.16,mode:'poison',range:300,speed:500,radius:55,life:0.9,zoneLife:2.2,tick:0.5},
+  fireballChain:{id:'fireballChain',count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{id:'lightningBolt',count:1,damage:0.25,mode:'lightningBolt',speed:900,life:0.9},bomb:{id:'bomb',count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{id:'poisonBottle',count:1,damage:0.10,mode:'poison',range:260,speed:460,radius:42,life:0.9,zoneLife:1.6,tick:0.65},
   lightningStrike:{id:'lightningStrike',count:1,damage:0.18,mode:'lightning',range:500,cooldown:0.5},blackHole:{id:'blackHole',count:1,damage:0.12,mode:'blackHole',range:360,speed:420,radius:55,life:0.9,zoneLife:1.5,pull:85},mudPool:{id:'mudPool',count:1,damage:0.08,mode:'mud',range:330,speed:460,radius:60,life:0.85,zoneLife:2.5,slow:0.25,tick:0.5},mine:{id:'mine',count:1,damage:0.30,mode:'mine',range:300,speed:430,radius:55,life:0.9}
 };
 
@@ -1501,8 +1501,8 @@ const SHOP_RARITIES = {
 */
 const LEVEL_UPGRADES = [
 {id:'atk_one',rarity:'normal',icon:'➤',name:'หอกแสงผ่ามิติ',stackCap:12,fx:[setAttackPattern('oneDir')]},{id:'atk_two',rarity:'normal',icon:'↔️',name:'คู่คมสะท้อน',stackCap:12,fx:[setAttackPattern('twoDir')]},{id:'atk_three',rarity:'normal',icon:'🔱',name:'ตรีศูลพัลส์',stackCap:12,fx:[setAttackPattern('threeDir')]},{id:'atk_five',rarity:'normal',icon:'✦',name:'ดาวกระจายห้าแฉก',stackCap:12,fx:[setAttackPattern('fiveDir')]},{id:'atk_wave',rarity:'normal',icon:'〰️',name:'คลื่นพลัง',stackCap:12,fx:[setAttackPattern('powerWave')]},
-{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'ฟันวงกรวยด้านหน้า',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'โยนพิษ',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
-{id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'สายฟ้าสุ่มฟาด',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
+{id:'atk_cone',rarity:'rare',icon:'🗡️',name:'ฟันวงกรวยด้านหน้า',stackCap:12,fx:[setAttackPattern('slashCone')]},{id:'atk_front_slash',rarity:'rare',icon:'⚔️',name:'ฟันระยะใกล้รอบด้านหน้า',stackCap:12,fx:[setAttackPattern('frontSlash')]},{id:'atk_fire_chain',rarity:'rare',icon:'🔥',name:'ลูกไฟลาม',stackCap:12,fx:[setAttackPattern('fireballChain')]},{id:'atk_lightning_bolt',rarity:'rare',icon:'⚡',name:'สายฟ้า 1 ทิศ',stackCap:12,fx:[setAttackPattern('lightningBolt')]},{id:'atk_bomb',rarity:'rare',icon:'💣',name:'โยนระเบิดวงกว้าง',stackCap:12,fx:[setAttackPattern('bomb')]},{id:'atk_poison',rarity:'rare',icon:'☠️',name:'มลทินกรดกัดกร่อน',stackCap:12,fx:[setAttackPattern('poisonBottle')]},
+{id:'atk_lightning_strike',rarity:'legend',icon:'⚡',name:'พิพากษาอสนีสุ่ม',stackCap:12,fx:[setAttackPattern('lightningStrike')]},{id:'atk_blackhole',rarity:'legend',icon:'🕳️',name:'หลุมดำ',stackCap:12,fx:[setAttackPattern('blackHole')]},{id:'atk_mud',rarity:'legend',icon:'🟤',name:'ปาโคลนดูด',stackCap:12,fx:[setAttackPattern('mudPool')]},{id:'atk_mine',rarity:'legend',icon:'💥',name:'วางกับระเบิด',stackCap:12,fx:[setAttackPattern('mine')]}
 ];
 
 /* ===== 16. SHOP_ITEMS ===== */
@@ -2907,7 +2907,7 @@ function getAttackPatternUpgradeInfo(item){
   const fx=Array.isArray(item?.fx)?item.fx:[],f=fx.find(x=>x&&x.op==='attackPattern');if(!f)return '';
   const pid=String(f.v||''),base=CFG.attackPatterns?.[pid];if(!base)return '';
   const current=getOwnedAttackPatternLevel(pid),next=Math.min(12,current+1),p=resolveAttackPattern(base,next);
-  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'ขวดพิษ',lightningStrike:'สายฟ้าสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
+  const names={oneDir:'หอกแสงผ่ามิติ',twoDir:'คู่คมสะท้อน',threeDir:'ตรีศูลพัลส์',fiveDir:'ดาวกระจายห้าแฉก',powerWave:'คลื่นพลัง',slashCone:'ฟันกรวย',frontSlash:'ฟันด้านหน้า',fireballChain:'ลูกไฟลาม',lightningBolt:'สายฟ้าตรง',bomb:'ระเบิดวงกว้าง',poisonBottle:'มลทินกรดกัดกร่อน',lightningStrike:'พิพากษาอสนีสุ่ม',blackHole:'หลุมดำ',mudPool:'โคลนดูด',mine:'กับระเบิด'};
   const milestone=getAttackPatternMilestoneDetail(pid,next);
   const count=Math.max(1,Math.floor(Number(p.count)||1)),dmg=Number(p.damage)||0;
   return '<div class="attack-pattern-upgrade-info"><div class="attack-pattern-line"><b>⚔️ '+(names[pid]||getAttackPatternName(pid))+' Lv.'+next+'</b></div><div class="attack-pattern-line">💥 Damage x'+dmg.toFixed(2)+(count>1?' • '+count+' เป้า/ทิศ':'')+'</div>'+
@@ -3942,7 +3942,7 @@ function renderStartPerks(){
       case 'chainFireball':P.damage=L(.26,.92);P.chainCount=Math.round(L(2,6));P.chainRange=L(95,185);P.radius=L(8,15);P.speed=L(540,680);P.life=L(.85,1.1);break;
       case 'lightningBolt':P.damage=L(.25,.92);P.speed=L(900,1250);P.life=L(.9,1.2);P.radius=L(5,9);P.pierce=Math.round(L(1,4));break;
       case 'bomb':P.damage=L(.30,.95);P.radius=L(70,190);P.range=L(300,560);P.speed=L(520,680);P.life=L(.95,1.15);break;
-      case 'poison':P.damage=L(.16,.55);P.radius=L(55,125);P.range=L(300,460);P.speed=L(500,620);P.zoneLife=L(2.2,5);P.tick=L(.5,.25);break;
+      case 'poison':P.damage=L(.10,.30);P.radius=L(42,82);P.range=L(260,390);P.speed=L(460,560);P.zoneLife=L(1.6,2.8);P.tick=L(.65,.48);break;
       case 'lightning':P.count=Math.round(L(1,7));P.damage=L(.18,.88);P.cooldown=L(.5,.1);P.range=L(360,620);break;
       case 'blackHole':P.damage=L(.12,.55);P.radius=L(55,145);P.range=L(360,520);P.speed=L(420,560);P.zoneLife=L(1.5,3);P.pull=L(85,260);P.life=L(.9,1.15);break;
       case 'mud':P.damage=L(.08,.32);P.radius=L(60,135);P.range=L(330,470);P.speed=L(460,580);P.zoneLife=L(2.5,6);P.slow=L(.25,.65);P.tick=L(.5,.25);break;
@@ -3962,7 +3962,7 @@ function renderStartPerks(){
       else if(P.id==='fireballChain')P.chainCount=Math.max(Number(P.chainCount)||1,3);
       else if(P.id==='lightningBolt')P.pierce=Math.max(2,Math.round(Number(P.pierce)||1)+1);
       else if(P.id==='bomb')P.radius*=1.15;
-      else if(P.id==='poisonBottle')P.zoneLife*=1.25;
+      else if(P.id==='poisonBottle')P.zoneLife*=1.08;
       else if(P.id==='lightningStrike')P.count+=1;
       else if(P.id==='blackHole')P.pull*=1.25;
       else if(P.id==='mudPool')P.slow=Math.min(.8,(Number(P.slow)||0)+.10);
@@ -3980,7 +3980,7 @@ function renderStartPerks(){
       else if(P.id==='fireballChain'){P.chainRange*=1.25;P.chainCount+=1;}
       else if(P.id==='lightningBolt')P.speed*=1.18;
       else if(P.id==='bomb')P.damage*=1.18;
-      else if(P.id==='poisonBottle')P.tick=Math.min(Number(P.tick)||.5,.30);
+      else if(P.id==='poisonBottle')P.tick=Math.max(.42,(Number(P.tick)||.65)*.90);
       else if(P.id==='lightningStrike')P.cooldown*=.72;
       else if(P.id==='blackHole')P.zoneLife*=1.25;
       else if(P.id==='mudPool')P.zoneLife*=1.30;
@@ -3998,7 +3998,7 @@ function renderStartPerks(){
       else if(P.id==='fireballChain'){P.chainCount+=2;P.chainRange*=1.20;P.damage*=1.12;}
       else if(P.id==='lightningBolt'){P.pierce+=2;P.damage*=1.12;}
       else if(P.id==='bomb'){P.radius*=1.20;P.damage*=1.12;}
-      else if(P.id==='poisonBottle'){P.radius*=1.18;P.zoneLife*=1.25;P.tick=.25;}
+      else if(P.id==='poisonBottle'){P.radius*=1.10;P.zoneLife*=1.10;P.tick=Math.max(.40,(Number(P.tick)||.5)*.92);}
       else if(P.id==='lightningStrike'){P.count+=2;P.cooldown*=.70;P.damage*=1.10;}
       else if(P.id==='blackHole'){P.radius*=1.20;P.pull*=1.25;P.zoneLife*=1.20;}
       else if(P.id==='mudPool'){P.radius*=1.18;P.slow=Math.min(.90,(Number(P.slow)||0)+.12);P.zoneLife*=1.20;}
@@ -4094,7 +4094,7 @@ function renderStartPerks(){
           if(!e)continue;
           hitEnemy(e,patternDamage,false,null,false);
           e.lightningFlash=0.16;
-          attackFx.push({type:'lightning',x:e.x,y:e.y,life:.22,maxLife:.22,seed:Math.random()*20});
+          attackFx.push({type:'stormStrike',x:e.x,y:e.y,life:.34,maxLife:.34,seed:Math.random()*20});
           makeSparks(e.x,e.y,'#67e8f9',18);
         }
         continue;
@@ -5372,10 +5372,10 @@ function openLevelUp(forceHigherRarity=false){
           if(b.patternMode==='bomb'){
             const r=b.patternRadius||150;attackFx.push({type:'explosion',x,y,r,life:.38,maxLife:.38});for(const en of enemies)if(!en.dead&&dist(x,y,en.x,en.y)<=r+en.r)hitEnemy(en,b.damage,b.crit,b);makeSparks(x,y,'#f97316',28);
           }else if(b.patternMode==='poison'){
-            const r=b.patternRadius||80,life=b.patternZoneLife||3.5,tick=b.patternTick||.45;
-            // v1.0.237: Cap overlapping poison pools so combat remains readable.
-            if(poisonZones.length>=4) poisonZones.shift();
-            poisonZones.push({x,y,r,life,maxLife:life,tick:0,tickRate:tick,damage:Math.max(1,b.damage)});
+            const r=b.patternRadius||50,life=b.patternZoneLife||1.8,tick=b.patternTick||.6;
+            // v1.0.238: A single active pool prevents stacked circles and runaway area damage.
+            poisonZones.length=0;
+            poisonZones.push({x,y,r,life,maxLife:life,tick:Math.min(.8,Math.max(.4,tick)),damage:Math.max(1,b.damage*.42)});
             attackFx.push({type:'poisonBurst',x,y,r,life:.32,maxLife:.32});
             makeSparks(x,y,'#84cc16',10);
           }else if(b.patternMode==='blackHole'){
@@ -5726,7 +5726,7 @@ function openLevelUp(forceHigherRarity=false){
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));ctx.shadowColor='#f97316';ctx.shadowBlur=12;
         ctx.fillStyle='#ea580c';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(1,6);ctx.lineTo(-7,4);ctx.lineTo(-4,0);ctx.lineTo(-7,-4);ctx.lineTo(1,-6);ctx.closePath();ctx.fill();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();
       } else if(pid==='oneDir'||pid==='twoDir'||pid==='threeDir'||pid==='fiveDir'){
-        // v1.0.237: four signature silhouettes; each pattern reads instantly at a glance.
+        // v1.0.238: four signature silhouettes; each pattern reads instantly at a glance.
         ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(b.vy,b.vx));
         if(pid==='oneDir'){
           // A long, needle-like cyan spear with a bright piercing core and twin tail fins.
@@ -5784,7 +5784,7 @@ function openLevelUp(forceHigherRarity=false){
       }
     }
 
-    // v1.0.237: visible melee sweeps and animated fire-chain arcs.
+    // v1.0.238: visible melee sweeps and animated fire-chain arcs.
     const animNow=performance.now();
     for(let i=slashEffects.length-1;i>=0;i--){
       const a=slashEffects[i],t=1-a.life/a.maxLife;
@@ -5815,13 +5815,20 @@ function openLevelUp(forceHigherRarity=false){
       ctx.restore();c.life-=1/60;
     }
 
-    // v1.0.237: distinct, short-lived impact animations for every attack family.
+    // v1.0.238: distinct, short-lived impact animations for every attack family.
     for(let i=attackFx.length-1;i>=0;i--){
       const f=attackFx[i],t=1-f.life/f.maxLife;
       if(f.life<=0){attackFx.splice(i,1);continue;}
       const px=sx(f.x,cam),py=sy(f.y,cam),fade=Math.max(0,1-t),r=Math.max(8,Number(f.r)||30);
       ctx.save();ctx.globalAlpha=fade;ctx.lineCap='round';ctx.lineJoin='round';
-      if(f.type==='lightning'||f.type==='boltHit'){
+      if(f.type==='stormStrike'){
+        // A storm-court sigil flashes before a gold-white bolt strikes its center.
+        const pulse=.75+.25*Math.sin(t*18),rr=18+24*t;
+        ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,rr,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle='#fef3c7';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-rr*.72,py);ctx.lineTo(px-rr*.35,py);ctx.moveTo(px+rr*.35,py);ctx.lineTo(px+rr*.72,py);ctx.moveTo(px,py-rr*.72);ctx.lineTo(px,py-rr*.35);ctx.moveTo(px,py+rr*.35);ctx.lineTo(px,py+rr*.72);ctx.stroke();
+        for(let layer=0;layer<3;layer++){ctx.beginPath();ctx.moveTo(px+(Math.random()-.5)*7,py-72);let yy=py-72;while(yy<py){yy=Math.min(py,yy+8+Math.random()*11);ctx.lineTo(px+(Math.random()-.5)*(layer===0?15:32),yy);}ctx.strokeStyle=layer===0?'#ffffff':layer===1?'#fef08a':'#f59e0b';ctx.lineWidth=layer===0?2:layer===1?4:7;ctx.stroke();}
+        ctx.globalAlpha=fade*pulse;ctx.fillStyle='#fff7cc';ctx.beginPath();ctx.arc(px,py,5+8*t,0,Math.PI*2);ctx.fill();
+      }else if(f.type==='lightning'||f.type==='boltHit'){
         const topY=f.type==='lightning'?py-70:py-24;
         for(let layer=0;layer<(f.type==='lightning'?3:2);layer++){
           ctx.beginPath();ctx.moveTo(px+(Math.random()-.5)*8,topY);
@@ -5835,8 +5842,9 @@ function openLevelUp(forceHigherRarity=false){
         ctx.globalAlpha=fade*.9;ctx.strokeStyle='#facc15';ctx.lineWidth=5*(1-t)+1;ctx.beginPath();ctx.arc(px,py,r*(.25+t*1.15),0,Math.PI*2);ctx.stroke();
         ctx.globalAlpha=fade;ctx.strokeStyle='#fff7ed';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,r*(.12+t*.65),0,Math.PI*2);ctx.stroke();
       }else if(f.type==='poisonBurst'){
-        ctx.strokeStyle='#bef264';ctx.lineWidth=4;ctx.setLineDash([6,4]);ctx.beginPath();ctx.arc(px,py,r*(.35+t*.8),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
-        for(let k=0;k<7;k++){const a=k*Math.PI*2/7+t*2,rr=r*(.25+t*.65);ctx.fillStyle=k%2?'#84cc16':'#d9f99d';ctx.beginPath();ctx.arc(px+Math.cos(a)*rr,py+Math.sin(a)*rr,2+3*fade,0,Math.PI*2);ctx.fill();}
+        ctx.strokeStyle='#bef264';ctx.lineWidth=3;ctx.setLineDash([3,7]);ctx.beginPath();ctx.arc(px,py,r*(.45+t*.55),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+        for(let k=0;k<5;k++){const a=k*Math.PI*2/5-t*1.4,rr=r*(.22+t*.48);ctx.fillStyle=k%2?'#65a30d':'#d9f99d';ctx.beginPath();ctx.ellipse(px+Math.cos(a)*rr,py+Math.sin(a)*rr,2+2*fade,4+2*fade,a,0,Math.PI*2);ctx.fill();}
+        ctx.strokeStyle='#d9f99d';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(px,py,r*(.15+t*.25),0,Math.PI*2);ctx.stroke();
       }else if(f.type==='voidBurst'){
         ctx.strokeStyle='#c4b5fd';ctx.lineWidth=3;ctx.beginPath();ctx.arc(px,py,r*(.25+t),0,Math.PI*2);ctx.stroke();
         for(let k=0;k<3;k++){ctx.beginPath();ctx.ellipse(px,py,r*(.25+t*.5),r*(.1+t*.2),t*4+k,0,Math.PI*2);ctx.strokeStyle=k%2?'#7c3aed':'#e9d5ff';ctx.lineWidth=2;ctx.stroke();}
