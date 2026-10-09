@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.283</title>
-<meta name="game-version" content="v1.0.283">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.284</title>
+<meta name="game-version" content="v1.0.284">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2963,7 +2963,7 @@ function getAttackPatternName(id){
 function getAttackPatternMilestoneDetail(pid,lv){
   const details={
     oneDir:{1:'ระยะหอกเริ่มต้นเพิ่มขึ้น 90%',2:'ระยะหอก +4% จากค่าที่คำนวณตามเลเวล',3:'ความเร็วหอก +5%',4:'ได้รับหอกเพิ่ม 1 เล่ม ทำให้ยิงเป็นชุดคู่',5:'Damage +6%',6:'ระยะโจมตีของหอก +6%',7:'ความเร็วหอก +8% เพิ่มเติม',8:'Damage +18% และพลังหอกเด่นชัดขึ้น',9:'หอกทะลุศัตรูได้ทั้งหมด',10:'Damage +8% เพิ่มเติม',11:'ระยะโจมตี +10% เพิ่มเติม',12:'ยิงพร้อมกัน 5 หอก กระจายมุมเล็กน้อย ทะลุศัตรูทั้งหมด และ Damage +15%'},
-    twoDir:{4:'เพิ่ม Spread เพื่อกระจายทิศยิง',8:'เพิ่มจำนวนเป็น 4 ทิศ',12:'Pierce +1 และ Damage เพิ่ม 12%'},
+    twoDir:{4:'เจาะทะลุ 6 ตัว และ Damage +20%',8:'เจาะทะลุ 7 ตัว และ Damage +20%',12:'เจาะทะลุศัตรูทุกตัว และ Damage +80%'},
     threeDir:{4:'ยิงตรีศูลพร้อมกัน 2 ชิ้น และทะลุศัตรู 2 ตัวก่อนแยกสามทาง',8:'ยิงพร้อมกัน 3 ชิ้น และทะลุศัตรู 3 ตัวก่อนแยกสามทาง',12:'ยิงพร้อมกัน 5 ชิ้น และทะลุศัตรู 5 ตัวก่อนแยกสามทาง'},
     fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
     powerWave:{4:'Knockback +35',8:'Radius +20% และ Pierce 2',12:'Radius +25%, ระยะ +12%, Knockback รวม +75'},
@@ -4026,7 +4026,7 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='twoDir')P.projectileSpeedMul=0.6; // 40% slower projectile travel
+    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.284: 3 / 6 / 7 / unlimited targets
     if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
@@ -4040,7 +4040,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.283: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.284: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -4048,7 +4048,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir')P.spread=.216; // v1.0.283: +20% blade separation from .18
+      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.284: Lv.4 pierce 6 and damage +20%
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
@@ -4066,7 +4066,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir')P.count=4;
+      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.284: Lv.8 pierce 7 and damage +20%
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -4084,7 +4084,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=(Number(P.pierce)||1)+1;P.damage*=1.12;}
+      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.284: Lv.12 pierces all targets and damage +80%
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
@@ -4244,7 +4244,7 @@ function renderStartPerks(){
             life:P.mode==='lightningBolt'?(P.id==='oneDir'?(Number(P.life)||0.24):2.4):(P.life?(Number(P.life)||0.58):(P.mode==='pierce'?(Number(P.life)||0.72):K.bulletLife)),
             shardTimer:0,tridentSplitDone:false,tridentPierceBeforeSplit:Number(P.tridentPierceBeforeSplit)||1,tridentShard:false,
             damage:dmg,crit,type:bt,
-            pierce:patternId==='threeDir'?Math.max(player.pierce+(B.pierceBonus||0),Number(P.tridentPierceBeforeSplit)||1):player.pierce+(B.pierceBonus||0)+(P.mode==='pierce'?5:0),
+            pierce:patternId==='threeDir'?Math.max(player.pierce+(B.pierceBonus||0),Number(P.tridentPierceBeforeSplit)||1):patternId==='twoDir'?Math.max(0,Number(P.pierce)||3):player.pierce+(B.pierceBonus||0)+(P.mode==='pierce'?5:0),
             bounce:player.ricochet+(B.bounce||0),
             hitList:[],trail:[],attackPatternId:patternId,attackPatternLevel:level,
             patternMode:P.mode,patternRange:Number(P.range)||0,patternRadius:Number(P.radius)||0,patternZoneLife:Number(P.zoneLife)||0,patternTick:Number(P.tick)||0,patternPull:Number(P.pull)||0,patternSlow:Number(P.slow)||0,patternChainCount:Number(P.chainCount)||0,patternChainRange:Number(P.chainRange)||0,chainUsed:false,
