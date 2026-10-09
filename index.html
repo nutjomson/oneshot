@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.288</title>
-<meta name="game-version" content="v1.0.288">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.289</title>
+<meta name="game-version" content="v1.0.289">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3855,7 +3855,7 @@ function renderStartPerks(){
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
       default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.24,.82);else if(P.id==='twoDir')P.damage=L(.18,.60);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
-    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.288: 3 / 6 / 7 / unlimited targets
+    if(P.id==='twoDir'){P.projectileSpeedMul=0.6;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.289: 3 / 6 / 7 / unlimited targets
     if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
     // หอกแสงผ่ามิติ: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
@@ -3869,7 +3869,7 @@ function renderStartPerks(){
       if(lv>=9)P.pierce=999;
       if(lv>=10)P.damage*=1.08;
       if(lv>=11)P.range*=1.10;
-      // v1.0.288: Lv.1 spear lifetime must cover its actual travel range.
+      // v1.0.289: Lv.1 spear lifetime must cover its actual travel range.
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
     }
@@ -3877,7 +3877,7 @@ function renderStartPerks(){
     // Lv.4: each pattern gets a unique new mechanic.
     if(lv>=4){
       if(P.id==='oneDir')P.bonusProjectiles=1;
-      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.288: Lv.4 pierce 6 and damage +20%
+      else if(P.id==='twoDir') {P.spread=.216;P.damage*=1.20;} // v1.0.289: Lv.4 pierce 6 and damage +20%
       else if(P.id==='threeDir')P.count=2;
       else if(P.id==='fiveDir')P.projectileSpeedMul=1.20;
       else if(P.id==='powerWave')P.knockbackBonus=35;
@@ -3895,7 +3895,7 @@ function renderStartPerks(){
     // Lv.8: a second, distinct mechanic for every pattern.
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
-      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.288: Lv.8 pierce 7 and damage +20%
+      else if(P.id==='twoDir'){P.count=4;P.damage*=1.20;} // v1.0.289: Lv.8 pierce 7 and damage +20%
       else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
@@ -3913,7 +3913,7 @@ function renderStartPerks(){
     // Lv.12: final signature upgrade for every pattern.
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
-      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.288: Lv.12 pierces all targets and damage +80%
+      else if(P.id==='twoDir'){P.pierce=999;P.damage*=1.80;} // v1.0.289: Lv.12 pierces all targets and damage +80%
       else if(P.id==='threeDir')P.count=5;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
@@ -4107,7 +4107,7 @@ function renderStartPerks(){
         xpOrbs[xpOrbs.length-1].life=CFG.pickups.xpLife;
       } else xpOrbs.push({x,y,r:6,value:xpAmt,life:CFG.pickups.xpLife,animTimer:Math.random()*10});
     }
-    // v1.0.288: Gold pickups are disabled; enemies no longer spawn collectible coins.
+    // v1.0.289: Gold pickups are disabled; enemies no longer spawn collectible coins.
   }
 
   function makeSparks(x,y,color,count=8){
@@ -4413,7 +4413,7 @@ function showItemReward(item,source){
     const heroSpeed=Math.max(1,Number(selectedHero?.speed)||Number(player.speed)||1);
     if(!('speed' in autoLevelBaseStats))autoLevelBaseStats.speed=Number(player.speed)||heroSpeed;
     player.speed=Math.min(heroSpeed*(Number(C.speedMultOfHero)||2),autoLevelBaseStats.speed+(heroSpeed*(Number(C.speedMultOfHero)||2)-autoLevelBaseStats.speed)*progress);
-    // v1.0.288: Automatic level growth only affects the stats shown in the approved groups.
+    // v1.0.289: Automatic level growth only affects the stats shown in the approved groups.
     // Max HP and damage continue scaling by level; current HP keeps the same health ratio.
     const extraLevels=Math.max(0,level-1);
     if(!('maxHp' in autoLevelBaseStats))autoLevelBaseStats.maxHp=Number(player.maxHp)||100;
@@ -4434,7 +4434,7 @@ function showItemReward(item,source){
       xpNeed=Math.floor(xpNeed*dev.level.xpNeedGrowth+dev.level.xpNeedFlat);
     }
     if(level%10===0)setStatus('⬆️ เลเวล '+level+' • ค่าสถานะพัฒนาอัตโนมัติ');
-    // v1.0.288: Every earned level queues a choice and opens the Level Up modal when safe.
+    // v1.0.289: Every earned level queues a choice and opens the Level Up modal when safe.
     if(pendingLevels>0 && running && !levelOpen && !shopOpen && !pauseOpen && !rewardOpen){
       openLevelUp();
     }
@@ -4487,6 +4487,33 @@ function getLevelRecommendationReason(item){
   return '⭐ เข้ากับ Build ปัจจุบัน';
 }
 
+function renderAttackProjectileIcon(item){
+  const f=(Array.isArray(item?.fx)?item.fx:[]).find(x=>x&&x.op==='attackPattern');
+  if(!f)return '';
+  const pid=String(f.v||'');
+  const common='viewBox="0 0 64 40" width="48" height="30" aria-hidden="true" style="width:48px;height:30px;flex:0 0 48px;display:inline-block;vertical-align:middle;filter:drop-shadow(0 0 4px rgba(56,189,248,.45))"';
+  const svg=(body)=>'<svg '+common+' xmlns="http://www.w3.org/2000/svg">'+body+'</svg>';
+  const art={
+    oneDir:'<path d="M5 20 L20 14 L45 16 L59 20 L45 24 L20 26 Z" fill="#0284c7" stroke="#7dd3fc" stroke-width="1.8"/><path d="M18 20 L55 20" stroke="#fff" stroke-width="2.5"/><path d="M10 12 L18 16 M10 28 L18 24" stroke="#67e8f9" stroke-width="2"/>',
+    twoDir:'<path d="M8 20 L22 12 L35 17 L57 20 L35 23 L22 28 Z" fill="#94a3b8" stroke="#f8fafc" stroke-width="1.8"/><path d="M14 20 L52 20" stroke="#fff" stroke-width="2"/><path d="M27 9 L31 17 L41 20 L31 23 L27 31 L24 23 L15 20 L24 17 Z" fill="#bae6fd"/>',
+    threeDir:'<path d="M7 20 L22 16 L27 6 L31 16 L51 18 L59 20 L51 22 L31 24 L27 34 L22 24 Z" fill="#7e22ce" stroke="#e9d5ff" stroke-width="1.7"/><path d="M13 20 H53 M26 12 L33 20 L26 28" stroke="#fff" stroke-width="2" fill="none"/>',
+    fiveDir:'<path d="M32 3 L38 14 L51 12 L44 22 L51 31 L38 29 L32 38 L26 29 L13 31 L20 22 L13 12 L26 14 Z" fill="#ca8a04" stroke="#fef3c7" stroke-width="2"/><circle cx="32" cy="21" r="4" fill="#fff"/>',
+    powerWave:'<ellipse cx="32" cy="20" rx="23" ry="10" fill="#38bdf8" opacity=".65"/><ellipse cx="32" cy="20" rx="19" ry="7" fill="none" stroke="#e0f2fe" stroke-width="3"/><path d="M7 20 Q18 5 29 20 T57 20" fill="none" stroke="#fff" stroke-width="2"/>',
+    slashCone:'<path d="M8 31 Q23 0 56 7 Q40 15 20 32 Z" fill="#a78bfa" opacity=".85" stroke="#e9d5ff" stroke-width="2"/><path d="M9 31 Q25 8 53 8" fill="none" stroke="#fff" stroke-width="2"/>',
+    frontSlash:'<path d="M8 31 Q24 1 54 8" fill="none" stroke="#f8fafc" stroke-width="7" stroke-linecap="round"/><path d="M8 31 Q24 1 54 8" fill="none" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/><path d="M12 30 L7 34 M51 7 L57 5" stroke="#bfdbfe" stroke-width="2"/>',
+    fireballChain:'<path d="M9 20 L19 10 L31 13 L39 5 L43 16 L57 20 L43 24 L39 35 L31 27 L19 30 Z" fill="#ea580c" stroke="#fb923c" stroke-width="2"/><circle cx="33" cy="20" r="7" fill="#fef3c7"/>',
+    lightningBolt:'<path d="M6 23 L22 15 L30 18 L42 9 L58 17 L43 20 L31 25 L18 24 Z" fill="#1d4ed8" stroke="#67e8f9" stroke-width="2"/><path d="M12 20 L53 18" stroke="#fff" stroke-width="2.5"/><path d="M24 10 L29 16 L23 27 M39 13 L34 20 L41 28" fill="none" stroke="#c4b5fd" stroke-width="2"/>',
+    bomb:'<circle cx="30" cy="23" r="13" fill="#7c2d12" stroke="#fdba74" stroke-width="2"/><path d="M32 10 L38 5 L45 7" fill="none" stroke="#fbbf24" stroke-width="3"/><path d="M47 5 L49 1 M52 9 L58 8 M48 13 L53 16" stroke="#fde68a" stroke-width="2"/>',
+    poisonBottle:'<path d="M25 5 H39 V12 L44 18 V32 Q44 36 39 36 H25 Q20 36 20 32 V18 L25 12 Z" fill="#166534" stroke="#86efac" stroke-width="2"/><path d="M22 24 Q32 18 42 24 V32 H22 Z" fill="#a3e635"/><circle cx="29" cy="26" r="2" fill="#ecfccb"/><circle cx="36" cy="30" r="1.5" fill="#ecfccb"/>',
+    lightningStrike:'<path d="M36 2 L18 22 H29 L23 38 L48 15 H35 Z" fill="#facc15" stroke="#fef3c7" stroke-width="2"/><path d="M9 8 L14 13 M49 29 L55 34 M49 4 L53 1" stroke="#93c5fd" stroke-width="2"/>',
+    blackHole:'<circle cx="32" cy="20" r="16" fill="#312e81" stroke="#a78bfa" stroke-width="3"/><circle cx="32" cy="20" r="10" fill="#050014"/><ellipse cx="32" cy="20" rx="23" ry="7" fill="none" stroke="#c4b5fd" stroke-width="2" transform="rotate(-22 32 20)"/>',
+    mudPool:'<path d="M8 26 Q13 14 22 21 Q31 11 39 21 Q51 14 57 26 Q51 34 32 34 Q13 34 8 26Z" fill="#854d0e" stroke="#d6a66a" stroke-width="2"/><circle cx="25" cy="23" r="2" fill="#fde68a"/><circle cx="41" cy="28" r="2" fill="#fde68a"/>',
+    mine:'<path d="M32 4 L38 14 L50 8 L47 21 L60 24 L48 30 L53 38 L39 34 L32 39 L25 34 L11 38 L16 29 L4 24 L17 20 L14 8 L26 14 Z" fill="#334155" stroke="#fca5a5" stroke-width="2"/><circle cx="32" cy="23" r="6" fill="#ef4444" stroke="#fee2e2" stroke-width="2"/>'
+  };
+  const body=art[pid];
+  return body?'<span class="level-projectile-icon" style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:30px;flex:0 0 48px;margin-right:6px">'+svg(body)+'</span>':'';
+}
+
 function openLevelUp(forceHigherRarity=false){
   pendingLevels--;
   levelOpen=true;
@@ -4511,7 +4538,7 @@ function openLevelUp(forceHigherRarity=false){
     ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
     : levelUpgrades;
   let eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
-  // v1.0.288: Never leave the Level Up overlay empty when all owned weapons are capped
+  // v1.0.289: Never leave the Level Up overlay empty when all owned weapons are capped
   // or a saved run has weapon IDs that no longer match the current pool.
   if(!eligiblePool.length){
     const gearPool=(Array.isArray(luxuryShopPool)?luxuryShopPool:[])
@@ -4544,8 +4571,8 @@ function openLevelUp(forceHigherRarity=false){
     const label='';
     b.innerHTML=
       '<div class="upgrade-choice-label"></div>'+
-      '<div class="icon">'+(u.icon||'📦')+'</div>'+
-      '<div><div class="uName">'+label+u.name+'</div>'+
+      (getAttackPatternId(u)?'':'<div class="icon">'+(u.icon||'📦')+'</div>')+
+      '<div><div class="uName" style="'+(getAttackPatternId(u)?'display:flex;align-items:center;gap:5px;':'')+'">'+(getAttackPatternId(u)?renderAttackProjectileIcon(u):'')+label+u.name+'</div>'+
       '<div class="uDesc">'+quickDesc+'</div>'+
       (typeof renderItemPreview==='function'?renderItemPreview(u):'')+
       '<div class="upgrade-reason"></div></div>';
@@ -5458,7 +5485,7 @@ function openLevelUp(forceHigherRarity=false){
       if(o.life<=0)xpOrbs.splice(i,1);
     }
 
-    // v1.0.288: Remove any legacy coins from a loaded run; gold is no longer collectible.
+    // v1.0.289: Remove any legacy coins from a loaded run; gold is no longer collectible.
     if(goldCoins.length) goldCoins.length=0;
 
     skillCd=Math.max(0,skillCd-dt);
@@ -6001,7 +6028,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillText(chest.rarity,px,py-14-pulse);
     }
 
-    // v1.0.288: Gold coin rendering removed.
+    // v1.0.289: Gold coin rendering removed.
 
     for(const s of sparks){
       const px=sx(s.x,cam), py=sy(s.y,cam);
@@ -6216,7 +6243,7 @@ function openLevelUp(forceHigherRarity=false){
     player.explosiveRadius=0; player.knockback=0; player.executionThreshold=0; player.orbitBlades=0;
     
     applyHeroChoice(selectedHero);
-    // v1.0.288: Start every run with one uniformly random attack pattern at Level 1.
+    // v1.0.289: Start every run with one uniformly random attack pattern at Level 1.
     const startingWeaponPool=Array.isArray(levelUpgrades)?levelUpgrades:[];
     if(startingWeaponPool.length){
       const startingWeapon=startingWeaponPool[Math.floor(Math.random()*startingWeaponPool.length)];
