@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.298</title>
-<meta name="game-version" content="v1.0.298">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.299</title>
+<meta name="game-version" content="v1.0.299">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1088,7 +1088,7 @@ button,input,select,textarea{
       <button type="button" class="btn btn-gold" id="skillLabWaveOneBtn">↻ เวฟ 1</button>
     </div>
     <div class="skill-lab-actions"><button type="button" class="btn" id="skillLabStartBtn">▶ เริ่มเวฟ</button><button type="button" class="btn btn-blue" id="skillLabChangeBtn">✦ เปลี่ยนสกิล</button><button type="button" class="btn btn-gold" id="skillLabPauseBtn">⏸ หยุดชั่วคราว</button><button type="button" class="btn btn-sec" id="skillLabResetBtn">↻ รีเซ็ตเวฟ</button><button type="button" class="btn btn-sec" id="skillLabBackBtn">← กลับหน้าก่อน</button><button type="button" class="btn btn-sec" id="skillLabHomeBtn">⌂ หน้าแรก</button></div>
-    <div id="skillLabLivePicker" class="skill-lab-live-picker hidden"><label>สกิล<select id="skillLabLivePattern"></select></label><label>เลเวล<select id="skillLabLiveLevel"></select></label><span id="skillLabRarity" class="skill-lab-rarity normal">NORMAL</span></div>
+    <div id="skillLabLivePicker" class="skill-lab-live-picker hidden"><label>สกิล<select id="skillLabLivePattern"></select></label><label>เลเวล<select id="skillLabLiveLevel"></select></label></div>
     <div class="skill-lab-stats">
       <div><span>ดาเมจรวม</span><b id="skillLabDamage">0</b></div><div><span>DPS เฉลี่ย</span><b id="skillLabDps">0</b></div><div><span>จำนวนฮิต</span><b id="skillLabHits">0</b></div><div><span>เวลาทดสอบ</span><b id="skillLabTime">0.0s</b></div>
     </div>
@@ -3941,6 +3941,7 @@ function renderStartPerks(){
       // Previously 0.24s at 220px/s allowed only ~53px of travel, so it vanished before hitting most targets.
       P.life=Math.max(Number(P.life)||0, (Number(P.range)||190)/Math.max(1,Number(P.speed)||220)+0.20);
       // v1.0.298 balance: compare DPS using Twin Rend’s 1.6x fire interval; tune Rift Lance per-spear damage to keep single-target DPS near equal.
+  // v1.0.299: Remove visible rarity labels and make Shop item selection uniform across all eligible items.
       if(lv>=4)P.damage*=Math.max(0.38,0.55-(lv-4)*(0.17/8));
     }
     P.milestone4=lv>=4;P.milestone8=lv>=8;P.milestone12=lv>=12;
@@ -4333,13 +4334,13 @@ function showItemReward(item,source){
     changes.innerHTML='';
     ok.classList.add('hidden');
 
-    const candidates=(Array.isArray(luxuryShopPool)?luxuryShopPool:[]).filter(x=>x&&x.rarity);
+    const candidates=(Array.isArray(luxuryShopPool)?luxuryShopPool:[]).filter(x=>x);
     let spinIndex=0;
     itemRewardSpinTimer=setInterval(()=>{
       if(!candidates.length) return;
       const x=candidates[spinIndex++%candidates.length];
       icon.textContent=x.icon||'📦';
-      tier.textContent=x.rarity||'normal';
+      tier.textContent='กำลังสุ่ม...';
       name.textContent=x.name||'ไอเทม';
     },80);
 
@@ -4363,7 +4364,7 @@ function showItemReward(item,source){
         wave,
         level,
         source:source||'ไม่ทราบที่มา',
-        rarity:item.rarity,
+        rarity:'',
         id:item.id||'',
         name:item.name||'ไอเทม',
         icon:item.icon||'📦',
@@ -4375,7 +4376,7 @@ function showItemReward(item,source){
       if(String(source||'').includes('กล่อง')) runStats.chestsOpened++;
       icon.classList.remove('item-reward-spin');
       icon.textContent=item.icon||'📦';
-      tier.textContent=(item.rarity||'normal')+' • ได้รับแล้ว';
+      tier.textContent='ได้รับแล้ว';
       name.textContent=item.name||'ไอเทม';
       desc.textContent=getShortItemDescription(item);
       // แสดงผลการเปลี่ยนสถานะทันทีหลังได้รับไอเทม
@@ -4684,54 +4685,18 @@ function openLevelUp(forceHigherRarity=false){
   function generateShopList(forceHigherRarity=false) {
     const shopCfg=(dev&&dev.shop&&typeof dev.shop==='object')?dev.shop:{};
     const ownedBulletTypes=Array.isArray(player.bulletTypes)&&player.bulletTypes.length ? player.bulletTypes : [player.bulletType||'arcane'];
-    const progress=Math.max(0,Math.min(1,(Number(wave)||1)-1)/99);
-    const rare=2.9+(14-2.9)*progress;
-    const legend=0.1+(1-0.1)*progress;
-    const rarityWeights=forceHigherRarity
-      ? (() => {
-          const boostedLegend=Math.min(100,legend*3);
-          const extra=Math.max(0,boostedLegend-legend);
-          return {normal:Math.max(0,100-rare-legend-extra),rare:0,legend:boostedLegend};
-        })()
-      : {normal:100-rare-legend,rare,legend};
-
+    // v1.0.299: Rarity is not used for shop odds. Every eligible item has equal probability.
     const normalPool=luxuryShopPool.filter(i=>
-      ['normal','rare','legend'].includes(i.rarity) &&
-      !(i.bt&&ownedBulletTypes.includes(i.bt)) &&
-      !isItemMaxed(i)
+      i && !(i.bt&&ownedBulletTypes.includes(i.bt)) && !isItemMaxed(i)
     );
-    const guaranteedPool=forceHigherRarity
-      ? luxuryShopPool.filter(i=>i.rarity==='rare' && !(i.bt&&ownedBulletTypes.includes(i.bt)) && !isItemMaxed(i))
-      : [];
-    const pool=forceHigherRarity ? normalPool.filter(i=>i.rarity!=='rare') : normalPool;
-
     const chosen=[];
-    const available=[...pool];
-    if(forceHigherRarity && guaranteedPool.length){
-      const guaranteed=weightedPick(guaranteedPool);
-      if(guaranteed){
-        chosen.push(guaranteed);
-        const idx=available.indexOf(guaranteed);
-        if(idx>=0) available.splice(idx,1);
-      }
-    }
-
+    const available=[...normalPool];
     const rawWanted=Number(shopCfg.itemsShown);
     const wanted=Math.max(1,Number.isFinite(rawWanted)?Math.floor(rawWanted):3);
     while(chosen.length<wanted&&available.length){
-      const eligibleRarities=[...new Set(
-        available.map(i=>String(i.rarity||'normal')).filter(r=>Number(rarityWeights[r]||0)>0)
-      )];
-      if(!eligibleRarities.length) break;
-      const rarity=weightedPickRarity(rarityWeights,eligibleRarities);
-      const rarityPool=available.filter(i=>String(i.rarity||'normal')===String(rarity));
-      const pick=weightedPick(rarityPool);
-      if(!pick) break;
-      chosen.push(pick);
-      const idx=available.indexOf(pick);
-      if(idx>=0) available.splice(idx,1);
+      const index=Math.floor(Math.random()*available.length);
+      chosen.push(available.splice(index,1)[0]);
     }
-    if(chosen.length<wanted) chosen.push(...shuffle(available).slice(0,wanted-chosen.length));
     const rawPricePerWave=Number(shopCfg.pricePerWave);
     const pricePerWave=Number.isFinite(rawPricePerWave)?rawPricePerWave:0.08;
     // v1.0.232: Always price from the item's base definition.
@@ -4816,7 +4781,7 @@ function openLevelUp(forceHigherRarity=false){
     ranked.forEach((item,index)=>{
       try{
         const b=document.createElement('div');
-        b.className='shop-item item-'+(item.rarity||'normal')+(index===0?' recommended':' alternative')+(item.purchased?' disabled':'');
+        b.className='shop-item'+(index===0?' recommended':' alternative')+(item.purchased?' disabled':'');
         const desc=typeof item.desc==='string'?item.desc:'';
         const quickDesc=getShortItemDescription(item);
         const label='';
@@ -4826,7 +4791,7 @@ function openLevelUp(forceHigherRarity=false){
         b.innerHTML=
           '<div class="shop-choice-label"></div>'+
           '<div class="shop-topline"><div class="icon">'+(item.icon||'📦')+'</div>'+
-          '<div class="uName">'+label+'<span class="tier-badge tier-'+(item.rarity||'normal')+'">'+(item.rarity||'normal')+'</span>'+(item.name||'ไอเทม')+'</div>'+
+          '<div class="uName">'+(item.name||'ไอเทม')+'</div>'+
           '<span class="shop-inline-cost">'+(item.purchased?'ซื้อแล้ว':cost+' 🪙')+'</span></div>'+
           '<div class="shop-quick-desc">'+quickDesc+'</div>'+
           (typeof renderItemPreview==='function'?renderItemPreview(item):'')+
@@ -5028,7 +4993,7 @@ function openLevelUp(forceHigherRarity=false){
     }
     box.innerHTML=itemHistory.slice().reverse().map((x,idx)=>`
       <div style="padding:10px 4px;border-bottom:1px solid #334155">
-        <div style="font-weight:900;color:#facc15">${x.icon} ${x.rarity} ${x.name}</div>
+        <div style="font-weight:900;color:#facc15">${x.icon} ${x.name}</div>
         <div style="font-size:11px;color:#94a3b8">#${x.index} · เวฟ ${x.wave} · Lv.${x.level} · เวลา ${formatRunTime(x.time)}</div>
         <div style="font-size:12px;color:#cbd5e1;margin-top:3px">📍 ${x.source}</div>
       </div>`).join('');
@@ -6100,7 +6065,7 @@ function openLevelUp(forceHigherRarity=false){
       ctx.fillStyle='#fde68a'; ctx.fillRect(px-5,py-8,10,5);
       ctx.fillStyle='#78350f'; ctx.fillRect(px-3,py-3,6,6);
       ctx.font="bold 9px 'Maitree',sans-serif"; ctx.textAlign='center'; ctx.fillStyle='#fff';
-      ctx.fillText(chest.rarity,px,py-14-pulse);
+      /* v1.0.299: rarity is not shown on chests. */
     }
 
     // v1.0.292: Gold coin rendering removed.
@@ -6243,15 +6208,15 @@ function openLevelUp(forceHigherRarity=false){
     clearTimeout(toastT); toastT=setTimeout(()=>{el.style.opacity=0},2200);
   }
 
-  const SKILL_LAB_NAMES={oneDir:'Spear',twoDir:'Twin',threeDir:'Trident',fiveDir:'Starshot',slashCone:'Crescent',powerWave:'Pulse',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
+  const SKILL_LAB_NAMES={oneDir:'Rift Lance',twoDir:'Twin Rend',threeDir:'Trident',fiveDir:'Starshot',slashCone:'Crescent',powerWave:'Pulse',frontSlash:'Cleave',fireballChain:'Firechain',lightningBolt:'Bolt',bomb:'Bomb',poisonBottle:'Venom',lightningStrike:'Storm',blackHole:'Singularity',mudPool:'Mire',mine:'Mine'};
   function initSkillLabControls(){
     const heroSel=document.getElementById('skillLabHero'),patternSel=document.getElementById('skillLabPattern'),levelSel=document.getElementById('skillLabLevel');
     if(!heroSel||!patternSel||!levelSel)return;
     heroSel.innerHTML=heroes.map(h=>'<option value="'+h.id+'">'+h.name+'</option>').join('');
     const labRarity=id=>({oneDir:'RARE',threeDir:'RARE',fiveDir:'RARE',powerWave:'RARE',lightningBolt:'RARE',bomb:'RARE',lightningStrike:'RARE',fireballChain:'LEGEND',blackHole:'LEGEND'}[id]||'NORMAL');
-    patternSel.innerHTML=Object.keys(CFG.attackPatterns).filter(id=>SKILL_LAB_NAMES[id]).map(id=>'<option value="'+id+'">['+labRarity(id)+'] '+SKILL_LAB_NAMES[id]+'</option>').join('');
+    patternSel.innerHTML=Object.keys(CFG.attackPatterns).filter(id=>SKILL_LAB_NAMES[id]).map(id=>'<option value="'+id+'">'+SKILL_LAB_NAMES[id]+'</option>').join('');
     const livePattern=document.getElementById('skillLabLivePattern'),liveLevel=document.getElementById('skillLabLiveLevel');if(livePattern)livePattern.innerHTML=patternSel.innerHTML;if(liveLevel)liveLevel.innerHTML=Array.from({length:12},(_,i)=>'<option value="'+(i+1)+'">Lv.'+(i+1)+'</option>').join('');
-    const syncLive=()=>{if(livePattern)livePattern.value=patternSel.value;if(liveLevel)liveLevel.value=levelSel.value;const r=document.getElementById('skillLabRarity');if(r){r.textContent=labRarity((livePattern||patternSel).value);r.className='skill-lab-rarity '+r.textContent.toLowerCase();}};
+    const syncLive=()=>{if(livePattern)livePattern.value=patternSel.value;if(liveLevel)liveLevel.value=levelSel.value;};
     levelSel.innerHTML=Array.from({length:12},(_,i)=>'<option value="'+(i+1)+'">Lv.'+(i+1)+'</option>').join('');
     heroSel.value=selectedHero?.id||heroes[0]?.id||'prism';patternSel.value='oneDir';levelSel.value='1';
     const apply=()=>{if(!skillLabMode)return;applySkillLabSelection();};
