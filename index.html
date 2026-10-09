@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.309</title>
-<meta name="game-version" content="v1.0.309">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.310</title>
+<meta name="game-version" content="v1.0.310">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4575,9 +4575,14 @@ function openLevelUp(forceHigherRarity=false){
   const weaponCount=ownedIds.size;
   // All weapons have equal selection probability; Normal/Rare/Legend no longer affect weapon rolls.
   // Once five distinct weapons are held, Level Up only offers those owned weapons for further upgrades.
-  const weaponPool=weaponCount>=5
-    ? levelUpgrades.filter(i=>ownedIds.has(getAttackPatternId(i)))
-    : levelUpgrades;
+  // v1.0.310: Hard whitelist at the live Level Up screen, even if stale data
+  // or another legacy item source repopulates the underlying config.
+  const weaponPool=levelUpgrades.filter(i=>
+    i &&
+    ACTIVE_DESIGNED_ATTACK_ITEM_IDS.has(String(i.id||'')) &&
+    !!getAttackPatternId(i) &&
+    (weaponCount<5 || ownedIds.has(getAttackPatternId(i)))
+  );
   let eligiblePool=weaponPool.filter(i=>!isItemMaxed(i));
   // v1.0.309: No gear fallback. Once all five attack patterns reach their cap,
   // level-based automatic stat growth continues without showing an empty Level Up screen.
@@ -4585,11 +4590,15 @@ function openLevelUp(forceHigherRarity=false){
     pendingLevels=0;
     levelOpen=false;
     syncPause();
-    setStatus('ค่าสถานะเพิ่มอัตโนมัติ • อาวุธทั้ง 5 แบบถึงแคปแล้ว');
+    setStatus('ค่าสถานะเพิ่มอัตโนมัติ • ไม่มีอาวุธที่เปิดใช้งานให้เพิ่มแล้ว');
     return;
   }
   while(choices.length<choiceCount){
-    const pool=eligiblePool.filter(i=>!used.has(i.id));
+    const pool=eligiblePool.filter(i=>
+      !used.has(i.id) &&
+      ACTIVE_DESIGNED_ATTACK_ITEM_IDS.has(String(i.id||'')) &&
+      !!getAttackPatternId(i)
+    );
     if(!pool.length)break;
     const pick=pool[Math.floor(Math.random()*pool.length)];
     if(!pick)break;
