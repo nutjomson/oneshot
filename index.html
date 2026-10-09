@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14301a">
-<title>16-Bit Survivor Arena - Expanded Edition v1.0.299</title>
-<meta name="game-version" content="v1.0.299">
+<title>16-Bit Survivor Arena - Expanded Edition v1.0.300</title>
+<meta name="game-version" content="v1.0.300">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Maitree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1525,7 +1525,7 @@ BULLET_TYPES.plasma.desc   = `พลาสม่า: คริ +${pct(BULLET_TYP
 
 /* ===== 6.5 LEVEL ATTACK PATTERNS ===== */
 const ATTACK_PATTERNS = {
-  oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'lightningBolt'},twoDir:{id:'twoDir',count:2,spread:0.12,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:1,spread:0.14,damage:0.14,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
+  oneDir:{id:'oneDir',count:1,spread:0,damage:0.24,mode:'lightningBolt'},twoDir:{id:'twoDir',count:2,spread:0.12,damage:0.18,mode:'bullet'},threeDir:{id:'threeDir',count:1,spread:0.14,damage:0.10,mode:'bullet'},fiveDir:{id:'fiveDir',count:5,spread:0.12,damage:0.10,mode:'bullet'},
   slashCone:{id:'slashCone',count:1,damage:0.28,mode:'slash',range:90,arc:0.22,bleedDps:0.012,bleedTime:1.5},powerWave:{id:'powerWave',count:1,damage:0.22,mode:'wave',range:250,speed:480,radius:6,life:0.55},frontSlash:{id:'frontSlash',count:1,damage:0.32,mode:'slash',range:82,arc:0.55},
   fireballChain:{id:'fireballChain',count:1,damage:0.26,mode:'chainFireball',speed:540,life:0.85,radius:8,chainCount:2,chainRange:95},lightningBolt:{id:'lightningBolt',count:1,damage:0.25,mode:'lightningBolt',speed:420,life:2.4},bomb:{id:'bomb',count:1,damage:0.30,mode:'bomb',range:300,speed:520,radius:70,life:0.95},poisonBottle:{id:'poisonBottle',count:1,damage:0.10,mode:'poison',range:260,speed:460,radius:42,life:0.9,zoneLife:1.6,tick:0.65},
   lightningStrike:{id:'lightningStrike',count:1,damage:0.18,mode:'lightning',range:500,cooldown:0.5},blackHole:{id:'blackHole',count:1,damage:0.12,mode:'blackHole',range:360,speed:420,radius:55,life:0.9,zoneLife:1.5,pull:85},mudPool:{id:'mudPool',count:1,damage:0.08,mode:'mud',range:330,speed:460,radius:60,life:0.85,zoneLife:2.5,slow:0.25,tick:0.5},mine:{id:'mine',count:1,damage:0.30,mode:'mine',range:300,speed:430,radius:55,life:0.9}
@@ -2863,7 +2863,7 @@ function getAttackPatternMilestoneDetail(pid,lv){
   const details={
     oneDir:{1:'Slow, heavy spear with long travel range',2:'Range +4%',3:'Projectile speed +5%',4:'Fire 2 spears; damage tuned for wave balance',5:'Damage +6%',6:'Range +6%',7:'Projectile speed +8%',8:'Fire 3 spears; damage +18%',9:'Unlimited Pierce',10:'Damage +8%',11:'Range +10%',12:'Fire 5 spears with slight spread; unlimited Pierce; damage +15%'},
     twoDir:{4:'Pierce 6 targets; Damage +10%',8:'Fire 3 blades; Pierce 7 targets; Damage +8%',12:'Fire 4 blades; Unlimited Pierce; Damage +20%'},
-    threeDir:{4:'ยิงตรีศูลพร้อมกัน 2 ชิ้น และทะลุศัตรู 2 ตัวก่อนแยกสามทาง',8:'ยิงพร้อมกัน 3 ชิ้น และทะลุศัตรู 3 ตัวก่อนแยกสามทาง',12:'ยิงพร้อมกัน 5 ชิ้น และทะลุศัตรู 5 ตัวก่อนแยกสามทาง'},
+    threeDir:{4:'ยิงตรีศูล 2 ชิ้น และทะลุศัตรู 2 ตัวก่อนแยกสามทาง',8:'ยิงตรีศูล 2 ชิ้น และทะลุศัตรู 3 ตัวก่อนแยกสามทาง',12:'ยิงตรีศูล 3 ชิ้น และทะลุศัตรู 5 ตัวก่อนแยกสามทาง'},
     fiveDir:{4:'ความเร็วกระสุน +20%',8:'เพิ่มจำนวนเป็น 7 ทิศ',12:'เพิ่มจำนวนเป็น 9 ทิศ และ Damage เพิ่ม 10%'},
     powerWave:{4:'Knockback +35',8:'Radius +20% และ Pierce 2',12:'Radius +25%, ระยะ +12%, Knockback รวม +75'},
     slashCone:{4:'เพิ่ม Bleed DPS',8:'มุมฟัน +18% และ Bleed นานอย่างน้อย 2.5 วิ',12:'Bleed DPS อย่างน้อย 0.095, Bleed 4 วิ และ Damage +12%'},
@@ -3921,10 +3921,10 @@ function renderStartPerks(){
       case 'blackHole':P.damage=L(.12,.55);P.radius=L(55,145);P.range=L(360,520);P.speed=L(420,560);P.zoneLife=L(1.5,3);P.pull=L(85,260);P.life=L(.9,1.15);break;
       case 'mud':P.damage=L(.08,.32);P.radius=L(60,135);P.range=L(330,470);P.speed=L(460,580);P.zoneLife=L(2.5,6);P.slow=L(.25,.65);P.tick=L(.5,.25);break;
       case 'mine':P.damage=L(.30,.95);P.radius=L(55,115);P.range=L(300,460);P.speed=L(430,540);P.life=L(.9,1.1);break;
-      default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.20,.66);else if(P.id==='twoDir')P.damage=L(.16,.52);else if(P.id==='threeDir')P.damage=L(.14,.48);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
+      default:if(P.mode==='bullet'){if(P.id==='oneDir')P.damage=L(.20,.66);else if(P.id==='twoDir')P.damage=L(.16,.52);else if(P.id==='threeDir')P.damage=L(.10,.34);else if(P.id==='fiveDir')P.damage=L(.10,.36);}
     }
     if(P.id==='twoDir'){P.projectileSpeedMul=0.72;P.pierce=lv>=12?999:lv>=8?7:lv>=4?6:3;} // v1.0.293: Twin Blades speed improved; pierce scales 3 / 6 / 7 / unlimited
-    if(P.id==='threeDir'){P.projectileSpeedMul=0.4;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // 60% slower; pierce targets before a 3-way split
+    if(P.id==='threeDir'){P.projectileSpeedMul=0.55;P.tridentPierceBeforeSplit=lv>=12?5:lv>=8?3:lv>=4?2:1;} // v1.0.300: faster travel, lower damage, and controlled split scaling
     // Dimensional Spear: progression adds a distinct, cumulative benefit at every level.
     if(P.id==='oneDir'){
       // Keep multi-spear shots visually separated at every level that fires more than one.
@@ -3967,7 +3967,7 @@ function renderStartPerks(){
     if(lv>=8){
       if(P.id==='oneDir'){P.count=2;P.damage*=1.18;}
       else if(P.id==='twoDir'){P.count=3;P.damage*=1.08;} // v1.0.294: Lv.8 adds a third shot with a modest damage bonus
-      else if(P.id==='threeDir'){P.count=3;P.damage*=1.18;}
+      else if(P.id==='threeDir'){P.count=2;P.damage*=1.10;}
       else if(P.id==='fiveDir')P.count=7;
       else if(P.id==='powerWave'){P.radius*=1.20;P.pierce=2;}
       else if(P.id==='slashCone'){P.arc=Math.min(Math.PI,P.arc*1.18);P.bleedTime=Math.max(Number(P.bleedTime)||0,2.5);}
@@ -3985,7 +3985,7 @@ function renderStartPerks(){
     if(lv>=12){
       if(P.id==='oneDir'){P.count=4;P.bonusProjectiles=1;P.spread=0.16;P.pierce=999;P.damage*=1.15;}
       else if(P.id==='twoDir'){P.count=4;P.pierce=999;P.damage*=1.20;} // v1.0.294: Lv.12 adds a fourth shot, unlimited pierce, +20% damage
-      else if(P.id==='threeDir')P.count=5;
+      else if(P.id==='threeDir')P.count=3;
       else if(P.id==='fiveDir'){P.count=9;P.damage*=1.10;}
       else if(P.id==='powerWave'){P.radius*=1.25;P.range*=1.12;P.knockbackBonus=75;}
       else if(P.id==='slashCone'){P.bleedDps=Math.max(Number(P.bleedDps)||0,.095);P.bleedTime=Math.max(Number(P.bleedTime)||0,4);P.damage*=1.12;}
@@ -4140,7 +4140,7 @@ function renderStartPerks(){
           bullets.push({
             x:player.x+Math.cos(a)*K.muzzleOffset-Math.sin(a)*spearLaneOffset,y:player.y+Math.sin(a)*K.muzzleOffset+Math.cos(a)*spearLaneOffset,
             vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
-            r:P.mode==='lightningBolt'?19:(patternId==='threeDir'?Math.max(15,(B.radius||K.bulletRadius)*3):(P.mode==='wave'?(Number(P.radius)||10):(B.radius||K.bulletRadius))),
+            r:P.mode==='lightningBolt'?19:(patternId==='threeDir'?Math.max(7.5,(B.radius||K.bulletRadius)*1.5):(P.mode==='wave'?(Number(P.radius)||10):(B.radius||K.bulletRadius))),
             life:P.mode==='lightningBolt'?(P.id==='oneDir'?(Number(P.life)||0.24):2.4):(P.life?(Number(P.life)||0.58):(P.mode==='pierce'?(Number(P.life)||0.72):K.bulletLife)),
             shardTimer:0,tridentSplitDone:false,tridentPierceBeforeSplit:Number(P.tridentPierceBeforeSplit)||1,tridentShard:false,
             damage:dmg,crit,type:bt,
@@ -5760,7 +5760,7 @@ function openLevelUp(forceHigherRarity=false){
       const pid=b.attackPatternId||'';
       if(pid==='threeDir'){
         const ang=Math.atan2(b.vy,b.vx),pulse=.85+.15*Math.sin(performance.now()*.02);
-        ctx.save();ctx.translate(px,py);ctx.rotate(ang);ctx.scale(3,3);ctx.globalAlpha=.96;
+        ctx.save();ctx.translate(px,py);ctx.rotate(ang);ctx.scale(1.5,1.5);ctx.globalAlpha=.96;
         ctx.shadowColor='#2dd4bf';ctx.shadowBlur=15;ctx.strokeStyle='#0e7490';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(7,0);ctx.stroke();
         ctx.strokeStyle='#67e8f9';ctx.lineWidth=2.3;ctx.beginPath();ctx.moveTo(-18,0);ctx.lineTo(7,0);ctx.stroke();
         ctx.strokeStyle='#a5f3fc';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-16,0);ctx.lineTo(7,0);ctx.stroke();
