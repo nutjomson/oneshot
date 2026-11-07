@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101820"><title>STILLPOINT</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101820;color:#edf4f2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{padding:0 0 env(safe-area-inset-bottom)}button{font:inherit;border:0;border-radius:10px;padding:12px 10px;font-weight:800;background:#a5e7d4;color:#10232a;cursor:pointer}button:disabled{opacity:.4;cursor:default}#app{max-width:760px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}header{padding:14px 16px;background:#1a2933;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:21px;font-weight:950;letter-spacing:3px}.sub{font-size:10px;color:#9eb4ba;letter-spacing:1.5px;margin-top:3px}.stats{display:flex;gap:15px;text-align:right;color:#a8bbc0;font-size:9px}.stats b{display:block;color:#a5e7d4;font-size:17px;margin-top:3px}#arena{display:block;width:100%;height: min(58vh,440px);min-height:310px;background:#15242d;touch-action:pan-y}#status{display:flex;justify-content:space-between;padding:9px 14px;background:#1d303a;color:#b7cbc9;font-size:11px}.section{padding:14px}.heading{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:10px}.upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upgrade{background:#1d2d37;border:1px solid #3b535d;border-radius:12px;padding:12px;min-width:0}.upgrade .name{font-size:13px;font-weight:850}.upgrade .desc{font-size:10px;color:#a8bbc0;line-height:1.4;min-height:29px;margin:5px 0 9px}.upgrade button{width:100%;font-size:11px;padding:10px 5px}.progress{height:5px;border-radius:9px;background:#0c151b;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:#a5e7d4}.footer{padding:0 14px 16px;color:#82999f;font-size:10px;line-height:1.5}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#081116;border:1px solid #526970;border-radius:22px;padding:10px 15px;display:none;z-index:9;font-size:12px;white-space:nowrap;max-width:90%}#fatal{display:none;margin:10px;padding:12px;background:#572f36;border-radius:8px;font-size:12px}#reset{background:#334650;color:#edf4f2;font-size:10px;padding:8px 11px}@media(max-width:380px){.stats{gap:9px}.brand{font-size:18px}.upgrade{padding:10px}.upgrade .desc{font-size:9px}}
+</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">เกมทำลายบล็อกอัตโนมัติ · BUILD 0.5.3</div></div><div class="stats"><div>พลังงาน<b id="energy">0</b></div><div>ต่อวินาที<b id="eps">0</b></div><div>ด่าน<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">ลูกศรพุ่งเร็วและสะท้อนชนบล็อกอัตโนมัติ</span><span id="blocks">บล็อก 0</span></div><section class="section"><div class="heading"><span>อัปเกรดความสามารถ</span><button id="reset">เริ่มใหม่</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">ลูกศรเคลื่อนที่และสะท้อนชนบล็อกเองอย่างต่อเนื่อง อัปเกรดความสามารถเพื่อทำลายบล็อกให้เร็วขึ้น ความคืบหน้าจะบันทึกไว้ในอุปกรณ์นี้</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var canvas=$("arena"),ctx=null,W=1,H=1,dpr=1,last=0,raf=0,tick=0,toastTimer=0,saveTimer=0;
+var fresh={energy:0,total:0,stage:1,damage:1,rate:1,count:1,speed:1,blocks:[],arrows:[],last:Date.now(),nextId:1};
+var s;
+function initial(){return {energy:0,total:0,stage:1,damage:1,rate:1,count:1,speed:1,blocks:[],arrows:[],last:Date.now(),nextId:1,formationVersion:1}}
+function say(msg){var e=$("toast");e.textContent=msg;e.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(function(){e.style.display="none"},1400)}
+function fmt(n){return Math.floor(n).toLocaleString()}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function load(){
+ s=initial();
+ try{
+  var raw=localStorage.getItem("stillpointIdle"),v=raw?JSON.parse(raw):null;
+  if(v&&typeof v==="object"){
+   ["energy","total","stage","damage","rate","count","speed","nextId"].forEach(function(k){if(isFinite(Number(v[k])))s[k]=Math.max(k==="energy"||k==="total"?0:1,Number(v[k]))});
+   s.formationVersion=Number(v.formationVersion)||1;
+   s.blocks=Array.isArray(v.blocks)?v.blocks.slice(0,100).map(function(b){return {id:Number(b.id)||1,x:clamp(Number(b.x)||.5,.05,.95),y:clamp(Number(b.y)||.5,.05,.95),hp:Math.max(1,Number(b.hp)||1,maxHpFor(s.stage)),max:Math.max(1,Number(b.max)||1,maxHpFor(s.stage))}}):[];
+   s.last=Number(v.last)||Date.now();
+  }
+ }catch(e){s=initial()}
+}
+function save(){s.last=Date.now();try{localStorage.setItem("stillpointIdle",JSON.stringify(s))}catch(e){}}
+function maxHpFor(stage){return Math.floor(8*Math.pow(1.18,Math.max(0,stage-1)))}
+function blockValue(){return Math.max(1,Math.floor(2*Math.pow(1.13,Math.max(0,s.stage-1))))}
+function shapeFor(id){
+ var shapes=[
+  [[0,-1],[.28,-.38],[.95,-.52],[.48,0],[.9,.62],[.18,.48],[0,1],[-.2,.45],[-.92,.7],[-.48,0],[-.9,-.58],[-.2,-.42]],
+  [[-.9,-.7],[-.2,-.42],[.12,-.95],[.42,-.35],[.98,-.18],[.48,.22],[.8,.9],[.12,.55],[-.35,.98],[-.42,.3],[-1,.18],[-.48,-.12]],
+  [[-1,-.55],[-.45,-.35],[-.3,-.95],[.08,-.48],[.72,-.82],[.55,-.18],[1,.12],[.38,.38],[.58,1],[-.05,.52],[-.68,.88],[-.48,.25],[-.98,.1]],
+  [[-.95,-.35],[-.4,-.55],[-.2,-1],[.12,-.48],[.85,-.72],[.48,-.08],[1,.38],[.35,.35],[.18,1],[-.22,.45],[-.9,.62],[-.48,.05]],
+  [[-.9,-.8],[-.15,-.5],[.18,-.95],[.38,-.35],[.95,-.2],[.42,.12],[.82,.82],[.05,.48],[-.3,.98],[-.38,.35],[-1,.2],[-.52,-.18]],
+  [[-.95,-.2],[-.45,-.38],[-.18,-.92],[.18,-.5],[.55,-.88],[.48,-.22],[.98,.05],[.48,.35],[.72,.92],[.08,.52],[-.55,.95],[-.42,.25],[-1,.45]],
+  [[-.9,-.55],[-.3,-.4],[-.18,-.95],[.18,-.45],[.95,-.5],[.48,.02],[.88,.75],[.15,.42],[-.18,.98],[-.4,.38],[-.98,.22],[-.5,-.12]],
+  [[-.95,-.65],[-.25,-.3],[.05,-1],[.32,-.32],[.98,-.18],[.35,.12],[.72,.95],[-.02,.48],[-.55,.85],[-.42,.22],[-1,.08],[-.45,-.2]]
+ ];
+ return shapes[(id-1)%shapes.length];
+}
+function spawnBlock(x,y){
+ var hp=maxHpFor(s.stage),id=s.nextId++,r=12+(id*7%11);
+ s.blocks.push({id:id,x:x,y:y,hp:hp,max:hp,r:r,shape:(id-1)%8,rot:(id*0.71)%6.28});
+}
+function polygonHit(px,py,b,pad){
+ var pts=shapeFor(b.id),cs=Math.cos(b.rot||0),sn=Math.sin(b.rot||0),inside=false,verts=[];
+ for(var i=0;i<pts.length;i++){
+  var lx=pts[i][0]*b.r,ly=pts[i][1]*b.r;
+  verts.push([b.x*W+lx*cs-ly*sn,b.y*H+lx*sn+ly*cs]);
+ }
+ for(var i=0,j=verts.length-1;i<verts.length;j=i++){
+  var a=verts[i],z=verts[j];
+  if(((a[1]>py)!==(z[1]>py))&&(px<(z[0]-a[0])*(py-a[1])/(z[1]-a[1])+a[0]))inside=!inside;
+  var vx=z[0]-a[0],vy=z[1]-a[1],den=vx*vx+vy*vy||1;
+  var t=clamp(((px-a[0])*vx+(py-a[1])*vy)/den,0,1);
+  if(Math.hypot(px-(a[0]+t*vx),py-(a[1]+t*vy))<=pad)return true;
+ }
+ return inside;
+}
+function spawnFormation(){
+ s.blocks=[];
+ var cols=10,rows=8;
+ for(var row=0;row<rows;row++){
+  for(var col=0;col<cols;col++){
+   spawnBlock(.055+col*.099,.07+row*.123);
+  }
+ }
+ s.formationVersion=2;
+}
+function arrowCount(){return Math.min(12,1+(s.count-1))}
+function fireInterval(){return Math.max(.035,.12*Math.pow(.88,s.rate-1))}
+function arrowSpeed(){return (187.5+Math.min(360,(s.speed-1)*33))}
+function damage(){return Math.max(1,Math.floor(s.damage))}
+function chooseTarget(a){
+ var best=null,bd=1e9;
+ for(var i=0;i<s.blocks.length;i++){var b=s.blocks[i],d=Math.hypot(b.x*W-a.x,b.y*H-a.y);if(d<bd){bd=d;best=b}}
+ return best;
+}
+function makeArrow(i){
+ var spread=(i-(arrowCount()-1)/2)*.13;
+ var angle=-Math.PI/2+spread;
+ var sp=arrowSpeed();
+ return {x:W*.5+spread*25,y:H-7,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0,lastHitId:0};
+}
+function syncArrows(){
+ while(s.arrows.length<arrowCount())s.arrows.push(makeArrow(s.arrows.length));
+ while(s.arrows.length>arrowCount())s.arrows.pop();
+}
+function reward(n){s.energy+=n;s.total+=n}
+function upgradeCost(k){var base={damage:12,rate:18,count:65,speed:25}[k];return Math.max(1,Math.floor(base*Math.pow({damage:1.32,rate:1.35,count:1.75,speed:1.32}[k],s[k]-1)*0.15))}
+var upgradeInfo=[
+ {key:"damage",name:"พลังโจมตี",desc:"เพิ่มความเสียหายที่ลูกศรทำได้ต่อครั้ง"},
+ {key:"rate",name:"ความเร็วโจมตี",desc:"ลดช่วงพักระหว่างการชน เพิ่มจำนวนครั้งที่โจมตีได้"},
+ {key:"count",name:"จำนวนลูกศร",desc:"เพิ่มลูกศรที่เคลื่อนที่และสะท้อนชนบล็อก",max:12},
+ {key:"speed",name:"ความเร็วลูกศร",desc:"เพิ่มความเร็วในการเดินทางและเด้งชนบล็อก"}
+];
+function renderUpgrades(){
+ var root=$("upgrades"),html="";
+ upgradeInfo.forEach(function(u){
+  var lv=s[u.key],cost=upgradeCost(u.key),max=u.max&&lv>=u.max;
+  html+='<div class="upgrade"><div class="name">'+u.name+' <span style="color:#a5e7d4">Lv '+lv+'</span></div><div class="desc">'+u.desc+'</div><button data-up="'+u.key+'" '+(max||s.energy<cost?"disabled":"")+'>'+(max?"เต็มระดับ":"อัปเกรด · "+fmt(cost))+'</button><div class="progress"><i style="width:'+Math.min(100,lv/(u.max||30)*100)+'%"></i></div></div>';
+ });
+ root.innerHTML=html;
+ root.querySelectorAll("[data-up]").forEach(function(btn){btn.onclick=function(){var k=btn.getAttribute("data-up"),cost=upgradeCost(k);if(s.energy<cost||(k==="count"&&s.count>=12))return;s.energy-=cost;s[k]++;syncArrows();renderUpgrades();updateHud();save();say("อัปเกรดเรียบร้อย")}})
+}
+function updateHud(){
+ $("energy").textContent=fmt(s.energy);$("eps").textContent=fmt(idleRate());$("stage").textContent=fmt(s.stage);$("blocks").textContent="บล็อก "+s.blocks.length;
+}
+function idleRate(){return Math.max(0,arrowCount()*damage()/Math.max(.18,fireInterval())*.055)}
+function resize(){
+ var r=canvas.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);dpr=Math.min(2,window.devicePixelRatio||1);
+ canvas.width=Math.floor(W*dpr);canvas.height=Math.floor(H*dpr);ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+function roundedRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function drawBlock(b){
+ var x=b.x*W,y=b.y*H,r=b.r||18,pts=shapeFor(b.id),rot=b.rot||0;
+ ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+ function path(scale){ctx.beginPath();pts.forEach(function(p,i){var px=p[0]*r*scale,py=p[1]*r*scale;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)});ctx.closePath()}
+ ctx.shadowColor="#efb86f";ctx.shadowBlur=12;path(1);ctx.fillStyle="#c27d4c";ctx.fill();ctx.shadowBlur=0;
+ ctx.strokeStyle="#f6d09b";ctx.lineWidth=2;ctx.stroke();
+ path(.72);ctx.fillStyle="#713f32";ctx.fill();
+ ctx.fillStyle="#fff0d7";ctx.font="bold 10px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(fmt(b.hp),0,0);
+ ctx.rotate(-rot);ctx.fillStyle="#392c2a";roundedRect(-r,-r-9,r*2,4,2);ctx.fill();ctx.fillStyle="#f2bd75";roundedRect(-r,-r-9,r*2*clamp(b.hp/b.max,0,1),4,2);ctx.fill();
+ ctx.restore();
+}
+function drawArrow(a){
+ var ang=Math.atan2(a.vy,a.vx);
+ ctx.save();ctx.translate(a.x,a.y);ctx.rotate(ang);
+ ctx.shadowColor="#a5e7d4";ctx.shadowBlur=12;ctx.strokeStyle="#d5fff1";ctx.lineWidth=2.5;ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(-9,0);ctx.lineTo(8,0);ctx.moveTo(3,-5);ctx.lineTo(9,0);ctx.lineTo(3,5);ctx.stroke();ctx.restore();
+}
+function burst(x,y){
+ for(var i=0;i<5;i++){var a=Math.random()*Math.PI*2,v=25+Math.random()*70;particles.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.35})}
+}
+var particles=[];
+function step(dt){
+ tick+=dt;syncArrows();
+ for(var i=0;i<s.arrows.length;i++){
+  var ar=s.arrows[i];
+  if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
+  var oldX=ar.x,oldY=ar.y;
+  ar.x+=ar.vx*dt;ar.y+=ar.vy*dt;
+  if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx)}
+  if(ar.x>W-5){ar.x=W-5;ar.vx=-Math.abs(ar.vx)}
+  if(ar.y<5){ar.y=5;ar.vy=Math.abs(ar.vy)}
+  if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy)}
+  if(ar.hitWait<=0){
+   for(var j=0;j<s.blocks.length;j++){
+    var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||16;
+    var dx=ar.x-bx,dy=ar.y-by;
+    if(Math.abs(dx)<rr+7&&Math.abs(dy)<rr+7&&polygonHit(ar.x,ar.y,b,5)){
+     var fromX=oldX-bx,fromY=oldY-by;
+     var hitX=Math.abs(fromX)>Math.abs(fromY);
+     var speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
+     if(hitX){ar.vx=fromX>=0?Math.abs(ar.vx):-Math.abs(ar.vx);ar.x=bx+(fromX>=0?rr+6:-rr-6)}
+     else{ar.vy=fromY>=0?Math.abs(ar.vy):-Math.abs(ar.vy);ar.y=by+(fromY>=0?rr+6:-rr-6)}
+     var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.9;
+     ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
+     b.hp-=damage();ar.hitWait=.12;ar.lastHitId=b.id;burst(ar.x,ar.y);
+     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(j,1);say("+"+gain+" พลังงาน");j--}
+     break;
+    }
+   }
+  }
+ }
+ if(s.blocks.length===0){
+  s.stage=Math.floor(s.stage)+1;
+  spawnFormation();
+  renderUpgrades();
+  say("เคลียร์บล็อกหมดแล้ว · ด่าน "+fmt(s.stage));
+ }
+ particles=particles.filter(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;return p.life>0});
+}
+function draw(t){
+ if(!ctx)return;var dt=Math.min(.04,Math.max(0,(t-last)/1000));last=t;step(dt);
+ ctx.clearRect(0,0,W,H);
+ var bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#203844");bg.addColorStop(1,"#111d27");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ ctx.strokeStyle="rgba(172,221,211,.07)";ctx.lineWidth=1;for(var x=0;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(var y=0;y<H;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+ ctx.beginPath();ctx.arc(W/2,H/2,18,0,Math.PI*2);ctx.fillStyle="#294954";ctx.fill();ctx.strokeStyle="#9ddacb";ctx.stroke();
+ for(var i=0;i<s.blocks.length;i++)drawBlock(s.blocks[i]);
+ for(i=0;i<s.arrows.length;i++)drawArrow(s.arrows[i]);
+ for(i=0;i<particles.length;i++){var p=particles[i];ctx.globalAlpha=clamp(p.life/.35,0,1);ctx.fillStyle="#ffe0a8";ctx.fillRect(p.x,p.y,3,3)}ctx.globalAlpha=1;
+ if(Math.floor(t/250)%4===0)updateHud();
+ raf=requestAnimationFrame(draw);
+}
+function start(){
+ load();var away=clamp((Date.now()-s.last)/1000,0,8*3600);
+ if(away>30){var bonus=Math.floor(idleRate()*away);reward(bonus);say("ยินดีต้อนรับกลับ · ได้รับ "+fmt(bonus)+" พลังงาน")}
+ // Replace legacy sparse layouts with the full opening barrier.
+ if(s.formationVersion!==2||!Array.isArray(s.blocks)||s.blocks.length===0)spawnFormation();
+ resize();s.arrows=[];syncArrows();window.addEventListener("resize",resize);
+ renderUpgrades();updateHud();
+ $("reset").onclick=function(){if(confirm("ต้องการเริ่มเกมใหม่และลบความคืบหน้าทั้งหมดหรือไม่?")){localStorage.removeItem("stillpointIdle");location.reload()}};
+ save();last=performance.now();raf=requestAnimationFrame(draw);
+ setInterval(function(){save();renderUpgrades();updateHud()},5000);
+}
+try{start()}catch(e){$("fatal").style.display="block";$("fatal").textContent="เกิดข้อผิดพลาดตอนเริ่มเกม: "+(e&&e.message?e.message:"ไม่ทราบสาเหตุ")}
+})();
+</script></body></html>
