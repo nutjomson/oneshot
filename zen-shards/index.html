@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101820"><title>STILLPOINT</title>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101820"><title>STILLPOINT</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101820;color:#edf4f2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{padding:0 0 env(safe-area-inset-bottom)}button{font:inherit;border:0;border-radius:10px;padding:12px 10px;font-weight:800;background:#a5e7d4;color:#10232a;cursor:pointer}button:disabled{opacity:.4;cursor:default}#app{max-width:760px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}header{padding:14px 16px;background:#1a2933;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:21px;font-weight:950;letter-spacing:3px}.sub{font-size:10px;color:#9eb4ba;letter-spacing:1.5px;margin-top:3px}.stats{display:flex;gap:15px;text-align:right;color:#a8bbc0;font-size:9px}.stats b{display:block;color:#a5e7d4;font-size:17px;margin-top:3px}#arena{display:block;width:100%;height: min(58vh,440px);min-height:310px;background:#15242d;touch-action:pan-y}#status{display:flex;justify-content:space-between;padding:9px 14px;background:#1d303a;color:#b7cbc9;font-size:11px}.section{padding:14px}.heading{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:10px}.upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upgrade{background:#1d2d37;border:1px solid #3b535d;border-radius:12px;padding:12px;min-width:0}.upgrade .name{font-size:13px;font-weight:850}.upgrade .desc{font-size:10px;color:#a8bbc0;line-height:1.4;min-height:29px;margin:5px 0 9px}.upgrade button{width:100%;font-size:11px;padding:10px 5px}.progress{height:5px;border-radius:9px;background:#0c151b;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:#a5e7d4}.footer{padding:0 14px 16px;color:#82999f;font-size:10px;line-height:1.5}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#081116;border:1px solid #526970;border-radius:22px;padding:10px 15px;display:none;z-index:9;font-size:12px;white-space:nowrap;max-width:90%}#fatal{display:none;margin:10px;padding:12px;background:#572f36;border-radius:8px;font-size:12px}#reset{background:#334650;color:#edf4f2;font-size:10px;padding:8px 11px}@media(max-width:380px){.stats{gap:9px}.brand{font-size:18px}.upgrade{padding:10px}.upgrade .desc{font-size:9px}}
-</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">IDLE BREAKER · BUILD 0.5.1</div></div><div class="stats"><div>ENERGY<b id="energy">0</b></div><div>PER SEC<b id="eps">0</b></div><div>STAGE<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">Arrows operating automatically</span><span id="blocks">BLOCKS 0</span></div><section class="section"><div class="heading"><span>CORE UPGRADES</span><button id="reset">RESET</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">Your arrows move and seek targets on their own. Upgrade the system while it keeps running. Progress is saved on this device.</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
+</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">เกมทำลายบล็อกอัตโนมัติ · BUILD 0.5.2</div></div><div class="stats"><div>พลังงาน<b id="energy">0</b></div><div>ต่อวินาที<b id="eps">0</b></div><div>ด่าน<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">ลูกศรพุ่งชนบล็อกอัตโนมัติ</span><span id="blocks">บล็อก 0</span></div><section class="section"><div class="heading"><span>อัปเกรดความสามารถ</span><button id="reset">เริ่มใหม่</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">ลูกศรเคลื่อนที่และสะท้อนชนบล็อกเองอย่างต่อเนื่อง อัปเกรดความสามารถเพื่อทำลายบล็อกให้เร็วขึ้น ความคืบหน้าจะบันทึกไว้ในอุปกรณ์นี้</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
 <script>
 (function(){
 "use strict";
@@ -10,7 +10,7 @@ var $=function(id){return document.getElementById(id)};
 var canvas=$("arena"),ctx=null,W=1,H=1,dpr=1,last=0,raf=0,tick=0,toastTimer=0,saveTimer=0;
 var fresh={energy:0,total:0,stage:1,damage:1,rate:1,count:1,speed:1,blocks:[],arrows:[],last:Date.now(),nextId:1};
 var s;
-function initial(){return {energy:0,total:0,stage:1,damage:1,rate:1,count:1,speed:1,blocks:[],arrows:[],last:Date.now(),nextId:1}}
+function initial(){return {energy:0,total:0,stage:1,damage:1,rate:1,count:1,speed:1,blocks:[],arrows:[],last:Date.now(),nextId:1,formationVersion:1}}
 function say(msg){var e=$("toast");e.textContent=msg;e.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(function(){e.style.display="none"},1400)}
 function fmt(n){return Math.floor(n).toLocaleString()}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
@@ -20,7 +20,8 @@ function load(){
   var raw=localStorage.getItem("stillpointIdle"),v=raw?JSON.parse(raw):null;
   if(v&&typeof v==="object"){
    ["energy","total","stage","damage","rate","count","speed","nextId"].forEach(function(k){if(isFinite(Number(v[k])))s[k]=Math.max(k==="energy"||k==="total"?0:1,Number(v[k]))});
-   s.blocks=Array.isArray(v.blocks)?v.blocks.slice(0,30).map(function(b){return {id:Number(b.id)||1,x:clamp(Number(b.x)||.5,.05,.95),y:clamp(Number(b.y)||.5,.05,.95),hp:Math.max(1,Number(b.hp)||1,maxHpFor(s.stage)),max:Math.max(1,Number(b.max)||1,maxHpFor(s.stage))}}):[];
+   s.formationVersion=Number(v.formationVersion)||1;
+   s.blocks=Array.isArray(v.blocks)?v.blocks.slice(0,100).map(function(b){return {id:Number(b.id)||1,x:clamp(Number(b.x)||.5,.05,.95),y:clamp(Number(b.y)||.5,.05,.95),hp:Math.max(1,Number(b.hp)||1,maxHpFor(s.stage)),max:Math.max(1,Number(b.max)||1,maxHpFor(s.stage))}}):[];
    s.last=Number(v.last)||Date.now();
   }
  }catch(e){s=initial()}
@@ -30,18 +31,18 @@ function maxHpFor(stage){return Math.floor(8*Math.pow(1.18,Math.max(0,stage-1)))
 function blockValue(){return Math.max(1,Math.floor(2*Math.pow(1.13,Math.max(0,s.stage-1))))}
 function spawnBlock(x,y){
  var hp=maxHpFor(s.stage);
- s.blocks.push({id:s.nextId++,x:x,y:y,hp:hp,max:hp,r:16});
+ s.blocks.push({id:s.nextId++,x:x,y:y,hp:hp,max:hp,r:13});
 }
 function spawnFormation(){
  s.blocks=[];
- var cols=7,rows=5;
+ var cols=10,rows=8;
  for(var row=0;row<rows;row++){
   for(var col=0;col<cols;col++){
-   spawnBlock(.08+col*.14,.13+row*.14);
+   spawnBlock(.055+col*.099,.07+row*.123);
   }
  }
+ s.formationVersion=2;
 }
-function ensureBlocks(){if(s.blocks.length<20)spawnFormation()}
 function arrowCount(){return Math.min(12,1+(s.count-1))}
 function fireInterval(){return Math.max(.18,1.05*Math.pow(.88,s.rate-1))}
 function arrowSpeed(){return (125+Math.min(240,(s.speed-1)*22))*Math.pow(1.055,s.rate-1)}
@@ -55,31 +56,31 @@ function makeArrow(i){
  var spread=(i-(arrowCount()-1)/2)*.13;
  var angle=-Math.PI/2+spread;
  var sp=arrowSpeed();
- return {x:W*.5+spread*25,y:H*.88,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0,lastHitId:0};
+ return {x:W*.5+spread*25,y:H-7,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0,lastHitId:0};
 }
 function syncArrows(){
  while(s.arrows.length<arrowCount())s.arrows.push(makeArrow(s.arrows.length));
  while(s.arrows.length>arrowCount())s.arrows.pop();
 }
 function reward(n){s.energy+=n;s.total+=n}
-function upgradeCost(k){var base={damage:12,rate:18,count:65,speed:25}[k];return Math.floor(base*Math.pow({damage:1.42,rate:1.58,count:2.25,speed:1.5}[k],s[k]-1))}
+function upgradeCost(k){var base={damage:12,rate:18,count:65,speed:25}[k];return Math.max(1,Math.floor(base*Math.pow({damage:1.42,rate:1.58,count:2.25,speed:1.5}[k],s[k]-1)*0.30))}
 var upgradeInfo=[
- {key:"damage",name:"Impact",desc:"Increase damage dealt by every arrow."},
- {key:"rate",name:"Fire Rate",desc:"Increase the speed of every ricochet."},
- {key:"count",name:"Arrow Array",desc:"Add another independently moving arrow.",max:12},
- {key:"speed",name:"Velocity",desc:"Increase arrow movement speed."}
+ {key:"damage",name:"พลังโจมตี",desc:"เพิ่มความเสียหายที่ลูกศรทำได้ต่อครั้ง"},
+ {key:"rate",name:"ความเร็วโจมตี",desc:"เพิ่มความถี่และความเร็วในการโจมตี"},
+ {key:"count",name:"จำนวนลูกศร",desc:"เพิ่มลูกศรที่เคลื่อนที่และสะท้อนชนบล็อก",max:12},
+ {key:"speed",name:"ความเร็วลูกศร",desc:"เพิ่มความเร็วในการเคลื่อนที่ของลูกศร"}
 ];
 function renderUpgrades(){
  var root=$("upgrades"),html="";
  upgradeInfo.forEach(function(u){
   var lv=s[u.key],cost=upgradeCost(u.key),max=u.max&&lv>=u.max;
-  html+='<div class="upgrade"><div class="name">'+u.name+' <span style="color:#a5e7d4">Lv '+lv+'</span></div><div class="desc">'+u.desc+'</div><button data-up="'+u.key+'" '+(max||s.energy<cost?"disabled":"")+'>'+(max?"MAX LEVEL":"UPGRADE · "+fmt(cost))+'</button><div class="progress"><i style="width:'+Math.min(100,lv/(u.max||30)*100)+'%"></i></div></div>';
+  html+='<div class="upgrade"><div class="name">'+u.name+' <span style="color:#a5e7d4">Lv '+lv+'</span></div><div class="desc">'+u.desc+'</div><button data-up="'+u.key+'" '+(max||s.energy<cost?"disabled":"")+'>'+(max?"เต็มระดับ":"อัปเกรด · "+fmt(cost))+'</button><div class="progress"><i style="width:'+Math.min(100,lv/(u.max||30)*100)+'%"></i></div></div>';
  });
  root.innerHTML=html;
- root.querySelectorAll("[data-up]").forEach(function(btn){btn.onclick=function(){var k=btn.getAttribute("data-up"),cost=upgradeCost(k);if(s.energy<cost||(k==="count"&&s.count>=12))return;s.energy-=cost;s[k]++;syncArrows();renderUpgrades();updateHud();save();say("Upgrade installed")}})
+ root.querySelectorAll("[data-up]").forEach(function(btn){btn.onclick=function(){var k=btn.getAttribute("data-up"),cost=upgradeCost(k);if(s.energy<cost||(k==="count"&&s.count>=12))return;s.energy-=cost;s[k]++;syncArrows();renderUpgrades();updateHud();save();say("อัปเกรดเรียบร้อย")}})
 }
 function updateHud(){
- $("energy").textContent=fmt(s.energy);$("eps").textContent=fmt(idleRate());$("stage").textContent=fmt(s.stage);$("blocks").textContent="BLOCKS "+s.blocks.length;
+ $("energy").textContent=fmt(s.energy);$("eps").textContent=fmt(idleRate());$("stage").textContent=fmt(s.stage);$("blocks").textContent="บล็อก "+s.blocks.length;
 }
 function idleRate(){return Math.max(0,arrowCount()*damage()/Math.max(.18,fireInterval())*.055)}
 function resize(){
@@ -108,7 +109,7 @@ function burst(x,y){
 }
 var particles=[];
 function step(dt){
- tick+=dt;ensureBlocks();syncArrows();
+ tick+=dt;syncArrows();
  for(var i=0;i<s.arrows.length;i++){
   var ar=s.arrows[i];
   if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
@@ -131,7 +132,7 @@ function step(dt){
      var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.9;
      ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
      b.hp-=damage();ar.hitWait=.12;ar.lastHitId=b.id;burst(ar.x,ar.y);
-     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(j,1);say("+"+gain+" energy");j--}
+     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(j,1);say("+"+gain+" พลังงาน");j--}
      break;
     }
    }
@@ -141,7 +142,7 @@ function step(dt){
   s.stage=Math.floor(s.stage)+1;
   spawnFormation();
   renderUpgrades();
-  say("Barrier cleared · Stage "+fmt(s.stage));
+  say("เคลียร์บล็อกหมดแล้ว · ด่าน "+fmt(s.stage));
  }
  particles=particles.filter(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;return p.life>0});
 }
@@ -159,15 +160,15 @@ function draw(t){
 }
 function start(){
  load();var away=clamp((Date.now()-s.last)/1000,0,8*3600);
- if(away>30){var bonus=Math.floor(idleRate()*away);reward(bonus);say("Welcome back · +"+fmt(bonus)+" energy")}
+ if(away>30){var bonus=Math.floor(idleRate()*away);reward(bonus);say("ยินดีต้อนรับกลับ · ได้รับ "+fmt(bonus)+" พลังงาน")}
  // Replace legacy sparse layouts with the full opening barrier.
- if(!Array.isArray(s.blocks)||s.blocks.length<20)spawnFormation();
+ if(s.formationVersion!==2||!Array.isArray(s.blocks)||s.blocks.length===0)spawnFormation();
  resize();s.arrows=[];syncArrows();window.addEventListener("resize",resize);
  renderUpgrades();updateHud();
- $("reset").onclick=function(){if(confirm("Reset all STILLPOINT progress on this device?")){localStorage.removeItem("stillpointIdle");location.reload()}};
+ $("reset").onclick=function(){if(confirm("ต้องการเริ่มเกมใหม่และลบความคืบหน้าทั้งหมดหรือไม่?")){localStorage.removeItem("stillpointIdle");location.reload()}};
  save();last=performance.now();raf=requestAnimationFrame(draw);
  setInterval(function(){save();renderUpgrades();updateHud()},5000);
 }
-try{start()}catch(e){$("fatal").style.display="block";$("fatal").textContent="Startup error: "+(e&&e.message?e.message:"unknown error")}
+try{start()}catch(e){$("fatal").style.display="block";$("fatal").textContent="เกิดข้อผิดพลาดตอนเริ่มเกม: "+(e&&e.message?e.message:"ไม่ทราบสาเหตุ")}
 })();
 </script></body></html>
