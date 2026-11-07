@@ -85,10 +85,11 @@ function chooseTarget(a,excludeId){
  return best;
 }
 function makeArrow(i){
- var spread=(i-(arrowCount()-1)/2)*.13;
- var angle=-Math.PI/2+spread;
+ var n=Math.max(1,arrowCount()),spread=n===1?0:(i/(n-1)-.5);
+ // Fan the arrows across a broad upward arc instead of sending them all vertically.
+ var angle=-Math.PI/2+spread*1.18;
  var sp=arrowSpeed();
- return {x:W*.5+spread*25,y:H-7,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,targetId:0,life:1e9,hitWait:0,lastHitId:0};
+ return {x:W*.5+spread*24,y:H-12,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,life:1e9,hitWait:0,lastHitId:0};
 }
 function syncArrows(){
  while(s.arrows.length<arrowCount())s.arrows.push(makeArrow(s.arrows.length));
@@ -146,40 +147,35 @@ function step(dt){
  for(var i=0;i<s.arrows.length;i++){
   var ar=s.arrows[i];
   if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
-  var target=null;
-  for(var k=0;k<s.blocks.length;k++){if(s.blocks[k].id===ar.targetId){target=s.blocks[k];break}}
-  if(!target){target=chooseTarget(ar,ar.lastHitId);if(!target)target=chooseTarget(ar,0);ar.targetId=target?target.id:0}
-  if(target){
-   var tx=target.x*W-ar.x,ty=target.y*H-ar.y;
-   var speedNow=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
-   var current=Math.atan2(ar.vy,ar.vx),desired=Math.atan2(ty,tx);
-   var delta=Math.atan2(Math.sin(desired-current),Math.cos(desired-current));
-   var ang=current+clamp(delta,-7*dt,7*dt);
-   ar.vx=Math.cos(ang)*speedNow;ar.vy=Math.sin(ang)*speedNow;
-  }
+  // Pure ricochet movement: preserve the incoming direction; never steer toward a block.
   var oldX=ar.x,oldY=ar.y;
   ar.x+=ar.vx*dt;ar.y+=ar.vy*dt;
-  if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx);ar.targetId=0}
-  if(ar.x>W-5){ar.x=W-5;ar.vx=-Math.abs(ar.vx);ar.targetId=0}
-  if(ar.y<5){ar.y=5;ar.vy=Math.abs(ar.vy);ar.targetId=0}
-  if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy);ar.targetId=0}
+  var wallPad=7,edgeKick=.24;
+  if(ar.x<wallPad){ar.x=wallPad;ar.vx=Math.abs(ar.vx);ar.vy+=Math.sign(ar.vy||1)*Math.abs(ar.vx)*edgeKick}
+  if(ar.x>W-wallPad){ar.x=W-wallPad;ar.vx=-Math.abs(ar.vx);ar.vy+=Math.sign(ar.vy||1)*Math.abs(ar.vx)*edgeKick}
+  if(ar.y<wallPad){ar.y=wallPad;ar.vy=Math.abs(ar.vy);ar.vx+=Math.sign(ar.vx||((i%2)?1:-1))*Math.abs(ar.vy)*edgeKick}
+  if(ar.y>H-wallPad){ar.y=H-wallPad;ar.vy=-Math.abs(ar.vy);ar.vx+=Math.sign(ar.vx||((i%2)?1:-1))*Math.abs(ar.vy)*edgeKick}
   if(ar.hitWait<=0){
-   var dx=ar.x-oldX,dy=ar.y-oldY,den=dx*dx+dy*dy||1,hitBlock=-1,hitT=2;
-   for(var j=0;j<s.blocks.length;j++){
-    var b=s.blocks[j],bx=b.x*W,by=b.y*H;
-    var t=clamp(((bx-oldX)*dx+(by-oldY)*dy)/den,0,1);
-    var cx=oldX+t*dx,cy=oldY+t*dy,reach=(b.r||16)*.88+5;
-    if(Math.hypot(cx-bx,cy-by)<=reach&&t<hitT){hitBlock=j;hitT=t}
+   var dx=ar.x-oldX,dy=ar.y-oldY,dist=Math.hypot(dx,dy),steps=Math.max(1,Math.ceil(dist/4)),hitBlock=-1,hitX=0,hitY=0;
+   // Sample along the complete movement segment so fast arrows cannot pass through a block.
+   for(var q=1;q<=steps&&hitBlock<0;q++){
+    var t=q/steps,px=oldX+dx*t,py=oldY+dy*t;
+    for(var j=0;j<s.blocks.length;j++){
+     if(polygonHit(px,py,s.blocks[j],4)){hitBlock=j;hitX=px;hitY=py;break}
+    }
    }
    if(hitBlock>=0){
     var b=s.blocks[hitBlock],bx=b.x*W,by=b.y*H;
-    ar.x=oldX+dx*hitT;ar.y=oldY+dy*hitT;
-    var nx=ar.x-bx,ny=ar.y-by,nl=Math.hypot(nx,ny)||1;nx/=nl;ny/=nl;
+    ar.x=hitX;ar.y=hitY;
+    var nx=ar.x-bx,ny=ar.y-by,nl=Math.hypot(nx,ny);
+    // If the arrow hits near the block center, use the opposite incoming direction as the normal.
+    if(nl<.001){var vl0=Math.hypot(ar.vx,ar.vy)||1;nx=-ar.vx/vl0;ny=-ar.vy/vl0}else{nx/=nl;ny/=nl}
     var speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed(),dot=ar.vx*nx+ar.vy*ny;
+    if(dot>0){nx=-nx;ny=-ny;dot=ar.vx*nx+ar.vy*ny}
     ar.vx-=2*dot*nx;ar.vy-=2*dot*ny;
     var vl=Math.hypot(ar.vx,ar.vy)||1;ar.vx=ar.vx/vl*speed;ar.vy=ar.vy/vl*speed;
-    ar.x=bx+nx*((b.r||16)+6);ar.y=by+ny*((b.r||16)+6);
-    ar.lastHitId=b.id;ar.targetId=0;ar.hitWait=.045;
+    ar.x+=nx*7;ar.y+=ny*7;
+    ar.lastHitId=b.id;ar.hitWait=.035;
     b.hp-=damage();burst(ar.x,ar.y);
     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(hitBlock,1);say("+"+gain+" พลังงาน")}
    }
@@ -189,13 +185,18 @@ function step(dt){
   s.stage=Math.floor(s.stage)+1;spawnFormation();renderUpgrades();
   say("เคลียร์บล็อกหมดแล้ว · ด่าน "+fmt(s.stage));
  }
- particles=particles.filter(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;return p.life>0});
+ for(var p=particles.length-1;p>=0;p--){particles[p].x+=particles[p].vx*dt;particles[p].y+=particles[p].vy*dt;particles[p].life-=dt;if(particles[p].life<=0)particles.splice(p,1)}
 }
 function draw(t){
  if(!ctx)return;var dt=Math.min(.04,Math.max(0,(t-last)/1000));last=t;step(dt);
  ctx.clearRect(0,0,W,H);
  var bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#203844");bg.addColorStop(1,"#111d27");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
- ctx.strokeStyle="rgba(172,221,211,.07)";ctx.lineWidth=1;for(var x=0;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(var y=0;y<H;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+ ctx.strokeStyle="rgba(172,221,211,.07)";ctx.lineWidth=1;
+// Special ricochet rails: diagonal chevrons around the arena edges show the deflection zones.
+ ctx.save();ctx.strokeStyle="rgba(165,231,212,.24)";ctx.lineWidth=2;
+ for(var ex=18;ex<W-18;ex+=34){ctx.beginPath();ctx.moveTo(ex-6,5);ctx.lineTo(ex+6,13);ctx.lineTo(ex+18,5);ctx.stroke();ctx.beginPath();ctx.moveTo(ex-6,H-5);ctx.lineTo(ex+6,H-13);ctx.lineTo(ex+18,H-5);ctx.stroke()}
+ for(var ey=24;ey<H-18;ey+=34){ctx.beginPath();ctx.moveTo(5,ey-6);ctx.lineTo(13,ey+6);ctx.lineTo(5,ey+18);ctx.stroke();ctx.beginPath();ctx.moveTo(W-5,ey-6);ctx.lineTo(W-13,ey+6);ctx.lineTo(W-5,ey+18);ctx.stroke()}
+ ctx.restore();for(var x=0;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(var y=0;y<H;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
  ctx.beginPath();ctx.arc(W/2,H/2,18,0,Math.PI*2);ctx.fillStyle="#294954";ctx.fill();ctx.strokeStyle="#9ddacb";ctx.stroke();
  for(var i=0;i<s.blocks.length;i++)drawBlock(s.blocks[i]);
  for(i=0;i<s.arrows.length;i++)drawArrow(s.arrows[i]);
