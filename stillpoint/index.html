@@ -142,6 +142,16 @@ function step(dt){
  for(var i=0;i<s.arrows.length;i++){
   var ar=s.arrows[i];
   if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
+  // Gently steer each arrow toward the nearest live block so it cannot loop forever through empty lanes.
+  var target=chooseTarget(ar);
+  if(target){
+   var tx=target.x*W-ar.x,ty=target.y*H-ar.y,tl=Math.hypot(tx,ty)||1;
+   var speedNow=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
+   var steer=clamp(dt*2.4,0,0.12);
+   var nvx=ar.vx/speedNow*(1-steer)+tx/tl*steer;
+   var nvy=ar.vy/speedNow*(1-steer)+ty/tl*steer;
+   var nl=Math.hypot(nvx,nvy)||1;ar.vx=nvx/nl*speedNow;ar.vy=nvy/nl*speedNow;
+  }
   var oldX=ar.x,oldY=ar.y;
   ar.x+=ar.vx*dt;ar.y+=ar.vy*dt;
   if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx)}
@@ -149,21 +159,27 @@ function step(dt){
   if(ar.y<5){ar.y=5;ar.vy=Math.abs(ar.vy)}
   if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy)}
   if(ar.hitWait<=0){
-   for(var j=0;j<s.blocks.length;j++){
-    var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||16;
-    var dx=ar.x-bx,dy=ar.y-by;
-    if(Math.abs(dx)<rr+7&&Math.abs(dy)<rr+7&&polygonHit(ar.x,ar.y,b,5)){
-     var fromX=oldX-bx,fromY=oldY-by;
-     var hitX=Math.abs(fromX)>Math.abs(fromY);
-     var speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
-     if(hitX){ar.vx=fromX>=0?Math.abs(ar.vx):-Math.abs(ar.vx);ar.x=bx+(fromX>=0?rr+6:-rr-6)}
-     else{ar.vy=fromY>=0?Math.abs(ar.vy):-Math.abs(ar.vy);ar.y=by+(fromY>=0?rr+6:-rr-6)}
-     var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.9;
-     ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
-     b.hp-=damage();ar.hitWait=.12;ar.lastHitId=b.id;burst(ar.x,ar.y);
-     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(j,1);say("+"+gain+" พลังงาน");j--}
-     break;
+   // Sweep the whole movement segment in short steps to prevent fast arrows tunnelling through thin spikes.
+   var travel=Math.hypot(ar.x-oldX,ar.y-oldY),samples=Math.max(2,Math.ceil(travel/3)),hitBlock=-1,hitX=ar.x,hitY=ar.y;
+   for(var q=1;q<=samples&&hitBlock<0;q++){
+    var sx=oldX+(ar.x-oldX)*q/samples,sy=oldY+(ar.y-oldY)*q/samples;
+    for(var j=0;j<s.blocks.length;j++){
+     var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||16;
+     if(Math.abs(sx-bx)<rr+7&&Math.abs(sy-by)<rr+7&&polygonHit(sx,sy,b,5)){hitBlock=j;hitX=sx;hitY=sy;break}
     }
+   }
+   if(hitBlock>=0){
+    var b=s.blocks[hitBlock],bx=b.x*W,by=b.y*H,rr=b.r||16;
+    ar.x=hitX;ar.y=hitY;
+    var nx=ar.x-bx,ny=ar.y-by,nl=Math.hypot(nx,ny)||1;nx/=nl;ny/=nl;
+    var dot=ar.vx*nx+ar.vy*ny,speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
+    ar.vx=(ar.vx-2*dot*nx);ar.vy=(ar.vy-2*dot*ny);
+    var vl=Math.hypot(ar.vx,ar.vy)||1;ar.vx=ar.vx/vl*speed;ar.vy=ar.vy/vl*speed;
+    ar.x=bx+nx*(rr+7);ar.y=by+ny*(rr+7);
+    var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.28;
+    ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
+    b.hp-=damage();ar.hitWait=.08;ar.lastHitId=b.id;burst(ar.x,ar.y);
+    if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(hitBlock,1);say("+"+gain+" พลังงาน")}
    }
   }
  }
