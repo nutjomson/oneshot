@@ -2,7 +2,7 @@
 <html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101820"><title>STILLPOINT</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101820;color:#edf4f2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{padding:0 0 env(safe-area-inset-bottom)}button{font:inherit;border:0;border-radius:10px;padding:12px 10px;font-weight:800;background:#a5e7d4;color:#10232a;cursor:pointer}button:disabled{opacity:.4;cursor:default}#app{max-width:760px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}header{padding:14px 16px;background:#1a2933;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:21px;font-weight:950;letter-spacing:3px}.sub{font-size:10px;color:#9eb4ba;letter-spacing:1.5px;margin-top:3px}.stats{display:flex;gap:15px;text-align:right;color:#a8bbc0;font-size:9px}.stats b{display:block;color:#a5e7d4;font-size:17px;margin-top:3px}#arena{display:block;width:100%;height: min(58vh,440px);min-height:310px;background:#15242d;touch-action:pan-y}#status{display:flex;justify-content:space-between;padding:9px 14px;background:#1d303a;color:#b7cbc9;font-size:11px}.section{padding:14px}.heading{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:10px}.upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upgrade{background:#1d2d37;border:1px solid #3b535d;border-radius:12px;padding:12px;min-width:0}.upgrade .name{font-size:13px;font-weight:850}.upgrade .desc{font-size:10px;color:#a8bbc0;line-height:1.4;min-height:29px;margin:5px 0 9px}.upgrade button{width:100%;font-size:11px;padding:10px 5px}.progress{height:5px;border-radius:9px;background:#0c151b;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:#a5e7d4}.footer{padding:0 14px 16px;color:#82999f;font-size:10px;line-height:1.5}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#081116;border:1px solid #526970;border-radius:22px;padding:10px 15px;display:none;z-index:9;font-size:12px;white-space:nowrap;max-width:90%}#fatal{display:none;margin:10px;padding:12px;background:#572f36;border-radius:8px;font-size:12px}#reset{background:#334650;color:#edf4f2;font-size:10px;padding:8px 11px}@media(max-width:380px){.stats{gap:9px}.brand{font-size:18px}.upgrade{padding:10px}.upgrade .desc{font-size:9px}}
-</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">เกมทำลายบล็อกอัตโนมัติ · BUILD 0.5.4</div></div><div class="stats"><div>พลังงาน<b id="energy">0</b></div><div>ต่อวินาที<b id="eps">0</b></div><div>ด่าน<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">ลูกศรพุ่งเร็วและสะท้อนชนบล็อกอัตโนมัติ</span><span id="blocks">บล็อก 0</span></div><section class="section"><div class="heading"><span>อัปเกรดความสามารถ</span><button id="reset">เริ่มใหม่</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">ลูกศรเคลื่อนที่และสะท้อนชนบล็อกเองอย่างต่อเนื่อง อัปเกรดความสามารถเพื่อทำลายบล็อกให้เร็วขึ้น ความคืบหน้าจะบันทึกไว้ในอุปกรณ์นี้</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
+</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">เกมทำลายบล็อกอัตโนมัติ · BUILD 0.5.5</div></div><div class="stats"><div>พลังงาน<b id="energy">0</b></div><div>ต่อวินาที<b id="eps">0</b></div><div>ด่าน<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">ลูกศรพุ่งเร็วและสะท้อนชนบล็อกอัตโนมัติ</span><span id="blocks">บล็อก 0</span></div><section class="section"><div class="heading"><span>อัปเกรดความสามารถ</span><button id="reset">เริ่มใหม่</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">ลูกศรเคลื่อนที่และสะท้อนชนบล็อกเองอย่างต่อเนื่อง อัปเกรดความสามารถเพื่อทำลายบล็อกให้เร็วขึ้น ความคืบหน้าจะบันทึกไว้ในอุปกรณ์นี้</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
 <script>
 (function(){
 "use strict";
@@ -75,16 +75,20 @@ function arrowCount(){return Math.min(12,1+(s.count-1))}
 function fireInterval(){return Math.max(.035,.12*Math.pow(.88,s.rate-1))}
 function arrowSpeed(){return (187.5+Math.min(360,(s.speed-1)*33))}
 function damage(){return Math.max(1,Math.floor(s.damage))}
-function chooseTarget(a){
+function chooseTarget(a,excludeId){
  var best=null,bd=1e9;
- for(var i=0;i<s.blocks.length;i++){var b=s.blocks[i],d=Math.hypot(b.x*W-a.x,b.y*H-a.y);if(d<bd){bd=d;best=b}}
+ for(var i=0;i<s.blocks.length;i++){
+  var b=s.blocks[i];if(excludeId&&b.id===excludeId)continue;
+  var d=Math.hypot(b.x*W-a.x,b.y*H-a.y);
+  if(d<bd){bd=d;best=b}
+ }
  return best;
 }
 function makeArrow(i){
  var spread=(i-(arrowCount()-1)/2)*.13;
  var angle=-Math.PI/2+spread;
  var sp=arrowSpeed();
- return {x:W*.5+spread*25,y:H-7,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0,lastHitId:0};
+ return {x:W*.5+spread*25,y:H-7,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,targetId:0,life:1e9,hitWait:0,lastHitId:0};
 }
 function syncArrows(){
  while(s.arrows.length<arrowCount())s.arrows.push(makeArrow(s.arrows.length));
@@ -142,51 +146,47 @@ function step(dt){
  for(var i=0;i<s.arrows.length;i++){
   var ar=s.arrows[i];
   if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
-  // Gently steer each arrow toward the nearest live block so it cannot loop forever through empty lanes.
-  var target=chooseTarget(ar);
+  var target=null;
+  for(var k=0;k<s.blocks.length;k++){if(s.blocks[k].id===ar.targetId){target=s.blocks[k];break}}
+  if(!target){target=chooseTarget(ar,ar.lastHitId);if(!target)target=chooseTarget(ar,0);ar.targetId=target?target.id:0}
   if(target){
-   var tx=target.x*W-ar.x,ty=target.y*H-ar.y,tl=Math.hypot(tx,ty)||1;
+   var tx=target.x*W-ar.x,ty=target.y*H-ar.y;
    var speedNow=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
-   var steer=clamp(dt*2.4,0,0.12);
-   var nvx=ar.vx/speedNow*(1-steer)+tx/tl*steer;
-   var nvy=ar.vy/speedNow*(1-steer)+ty/tl*steer;
-   var nl=Math.hypot(nvx,nvy)||1;ar.vx=nvx/nl*speedNow;ar.vy=nvy/nl*speedNow;
+   var current=Math.atan2(ar.vy,ar.vx),desired=Math.atan2(ty,tx);
+   var delta=Math.atan2(Math.sin(desired-current),Math.cos(desired-current));
+   var ang=current+clamp(delta,-7*dt,7*dt);
+   ar.vx=Math.cos(ang)*speedNow;ar.vy=Math.sin(ang)*speedNow;
   }
   var oldX=ar.x,oldY=ar.y;
   ar.x+=ar.vx*dt;ar.y+=ar.vy*dt;
-  if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx)}
-  if(ar.x>W-5){ar.x=W-5;ar.vx=-Math.abs(ar.vx)}
-  if(ar.y<5){ar.y=5;ar.vy=Math.abs(ar.vy)}
-  if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy)}
+  if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx);ar.targetId=0}
+  if(ar.x>W-5){ar.x=W-5;ar.vx=-Math.abs(ar.vx);ar.targetId=0}
+  if(ar.y<5){ar.y=5;ar.vy=Math.abs(ar.vy);ar.targetId=0}
+  if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy);ar.targetId=0}
   if(ar.hitWait<=0){
-   // Sweep the whole movement segment in short steps to prevent fast arrows tunnelling through thin spikes.
-   var travel=Math.hypot(ar.x-oldX,ar.y-oldY),samples=Math.max(2,Math.ceil(travel/3)),hitBlock=-1,hitX=ar.x,hitY=ar.y;
-   for(var q=1;q<=samples&&hitBlock<0;q++){
-    var sx=oldX+(ar.x-oldX)*q/samples,sy=oldY+(ar.y-oldY)*q/samples;
-    for(var j=0;j<s.blocks.length;j++){
-     var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||16;
-     if(Math.abs(sx-bx)<rr+7&&Math.abs(sy-by)<rr+7&&polygonHit(sx,sy,b,5)){hitBlock=j;hitX=sx;hitY=sy;break}
-    }
+   var dx=ar.x-oldX,dy=ar.y-oldY,den=dx*dx+dy*dy||1,hitBlock=-1,hitT=2;
+   for(var j=0;j<s.blocks.length;j++){
+    var b=s.blocks[j],bx=b.x*W,by=b.y*H;
+    var t=clamp(((bx-oldX)*dx+(by-oldY)*dy)/den,0,1);
+    var cx=oldX+t*dx,cy=oldY+t*dy,reach=(b.r||16)*.88+5;
+    if(Math.hypot(cx-bx,cy-by)<=reach&&t<hitT){hitBlock=j;hitT=t}
    }
    if(hitBlock>=0){
-    var b=s.blocks[hitBlock],bx=b.x*W,by=b.y*H,rr=b.r||16;
-    ar.x=hitX;ar.y=hitY;
+    var b=s.blocks[hitBlock],bx=b.x*W,by=b.y*H;
+    ar.x=oldX+dx*hitT;ar.y=oldY+dy*hitT;
     var nx=ar.x-bx,ny=ar.y-by,nl=Math.hypot(nx,ny)||1;nx/=nl;ny/=nl;
-    var dot=ar.vx*nx+ar.vy*ny,speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
-    ar.vx=(ar.vx-2*dot*nx);ar.vy=(ar.vy-2*dot*ny);
+    var speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed(),dot=ar.vx*nx+ar.vy*ny;
+    ar.vx-=2*dot*nx;ar.vy-=2*dot*ny;
     var vl=Math.hypot(ar.vx,ar.vy)||1;ar.vx=ar.vx/vl*speed;ar.vy=ar.vy/vl*speed;
-    ar.x=bx+nx*(rr+7);ar.y=by+ny*(rr+7);
-    var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.28;
-    ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
-    b.hp-=damage();ar.hitWait=.08;ar.lastHitId=b.id;burst(ar.x,ar.y);
+    ar.x=bx+nx*((b.r||16)+6);ar.y=by+ny*((b.r||16)+6);
+    ar.lastHitId=b.id;ar.targetId=0;ar.hitWait=.045;
+    b.hp-=damage();burst(ar.x,ar.y);
     if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(hitBlock,1);say("+"+gain+" พลังงาน")}
    }
   }
  }
  if(s.blocks.length===0){
-  s.stage=Math.floor(s.stage)+1;
-  spawnFormation();
-  renderUpgrades();
+  s.stage=Math.floor(s.stage)+1;spawnFormation();renderUpgrades();
   say("เคลียร์บล็อกหมดแล้ว · ด่าน "+fmt(s.stage));
  }
  particles=particles.filter(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;return p.life>0});
