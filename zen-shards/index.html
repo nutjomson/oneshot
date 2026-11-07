@@ -52,7 +52,7 @@ function polygonHit(px,py,b,pad){
   var lx=pts[i][0]*b.r,ly=pts[i][1]*b.r;
   verts.push([b.x*W+lx*cs-ly*sn,b.y*H+lx*sn+ly*cs]);
  }
- for(i=0,j=verts.length-1;i<verts.length;j=i++){
+ for(var i=0,j=verts.length-1;i<verts.length;j=i++){
   var a=verts[i],z=verts[j];
   if(((a[1]>py)!==(z[1]>py))&&(px<(z[0]-a[0])*(py-a[1])/(z[1]-a[1])+a[0]))inside=!inside;
   var vx=z[0]-a[0],vy=z[1]-a[1],den=vx*vx+vy*vy||1;
