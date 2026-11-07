@@ -22,6 +22,15 @@ nav{height:58px;flex:none;display:flex;background:#1b2834;border-top:1px solid #
 var $=function(s){return document.querySelector(s)},fmt=function(n){return n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(2)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":Math.floor(n).toLocaleString()};
 var fresh={essence:0,lifetime:0,crystals:[{id:1,level:0},{id:2,level:0},{id:3,level:0}],next:4,up:{touch:0,flow:0,attune:0},boost:0,last:Date.now()},s;
 try{s=Object.assign({},fresh,JSON.parse(localStorage.getItem("stillpointGarden")||"{}"));s.up=Object.assign({},fresh.up,s.up||{});if(!Array.isArray(s.crystals))s.crystals=fresh.crystals.slice()}catch(e){s=JSON.parse(JSON.stringify(fresh))}
+// Normalize saved data before the first render so an old or partial save cannot break startup.
+s.essence=Number.isFinite(Number(s.essence))?Math.max(0,Number(s.essence)):0;
+s.lifetime=Number.isFinite(Number(s.lifetime))?Math.max(0,Number(s.lifetime)):0;
+s.crystals=s.crystals.filter(function(c){return c&&Number.isFinite(Number(c.id))&&Number.isFinite(Number(c.level))&&Number(c.level)>=0}).map(function(c){return{id:Number(c.id),level:Math.floor(Number(c.level))}});
+if(!s.crystals.length)s.crystals=fresh.crystals.map(function(c){return{id:c.id,level:c.level}});
+s.next=Number.isFinite(Number(s.next))?Math.max(1,Math.floor(Number(s.next))):4;
+["touch","flow","attune"].forEach(function(k){s.up[k]=Number.isFinite(Number(s.up[k]))?Math.max(0,Math.floor(Number(s.up[k]))):0});
+s.last=Number.isFinite(Number(s.last))?Number(s.last):Date.now();
+s.boost=Number.isFinite(Number(s.boost))?Number(s.boost):0;
 var tab="garden",picked=null,timer;
 function rateOne(c){return Math.pow(2.2,c.level)*(1+s.up.attune*.2)}
 function flow(){return s.crystals.reduce(function(a,c){return a+rateOne(c)},0)*(1+s.up.flow*.12)*(Date.now()<s.boost?3:1)}
@@ -41,10 +50,10 @@ if(tab==="garden"){root.innerHTML='<div class="heading"><span>YOUR LIVING CRYSTA
 }
 document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){tab=b.dataset.tab;document.querySelectorAll("nav button").forEach(function(x){x.classList.toggle("active",x===b)});picked=null;paint()}});
 var W=0,H=0,canvas=$("#scene"),ctx=canvas.getContext("2d"),dpr=1,particles=[],floaters=[],lastFrame=0;
-function resize(){var r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);if(!floaters.length){for(var i=0;i<15;i++)floaters.push({x:Math.random()*W,y:Math.random()*H,size:10+Math.random()*20,phase:Math.random()*6.28,speed:.3+Math.random()*.6,rot:Math.random()*6.28,spin:(Math.random()-.5)*.3,hue:Math.random()*50})}}
+function resize(){if(!ctx)return;var r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);if(!floaters.length){for(var i=0;i<15;i++)floaters.push({x:Math.random()*W,y:Math.random()*H,size:10+Math.random()*20,phase:Math.random()*6.28,speed:.3+Math.random()*.6,rot:Math.random()*6.28,spin:(Math.random()-.5)*.3,hue:Math.random()*50})}}
 function polygon(x,y,r,rot){ctx.beginPath();for(var i=0;i<6;i++){var a=rot+i*Math.PI/3,px=x+Math.cos(a)*r,py=y+Math.sin(a)*r*(.72+.18*Math.sin(a*2));if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.closePath()}
 function burst(x,y){for(var i=0;i<26;i++){var a=Math.random()*Math.PI*2,v=30+Math.random()*130;particles.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.6+Math.random()*.7,max:.6+Math.random()*.7,size:1+Math.random()*3})}}
-function frame(t){var dt=Math.min(.04,(t-lastFrame)/1000||.016);lastFrame=t;ctx.clearRect(0,0,W,H);
+function frame(t){if(!ctx)return;var dt=Math.min(.04,(t-lastFrame)/1000||.016);lastFrame=t;ctx.clearRect(0,0,W,H);
 var glow=ctx.createRadialGradient(W*.5,H*.48,5,W*.5,H*.48,Math.max(W,H)*.65);glow.addColorStop(0,"#45636a");glow.addColorStop(1,"#172633");ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
 floaters.forEach(function(p){p.phase+=dt*p.speed;p.rot+=dt*p.spin;var x=p.x+Math.sin(p.phase)*12,y=p.y+Math.cos(p.phase*.8)*15;ctx.save();ctx.translate(x,y);ctx.rotate(p.rot);polygon(0,0,p.size,p.rot);var g=ctx.createLinearGradient(-p.size,-p.size,p.size,p.size);g.addColorStop(0,"#e3fff1");g.addColorStop(.45,"#86cdbd");g.addColorStop(1,"#477b8c");ctx.fillStyle=g;ctx.globalAlpha=.12+(.08*Math.sin(p.phase));ctx.fill();ctx.strokeStyle="#d4fff0";ctx.globalAlpha=.25;ctx.lineWidth=1;ctx.stroke();ctx.restore()});
 var cx=W/2,cy=H*.48;ctx.save();ctx.translate(cx,cy);ctx.rotate(t*.00012);ctx.strokeStyle="#a4e7d4";ctx.globalAlpha=.17;ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,Math.min(W,H)*.25,Math.min(W,H)*.095,0,0,Math.PI*2);ctx.stroke();ctx.restore();
