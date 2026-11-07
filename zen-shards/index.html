@@ -1,102 +1,58 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#38202d">
-<title>Zen Shards — Idle Merge</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#151b25">
+<title>Stillpoint — Shard Garden</title>
 <style>
-:root{--blue:#3478f6}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#211a20;color:#f7f3f5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:manipulation}
-button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
-#app{height:100dvh;max-width:900px;margin:auto;display:flex;flex-direction:column;background:#222326;overflow:hidden}
-header{height:58px;flex:none;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:#242327}
-.brand{font-weight:750;letter-spacing:.3px;font-size:17px}.sub{font-size:11px;color:#aaa;margin-top:2px}
-.topstats{display:flex;gap:12px;font-size:12px;text-align:right;color:#e9e3e7}.topstats b{display:block;color:white;font-size:15px}
-#arena{position:relative;flex:1;min-height:220px;overflow:hidden;background:#512c3a}
-#art{position:absolute;inset:0;width:100%;height:100%;display:block}
-.arena-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#ffffff9c;font-size:11px;pointer-events:none}
-#tapcore{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:150px;height:150px;background:transparent;border-radius:50%;display:grid;place-items:center}
-#tapcore:active{transform:translate(-50%,-50%) scale(.94)}
-.core-shard{width:76px;height:76px;background:#17171b;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);position:relative;filter:drop-shadow(0 0 15px #f5d9bc55)}
-.core-shard:after{content:"";position:absolute;inset:23px;background:#fff;clip-path:polygon(50% 0,100% 100%,0 72%)}
-nav{height:58px;flex:none;display:flex;background:#333438}
-nav button{flex:1;background:transparent;color:#d1cdd1;font-size:12px;font-weight:650}
-nav button.active{background:#48494f;color:#fff;box-shadow:inset 0 -3px #e7cda9}
-#content{height:238px;max-height:34dvh;min-height:190px;flex:none;background:#444549;padding:10px 10px calc(10px + env(safe-area-inset-bottom));overflow:auto}
-.section-head{display:flex;justify-content:space-between;align-items:center;margin:0 3px 9px;font-size:12px;color:#d6d2d6}
-.cards{display:flex;gap:9px;overflow-x:auto;padding-bottom:5px;scrollbar-width:none}.cards::-webkit-scrollbar{display:none}
-.card{flex:0 0 145px;min-height:168px;background:#292a2e;border:1px solid #ffffff0c;border-radius:3px;padding:10px 9px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.gem{width:48px;height:48px;margin:2px auto 7px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#f5f1ee}
-.g2{background:#b7f4c9}.g3{background:#f4d99c}.g4{background:#d6b6ed}.g5{background:#8bdce4}
-.card strong{font-size:13px}.card small{font-size:10px;color:#b8b3ba;line-height:1.4}
-.card button,.panel button{margin-top:auto;width:100%;min-height:39px;border-radius:5px;background:var(--blue);font-size:12px;font-weight:700}
-.card button:disabled,.panel button:disabled{opacity:.42}
-.pill{border:1px solid #ffffff22;border-radius:20px;padding:4px 8px;font-size:10px;color:#ddd}
-.panel{background:#292a2e;border-radius:5px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;justify-content:space-between}
-.panel .desc{font-size:12px;color:#bdb8bf;line-height:1.45}.panel b{font-size:13px}
-.panel button{padding:10px 12px;min-width:88px;margin:0}
-#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#17171de8;padding:9px 14px;border-radius:20px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:4}
-#toast.show{opacity:1}footer{height:4px;flex:none;background:#3478f6}
-@media(min-width:700px){#content{max-height:260px;height:260px}.card{flex-basis:165px}.brand{font-size:19px}}
-</style>
-</head>
-<body>
-<div id="app">
-<header><div><div class="brand">✦ ZEN SHARDS</div><div class="sub">IDLE MERGE · PROTOTYPE 0.1</div></div><div class="topstats"><div>SPARKS<b id="sparkCount">0</b></div><div>/ SEC<b id="rate">0</b></div></div></header>
-<section id="arena"><canvas id="art"></canvas><div id="toast"></div><button id="tapcore" aria-label="Tap to create sparks"><div class="core-shard"></div></button><div class="arena-hint">TAP THE SHARD · MERGE MATCHING SHARDS BELOW</div></section>
-<nav><button class="active" data-tab="sparks">SPARKS</button><button data-tab="upgrades">UPGRADES</button><button data-tab="boosts">BOOSTS</button><button data-tab="vault">VAULT</button></nav>
-<main id="content"></main><footer></footer>
-</div>
+:root{--ink:#eaf0f4;--muted:#9baab7;--panel:#202b37;--line:#3b4c59;--mint:#9ce5d2;--gold:#f4d49a;--bg:#111923}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:ui-rounded,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:manipulation}button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{height:100dvh;max-width:960px;margin:auto;display:flex;flex-direction:column;background:var(--bg)}header{height:66px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:9px 17px;background:#182330;border-bottom:1px solid #ffffff12}.brand{font-size:18px;font-weight:800;letter-spacing:1.6px}.sub{font-size:10px;color:var(--muted);letter-spacing:1.8px;margin-top:3px}.stats{display:flex;gap:16px;text-align:right;font-size:9px;color:var(--muted);letter-spacing:1px}.stats b{display:block;color:var(--mint);font-size:16px;letter-spacing:0;margin-top:2px}
+#garden{position:relative;flex:1;min-height:230px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#344c57 0,#243746 40%,#172634 100%)}#scene{width:100%;height:100%;display:block}#tap{position:absolute;inset:0;background:transparent}#prompt{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:1.5px;color:#c4d5d6;pointer-events:none;text-shadow:0 2px 8px #000}
+#toast{position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:9px 14px;background:#101820e8;border:1px solid #ffffff22;border-radius:22px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:3}#toast.show{opacity:1}
+nav{height:58px;flex:none;display:flex;background:#1b2834;border-top:1px solid #ffffff10}nav button{flex:1;background:transparent;color:#9eacb8;font-size:10px;font-weight:750;letter-spacing:1px}nav button.active{color:var(--mint);background:#263744;box-shadow:inset 0 -3px var(--mint)}
+#content{height:250px;max-height:35dvh;min-height:190px;overflow:auto;flex:none;padding:12px;background:#18232e}.heading{display:flex;justify-content:space-between;align-items:center;margin:0 2px 10px;font-size:11px;letter-spacing:1.2px;color:#c5d2d9}.hint{font-size:10px;color:var(--muted);letter-spacing:0}.cards{display:flex;gap:9px;overflow-x:auto;padding-bottom:7px}.card{flex:0 0 140px;min-height:150px;border:1px solid var(--line);background:linear-gradient(150deg,#293946,#1c2935);padding:10px;border-radius:12px;text-align:center;display:flex;flex-direction:column;align-items:center}.crystal{width:43px;height:51px;margin:2px auto 8px;background:linear-gradient(135deg,#e5fff5,#8bd8c5 45%,#457f91);clip-path:polygon(50% 0,91% 24%,100% 70%,50% 100%,0 70%,9% 24%);filter:drop-shadow(0 0 9px #9ce5d277)}.card strong{font-size:12px}.card small{font-size:10px;color:var(--muted);line-height:1.5;margin:5px 0 8px}.card button,.panel button{background:#8fdcc8;color:#13252b;font-weight:800;border-radius:8px;padding:10px 12px;font-size:10px;letter-spacing:.7px;margin-top:auto}.panel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;margin-bottom:8px;border:1px solid var(--line);background:#202e3a;border-radius:11px}.panel b{font-size:12px}.desc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:4px}.panel button:disabled{opacity:.4}.tag{font-size:9px;color:var(--gold);border:1px solid #f4d49a55;border-radius:20px;padding:5px 8px}
+@media(min-width:700px){#content{height:270px;max-height:270px}.card{flex-basis:155px}}
+</style></head><body><div id="app">
+<header><div><div class="brand">STILLPOINT</div><div class="sub">SHARD GARDEN · EARLY ACCESS</div></div><div class="stats"><div>ESSENCE<b id="essence">0</b></div><div>FLOW / SEC<b id="flow">0</b></div></div></header>
+<section id="garden"><canvas id="scene"></canvas><div id="toast"></div><button id="tap" aria-label="Gather essence"></button><div id="prompt">TOUCH THE GARDEN TO GATHER ESSENCE</div></section>
+<nav><button class="active" data-tab="garden">GARDEN</button><button data-tab="growth">GROWTH</button><button data-tab="rituals">RITUALS</button><button data-tab="archive">ARCHIVE</button></nav><main id="content"></main></div>
 <script>
 (function(){
 "use strict";
-var $=function(s){return document.querySelector(s)};
-var fmt=function(n){return n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(2)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":Math.floor(n).toLocaleString()};
-var defaults={sparks:0,total:0,shards:[{id:1,level:0},{id:2,level:0},{id:3,level:0}],nextId:4,upgrades:{tap:0,auto:0,value:0},boostUntil:0,last:Date.now()};
-var state;
-try{state=Object.assign({},defaults,JSON.parse(localStorage.getItem("zenShardsSave")||"{}"));state.upgrades=Object.assign({},defaults.upgrades,state.upgrades||{});if(!Array.isArray(state.shards))state.shards=defaults.shards.slice()}catch(e){state=JSON.parse(JSON.stringify(defaults))}
-var tab="sparks",selected=null,toastTimer;
-var costFor=function(l){return Math.floor(20*Math.pow(2.35,l))};
-var shardRate=function(s){return Math.pow(2.25,s.level)*(1+state.upgrades.value*.25)};
-var production=function(){return state.shards.reduce(function(a,s){return a+shardRate(s)},0)*(1+state.upgrades.auto*.1)*(Date.now()<state.boostUntil?3:1)};
-function save(){state.last=Date.now();try{localStorage.setItem("zenShardsSave",JSON.stringify(state))}catch(e){}}
-function toast(t){var el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("show")},1300)}
-function renderStats(){$("#sparkCount").textContent=fmt(state.sparks);$("#rate").textContent=fmt(production())}
-function gain(n){state.sparks+=n;state.total+=n;renderStats()}
-function buyShard(){var c=costFor(0);if(state.shards.length>=12){toast("Shard limit reached");return}if(state.sparks<c){toast("Not enough sparks");return}state.sparks-=c;state.shards.push({id:state.nextId++,level:0});render()}
-function merge(id){var target=state.shards.find(function(s){return s.id===id});if(!target)return;if(selected===null){selected=id;toast("Select another shard of the same level");render();return}if(selected===id){selected=null;render();return}var other=state.shards.find(function(s){return s.id===selected});if(!other||other.level!==target.level){selected=id;toast("Choose a shard with the same level");render();return}state.shards=state.shards.filter(function(s){return s.id!==id&&s.id!==selected});state.shards.push({id:state.nextId++,level:target.level+1});selected=null;toast("MERGED! Level "+(target.level+1));render()}
-function upgrade(kind){var lv=state.upgrades[kind],base=kind==="auto"?90:kind==="tap"?50:120,cost=Math.floor(base*Math.pow(2.05,lv));if(state.sparks<cost){toast("Not enough sparks");return}state.sparks-=cost;state.upgrades[kind]++;render()}
-function render(){
-renderStats();var c=$("#content");
-if(tab==="sparks"){
-c.innerHTML='<div class="section-head"><span>YOUR SHARDS · '+state.shards.length+' / 12</span><span class="pill">Tap two matching levels to merge</span></div><div class="cards" id="shardCards"></div><div class="panel"><div><b>Create a new shard</b><div class="desc">Add another Level 0 shard to your collection.</div></div><button id="buyShard">UNLOCK · '+fmt(costFor(0))+'</button></div>';
-var list=$("#shardCards");state.shards.forEach(function(s){var d=document.createElement("div");d.className="card";d.style.border=selected===s.id?"1px solid #f2d9a0":"";d.innerHTML='<div class="gem g'+(s.level%5+1)+'"></div><strong>Shard · Lv '+s.level+'</strong><small>'+fmt(shardRate(s))+' sparks / sec<br>'+(selected===s.id?"SELECTED":"Tap to select / merge")+'</small><button>SELECT</button>';d.querySelector("button").onclick=function(){merge(s.id)};list.append(d)});$("#buyShard").onclick=buyShard;
-}else if(tab==="upgrades"){
-var items=[["tap","Tap Power","Each tap gives more sparks.",50],["auto","Idle Flow","Increase all shard production by 10% per level.",90],["value","Shard Resonance","Increase shard production by 25% per level.",120]];
-c.innerHTML='<div class="section-head"><span>PERMANENT UPGRADES</span><span class="pill">Saved automatically</span></div>';
-items.forEach(function(it){var k=it[0],lv=state.upgrades[k],cost=Math.floor(it[3]*Math.pow(2.05,lv)),p=document.createElement("div");p.className="panel";p.innerHTML='<div><b>'+it[1]+' · Lv '+lv+'</b><div class="desc">'+it[2]+'</div></div><button '+(state.sparks<cost?"disabled":"")+'>UPGRADE<br>'+fmt(cost)+'</button>';p.querySelector("button").onclick=function(){upgrade(k)};c.append(p)});
-}else if(tab==="boosts"){
-var active=Date.now()<state.boostUntil,remaining=Math.max(0,Math.ceil((state.boostUntil-Date.now())/1000));
-c.innerHTML='<div class="section-head"><span>FOCUSED MOMENTS</span><span class="pill">'+(active?"ACTIVE · "+remaining+"s":"READY")+'</span></div><div class="panel"><div><b>Serenity ×3</b><div class="desc">Triple your shard production for 30 seconds. Costs 250 sparks.</div></div><button id="boost" '+(active||state.sparks<250?"disabled":"")+'>'+(active?"ACTIVE":"ACTIVATE · 250")+'</button></div>';
-$("#boost").onclick=function(){if(state.sparks>=250&&!active){state.sparks-=250;state.boostUntil=Date.now()+30000;toast("Serenity activated");render()}};
-}else{
-c.innerHTML='<div class="section-head"><span>THE VAULT</span><span class="pill">LIFETIME SPARKS · '+fmt(state.total)+'</span></div><div class="panel"><div><b>Quiet Reserve</b><div class="desc">A milestone archive for your progress. Reach lifetime spark goals to unlock rewards.</div></div><span class="pill">LV '+Math.floor(Math.sqrt(state.total/500))+'</span></div><div class="panel"><div><b>First Light · 1,000 total sparks</b><div class="desc">'+(state.total>=1000?"Unlocked — well done!":"Progress: "+Math.min(100,Math.floor(state.total/10))+"%")+'</div></div><span class="pill">'+(state.total>=1000?"✓":"LOCKED")+'</span></div><div class="panel"><div><b>Reset prototype save</b><div class="desc">Start over from the beginning. This cannot be undone.</div></div><button id="reset">RESET</button></div>';
-$("#reset").onclick=function(){if(confirm("Reset all Zen Shards progress?")){localStorage.removeItem("zenShardsSave");state=JSON.parse(JSON.stringify(defaults));selected=null;render();toast("Save reset")}};
+var $=function(s){return document.querySelector(s)},fmt=function(n){return n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(2)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":Math.floor(n).toLocaleString()};
+var fresh={essence:0,lifetime:0,crystals:[{id:1,level:0},{id:2,level:0},{id:3,level:0}],next:4,up:{touch:0,flow:0,attune:0},boost:0,last:Date.now()},s;
+try{s=Object.assign({},fresh,JSON.parse(localStorage.getItem("stillpointGarden")||"{}"));s.up=Object.assign({},fresh.up,s.up||{});if(!Array.isArray(s.crystals))s.crystals=fresh.crystals.slice()}catch(e){s=JSON.parse(JSON.stringify(fresh))}
+var tab="garden",picked=null,timer;
+function rateOne(c){return Math.pow(2.2,c.level)*(1+s.up.attune*.2)}
+function flow(){return s.crystals.reduce(function(a,c){return a+rateOne(c)},0)*(1+s.up.flow*.12)*(Date.now()<s.boost?3:1)}
+function save(){s.last=Date.now();try{localStorage.setItem("stillpointGarden",JSON.stringify(s))}catch(e){}}
+function say(t){var el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(timer);timer=setTimeout(function(){el.classList.remove("show")},1400)}
+function stats(){$("#essence").textContent=fmt(s.essence);$("#flow").textContent=fmt(flow())}
+function collect(n){s.essence+=n;s.lifetime+=n;stats()}
+function cost(l){return Math.floor(24*Math.pow(2.3,l))}
+function addCrystal(){if(s.crystals.length>=12){say("Garden is full — merge crystals first");return}if(s.essence<cost(0)){say("Not enough essence");return}s.essence-=cost(0);s.crystals.push({id:s.next++,level:0});paint()}
+function merge(id){var c=s.crystals.find(function(x){return x.id===id});if(!c)return;if(picked===null){picked=id;say("Choose another crystal of the same level");paint();return}if(picked===id){picked=null;paint();return}var other=s.crystals.find(function(x){return x.id===picked});if(!other||other.level!==c.level){picked=id;say("Those crystals do not resonate");paint();return}s.crystals=s.crystals.filter(function(x){return x.id!==id&&x.id!==picked});s.crystals.push({id:s.next++,level:c.level+1});picked=null;say("Resonance formed · Level "+(c.level+1));burst(W/2,H/2);paint()}
+function improve(k){var base={touch:55,flow:100,attune:135}[k],price=Math.floor(base*Math.pow(2.05,s.up[k]));if(s.essence<price){say("Not enough essence");return}s.essence-=price;s.up[k]++;paint()}
+function paint(){stats();var root=$("#content");
+if(tab==="garden"){root.innerHTML='<div class="heading"><span>YOUR LIVING CRYSTALS · '+s.crystals.length+'/12</span><span class="hint">Select two matching levels to fuse</span></div><div class="cards" id="crystals"></div><div class="panel"><div><b>Plant a new crystal</b><div class="desc">Add a fresh Level 0 crystal to your garden.</div></div><button id="plant">PLANT · '+fmt(cost(0))+'</button></div>';var list=$("#crystals");s.crystals.forEach(function(c){var el=document.createElement("div");el.className="card";el.style.borderColor=picked===c.id?"#f4d49a":"#3b4c59";el.innerHTML='<div class="crystal" style="filter:hue-rotate('+(c.level*31)+'deg) drop-shadow(0 0 9px #9ce5c477)"></div><strong>Prism · Lv '+c.level+'</strong><small>'+fmt(rateOne(c))+' essence / sec<br>'+(picked===c.id?"SELECTED":"Tap to select")+'</small><button>SELECT</button>';el.querySelector("button").onclick=function(){merge(c.id)};list.append(el)});$("#plant").onclick=addCrystal;
+}else if(tab==="growth"){var defs=[["touch","Gentle Touch","Each garden touch gathers more essence.",55],["flow","Living Current","Increase all passive production by 12% per level.",100],["attune","Prism Attunement","Each crystal produces 20% more essence per level.",135]];root.innerHTML='<div class="heading"><span>GARDEN DEVELOPMENT</span><span class="tag">PERMANENT</span></div>';defs.forEach(function(d){var lv=s.up[d[0]],p=Math.floor(d[3]*Math.pow(2.05,lv)),el=document.createElement("div");el.className="panel";el.innerHTML='<div><b>'+d[1]+' · Lv '+lv+'</b><div class="desc">'+d[2]+'</div></div><button '+(s.essence<p?"disabled":"")+'>GROW · '+fmt(p)+'</button>';el.querySelector("button").onclick=function(){improve(d[0])};root.append(el)});
+}else if(tab==="rituals"){var on=Date.now()<s.boost,secs=Math.max(0,Math.ceil((s.boost-Date.now())/1000));root.innerHTML='<div class="heading"><span>GARDEN RITUALS</span><span class="tag">'+(on?"ACTIVE · "+secs+"s":"READY")+'</span></div><div class="panel"><div><b>Stillwater Bloom · ×3</b><div class="desc">Triple crystal production for 30 seconds. Cost: 250 essence.</div></div><button id="ritual" '+(on||s.essence<250?"disabled":"")+'>'+(on?"IN PROGRESS":"BEGIN · 250")+'</button></div><div class="panel"><div><b>Quiet moment</b><div class="desc">Your garden continues to grow while you are away.</div></div><span class="tag">IDLE</span></div>';$("#ritual").onclick=function(){if(s.essence>=250&&!on){s.essence-=250;s.boost=Date.now()+30000;say("Stillwater Bloom awakened");paint()}};
+}else{root.innerHTML='<div class="heading"><span>THE GARDEN ARCHIVE</span><span class="tag">LIFETIME · '+fmt(s.lifetime)+'</span></div><div class="panel"><div><b>Resonance rank</b><div class="desc">Your rank grows with every essence gathered.</div></div><span class="tag">RANK '+(1+Math.floor(Math.sqrt(s.lifetime/600)))+'</span></div><div class="panel"><div><b>First awakening · 1,000 essence</b><div class="desc">'+(s.lifetime>=1000?"Milestone reached.":"Progress · "+Math.min(100,Math.floor(s.lifetime/10))+"%")+'</div></div><span class="tag">'+(s.lifetime>=1000?"UNLOCKED":"IN PROGRESS")+'</span></div><div class="panel"><div><b>Reset garden</b><div class="desc">Erase this device's save and begin again.</div></div><button id="reset">RESET</button></div>';$("#reset").onclick=function(){if(confirm("Reset all Stillpoint progress on this device?")){localStorage.removeItem("stillpointGarden");s=JSON.parse(JSON.stringify(fresh));picked=null;paint();say("A new garden begins")}}}
 }
-}
-document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){tab=b.dataset.tab;document.querySelectorAll("nav button").forEach(function(x){x.classList.toggle("active",x===b)});selected=null;render()}});
-$("#tapcore").addEventListener("pointerdown",function(e){e.preventDefault();var n=1+state.upgrades.tap*2;gain(n);var r=$("#tapcore").getBoundingClientRect(),el=document.createElement("span");el.textContent="+"+fmt(n);el.style.cssText="position:absolute;left:"+(e.clientX-r.left)+"px;top:"+(e.clientY-r.top)+"px;color:#fff0cf;font-size:16px;font-weight:700;pointer-events:none;animation:float .8s forwards";$("#arena").append(el);setTimeout(function(){el.remove()},850)});
-var st=document.createElement("style");st.textContent="@keyframes float{to{transform:translateY(-45px);opacity:0}}";document.head.append(st);
-function tick(){var now=Date.now(),dt=Math.min(5,(now-state.last)/1000);if(dt>0){var amount=production()*dt;state.sparks+=amount;state.total+=amount;state.last=now}renderStats()}
-setInterval(function(){tick();save()},1000);
-var canvas=$("#art"),ctx=canvas.getContext("2d"),W=0,H=0,tiles=[];
-function resize(){var r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=W*d;canvas.height=H*d;ctx.setTransform(d,0,0,d,0,0);tiles=[];var size=76;for(var y=-size;y<H+size;y+=size){for(var x=-size;x<W+size;x+=size){tiles.push({x:x+(Math.random()-.5)*25,y:y+(Math.random()-.5)*25,s:size*(.75+Math.random()*.5),a:Math.random()*.28-.14,c:["#6d4052","#4b2634","#8a596b","#613548","#a47782"][Math.floor(Math.random()*5)]})}}}
-function draw(){ctx.clearRect(0,0,W,H);tiles.forEach(function(t){ctx.save();ctx.translate(t.x,t.y);ctx.rotate(Math.PI/4+t.a);ctx.fillStyle=t.c;ctx.globalAlpha=.72;ctx.fillRect(-t.s/2,-t.s/2,t.s,t.s);ctx.restore()});requestAnimationFrame(draw)}
-window.addEventListener("resize",resize);resize();draw();
-var elapsed=Math.max(0,Math.min(86400,(Date.now()-(state.last||Date.now()))/1000));if(elapsed>1){var offline=production()*elapsed;state.sparks+=offline;state.total+=offline;toast("Welcome back · +"+fmt(offline)+" sparks")}state.last=Date.now();render();save();
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){tab=b.dataset.tab;document.querySelectorAll("nav button").forEach(function(x){x.classList.toggle("active",x===b)});picked=null;paint()}});
+var W=0,H=0,canvas=$("#scene"),ctx=canvas.getContext("2d"),dpr=1,particles=[],floaters=[],lastFrame=0;
+function resize(){var r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);if(!floaters.length){for(var i=0;i<15;i++)floaters.push({x:Math.random()*W,y:Math.random()*H,size:10+Math.random()*20,phase:Math.random()*6.28,speed:.3+Math.random()*.6,rot:Math.random()*6.28,spin:(Math.random()-.5)*.3,hue:Math.random()*50})}}
+function polygon(x,y,r,rot){ctx.beginPath();for(var i=0;i<6;i++){var a=rot+i*Math.PI/3,px=x+Math.cos(a)*r,py=y+Math.sin(a)*r*(.72+.18*Math.sin(a*2));if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.closePath()}
+function burst(x,y){for(var i=0;i<26;i++){var a=Math.random()*Math.PI*2,v=30+Math.random()*130;particles.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.6+Math.random()*.7,max:.6+Math.random()*.7,size:1+Math.random()*3})}}
+function frame(t){var dt=Math.min(.04,(t-lastFrame)/1000||.016);lastFrame=t;ctx.clearRect(0,0,W,H);
+var glow=ctx.createRadialGradient(W*.5,H*.48,5,W*.5,H*.48,Math.max(W,H)*.65);glow.addColorStop(0,"#45636a");glow.addColorStop(1,"#172633");ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+floaters.forEach(function(p){p.phase+=dt*p.speed;p.rot+=dt*p.spin;var x=p.x+Math.sin(p.phase)*12,y=p.y+Math.cos(p.phase*.8)*15;ctx.save();ctx.translate(x,y);ctx.rotate(p.rot);polygon(0,0,p.size,p.rot);var g=ctx.createLinearGradient(-p.size,-p.size,p.size,p.size);g.addColorStop(0,"#e3fff1");g.addColorStop(.45,"#86cdbd");g.addColorStop(1,"#477b8c");ctx.fillStyle=g;ctx.globalAlpha=.12+(.08*Math.sin(p.phase));ctx.fill();ctx.strokeStyle="#d4fff0";ctx.globalAlpha=.25;ctx.lineWidth=1;ctx.stroke();ctx.restore()});
+var cx=W/2,cy=H*.48;ctx.save();ctx.translate(cx,cy);ctx.rotate(t*.00012);ctx.strokeStyle="#a4e7d4";ctx.globalAlpha=.17;ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,Math.min(W,H)*.25,Math.min(W,H)*.095,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+particles=particles.filter(function(p){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.985;p.vy*=.985;ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle="#f4d49a";ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();return p.life>0});ctx.globalAlpha=1;requestAnimationFrame(frame)}
+$("#tap").addEventListener("pointerdown",function(e){e.preventDefault();var n=1+s.up.touch*2;collect(n);var r=canvas.getBoundingClientRect();burst(e.clientX-r.left,e.clientY-r.top);var x=e.clientX-r.left,y=e.clientY-r.top;ctx.save();ctx.fillStyle="#f4e1b8";ctx.font="bold 14px sans-serif";ctx.fillText("+"+fmt(n),x+8,y-8);ctx.restore()});
+function tick(){var now=Date.now(),dt=Math.max(0,Math.min(86400,(now-s.last)/1000));if(dt){var amount=flow()*dt;s.essence+=amount;s.lifetime+=amount;s.last=now}stats()}
+setInterval(function(){tick();save();if(tab==="rituals")paint()},1000);
+window.addEventListener("resize",resize);resize();requestAnimationFrame(frame);
+var away=Math.max(0,Math.min(86400,(Date.now()-(s.last||Date.now()))/1000));if(away>2){var bonus=flow()*away;s.essence+=bonus;s.lifetime+=bonus;say("While away · +"+fmt(bonus)+" essence")}s.last=Date.now();paint();save();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
