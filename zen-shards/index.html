@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101820"><title>STILLPOINT</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101820;color:#edf4f2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{padding:0 0 env(safe-area-inset-bottom)}button{font:inherit;border:0;border-radius:10px;padding:12px 10px;font-weight:800;background:#a5e7d4;color:#10232a;cursor:pointer}button:disabled{opacity:.4;cursor:default}#app{max-width:760px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}header{padding:14px 16px;background:#1a2933;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:21px;font-weight:950;letter-spacing:3px}.sub{font-size:10px;color:#9eb4ba;letter-spacing:1.5px;margin-top:3px}.stats{display:flex;gap:15px;text-align:right;color:#a8bbc0;font-size:9px}.stats b{display:block;color:#a5e7d4;font-size:17px;margin-top:3px}#arena{display:block;width:100%;height: min(58vh,440px);min-height:310px;background:#15242d;touch-action:pan-y}#status{display:flex;justify-content:space-between;padding:9px 14px;background:#1d303a;color:#b7cbc9;font-size:11px}.section{padding:14px}.heading{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:10px}.upgrades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upgrade{background:#1d2d37;border:1px solid #3b535d;border-radius:12px;padding:12px;min-width:0}.upgrade .name{font-size:13px;font-weight:850}.upgrade .desc{font-size:10px;color:#a8bbc0;line-height:1.4;min-height:29px;margin:5px 0 9px}.upgrade button{width:100%;font-size:11px;padding:10px 5px}.progress{height:5px;border-radius:9px;background:#0c151b;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:#a5e7d4}.footer{padding:0 14px 16px;color:#82999f;font-size:10px;line-height:1.5}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#081116;border:1px solid #526970;border-radius:22px;padding:10px 15px;display:none;z-index:9;font-size:12px;white-space:nowrap;max-width:90%}#fatal{display:none;margin:10px;padding:12px;background:#572f36;border-radius:8px;font-size:12px}#reset{background:#334650;color:#edf4f2;font-size:10px;padding:8px 11px}@media(max-width:380px){.stats{gap:9px}.brand{font-size:18px}.upgrade{padding:10px}.upgrade .desc{font-size:9px}}
-</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">IDLE BREAKER · BUILD 0.4.0</div></div><div class="stats"><div>ENERGY<b id="energy">0</b></div><div>PER SEC<b id="eps">0</b></div><div>STAGE<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">Arrows operating automatically</span><span id="blocks">BLOCKS 0</span></div><section class="section"><div class="heading"><span>CORE UPGRADES</span><button id="reset">RESET</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">Your arrows move and seek targets on their own. Upgrade the system while it keeps running. Progress is saved on this device.</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
+</style></head><body><div id="app"><header><div><div class="brand">STILLPOINT</div><div class="sub">IDLE BREAKER · BUILD 0.5.1</div></div><div class="stats"><div>ENERGY<b id="energy">0</b></div><div>PER SEC<b id="eps">0</b></div><div>STAGE<b id="stage">1</b></div></div></header><canvas id="arena"></canvas><div id="status"><span id="activity">Arrows operating automatically</span><span id="blocks">BLOCKS 0</span></div><section class="section"><div class="heading"><span>CORE UPGRADES</span><button id="reset">RESET</button></div><div class="upgrades" id="upgrades"></div></section><div class="footer">Your arrows move and seek targets on their own. Upgrade the system while it keeps running. Progress is saved on this device.</div><div id="fatal"></div></div><div class="toast" id="toast"></div>
 <script>
 (function(){
 "use strict";
@@ -30,20 +30,18 @@ function maxHpFor(stage){return Math.floor(8*Math.pow(1.18,Math.max(0,stage-1)))
 function blockValue(){return Math.max(1,Math.floor(2*Math.pow(1.13,Math.max(0,s.stage-1))))}
 function spawnBlock(x,y){
  var hp=maxHpFor(s.stage);
- s.blocks.push({id:s.nextId++,x:x,y:y,hp:hp,max:hp,r:15});
+ s.blocks.push({id:s.nextId++,x:x,y:y,hp:hp,max:hp,r:16});
 }
 function spawnFormation(){
  s.blocks=[];
- var cols=5,rows=4;
+ var cols=7,rows=5;
  for(var row=0;row<rows;row++){
   for(var col=0;col<cols;col++){
-   var x=.10+col*.20,y=.13+row*.245;
-   if(Math.abs(x-.5)<.08&&Math.abs(y-.5)<.16)continue;
-   spawnBlock(x,y);
+   spawnBlock(.08+col*.14,.13+row*.14);
   }
  }
 }
-function ensureBlocks(){if(!s.blocks.length)spawnFormation()}
+function ensureBlocks(){if(s.blocks.length<20)spawnFormation()}
 function arrowCount(){return Math.min(12,1+(s.count-1))}
 function fireInterval(){return Math.max(.18,1.05*Math.pow(.88,s.rate-1))}
 function arrowSpeed(){return (125+Math.min(240,(s.speed-1)*22))*Math.pow(1.055,s.rate-1)}
@@ -54,9 +52,10 @@ function chooseTarget(a){
  return best;
 }
 function makeArrow(i){
- var angle=(Math.PI*2*i/Math.max(1,arrowCount()))+(Math.random()-.5)*.22;
- var cx=W*.5,cy=H*.5,sp=arrowSpeed();
- return {x:cx+Math.cos(angle)*8,y:cy+Math.sin(angle)*8,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0};
+ var spread=(i-(arrowCount()-1)/2)*.13;
+ var angle=-Math.PI/2+spread;
+ var sp=arrowSpeed();
+ return {x:W*.5+spread*25,y:H*.88,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,target:0,life:1e9,hitWait:0,lastHitId:0};
 }
 function syncArrows(){
  while(s.arrows.length<arrowCount())s.arrows.push(makeArrow(s.arrows.length));
@@ -66,9 +65,9 @@ function reward(n){s.energy+=n;s.total+=n}
 function upgradeCost(k){var base={damage:12,rate:18,count:65,speed:25}[k];return Math.floor(base*Math.pow({damage:1.42,rate:1.58,count:2.25,speed:1.5}[k],s[k]-1))}
 var upgradeInfo=[
  {key:"damage",name:"Impact",desc:"Increase damage dealt by every arrow."},
- {key:"rate",name:"Fire Rate",desc:"Launch arrows more frequently."},
+ {key:"rate",name:"Fire Rate",desc:"Increase the speed of every ricochet."},
  {key:"count",name:"Arrow Array",desc:"Add another independently moving arrow.",max:12},
- {key:"speed",name:"Velocity",desc:"Arrows travel faster across the arena."}
+ {key:"speed",name:"Velocity",desc:"Increase arrow movement speed."}
 ];
 function renderUpgrades(){
  var root=$("upgrades"),html="";
@@ -113,6 +112,7 @@ function step(dt){
  for(var i=0;i<s.arrows.length;i++){
   var ar=s.arrows[i];
   if(ar.hitWait>0)ar.hitWait=Math.max(0,ar.hitWait-dt);
+  var oldX=ar.x,oldY=ar.y;
   ar.x+=ar.vx*dt;ar.y+=ar.vy*dt;
   if(ar.x<5){ar.x=5;ar.vx=Math.abs(ar.vx)}
   if(ar.x>W-5){ar.x=W-5;ar.vx=-Math.abs(ar.vx)}
@@ -120,12 +120,17 @@ function step(dt){
   if(ar.y>H-5){ar.y=H-5;ar.vy=-Math.abs(ar.vy)}
   if(ar.hitWait<=0){
    for(var j=0;j<s.blocks.length;j++){
-    var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||15,dx=ar.x-bx,dy=ar.y-by;
-    if(Math.abs(dx)<rr+4&&Math.abs(dy)<rr+4){
-     var nx=(rr+4)-Math.abs(dx),ny=(rr+4)-Math.abs(dy);
-     if(nx<ny){ar.vx=dx>=0?Math.abs(ar.vx):-Math.abs(ar.vx);ar.x=bx+(dx>=0?rr+5:-rr-5)}
-     else{ar.vy=dy>=0?Math.abs(ar.vy):-Math.abs(ar.vy);ar.y=by+(dy>=0?rr+5:-rr-5)}
-     b.hp-=damage();ar.hitWait=.09;burst(ar.x,ar.y);
+    var b=s.blocks[j],bx=b.x*W,by=b.y*H,rr=b.r||16;
+    var dx=ar.x-bx,dy=ar.y-by;
+    if(Math.abs(dx)<rr+5&&Math.abs(dy)<rr+5){
+     var fromX=oldX-bx,fromY=oldY-by;
+     var hitX=Math.abs(fromX)>Math.abs(fromY);
+     var speed=Math.hypot(ar.vx,ar.vy)||arrowSpeed();
+     if(hitX){ar.vx=fromX>=0?Math.abs(ar.vx):-Math.abs(ar.vx);ar.x=bx+(fromX>=0?rr+6:-rr-6)}
+     else{ar.vy=fromY>=0?Math.abs(ar.vy):-Math.abs(ar.vy);ar.y=by+(fromY>=0?rr+6:-rr-6)}
+     var angle=Math.atan2(ar.vy,ar.vx)+(Math.random()-.5)*.9;
+     ar.vx=Math.cos(angle)*speed;ar.vy=Math.sin(angle)*speed;
+     b.hp-=damage();ar.hitWait=.12;ar.lastHitId=b.id;burst(ar.x,ar.y);
      if(b.hp<=0){var gain=blockValue();reward(gain);s.blocks.splice(j,1);say("+"+gain+" energy");j--}
      break;
     }
@@ -155,7 +160,9 @@ function draw(t){
 function start(){
  load();var away=clamp((Date.now()-s.last)/1000,0,8*3600);
  if(away>30){var bonus=Math.floor(idleRate()*away);reward(bonus);say("Welcome back · +"+fmt(bonus)+" energy")}
- ensureBlocks();syncArrows();resize();window.addEventListener("resize",resize);
+ // Replace legacy sparse layouts with the full opening barrier.
+ if(!Array.isArray(s.blocks)||s.blocks.length<20)spawnFormation();
+ resize();s.arrows=[];syncArrows();window.addEventListener("resize",resize);
  renderUpgrades();updateHud();
  $("reset").onclick=function(){if(confirm("Reset all STILLPOINT progress on this device?")){localStorage.removeItem("stillpointIdle");location.reload()}};
  save();last=performance.now();raf=requestAnimationFrame(draw);
